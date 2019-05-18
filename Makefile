@@ -8,6 +8,7 @@ MANDIR	=	$(DESTDIR)/usr/local/man/man1
 EXEC	=	vwifi-host-server
 
 SRC		=	src
+OBJ		=	obj
 MAN		=	man
 
 CC		=	g++
@@ -24,12 +25,25 @@ EUID	:= $(shell id -u -r)
 
 ##############################
 
+vpath %.cc $(SRC)
+vpath %.h $(SRC)
+vpath %.o $(OBJ)
+
 .PHONY: all clean build install man
 
-% : $(SRC)/%.cc $(SRC)/%.h Makefile
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $<
-
 build : $(EXEC) # man
+
+cscheduler.o: cscheduler.cc  cscheduler.h
+
+csocket.o: csocket.cc csocket.h
+
+csocketserver.o: csocketserver.cc csocketserver.h csocket.h
+
+vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h csocketserver.o csocket.o cscheduler.o
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
+
+%.o: %.cc
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $(OBJ)/$@ -c $<
 
 $(MAN)/$(NAME).1.gz : $(MAN)/$(NAME).1
 	gzip -c $(MAN)/$(NAME).1 > $(MAN)/$(NAME).1.gz
@@ -40,7 +54,7 @@ all : clean build install
 
 clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
-	-rm -f $(EXEC) $(MAN)/$(NAME).1.gz
+	-rm -f $(EXEC) $(OBJ)/* $(MAN)/$(NAME).1.gz
 
 install : $(EXEC) man
 ifneq ($(EUID),0)
