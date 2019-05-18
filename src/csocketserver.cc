@@ -116,3 +116,15 @@ void CSocketServer::CloseClient(int number)
 
 	return;
 }
+
+int CSocketServer::MaxDescriptor()
+{
+	int max=MasterSocket;
+
+	for (int i = 0; i < MAX_CLIENT-1; i++)
+	{
+		if ( SocketClients[i] > max )
+			max = SocketClients[i];
+	}
+	return max;
+}

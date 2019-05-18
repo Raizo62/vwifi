@@ -25,6 +25,9 @@ class CSocketServer : public CSocket
 
 	void CloseClient(int number);
 
+	// return le descriptor max
+	int MaxDescriptor();
+
 };
 
 #endif
