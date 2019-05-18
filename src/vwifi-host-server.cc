@@ -32,19 +32,16 @@ int main(int argc , char *argv[])
 	//a message
 	string message = "ECHO Daemon v1.0 \r\n";
 
-	//accept the incoming connection
-	cout<<"Waiting for connections ..."<<endl;
+	//clear the socket set
+	scheduler.Init();
+
+	//add master socket to set
+	scheduler.AddNode(socketServer.GetMasterSocket());
 
 	while(TRUE)
 	{
-			//clear the socket set
-		scheduler.Init();
-
-		//add master socket to set
-		scheduler.AddNode(socketServer.GetMasterSocket());
-		//add child sockets to set
-		for ( i = 0 ; i < socketServer.GetNumberClient() ; i++)
-			scheduler.AddNode(socketServer.GetSocketClient(i));
+		//accept the incoming connection
+		cout<<"Waiting for connections ..."<<endl;
 
 		//wait for an activity on one of the sockets , timeout is NULL ,
 		//so wait indefinitely
@@ -64,6 +61,9 @@ int main(int argc , char *argv[])
 				exit(EXIT_FAILURE);
 			}
 
+			//add child sockets to set
+			scheduler.AddNode(socket);
+
 			//inform user of socket number - used in send and receive commands
 			cout<<"New connection , socket fd is : "<<socket<<" "; socketServer.ShowInfo(socket) ; cout<<endl;
 
@@ -75,6 +75,7 @@ int main(int argc , char *argv[])
 
 			cout<<"Welcome message sent successfully"<<endl;
 		}
+		else
 
 		//else its some IO operation on some other socket
 		for ( i = 0 ; i < socketServer.GetNumberClient() ; i++)
@@ -93,6 +94,9 @@ int main(int argc , char *argv[])
 
 					//Close the socket
 					socketServer.CloseClient(i);
+
+					//del master socket to set
+					scheduler.DelNode(socket,socketServer.MaxDescriptor());
 				}
 
 				//Echo back the message that came in
