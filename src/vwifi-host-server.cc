@@ -2,161 +2,97 @@
 #include <iostream> // cout
 
 #include <string.h> //strlen
-#include <errno.h>
-#include <unistd.h> // read & close
-#include <arpa/inet.h> // INADDR_ANY
-#include <sys/socket.h>
 
 #include "vwifi-host-server.h"
+#include "csocketserver.h"
+#include "cscheduler.h"
 
 using namespace std;
 
 int main(int argc , char *argv[])
 {
-	int opt = TRUE;
-	int master_socket , addrlen , new_socket , client_socket[30] , activity, i , valread , sd;
-	int max_sd;
-	struct sockaddr_in address;
+	Descriptor socket;
+
+	int i , valread;
 
 	char buffer[1025]; //data buffer of 1K
 
-	//set of socket descriptors
-	fd_set readfds;
+	CScheduler scheduler;
+
+	CSocketServer socketServer;
+	socketServer.Init(PORT);
+	if( socketServer.Listen() )
+	{
+				cout<<"Error : socketServer.Listen"<<endl;
+				exit(EXIT_FAILURE);
+	}
+
+	scheduler.AddNode(socketServer.GetMasterSocket());
 
 	//a message
 	string message = "ECHO Daemon v1.0 \r\n";
 
-	//initialise all client_socket[] to 0 so not checked
-	for (i = 0; i < max_clients; i++)
-	{
-		client_socket[i] = 0;
-	}
-
-	//create a master socket
-	if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
-	{
-		perror("socket failed");
-		exit(EXIT_FAILURE);
-	}
-
-	//set master socket to allow multiple connections ,
-	//this is just a good habit, it will work without this
-	if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
-	{
-		perror("setsockopt");
-		exit(EXIT_FAILURE);
-	}
-
-	//type of socket created
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons( PORT );
-
-	//bind the socket to localhost port 8888
-	if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
-	{
-		perror("bind failed");
-		exit(EXIT_FAILURE);
-	}
-	cout<<"Listener on port "<<PORT<<endl;
-
-	//try to specify maximum of 3 pending connections for the master socket
-	if (listen(master_socket, 3) < 0)
-	{
-		perror("listen");
-		exit(EXIT_FAILURE);
-	}
-
 	//accept the incoming connection
-	addrlen = sizeof(address);
 	cout<<"Waiting for connections ..."<<endl;
 
 	while(TRUE)
 	{
-		//clear the socket set
-		FD_ZERO(&readfds);
+			//clear the socket set
+		scheduler.Init();
 
 		//add master socket to set
-		FD_SET(master_socket, &readfds);
-		max_sd = master_socket;
-
+		scheduler.AddNode(socketServer.GetMasterSocket());
 		//add child sockets to set
-		for ( i = 0 ; i < max_clients ; i++)
-		{
-			//socket descriptor
-			sd = client_socket[i];
-
-			//if valid socket descriptor then add to read list
-			if(sd > 0)
-				FD_SET( sd , &readfds);
-
-			//highest file descriptor number, need it for the select function
-			if(sd > max_sd)
-				max_sd = sd;
-		}
+		for ( i = 0 ; i < socketServer.GetNumberClient() ; i++)
+			scheduler.AddNode(socketServer.GetSocketClient(i));
 
 		//wait for an activity on one of the sockets , timeout is NULL ,
 		//so wait indefinitely
-		activity = select( max_sd + 1 , &readfds , NULL , NULL , NULL);
-
-		if ((activity < 0) && (errno!=EINTR))
+		if( scheduler.Wait() == ERROR_SCHEDULER )
 		{
-			cout<<"select error"<<endl;
+			cout<<"Error : scheduler.Wait"<<endl;
 		}
 
 		//If something happened on the master socket ,
 		//then its an incoming connection
-		if (FD_ISSET(master_socket, &readfds))
+		if( scheduler.NodeHasAction(socketServer.GetMasterSocket()) )
 		{
-			if ((new_socket = accept(master_socket, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
+			socket = socketServer.Accept();
+			if ( socket == ERROR_SOCKET )
 			{
-				perror("accept");
+				cout<<"Error : socketServer.Accept"<<endl;
 				exit(EXIT_FAILURE);
 			}
 
 			//inform user of socket number - used in send and receive commands
-			cout<<"New connection , socket fd is : "<<new_socket<<" , ip is : "<<inet_ntoa(address.sin_addr)<<" , port : "<<ntohs(address.sin_port)<<endl;
+			cout<<"New connection , socket fd is : "<<socket<<" "; socketServer.ShowInfo(socket) ; cout<<endl;
 
 			//send new connection greeting message
-			if( (socklen_t) send(new_socket, message.c_str(), message.length(), 0) != message.length() )
+			if (  (socklen_t) socketServer.Send(socket,message.c_str(), message.length()) != message.length() )
 			{
-				perror("send");
+				cout<<"Error : socketServer.Send"<<endl;
 			}
 
 			cout<<"Welcome message sent successfully"<<endl;
-
-			//add new socket to array of sockets
-			for (i = 0; i < max_clients; i++)
-			{
-				//if position is empty
-				if( client_socket[i] == 0 )
-				{
-					client_socket[i] = new_socket;
-					cout<<"Adding to list of sockets as "<<i<<endl;
-
-					break;
-				}
-			}
 		}
 
 		//else its some IO operation on some other socket
-		for (i = 0; i < max_clients; i++)
+		for ( i = 0 ; i < socketServer.GetNumberClient() ; i++)
 		{
-			sd = client_socket[i];
+			socket = socketServer.GetSocketClient(i);
 
-			if (FD_ISSET( sd , &readfds))
+			if( scheduler.NodeHasAction(socket) )
 			{
 				//Check if it was for closing , and also read the
 				//incoming message
-				if ((valread = read( sd , buffer, 1024)) == 0)
+				valread = socketServer.Read( socket , buffer, 1024);
+				if ( valread == 0 )
 				{
 					//Somebody disconnected , get his details and print
-					getpeername(sd , (struct sockaddr*)&address , (socklen_t*)&addrlen);
-					cout<<"Host disconnected , ip "<<inet_ntoa(address.sin_addr)<<" , port "<<ntohs(address.sin_port)<<endl;
+					cout<<"Host disconnected , "; socketServer.ShowInfo(socket) ; cout<<endl;
 
-					//Close the socket and mark as 0 in list for reuse
-					close( sd );
-					client_socket[i] = 0;
+					//Close the socket
+					socketServer.CloseClient(i);
 				}
 
 				//Echo back the message that came in
@@ -165,7 +101,7 @@ int main(int argc , char *argv[])
 					//set the string terminating NULL byte on the end
 					//of the data read
 					buffer[valread] = '\0';
-					send(sd , buffer , strlen(buffer) , 0 );
+					socketServer.Send(socket,buffer , strlen(buffer));
 				}
 			}
 		}
