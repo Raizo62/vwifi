@@ -25,6 +25,8 @@ class CScheduler
 
 	void AddNode(Descriptor descriptor);
 
+	void DelNode(Descriptor descriptor, Descriptor maxDescriptor);
+
 	Descriptor Wait();
 
 	bool NodeHasAction(Descriptor descriptor);

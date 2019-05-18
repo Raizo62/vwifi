@@ -28,6 +28,14 @@ void CScheduler::AddNode(Descriptor descriptor)
 		MaxDescriptor = descriptor;
 }
 
+void CScheduler::DelNode(Descriptor descriptor, Descriptor maxDescriptor)
+{
+	FD_CLR( descriptor , &Master);
+
+	//highest file descriptor number, need it for the select function
+	MaxDescriptor = maxDescriptor;
+}
+
 Descriptor CScheduler::Wait()
 {
 	int activity=select( MaxDescriptor + 1 , &Master , NULL , NULL , NULL);
