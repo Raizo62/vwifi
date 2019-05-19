@@ -117,14 +117,12 @@ void CSocketServer::CloseClient(int number)
 	return;
 }
 
-int CSocketServer::MaxDescriptor()
+void CSocketServer::SendAllOtherClients(int number,const char* data, ssize_t sizeOfData)
 {
-	int max=MasterSocket;
-
-	for (int i = 0; i < MAX_CLIENT-1; i++)
+	cout<<"SendAllOtherClient de "<<number<<" vers "<<NumberClient<<" clients ("<<sizeOfData<<" octets)"<<endl;
+	for (int i = 0; i < NumberClient; i++)
 	{
-		if ( SocketClients[i] > max )
-			max = SocketClients[i];
+		if( i != number )
+			Send(SocketClients[i], data, sizeOfData);
 	}
-	return max;
 }
