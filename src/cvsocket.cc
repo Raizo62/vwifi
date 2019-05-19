@@ -15,6 +15,11 @@ CVSocket::CVSocket()
 	Master=0;
 }
 
+CVSocket::~CVSocket()
+{
+	Close();
+}
+
 bool CVSocket::Configure()
 {
 	//create a master socket

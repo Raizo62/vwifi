@@ -27,6 +27,8 @@ class CVSocket
 		void ShowInfo(Descriptor descriptor);
 
 		void Close();
+
+		~CVSocket();
 };
 
 #endif
