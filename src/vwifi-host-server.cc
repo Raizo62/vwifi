@@ -42,6 +42,7 @@ int main(int argc , char *argv[])
 		if( scheduler.Wait() == ERROR_SCHEDULER )
 		{
 			cout<<"Error : scheduler.Wait"<<endl;
+			return 1;
 		}
 		else {
 
