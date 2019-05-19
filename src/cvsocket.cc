@@ -4,6 +4,7 @@
 
 #include <sys/socket.h> //socket
 #include <arpa/inet.h> // struct sockaddr_in & inet_ntoa & ntohs
+#include <unistd.h> // close
 
 #include "cvsocket.h"
 
@@ -48,6 +49,11 @@ void CVSocket::ShowInfo(Descriptor descriptor)
 
 	getpeername(descriptor , (struct sockaddr*)&address , (socklen_t*)&addrlen);
 	cout<<"ip "<<inet_ntoa(address.sin_addr)<<" , port "<<ntohs(address.sin_port);
+}
+
+void CVSocket::Close()
+{
+	close(Master);
 }
 
 

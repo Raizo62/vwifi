@@ -16,15 +16,17 @@ class CVSocket
 
 		bool Configure();
 
-	public :
-
-		int GetMaster();
-
 		virtual ssize_t Send(Descriptor descriptor, const char* data, ssize_t sizeOfData);
 
 		virtual ssize_t Read(Descriptor descriptor, char* data, ssize_t sizeOfData);
 
+	public :
+
+		int GetMaster();
+
 		void ShowInfo(Descriptor descriptor);
+
+		void Close();
 };
 
 #endif
