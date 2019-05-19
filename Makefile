@@ -5,7 +5,7 @@ VERSION	=	1
 BINDIR	=	$(DESTDIR)/usr/local/bin
 MANDIR	=	$(DESTDIR)/usr/local/man/man1
 
-EXEC	=	vwifi-host-server
+EXEC	=	vwifi-host-server vwifi-guest
 
 SRC		=	src
 OBJ		=	obj
@@ -41,7 +41,10 @@ cvsocketserver.o: cvsocketserver.cc cvsocketserver.h cvsocket.h
 
 cvsocketclient.o: cvsocketclient.cc cvsocketclient.h cvsocket.h
 
-vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h cvsocket.o cvsocketserver.o cvsocketclient.o cscheduler.o
+vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h cvsocket.o cvsocketserver.o cscheduler.o
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
+
+vwifi-guest : vwifi-guest.cc vwifi-guest.h cvsocket.o cvsocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 %.o: %.cc
