@@ -32,14 +32,14 @@ int main(int argc , char *argv[])
 	//add master socket to set
 	scheduler.AddNode(socketServer.GetMasterSocket());
 
-	while(TRUE)
+	while( true )
 	{
 		//accept the incoming connection
 		cout<<"Waiting actions ..."<<endl;
 
 		//wait for an activity on one of the sockets , timeout is NULL ,
 		//so wait indefinitely
-		if( scheduler.Wait() == ERROR_SCHEDULER )
+		if( scheduler.Wait() == SCHEDULER_ERROR )
 		{
 			cout<<"Error : scheduler.Wait"<<endl;
 			return 1;
@@ -52,7 +52,7 @@ int main(int argc , char *argv[])
 			if( scheduler.NodeHasAction(socketServer.GetMasterSocket()) )
 			{
 				socket = socketServer.Accept();
-				if ( socket == ERROR_SOCKET )
+				if ( socket == SOCKET_ERROR )
 				{
 					cout<<"Error : socketServer.Accept"<<endl;
 					exit(EXIT_FAILURE);
