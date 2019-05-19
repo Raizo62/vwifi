@@ -8,7 +8,6 @@
 #include "cvsocketserver.h"
 
 const int TRUE=1;
-const int FALSE=1;
 
 using namespace std;
 
