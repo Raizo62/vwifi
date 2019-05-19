@@ -27,6 +27,10 @@ class CVSocketServer : public CVSocket
 
 	void SendAllOtherClients(int number,const char* data, ssize_t sizeOfData);
 
+	ssize_t Send(Descriptor descriptor, const char* data, ssize_t sizeOfData);
+
+	ssize_t Read(Descriptor descriptor, char* data, ssize_t sizeOfData);
+
 };
 
 #endif

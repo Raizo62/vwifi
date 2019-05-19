@@ -125,3 +125,13 @@ void CVSocketServer::SendAllOtherClients(int number,const char* data, ssize_t si
 			Send(SocketClients[i], data, sizeOfData);
 	}
 }
+
+ssize_t CVSocketServer::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
+{
+	return CVSocket::Send(descriptor, data, sizeOfData);
+}
+
+ssize_t CVSocketServer::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
+{
+	return CVSocket::Read(descriptor , data, sizeOfData);
+}
