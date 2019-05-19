@@ -13,6 +13,8 @@ class CVSocketServer : public CVSocket
 
 	public :
 
+	~CVSocketServer();
+
 	void Init(int port);
 
 	bool Listen();

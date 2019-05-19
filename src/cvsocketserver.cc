@@ -23,6 +23,14 @@ void CVSocketServer::Init(int port)
 	NumberClient=0;
 }
 
+CVSocketServer::~CVSocketServer()
+{
+	for (int i = 0; i < NumberClient; i++)
+		close(SocketClients[i]);
+
+	CVSocket::Close();
+}
+
 bool CVSocketServer::Listen()
 {
 	//create a master socket
