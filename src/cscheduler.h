@@ -15,9 +15,14 @@ class CScheduler
 
 	//set of socket descriptors
 	fd_set Master;
+	fd_set Dup;
+
+	Descriptor MaxDescriptor;
 
 	Descriptor ListNodes[MAX_NODE];
 	int NumberNode;
+
+	void UpdateMaxDescriptor(Descriptor descriptor);
 
 	public :
 

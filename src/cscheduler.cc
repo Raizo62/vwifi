@@ -16,7 +16,18 @@ void CScheduler::Init()
 	//clear the socket set
 	FD_ZERO(&Master);
 
+	//clear the socket set
+	FD_ZERO(&Dup);
+
 	NumberNode=0;
+	MaxDescriptor=-1;
+}
+
+void CScheduler::UpdateMaxDescriptor(Descriptor descriptor)
+{
+	//highest file descriptor number, need it for the select function
+	if ( descriptor > MaxDescriptor )
+		MaxDescriptor=descriptor;
 }
 
 bool CScheduler::AddNode(Descriptor descriptor)
@@ -28,41 +39,45 @@ bool CScheduler::AddNode(Descriptor descriptor)
 	cout<<"Adding to list of node as "<<NumberNode<<endl;
 	ListNodes[NumberNode++] = descriptor;
 
+	//add child sockets to set
+	FD_SET( descriptor , &Master);
+
+	//highest file descriptor number, need it for the select function
+	UpdateMaxDescriptor(descriptor);
+
 	return 0;
 }
 
 void CScheduler::DelNode(Descriptor descriptor)
 {
+	MaxDescriptor=-1;
 	for (int i = 0; i < NumberNode; i++)
+	{
 		if( ListNodes[i] == descriptor )
 		{
+			FD_CLR(descriptor , &Master);
+
 			NumberNode--;
 			for(int j=i;j<NumberNode;j++)
+			{
 				ListNodes[j] = ListNodes[j+1];
+				UpdateMaxDescriptor(ListNodes[j]);
+			}
 			return;
 		}
+		UpdateMaxDescriptor(ListNodes[i]);
+	}
 }
 
 Descriptor CScheduler::Wait()
 {
-	int maxDescriptor=-1;
-
-	//clear the socket set
-	FD_ZERO(&Master);
-
-	//add child sockets to set
-	for (int i = 0; i < NumberNode; i++)
-	{
-		FD_SET( ListNodes[i] , &Master);
-
-		//highest file descriptor number, need it for the select function
-		if ( ListNodes[i] > maxDescriptor )
-			maxDescriptor=ListNodes[i];
-	}
+	/* back up master */
+	Dup = Master;
 
 	//wait for an activity on one of the sockets , timeout is NULL ,
 	//so wait indefinitely
-	int activity=select( maxDescriptor + 1 , &Master , NULL , NULL , NULL);
+	cout<<"MaxDescriptor : "<<MaxDescriptor<<endl;
+	int activity=select( MaxDescriptor + 1 , &Dup , NULL , NULL , NULL);
 
 	if ((activity < 0) && (errno!=EINTR))
 		return ERROR_SCHEDULER;
@@ -72,7 +87,7 @@ Descriptor CScheduler::Wait()
 
 bool CScheduler::NodeHasAction(Descriptor descriptor)
 {
-	return FD_ISSET( descriptor , &Master);
+	return FD_ISSET( descriptor , &Dup);
 }
 
 
