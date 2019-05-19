@@ -31,3 +31,19 @@ bool CVSocketClient::Connect(char* IP, int port)
 
 	return SOCKET_OK;
 }
+
+ssize_t CVSocketClient::Send(const char* data, ssize_t sizeOfData)
+{
+	if ( IsConnected )
+		return CVSocket::Send(Master, data, sizeOfData);
+
+	return SOCKET_ERROR;
+}
+
+ssize_t CVSocketClient::Read(char* data, ssize_t sizeOfData)
+{
+	if ( IsConnected )
+		return CVSocket::Read(Master, data, sizeOfData);
+
+	return SOCKET_ERROR;
+}

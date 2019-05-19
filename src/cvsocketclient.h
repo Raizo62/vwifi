@@ -12,6 +12,10 @@ class CVSocketClient : public CVSocket
 	void Init(int port);
 
 	bool Connect(char* IP, int port);
+
+	ssize_t Send(const char* data, ssize_t sizeOfData);
+
+	ssize_t Read(char* data, ssize_t sizeOfData);
 };
 
 #endif
