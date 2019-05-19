@@ -5,14 +5,14 @@
 #include <sys/socket.h>
 #include <unistd.h> // close
 
-#include "csocketserver.h"
+#include "cvsocketserver.h"
 
 const int TRUE=1;
 const int FALSE=1;
 
 using namespace std;
 
-void CSocketServer::Init(int port)
+void CVSocketServer::Init(int port)
 {
 	Port=port;
 
@@ -24,7 +24,7 @@ void CSocketServer::Init(int port)
 	NumberClient=0;
 }
 
-bool CSocketServer::Listen()
+bool CVSocketServer::Listen()
 {
 	//create a master socket
 	if( Configure() )
@@ -36,7 +36,7 @@ bool CSocketServer::Listen()
 	//set master socket to allow multiple connections ,
 	//this is just a good habit, it will work without this
 	int opt = TRUE;
-	if( setsockopt(MasterSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
+	if( setsockopt(MasterVSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
 	{
 		perror("setsockopt");
 		return SOCKET_ERROR;
@@ -49,7 +49,7 @@ bool CSocketServer::Listen()
 	address.sin_port = htons( Port );
 
 	//bind the socket
-	if (bind(MasterSocket, (struct sockaddr *)&address, sizeof(address))<0)
+	if (bind(MasterVSocket, (struct sockaddr *)&address, sizeof(address))<0)
 	{
 		perror("bind failed");
 		return SOCKET_ERROR;
@@ -57,7 +57,7 @@ bool CSocketServer::Listen()
 	cout<<"Listener on port "<<Port<<endl;
 
 	//try to specify maximum of 3 pending connections for the master socket
-	if (listen(MasterSocket, 3) < 0)
+	if (listen(MasterVSocket, 3) < 0)
 	{
 		perror("listen");
 		return SOCKET_ERROR;
@@ -66,13 +66,13 @@ bool CSocketServer::Listen()
 	return 0;
 }
 
-int CSocketServer::Accept()
+int CVSocketServer::Accept()
 {
 	int new_socket;
 	struct sockaddr_in address;
 	int addrlen = sizeof(address);
 
-	if ((new_socket = accept(MasterSocket, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
+	if ((new_socket = accept(MasterVSocket, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
 	{
 		perror("accept");
 		return SOCKET_ERROR;
@@ -88,7 +88,7 @@ int CSocketServer::Accept()
 	return new_socket;
 }
 
-int CSocketServer::GetSocketClient(int number)
+int CVSocketServer::GetSocketClient(int number)
 {
 	if( number < 0 || number > NumberClient )
 		return SOCKET_ERROR;
@@ -96,12 +96,12 @@ int CSocketServer::GetSocketClient(int number)
 	return SocketClients[number];
 }
 
-int CSocketServer::GetNumberClient()
+int CVSocketServer::GetNumberClient()
 {
 	return NumberClient;
 }
 
-void CSocketServer::CloseClient(int number)
+void CVSocketServer::CloseClient(int number)
 {
 	if( number < 0 || number > NumberClient )
 		return;
@@ -117,7 +117,7 @@ void CSocketServer::CloseClient(int number)
 	return;
 }
 
-void CSocketServer::SendAllOtherClients(int number,const char* data, ssize_t sizeOfData)
+void CVSocketServer::SendAllOtherClients(int number,const char* data, ssize_t sizeOfData)
 {
 	cout<<"SendAllOtherClient de "<<number<<" vers "<<NumberClient<<" clients ("<<sizeOfData<<" octets)"<<endl;
 	for (int i = 0; i < NumberClient; i++)

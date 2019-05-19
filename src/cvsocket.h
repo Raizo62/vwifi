@@ -5,19 +5,19 @@ const int SOCKET_ERROR=-1;
 
 typedef int Descriptor;
 
-class CSocket
+class CVSocket
 {
 	protected :
 
-		int MasterSocket;
+		int Master;
 
-		CSocket();
+		CVSocket();
 
 		bool Configure();
 
 	public :
 
-		int GetMasterSocket();
+		int GetMaster();
 
 		ssize_t Send(Descriptor descriptor, const char* data, ssize_t sizeOfData);
 

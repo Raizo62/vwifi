@@ -35,11 +35,11 @@ build : $(EXEC) # man
 
 cscheduler.o: cscheduler.cc  cscheduler.h
 
-csocket.o: csocket.cc csocket.h
+csocket.o: cvsocket.cc cvsocket.h
 
-csocketserver.o: csocketserver.cc csocketserver.h csocket.h
+csocketserver.o: cvsocketserver.cc cvsocketserver.h cvsocket.h
 
-vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h csocketserver.o csocket.o cscheduler.o
+vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h cvsocketserver.o cvsocket.o cscheduler.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 %.o: %.cc

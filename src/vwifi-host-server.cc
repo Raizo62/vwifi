@@ -4,7 +4,7 @@
 #include <string.h> //strlen
 
 #include "vwifi-host-server.h"
-#include "csocketserver.h"
+#include "cvsocketserver.h"
 #include "cscheduler.h"
 
 using namespace std;
@@ -21,7 +21,7 @@ int main(int argc , char *argv[])
 
 	CScheduler scheduler;
 
-	CSocketServer socketServer;
+	CVSocketServer socketServer;
 	socketServer.Init(PORT);
 	if( socketServer.Listen() )
 	{
@@ -30,7 +30,7 @@ int main(int argc , char *argv[])
 	}
 
 	//add master socket to set
-	scheduler.AddNode(socketServer.GetMasterSocket());
+	scheduler.AddNode(socketServer.GetMaster());
 
 	while( true )
 	{
@@ -49,7 +49,7 @@ int main(int argc , char *argv[])
 			//If something happened on the master socket ,
 			//then its an incoming connection
 			cout<<"scheduler.NodeHasAction"<<endl;
-			if( scheduler.NodeHasAction(socketServer.GetMasterSocket()) )
+			if( scheduler.NodeHasAction(socketServer.GetMaster()) )
 			{
 				socket = socketServer.Accept();
 				if ( socket == SOCKET_ERROR )

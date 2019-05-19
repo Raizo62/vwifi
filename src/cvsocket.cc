@@ -5,19 +5,19 @@
 #include <sys/socket.h> //socket
 #include <arpa/inet.h> // struct sockaddr_in & inet_ntoa & ntohs
 
-#include "csocket.h"
+#include "cvsocket.h"
 
 using namespace std;
 
-CSocket::CSocket()
+CVSocket::CVSocket()
 {
-	MasterSocket=0;
+	Master=0;
 }
 
-bool CSocket::Configure()
+bool CVSocket::Configure()
 {
 	//create a master socket
-	if( (MasterSocket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
+	if( (Master = socket(AF_INET , SOCK_STREAM , 0)) == 0)
 	{
 		perror("socket failed");
 		return SOCKET_ERROR;
@@ -26,22 +26,22 @@ bool CSocket::Configure()
 	return 0;
 }
 
-int CSocket::GetMasterSocket()
+int CVSocket::GetMaster()
 {
-	return MasterSocket;
+	return Master;
 }
 
-ssize_t CSocket::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
+ssize_t CVSocket::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
 {
 	return send(descriptor, data, sizeOfData, 0);
 }
 
-ssize_t CSocket::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
+ssize_t CVSocket::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
 {
 	return recv(descriptor , data, sizeOfData, 0);
 }
 
-void CSocket::ShowInfo(Descriptor descriptor)
+void CVSocket::ShowInfo(Descriptor descriptor)
 {
 	struct sockaddr_in address;
 	int addrlen = sizeof(address);
