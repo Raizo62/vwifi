@@ -29,7 +29,7 @@ CVSocketServer::~CVSocketServer()
 bool CVSocketServer::Listen()
 {
 	//create a master socket
-	if( Configure() )
+	if( ! Configure() )
 	{
 		perror("socket failed");
 		return SOCKET_ERROR;
