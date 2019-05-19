@@ -15,11 +15,6 @@ void CVSocketServer::Init(int port)
 {
 	Port=port;
 
-	//initialise all client_socket[] to 0 so not checked
-	for (int i = 0; i < MAX_CLIENT; i++)
-	{
-		SocketClients[i] = 0;
-	}
 	NumberClient=0;
 }
 
