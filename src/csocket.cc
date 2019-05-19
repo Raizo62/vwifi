@@ -20,7 +20,7 @@ bool CSocket::Configure()
 	if( (MasterSocket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
 	{
 		perror("socket failed");
-		return ERROR_SOCKET;
+		return SOCKET_ERROR;
 	}
 
 	return 0;

@@ -30,7 +30,7 @@ bool CSocketServer::Listen()
 	if( Configure() )
 	{
 		perror("socket failed");
-		return ERROR_SOCKET;
+		return SOCKET_ERROR;
 	}
 
 	//set master socket to allow multiple connections ,
@@ -39,7 +39,7 @@ bool CSocketServer::Listen()
 	if( setsockopt(MasterSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
 	{
 		perror("setsockopt");
-		return ERROR_SOCKET;
+		return SOCKET_ERROR;
 	}
 
 	//type of socket created
@@ -52,7 +52,7 @@ bool CSocketServer::Listen()
 	if (bind(MasterSocket, (struct sockaddr *)&address, sizeof(address))<0)
 	{
 		perror("bind failed");
-		return ERROR_SOCKET;
+		return SOCKET_ERROR;
 	}
 	cout<<"Listener on port "<<Port<<endl;
 
@@ -60,7 +60,7 @@ bool CSocketServer::Listen()
 	if (listen(MasterSocket, 3) < 0)
 	{
 		perror("listen");
-		return ERROR_SOCKET;
+		return SOCKET_ERROR;
 	}
 
 	return 0;
@@ -75,11 +75,11 @@ int CSocketServer::Accept()
 	if ((new_socket = accept(MasterSocket, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
 	{
 		perror("accept");
-		return ERROR_SOCKET;
+		return SOCKET_ERROR;
 	}
 
 	if ( NumberClient >= MAX_CLIENT )
-		return ERROR_SOCKET;
+		return SOCKET_ERROR;
 
 	//add new socket to array of sockets
 	cout<<"Adding to list of sockets as "<<NumberClient<<endl;
@@ -91,7 +91,7 @@ int CSocketServer::Accept()
 int CSocketServer::GetSocketClient(int number)
 {
 	if( number < 0 || number > NumberClient )
-		return ERROR_SOCKET;
+		return SOCKET_ERROR;
 
 	return SocketClients[number];
 }

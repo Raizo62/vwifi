@@ -1,7 +1,7 @@
 #ifndef _CSOCKET_
 #define _CSOCKET_
 
-const int ERROR_SOCKET=-1;
+const int SOCKET_ERROR=-1;
 
 typedef int Descriptor;
 
