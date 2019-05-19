@@ -3,7 +3,7 @@
 
 #include <sys/socket.h>
 
-const int ERROR_SCHEDULER=-1;
+const int SCHEDULER_ERROR=-1;
 
 const int MAX_NODE = 30;
 

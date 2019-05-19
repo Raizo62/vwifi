@@ -33,7 +33,7 @@ void CScheduler::UpdateMaxDescriptor(Descriptor descriptor)
 bool CScheduler::AddNode(Descriptor descriptor)
 {
 	if ( NumberNode >= MAX_NODE )
-		return ERROR_SCHEDULER;
+		return SCHEDULER_ERROR;
 
 	//add new socket to array of sockets
 	cout<<"Adding to list of node as "<<NumberNode<<endl;
@@ -80,7 +80,7 @@ Descriptor CScheduler::Wait()
 	int activity=select( MaxDescriptor + 1 , &Dup , NULL , NULL , NULL);
 
 	if ((activity < 0) && (errno!=EINTR))
-		return ERROR_SCHEDULER;
+		return SCHEDULER_ERROR;
 
 	return activity;
 }
