@@ -2,6 +2,7 @@
 #define _CSOCKET_
 
 const int SOCKET_ERROR=-1;
+const int SOCKET_OK=0;
 
 typedef int Descriptor;
 
@@ -9,7 +10,7 @@ class CVSocket
 {
 	protected :
 
-		int Master;
+		Descriptor Master;
 
 		CVSocket();
 

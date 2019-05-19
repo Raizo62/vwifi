@@ -23,10 +23,10 @@ bool CVSocket::Configure()
 		return SOCKET_ERROR;
 	}
 
-	return 0;
+	return SOCKET_OK;
 }
 
-int CVSocket::GetMaster()
+Descriptor CVSocket::GetMaster()
 {
 	return Master;
 }

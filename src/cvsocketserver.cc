@@ -35,7 +35,7 @@ bool CVSocketServer::Listen()
 	//set master socket to allow multiple connections ,
 	//this is just a good habit, it will work without this
 	int opt = TRUE;
-	if( setsockopt(MasterVSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
+	if( setsockopt(Master, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
 	{
 		perror("setsockopt");
 		return SOCKET_ERROR;
@@ -48,7 +48,7 @@ bool CVSocketServer::Listen()
 	address.sin_port = htons( Port );
 
 	//bind the socket
-	if (bind(MasterVSocket, (struct sockaddr *)&address, sizeof(address))<0)
+	if (bind(Master, (struct sockaddr *)&address, sizeof(address))<0)
 	{
 		perror("bind failed");
 		return SOCKET_ERROR;
@@ -56,22 +56,22 @@ bool CVSocketServer::Listen()
 	cout<<"Listener on port "<<Port<<endl;
 
 	//try to specify maximum of 3 pending connections for the master socket
-	if (listen(MasterVSocket, 3) < 0)
+	if (listen(Master, 3) < 0)
 	{
 		perror("listen");
 		return SOCKET_ERROR;
 	}
 
-	return 0;
+	return SOCKET_OK;
 }
 
-int CVSocketServer::Accept()
+Descriptor CVSocketServer::Accept()
 {
 	int new_socket;
 	struct sockaddr_in address;
 	int addrlen = sizeof(address);
 
-	if ((new_socket = accept(MasterVSocket, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
+	if ((new_socket = accept(Master, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
 	{
 		perror("accept");
 		return SOCKET_ERROR;
@@ -87,7 +87,7 @@ int CVSocketServer::Accept()
 	return new_socket;
 }
 
-int CVSocketServer::GetSocketClient(int number)
+Descriptor CVSocketServer::GetSocketClient(int number)
 {
 	if( number < 0 || number > NumberClient )
 		return SOCKET_ERROR;
@@ -95,7 +95,7 @@ int CVSocketServer::GetSocketClient(int number)
 	return SocketClients[number];
 }
 
-int CVSocketServer::GetNumberClient()
+Descriptor CVSocketServer::GetNumberClient()
 {
 	return NumberClient;
 }

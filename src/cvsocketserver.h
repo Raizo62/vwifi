@@ -17,11 +17,11 @@ class CVSocketServer : public CVSocket
 
 	bool Listen();
 
-	int Accept();
+	Descriptor Accept();
 
-	int GetSocketClient(int number);
+	Descriptor GetSocketClient(int number);
 
-	int GetNumberClient();
+	Descriptor GetNumberClient();
 
 	void CloseClient(int number);
 
