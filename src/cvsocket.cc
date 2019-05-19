@@ -23,13 +23,14 @@ CVSocket::~CVSocket()
 bool CVSocket::Configure()
 {
 	//create a master socket
-	if( (Master = socket(AF_INET , SOCK_STREAM , 0)) == 0)
+	Master = socket(AF_INET , SOCK_STREAM , 0);
+	if( Master == SOCKET_ERROR )
 	{
-		perror("socket failed");
-		return SOCKET_ERROR;
+		perror("socket : failed");
+		return false;
 	}
 
-	return SOCKET_OK;
+	return true;
 }
 
 Descriptor CVSocket::GetMaster()

@@ -19,8 +19,15 @@ void CVSocketClient::Init()
 	IsConnected=false;
 }
 
-bool CVSocketClient::Connect(char* IP, int port)
+bool CVSocketClient::Connect(const char* IP, int port)
 {
+	//create a master socket
+	if( ! Configure() )
+	{
+		perror("socket failed");
+		return false;
+	}
+
 	struct sockaddr_in server;
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = inet_addr(IP);
@@ -29,12 +36,12 @@ bool CVSocketClient::Connect(char* IP, int port)
 	if( connect(Master,(struct sockaddr*) &server,sizeof(server)) != 0 )
 	{
 		perror("connect");
-		return SOCKET_ERROR;
+		return false;
 	}
 
 	IsConnected=true;
 
-	return SOCKET_OK;
+	return true;
 }
 
 ssize_t CVSocketClient::Send(const char* data, ssize_t sizeOfData)
