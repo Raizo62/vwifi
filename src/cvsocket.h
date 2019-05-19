@@ -20,9 +20,9 @@ class CVSocket
 
 		int GetMaster();
 
-		ssize_t Send(Descriptor descriptor, const char* data, ssize_t sizeOfData);
+		virtual ssize_t Send(Descriptor descriptor, const char* data, ssize_t sizeOfData);
 
-		ssize_t Read(Descriptor descriptor, char* data, ssize_t sizeOfData);
+		virtual ssize_t Read(Descriptor descriptor, char* data, ssize_t sizeOfData);
 
 		void ShowInfo(Descriptor descriptor);
 };
