@@ -16,29 +16,53 @@ void CScheduler::Init()
 	//clear the socket set
 	FD_ZERO(&Master);
 
-	MaxDescriptor=-1;
+	NumberNode=0;
 }
 
-void CScheduler::AddNode(Descriptor descriptor)
+bool CScheduler::AddNode(Descriptor descriptor)
 {
-	FD_SET( descriptor , &Master);
+	if ( NumberNode >= MAX_NODE )
+		return ERROR_SCHEDULER;
 
-	//highest file descriptor number, need it for the select function
-	if( descriptor > MaxDescriptor )
-		MaxDescriptor = descriptor;
+	//add new socket to array of sockets
+	cout<<"Adding to list of node as "<<NumberNode<<endl;
+	ListNodes[NumberNode++] = descriptor;
+
+	return 0;
 }
 
-void CScheduler::DelNode(Descriptor descriptor, Descriptor maxDescriptor)
+void CScheduler::DelNode(Descriptor descriptor)
 {
-	FD_CLR( descriptor , &Master);
-
-	//highest file descriptor number, need it for the select function
-	MaxDescriptor = maxDescriptor;
+	for (int i = 0; i < NumberNode; i++)
+		if( ListNodes[i] == descriptor )
+		{
+			NumberNode--;
+			for(int j=i;j<NumberNode;j++)
+				ListNodes[j] = ListNodes[j+1];
+			return;
+		}
 }
 
 Descriptor CScheduler::Wait()
 {
-	int activity=select( MaxDescriptor + 1 , &Master , NULL , NULL , NULL);
+	int maxDescriptor=-1;
+
+	//clear the socket set
+	FD_ZERO(&Master);
+
+	//add child sockets to set
+	for (int i = 0; i < NumberNode; i++)
+	{
+		FD_SET( ListNodes[i] , &Master);
+
+		//highest file descriptor number, need it for the select function
+		if ( ListNodes[i] > maxDescriptor )
+			maxDescriptor=ListNodes[i];
+	}
+
+	//wait for an activity on one of the sockets , timeout is NULL ,
+	//so wait indefinitely
+	int activity=select( maxDescriptor + 1 , &Master , NULL , NULL , NULL);
 
 	if ((activity < 0) && (errno!=EINTR))
 		return ERROR_SCHEDULER;

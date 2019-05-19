@@ -5,6 +5,8 @@
 
 const int ERROR_SCHEDULER=-1;
 
+const int MAX_NODE = 30;
+
 typedef int Descriptor;
 
 class CScheduler
@@ -14,8 +16,8 @@ class CScheduler
 	//set of socket descriptors
 	fd_set Master;
 
-	//highest file descriptor number, need it for the select function
-	int MaxDescriptor;
+	Descriptor ListNodes[MAX_NODE];
+	int NumberNode;
 
 	public :
 
@@ -23,9 +25,9 @@ class CScheduler
 
 	void Init();
 
-	void AddNode(Descriptor descriptor);
+	bool AddNode(Descriptor descriptor);
 
-	void DelNode(Descriptor descriptor, Descriptor maxDescriptor);
+	void DelNode(Descriptor descriptor);
 
 	Descriptor Wait();
 
