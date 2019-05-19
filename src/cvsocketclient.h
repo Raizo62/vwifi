@@ -9,7 +9,9 @@ class CVSocketClient : public CVSocket
 
 	public :
 
-	void Init(int port);
+	CVSocketClient();
+
+	void Init();
 
 	bool Connect(char* IP, int port);
 

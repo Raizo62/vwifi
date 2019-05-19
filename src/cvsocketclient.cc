@@ -9,7 +9,12 @@
 
 using namespace std;
 
-void CVSocketClient::Init(int port)
+CVSocketClient::CVSocketClient()
+{
+	Init();
+}
+
+void CVSocketClient::Init()
 {
 	IsConnected=false;
 }
