@@ -39,7 +39,9 @@ csocket.o: cvsocket.cc cvsocket.h
 
 csocketserver.o: cvsocketserver.cc cvsocketserver.h cvsocket.h
 
-vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h cvsocketserver.o cvsocket.o cscheduler.o
+csocketclient.o: cvsocketclient.cc cvsocketclient.h cvsocket.h
+
+vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h cvsocket.o cvsocketserver.o cvsocketclient.o cscheduler.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 %.o: %.cc
