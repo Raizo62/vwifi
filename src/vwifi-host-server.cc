@@ -23,7 +23,7 @@ int main(int argc , char *argv[])
 
 	CVSocketServer socketServer;
 	socketServer.Init(PORT);
-	if( socketServer.Listen() )
+	if( ! socketServer.Listen() )
 	{
 		cout<<"Error : socketServer.Listen"<<endl;
 		exit(EXIT_FAILURE);
