@@ -22,13 +22,13 @@ class CVSocket
 
 	public :
 
-		int GetMaster();
-
 		void ShowInfo(Descriptor descriptor);
 
 		void Close();
 
 		~CVSocket();
+
+		operator int();
 };
 
 #endif

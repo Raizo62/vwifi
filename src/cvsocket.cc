@@ -33,11 +33,6 @@ bool CVSocket::Configure()
 	return true;
 }
 
-Descriptor CVSocket::GetMaster()
-{
-	return Master;
-}
-
 ssize_t CVSocket::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
 {
 	return send(descriptor, data, sizeOfData, 0);
@@ -55,6 +50,11 @@ void CVSocket::ShowInfo(Descriptor descriptor)
 
 	getpeername(descriptor , (struct sockaddr*)&address , (socklen_t*)&addrlen);
 	cout<<"ip "<<inet_ntoa(address.sin_addr)<<" , port "<<ntohs(address.sin_port);
+}
+
+CVSocket::operator int()
+{
+	return Master;
 }
 
 void CVSocket::Close()

@@ -30,7 +30,7 @@ int main(int argc , char *argv[])
 	}
 
 	//add master socket to set
-	scheduler.AddNode(socketServer.GetMaster());
+	scheduler.AddNode(socketServer);
 
 	while( true )
 	{
@@ -49,7 +49,7 @@ int main(int argc , char *argv[])
 			//If something happened on the master socket ,
 			//then its an incoming connection
 			cout<<"scheduler.NodeHasAction"<<endl;
-			if( scheduler.NodeHasAction(socketServer.GetMaster()) )
+			if( scheduler.NodeHasAction(socketServer) )
 			{
 				socket = socketServer.Accept();
 				if ( socket == SOCKET_ERROR )
