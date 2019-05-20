@@ -33,7 +33,7 @@ void CScheduler::UpdateMaxDescriptor(Descriptor descriptor)
 bool CScheduler::AddNode(Descriptor descriptor)
 {
 	if ( NumberNode >= MAX_NODE )
-		return SCHEDULER_ERROR;
+		return false;
 
 	//add new socket to array of sockets
 	cout<<"Adding to list of node as "<<NumberNode<<endl;
@@ -45,7 +45,7 @@ bool CScheduler::AddNode(Descriptor descriptor)
 	//highest file descriptor number, need it for the select function
 	UpdateMaxDescriptor(descriptor);
 
-	return 0;
+	return true;
 }
 
 void CScheduler::DelNode(Descriptor descriptor)

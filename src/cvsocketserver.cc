@@ -32,7 +32,7 @@ bool CVSocketServer::Listen()
 	if( ! Configure() )
 	{
 		perror("socket failed");
-		return SOCKET_ERROR;
+		return false;
 	}
 
 	//set master socket to allow multiple connections ,
@@ -41,7 +41,7 @@ bool CVSocketServer::Listen()
 	if( setsockopt(Master, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
 	{
 		perror("setsockopt");
-		return SOCKET_ERROR;
+		return false;
 	}
 
 	//type of socket created
@@ -54,7 +54,7 @@ bool CVSocketServer::Listen()
 	if (bind(Master, (struct sockaddr *)&address, sizeof(address))<0)
 	{
 		perror("bind failed");
-		return SOCKET_ERROR;
+		return false;
 	}
 	cout<<"Listener on port "<<Port<<endl;
 
@@ -62,10 +62,10 @@ bool CVSocketServer::Listen()
 	if (listen(Master, 3) < 0)
 	{
 		perror("listen");
-		return SOCKET_ERROR;
+		return false;
 	}
 
-	return SOCKET_OK;
+	return true;
 }
 
 Descriptor CVSocketServer::Accept()
