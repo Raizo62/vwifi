@@ -27,19 +27,19 @@ EUID	:= $(shell id -u -r)
 
 vpath %.cc $(SRC)
 vpath %.h $(SRC)
-vpath %.o $(OBJ)
+# vpath %.o $(OBJ)
 
 .PHONY: all clean build install man directories
 
 build : directories $(EXEC) # man
 
-cscheduler.o: cscheduler.cc  cscheduler.h
+$(OBJ)/cscheduler.o: cscheduler.cc  cscheduler.h
 
-cvsocket.o: cvsocket.cc cvsocket.h
+$(OBJ)/cvsocket.o: cvsocket.cc cvsocket.h
 
-cvsocketserver.o: cvsocketserver.cc cvsocketserver.h cvsocket.h
+$(OBJ)/cvsocketserver.o: cvsocketserver.cc cvsocketserver.h cvsocket.h
 
-cvsocketclient.o: cvsocketclient.cc cvsocketclient.h cvsocket.h
+$(OBJ)/cvsocketclient.o: cvsocketclient.cc cvsocketclient.h cvsocket.h
 
 vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/cvsocket.o $(OBJ)/cvsocketserver.o $(OBJ)/cscheduler.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
