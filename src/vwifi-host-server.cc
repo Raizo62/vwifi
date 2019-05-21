@@ -13,7 +13,8 @@ int main(int argc , char *argv[])
 {
 	Descriptor socket;
 
-	int i , valread;
+	unsigned int i;
+	int valread;
 
 	//a message
 	string message = "ECHO Daemon v1.0 \r\n";
@@ -77,7 +78,7 @@ int main(int argc , char *argv[])
 			for ( i = 0 ; i < socketServer.GetNumberClient() ; i++)
 			{
 				cout<<"socketServer.GetSocketClient(i)"<<endl;
-				socket = socketServer.GetSocketClient(i);
+				socket = socketServer[i];
 
 				if( scheduler.NodeHasAction(socket) )
 				{

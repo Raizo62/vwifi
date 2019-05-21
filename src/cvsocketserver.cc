@@ -21,7 +21,7 @@ void CVSocketServer::Init(int port)
 
 CVSocketServer::~CVSocketServer()
 {
-	for (int i = 0; i < NumberClient; i++)
+	for (unsigned int i = 0; i < NumberClient; i++)
 		close(SocketClients[i]);
 
 	CVSocket::Close();
@@ -113,27 +113,27 @@ Descriptor CVSocketServer::Accept()
 	return new_socket;
 }
 
-Descriptor CVSocketServer::GetSocketClient(int number)
+Descriptor CVSocketServer::GetSocketClient(unsigned int number)
 {
-	if( number < 0 || number > NumberClient )
+	if( number > NumberClient )
 		return SOCKET_ERROR;
 
 	return SocketClients[number];
 }
 
-Descriptor CVSocketServer::GetNumberClient()
+unsigned int CVSocketServer::GetNumberClient()
 {
 	return NumberClient;
 }
 
-void CVSocketServer::CloseClient(int number)
+void CVSocketServer::CloseClient(unsigned int number)
 {
-	if( number < 0 || number > NumberClient )
+	if( number > NumberClient )
 		return;
 
 	close(SocketClients[number]);
 
-	for (int i = number; i < MAX_CLIENT-1; i++)
+	for (unsigned int i = number; i < MAX_CLIENT-1; i++)
 	{
 		SocketClients[i] = SocketClients[i+1];
 	}
@@ -142,10 +142,10 @@ void CVSocketServer::CloseClient(int number)
 	return;
 }
 
-void CVSocketServer::SendAllOtherClients(int number,const char* data, ssize_t sizeOfData)
+void CVSocketServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
 {
 	cout<<"SendAllOtherClient de "<<number<<" vers "<<NumberClient<<" clients ("<<sizeOfData<<" octets)"<<endl;
-	for (int i = 0; i < NumberClient; i++)
+	for (unsigned int i = 0; i < NumberClient; i++)
 	{
 		if( i != number )
 			Send(SocketClients[i], data, sizeOfData);

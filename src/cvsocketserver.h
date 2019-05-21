@@ -9,7 +9,9 @@ class CVSocketServer : public CVSocket
 {
 	unsigned int Port;
 	int SocketClients[MAX_CLIENT];
-	int NumberClient;
+	unsigned int NumberClient;
+
+	Descriptor GetSocketClient(unsigned int number);
 
 	public :
 
@@ -21,18 +23,20 @@ class CVSocketServer : public CVSocket
 
 	Descriptor Accept();
 
-	Descriptor GetSocketClient(int number);
+	unsigned int GetNumberClient();
 
-	Descriptor GetNumberClient();
+	void CloseClient(unsigned int number);
 
-	void CloseClient(int number);
-
-	void SendAllOtherClients(int number,const char* data, ssize_t sizeOfData);
+	void SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData);
 
 	ssize_t Send(Descriptor descriptor, const char* data, ssize_t sizeOfData);
 
 	ssize_t Read(Descriptor descriptor, char* data, ssize_t sizeOfData);
 
+	Descriptor operator[] (unsigned int number)
+	{
+		return GetSocketClient(number);
+	}
 };
 
 #endif
