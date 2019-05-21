@@ -3,6 +3,7 @@
 
 #include <arpa/inet.h> // INADDR_ANY
 #include <sys/socket.h>
+#include <linux/vm_sockets.h> // struct sockaddr_vm
 #include <unistd.h> // close
 
 #include "cvsocketclient.h"
@@ -19,7 +20,7 @@ void CVSocketClient::Init()
 	IsConnected=false;
 }
 
-bool CVSocketClient::Connect(const char* IP, int port)
+bool CVSocketClient::Connect(const char* IP, unsigned int port)
 {
 	//create a master socket
 	if( ! Configure() )
@@ -43,6 +44,36 @@ bool CVSocketClient::Connect(const char* IP, int port)
 
 	return true;
 }
+
+#ifdef _USE_VSOCK_
+bool CVSocketClient::Connect(unsigned int port)
+{
+	//create a master socket
+	if( ! Configure() )
+	{
+		perror("socket failed");
+		return false;
+	}
+
+	//type of socket created
+	struct sockaddr_vm server {
+		.svm_family = AF_VSOCK,
+		.svm_reserved1 = 0,
+		.svm_port = port,
+		.svm_cid = 2
+	};
+
+	if( connect(Master,(struct sockaddr*) &server,sizeof(server)) != 0 )
+	{
+		perror("connect");
+		return false;
+	}
+
+	IsConnected=true;
+
+	return true;
+}
+#endif
 
 ssize_t CVSocketClient::Send(const char* data, ssize_t sizeOfData)
 {

@@ -13,7 +13,11 @@ class CVSocketClient : public CVSocket
 
 	void Init();
 
-	bool Connect(const char* IP, int port);
+	bool Connect(const char* IP, unsigned int port);
+
+#ifdef _USE_VSOCK_
+	bool Connect(unsigned int port);
+#endif
 
 	ssize_t Send(const char* data, ssize_t sizeOfData);
 

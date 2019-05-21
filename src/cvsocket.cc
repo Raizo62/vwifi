@@ -23,7 +23,13 @@ CVSocket::~CVSocket()
 bool CVSocket::Configure()
 {
 	//create a master socket
+
+#ifdef _USE_VSOCK_
+	Master = socket(AF_VSOCK , SOCK_STREAM , 0);
+#else
 	Master = socket(AF_INET , SOCK_STREAM , 0);
+#endif
+
 	if( Master == SOCKET_ERROR )
 	{
 		perror("socket : failed");

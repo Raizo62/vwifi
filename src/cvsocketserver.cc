@@ -3,6 +3,7 @@
 
 #include <arpa/inet.h> // INADDR_ANY
 #include <sys/socket.h>
+#include <linux/vm_sockets.h> // struct sockaddr_vm
 #include <unistd.h> // close
 
 #include "cvsocketserver.h"
@@ -44,6 +45,25 @@ bool CVSocketServer::Listen()
 		return false;
 	}
 
+#ifdef _USE_VSOCK_
+
+	//type of socket created
+	struct sockaddr_vm address {
+		.svm_family = AF_VSOCK,
+		.svm_reserved1 = 0,
+		.svm_port = Port,
+		.svm_cid = VMADDR_CID_ANY
+	};
+
+	//bind the socket
+	if (bind(Master, (struct sockaddr*)&address, sizeof(address)) != 0)
+	{
+		perror("bind failed");
+		return false;
+	}
+
+#else
+
 	//type of socket created
 	struct sockaddr_in address;
 	address.sin_family = AF_INET;
@@ -56,6 +76,9 @@ bool CVSocketServer::Listen()
 		perror("bind failed");
 		return false;
 	}
+
+#endif
+
 	cout<<"Listener on port "<<Port<<endl;
 
 	//try to specify maximum of 3 pending connections for the master socket

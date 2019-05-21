@@ -11,7 +11,11 @@ int main(int argc , char *argv[])
 {
 	CVSocketClient socket;
 
+#ifdef _USE_VSOCK_
+	if( ! socket.Connect(PORT) )
+#else
 	if( ! socket.Connect(ADDRESS_IP,PORT) )
+#endif
 	{
 		cout<<"socket.Connect error"<<endl;
 		return 1;
