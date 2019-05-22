@@ -10,7 +10,12 @@
 
 using namespace std;
 
-CVSocketClient::CVSocketClient()
+CVSocketClient::CVSocketClient() : CVSocket()
+{
+	Init();
+}
+
+CVSocketClient::CVSocketClient(TypeSocket type) : CVSocket(type)
 {
 	Init();
 }
@@ -45,7 +50,6 @@ bool CVSocketClient::Connect(const char* IP, unsigned int port)
 	return true;
 }
 
-#ifdef _USE_VSOCK_
 bool CVSocketClient::Connect(unsigned int port)
 {
 	//create a master socket
@@ -73,7 +77,6 @@ bool CVSocketClient::Connect(unsigned int port)
 
 	return true;
 }
-#endif
 
 ssize_t CVSocketClient::Send(const char* data, ssize_t sizeOfData)
 {

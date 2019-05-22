@@ -9,19 +9,21 @@ class CVSocketClient : public CVSocket
 
 	public :
 
-	CVSocketClient();
+		CVSocketClient();
 
-	void Init();
+		CVSocketClient(TypeSocket type);
 
-	bool Connect(const char* IP, unsigned int port);
+		void Init();
 
-#ifdef _USE_VSOCK_
-	bool Connect(unsigned int port);
-#endif
+		// TypeSocket : AF_INET :
+		bool Connect(const char* IP, unsigned int port);
 
-	ssize_t Send(const char* data, ssize_t sizeOfData);
+		// TypeSocket : AF_VSOCK :
+		bool Connect(unsigned int port);
 
-	ssize_t Read(char* data, ssize_t sizeOfData);
+		ssize_t Send(const char* data, ssize_t sizeOfData);
+
+		ssize_t Read(char* data, ssize_t sizeOfData);
 };
 
 #endif

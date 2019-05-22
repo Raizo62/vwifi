@@ -13,6 +13,19 @@ using namespace std;
 CVSocket::CVSocket()
 {
 	Master=0;
+#ifdef _USE_VSOCK_
+	cout<<"Type : AF_VSOCK"<<endl;
+	Type=AF_VSOCK;
+#else
+	cout<<"Type : AF_INET"<<endl;
+	Type=AF_INET;
+#endif
+}
+
+CVSocket::CVSocket(TypeSocket type)
+{
+	Master=0;
+	Type=type;
 }
 
 CVSocket::~CVSocket()
@@ -24,11 +37,7 @@ bool CVSocket::Configure()
 {
 	//create a master socket
 
-#ifdef _USE_VSOCK_
-	Master = socket(AF_VSOCK , SOCK_STREAM , 0);
-#else
-	Master = socket(AF_INET , SOCK_STREAM , 0);
-#endif
+	Master = socket(Type , SOCK_STREAM , 0);
 
 	if( Master == SOCKET_ERROR )
 	{

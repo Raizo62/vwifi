@@ -12,6 +12,14 @@ const int TRUE=1;
 
 using namespace std;
 
+CVSocketServer::CVSocketServer() : CVSocket()
+{
+};
+
+CVSocketServer::CVSocketServer(TypeSocket type) : CVSocket(type)
+{
+};
+
 void CVSocketServer::Init(int port)
 {
 	Port=port;
@@ -45,44 +53,50 @@ bool CVSocketServer::Listen()
 		return false;
 	}
 
-#ifdef _USE_VSOCK_
-
-	//type of socket created
-	struct sockaddr_vm address {
-		.svm_family = AF_VSOCK,
-		.svm_reserved1 = 0,
-		.svm_port = Port,
-		.svm_cid = VMADDR_CID_ANY
-	};
-
-	//bind the socket
-	if (bind(Master, (struct sockaddr*)&address, sizeof(address)) != 0)
+	switch ( Type )
 	{
-		perror("bind failed");
-		return false;
+		case AF_VSOCK :
+			{
+				//type of socket created
+				struct sockaddr_vm address {
+					.svm_family = AF_VSOCK,
+					.svm_reserved1 = 0,
+					.svm_port = Port,
+					.svm_cid = VMADDR_CID_ANY
+				};
+
+				//bind the socket
+				if (bind(Master, (struct sockaddr*)&address, sizeof(address)) != 0)
+				{
+					perror("bind failed");
+					return false;
+				}
+
+				break ;
+			}
+
+		case AF_INET :
+			{
+				//type of socket created
+				struct sockaddr_in address;
+				address.sin_family = AF_INET;
+				address.sin_addr.s_addr = INADDR_ANY;
+				address.sin_port = htons( Port );
+
+				//bind the socket
+				if (bind(Master, (struct sockaddr *)&address, sizeof(address))<0)
+				{
+					perror("bind failed");
+					return false;
+				}
+
+				break;
+			}
 	}
-
-#else
-
-	//type of socket created
-	struct sockaddr_in address;
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons( Port );
-
-	//bind the socket
-	if (bind(Master, (struct sockaddr *)&address, sizeof(address))<0)
-	{
-		perror("bind failed");
-		return false;
-	}
-
-#endif
 
 	cout<<"Listener on port "<<Port<<endl;
-
 	//try to specify maximum of 3 pending connections for the master socket
-	if (listen(Master, 3) < 0)
+	if( listen(Master, 3) < 0 )
 	{
 		perror("listen");
 		return false;
