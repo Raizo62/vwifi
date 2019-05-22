@@ -1,5 +1,5 @@
-#ifndef _VWIFI_GUEST_
-#define _VWIFI_GUEST_
+#ifndef _VWIFI_HOST_TEST_
+#define _VWIFI_HOST_TEST_
 
 #define PORT 8888
 #define ADDRESS_IP "127.0.0.1"
