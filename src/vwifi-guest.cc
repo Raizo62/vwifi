@@ -1,53 +1,43 @@
-#include <iostream> // cout
+#include "cvwifiguest.h"
 
-#include <string.h> //strlen
+#include <signal.h>
+#include <unistd.h>
+#include <iostream>
 
-#include "vwifi-guest.h"
-#include "cvsocketclient.h"
+#include <memory>
 
-using namespace std;
+VWifiGuest * vwifi_guest ;
 
-int main(int argc , char *argv[])
+
+void  signal_handler(int signal_num)
 {
-	CVSocketClient socket;
+	std::cout << __func__ << std::endl ;
 
-#ifdef _USE_VSOCK_
-	if( ! socket.Connect(PORT) )
-#else
-	if( ! socket.Connect(ADDRESS_IP,PORT) )
-#endif
-	{
-		cout<<"socket.Connect error"<<endl;
-		return 1;
-	}
+	vwifi_guest->stop() ;
 
-	char buffer[1025]; //data buffer of 1K
-
-	int value=socket.Read(buffer,sizeof(buffer));
-	if( value == SOCKET_ERROR )
-	{
-		cout<<"socket.Read error"<<endl;
-		return 1;
-	}
-
-	buffer[value]='\0';
-	string sbuffer(buffer);
-
-	cout<<sbuffer<<endl;
-
-	int number;
-	for(int i=0; i< 3 ; i++ )
-	{
-		number=i+1;
-		sprintf(buffer,"%d\n",number);
-		value=socket.Send((char*)buffer,strlen(buffer));
-		if( value == SOCKET_ERROR )
-		{
-			cout<<"socket.Send error"<<endl;
-			return 1;
-		}
-	}
-
-	return 0;
 }
 
+
+
+
+int main (int argc , char ** argv){
+
+
+	vwifi_guest = new VWifiGuest();
+
+	/* Handle signals */
+	signal(SIGINT, signal_handler);
+	signal(SIGTERM, signal_handler);
+	signal(SIGQUIT, signal_handler);
+	signal(SIGHUP, SIG_IGN);
+
+
+	if(!vwifi_guest->start())
+		std::cout << "Starting process aborted" << std::endl ;
+
+	std::cout << "Good Bye (:-)" << std::endl ; 
+
+	delete vwifi_guest ;
+	_exit(EXIT_SUCCESS);
+
+}
