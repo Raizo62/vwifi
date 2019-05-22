@@ -1,15 +1,24 @@
-sudo apt-get install libnl-3-dev libnl-genl-3-dev
-sudo apt-get install pkg-config
+# vwifi
 
-gcc $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0) 
+## What is this?
 
+Virtual Wifi between Virtual Machines
 
-gcc vwifi.c nodes.c $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0) -o vwifi
+## Dependencies
 
-sudo wpa_supplicant -Dnl80211 -iwlan1 -c wpa_supplicant.conf
+    $ sudo apt-get install build-essential
+    $ sudo apt-get install libnl-3-dev libnl-genl-3-dev
+    $ sudo apt-get install pkg-config
 
+## Building
 
-sudo hostapd hostapd.conf
+    $ make
 
+    $ gcc $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0)
+    $ gcc vwifi.c nodes.c $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0) -o vwifi
+    $ g++ vwifi-guest.cc cvwifiguest.cc $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0) -o vwifi -lpthread -DDEBUG
 
-g++ vwifi-guest.cc cvwifiguest.cc $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0) -o vwifi -lpthread -DDEBUG
+## Test Wifi
+
+    $ sudo wpa_supplicant -Dnl80211 -iwlan1 -c wpa_supplicant.conf
+    $ sudo hostapd hostapd.conf
