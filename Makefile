@@ -5,7 +5,7 @@ VERSION	=	1
 BINDIR	=	$(DESTDIR)/usr/local/bin
 MANDIR	=	$(DESTDIR)/usr/local/man/man1
 
-EXEC	=	vwifi-host-server vwifi-guest
+EXEC	=	vwifi-host-server vwifi-guest vwifi-host-test
 
 SRC		=	src
 OBJ		=	obj
@@ -18,6 +18,11 @@ MODE= -O4 -Wall -fomit-frame-pointer # //////////      RELEASE
 #MODE= -pg # //////////      PROFILER --> view with : gprof $(NAME)
 
 CFLAGS  +=  $(MODE)
+
+NETLINK_FLAGS = -I/usr/include/libnl3
+NETLINK_LIBS = -lnl-genl-3 -lnl-3
+
+THREAD_LIBS = -lpthread
 
 LIBS =
 
@@ -41,11 +46,17 @@ $(OBJ)/cvsocketserver.o: cvsocketserver.cc cvsocketserver.h cvsocket.h
 
 $(OBJ)/cvsocketclient.o: cvsocketclient.cc cvsocketclient.h cvsocket.h
 
+$(OBJ)/cvwifiguest.o: cvwifiguest.cc cvwifiguest.h hwsim.h ieee80211.h
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ -c $<
+
 vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/cvsocket.o $(OBJ)/cvsocketserver.o $(OBJ)/cscheduler.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
-vwifi-guest : vwifi-guest.cc vwifi-guest.h $(OBJ)/cvsocket.o $(OBJ)/cvsocketclient.o
+vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/cvsocket.o $(OBJ)/cvsocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
+
+vwifi-guest : vwifi-guest.cc $(OBJ)/cvwifiguest.o
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ $^
 
 $(OBJ)/%.o: %.cc
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ -c $<
