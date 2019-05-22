@@ -1,5 +1,5 @@
-#ifndef VWIFI_GUEST_C_H_
-#define VWIFI_GUEST_C_H_
+#ifndef _HWSIM_H_
+#define _HWSIM_H_
 
 #include <net/ethernet.h>
 #include "ieee80211.h"
@@ -150,6 +150,6 @@ struct hwsim_tx_rate {
 	unsigned char count;
 };
 
-#endif /* VWIFI_GUEST_C_H_ */
+#endif /* _HWSIM_H_ */
 
 
