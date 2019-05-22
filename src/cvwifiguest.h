@@ -1,5 +1,5 @@
-#ifndef VWIFI_GUEST_H_
-#define VWIFI_GUEST_H_
+#ifndef _CVWIFIGUEST_H_
+#define _CVWIFIGUEST_H_
 
 #include "hwsim.h"
 
@@ -181,6 +181,6 @@ class CallFromStaticFunc {
 
 
 
-#endif /* WWIFI_GUEST_H_ */
+#endif /* _CVWIFIGUEST_H_ */
 
 
