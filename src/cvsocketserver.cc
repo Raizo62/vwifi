@@ -132,7 +132,7 @@ Descriptor CVSocketServer::Accept()
 
 Descriptor CVSocketServer::GetSocketClient(unsigned int number)
 {
-	if( number > NumberClient )
+	if( number >= NumberClient )
 		return SOCKET_ERROR;
 
 	return SocketClients[number];
@@ -145,7 +145,7 @@ unsigned int CVSocketServer::GetNumberClient()
 
 void CVSocketServer::CloseClient(unsigned int number)
 {
-	if( number > NumberClient )
+	if( number >= NumberClient )
 		return;
 
 	close(SocketClients[number]);
