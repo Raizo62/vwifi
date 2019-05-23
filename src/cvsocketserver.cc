@@ -107,7 +107,7 @@ bool CVSocketServer::Listen()
 
 Descriptor CVSocketServer::Accept()
 {
-	int new_socket;
+	Descriptor new_socket;
 	struct sockaddr_in address;
 	int addrlen = sizeof(address);
 

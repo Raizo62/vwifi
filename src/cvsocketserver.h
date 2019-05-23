@@ -8,7 +8,7 @@ const int MAX_CLIENT = 30;
 class CVSocketServer : public CVSocket
 {
 		unsigned int Port;
-		int SocketClients[MAX_CLIENT];
+		Descriptor SocketClients[MAX_CLIENT];
 		unsigned int NumberClient;
 
 		Descriptor GetSocketClient(unsigned int number);
