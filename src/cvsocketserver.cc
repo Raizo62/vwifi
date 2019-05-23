@@ -20,7 +20,7 @@ CVSocketServer::CVSocketServer(TypeSocket type) : CVSocket(type)
 {
 };
 
-void CVSocketServer::Init(int port)
+void CVSocketServer::Init(unsigned int port)
 {
 	Port=port;
 

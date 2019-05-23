@@ -21,7 +21,7 @@ class CVSocketServer : public CVSocket
 
 		~CVSocketServer();
 
-		void Init(int port);
+		void Init(unsigned int port);
 
 		bool Listen();
 
