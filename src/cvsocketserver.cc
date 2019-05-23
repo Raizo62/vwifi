@@ -118,7 +118,10 @@ Descriptor CVSocketServer::Accept()
 	}
 
 	if ( NumberClient >= MAX_CLIENT )
+	{
+		cerr<<"Error : CVSocketServer::Accept : too much clients"<<endl;
 		return SOCKET_ERROR;
+	}
 
 	//add new socket to array of sockets
 	cout<<"Adding to list of sockets as "<<NumberClient<<endl;
