@@ -147,11 +147,12 @@ void CVSocketServer::CloseClient(unsigned int number)
 
 	close(SocketClients[number]);
 
-	for (unsigned int i = number; i < MAX_CLIENT-1; i++)
+	NumberClient--;
+
+	for (unsigned int i = number; i < NumberClient; i++)
 	{
 		SocketClients[i] = SocketClients[i+1];
 	}
-	NumberClient--;
 
 	return;
 }
