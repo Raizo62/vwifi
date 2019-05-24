@@ -40,19 +40,19 @@ build : directories $(EXEC) # man
 
 $(OBJ)/cscheduler.o: cscheduler.cc  cscheduler.h
 
-$(OBJ)/cvsocket.o: cvsocket.cc cvsocket.h
+$(OBJ)/csocket.o: csocket.cc csocket.h
 
-$(OBJ)/cvsocketserver.o: cvsocketserver.cc cvsocketserver.h cvsocket.h
+$(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.h
 
-$(OBJ)/cvsocketclient.o: cvsocketclient.cc cvsocketclient.h cvsocket.h
+$(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.h
 
 $(OBJ)/cvwifiguest.o: cvwifiguest.cc cvwifiguest.h hwsim.h ieee80211.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ -c $<
 
-vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/cvsocket.o $(OBJ)/cvsocketserver.o $(OBJ)/cscheduler.o
+vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cscheduler.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
-vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/cvsocket.o $(OBJ)/cvsocketclient.o
+vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 vwifi-guest : vwifi-guest.cc $(OBJ)/cvwifiguest.o
