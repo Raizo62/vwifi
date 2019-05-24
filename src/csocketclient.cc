@@ -6,26 +6,26 @@
 #include <linux/vm_sockets.h> // struct sockaddr_vm
 #include <unistd.h> // close
 
-#include "cvsocketclient.h"
+#include "csocketclient.h"
 
 using namespace std;
 
-CVSocketClient::CVSocketClient() : CVSocket()
+CSocketClient::CSocketClient() : CSocket()
 {
 	Init();
 }
 
-CVSocketClient::CVSocketClient(TypeSocket type) : CVSocket(type)
+CSocketClient::CSocketClient(TypeSocket type) : CSocket(type)
 {
 	Init();
 }
 
-void CVSocketClient::Init()
+void CSocketClient::Init()
 {
 	IsConnected=false;
 }
 
-bool CVSocketClient::Connect(const char* IP, unsigned int port)
+bool CSocketClient::Connect(const char* IP, unsigned int port)
 {
 	//create a master socket
 	if( ! Configure() )
@@ -50,7 +50,7 @@ bool CVSocketClient::Connect(const char* IP, unsigned int port)
 	return true;
 }
 
-bool CVSocketClient::Connect(unsigned int port)
+bool CSocketClient::Connect(unsigned int port)
 {
 	//create a master socket
 	if( ! Configure() )
@@ -78,18 +78,18 @@ bool CVSocketClient::Connect(unsigned int port)
 	return true;
 }
 
-ssize_t CVSocketClient::Send(const char* data, ssize_t sizeOfData)
+ssize_t CSocketClient::Send(const char* data, ssize_t sizeOfData)
 {
 	if ( IsConnected )
-		return CVSocket::Send(Master, data, sizeOfData);
+		return CSocket::Send(Master, data, sizeOfData);
 
 	return SOCKET_ERROR;
 }
 
-ssize_t CVSocketClient::Read(char* data, ssize_t sizeOfData)
+ssize_t CSocketClient::Read(char* data, ssize_t sizeOfData)
 {
 	if ( IsConnected )
-		return CVSocket::Read(Master, data, sizeOfData);
+		return CSocket::Read(Master, data, sizeOfData);
 
 	return SOCKET_ERROR;
 }

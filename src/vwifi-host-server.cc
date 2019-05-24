@@ -4,7 +4,7 @@
 #include <string.h> //strlen
 
 #include "vwifi-host-server.h"
-#include "cvsocketserver.h"
+#include "csocketserver.h"
 #include "cscheduler.h"
 
 using namespace std;
@@ -22,7 +22,7 @@ int main(int argc , char *argv[])
 
 	CScheduler scheduler;
 
-	CVSocketServer socketServer;
+	CSocketServer socketServer;
 	socketServer.Init(PORT);
 	if( ! socketServer.Listen() )
 	{

@@ -3,13 +3,13 @@
 #include <string.h> //strlen
 
 #include "vwifi-host-test.h"
-#include "cvsocketclient.h"
+#include "csocketclient.h"
 
 using namespace std;
 
 int main(int argc , char *argv[])
 {
-	CVSocketClient socket;
+	CSocketClient socket;
 
 #ifdef _USE_VSOCK_
 	if( ! socket.Connect(PORT) )

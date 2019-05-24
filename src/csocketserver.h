@@ -1,11 +1,11 @@
 #ifndef _CSOCKETSERVER_
 #define _CSOCKETSERVER_
 
-#include "cvsocket.h"
+#include "csocket.h"
 
 const int MAX_CLIENT = 30;
 
-class CVSocketServer : public CVSocket
+class CSocketServer : public CSocket
 {
 		unsigned int Port;
 		Descriptor SocketClients[MAX_CLIENT];
@@ -15,11 +15,11 @@ class CVSocketServer : public CVSocket
 
 	public :
 
-		CVSocketServer();
+		CSocketServer();
 
-		CVSocketServer(TypeSocket type);
+		CSocketServer(TypeSocket type);
 
-		~CVSocketServer();
+		~CSocketServer();
 
 		void Init(unsigned int port);
 

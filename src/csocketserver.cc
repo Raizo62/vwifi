@@ -6,36 +6,36 @@
 #include <linux/vm_sockets.h> // struct sockaddr_vm
 #include <unistd.h> // close
 
-#include "cvsocketserver.h"
+#include "csocketserver.h"
 
 const int TRUE=1;
 
 using namespace std;
 
-CVSocketServer::CVSocketServer() : CVSocket()
+CSocketServer::CSocketServer() : CSocket()
 {
 };
 
-CVSocketServer::CVSocketServer(TypeSocket type) : CVSocket(type)
+CSocketServer::CSocketServer(TypeSocket type) : CSocket(type)
 {
 };
 
-void CVSocketServer::Init(unsigned int port)
+void CSocketServer::Init(unsigned int port)
 {
 	Port=port;
 
 	NumberClient=0;
 }
 
-CVSocketServer::~CVSocketServer()
+CSocketServer::~CSocketServer()
 {
 	for (unsigned int i = 0; i < NumberClient; i++)
 		close(SocketClients[i]);
 
-	CVSocket::Close();
+	CSocket::Close();
 }
 
-bool CVSocketServer::Listen()
+bool CSocketServer::Listen()
 {
 	//create a master socket
 	if( ! Configure() )
@@ -105,7 +105,7 @@ bool CVSocketServer::Listen()
 	return true;
 }
 
-Descriptor CVSocketServer::Accept()
+Descriptor CSocketServer::Accept()
 {
 	Descriptor new_socket;
 	struct sockaddr_in address;
@@ -119,7 +119,7 @@ Descriptor CVSocketServer::Accept()
 
 	if ( NumberClient >= MAX_CLIENT )
 	{
-		cerr<<"Error : CVSocketServer::Accept : too much clients"<<endl;
+		cerr<<"Error : CSocketServer::Accept : too much clients"<<endl;
 		return SOCKET_ERROR;
 	}
 
@@ -130,7 +130,7 @@ Descriptor CVSocketServer::Accept()
 	return new_socket;
 }
 
-Descriptor CVSocketServer::GetSocketClient(unsigned int number)
+Descriptor CSocketServer::GetSocketClient(unsigned int number)
 {
 	if( number >= NumberClient )
 		return SOCKET_ERROR;
@@ -138,12 +138,12 @@ Descriptor CVSocketServer::GetSocketClient(unsigned int number)
 	return SocketClients[number];
 }
 
-unsigned int CVSocketServer::GetNumberClient()
+unsigned int CSocketServer::GetNumberClient()
 {
 	return NumberClient;
 }
 
-void CVSocketServer::CloseClient(unsigned int number)
+void CSocketServer::CloseClient(unsigned int number)
 {
 	if( number >= NumberClient )
 		return;
@@ -160,7 +160,7 @@ void CVSocketServer::CloseClient(unsigned int number)
 	return;
 }
 
-void CVSocketServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
+void CSocketServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
 {
 	cout<<"SendAllOtherClient de "<<number<<" vers "<<NumberClient<<" clients ("<<sizeOfData<<" octets)"<<endl;
 	for (unsigned int i = 0; i < NumberClient; i++)
@@ -170,12 +170,12 @@ void CVSocketServer::SendAllOtherClients(unsigned int number,const char* data, s
 	}
 }
 
-ssize_t CVSocketServer::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
+ssize_t CSocketServer::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
 {
-	return CVSocket::Send(descriptor, data, sizeOfData);
+	return CSocket::Send(descriptor, data, sizeOfData);
 }
 
-ssize_t CVSocketServer::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
+ssize_t CSocketServer::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
 {
-	return CVSocket::Read(descriptor , data, sizeOfData);
+	return CSocket::Read(descriptor , data, sizeOfData);
 }

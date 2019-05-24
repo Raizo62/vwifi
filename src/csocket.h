@@ -12,16 +12,16 @@ typedef int TypeSocket;
 // AF_INET : use IP
 // AF_VSOCK : use vsock
 
-class CVSocket
+class CSocket
 {
 	protected :
 
 		Descriptor Master;
 		TypeSocket	Type;
 
-		CVSocket();
+		CSocket();
 
-		CVSocket(TypeSocket type);
+		CSocket(TypeSocket type);
 
 		bool Configure();
 
@@ -35,7 +35,7 @@ class CVSocket
 
 		void Close();
 
-		~CVSocket();
+		~CSocket();
 
 		operator int();
 };

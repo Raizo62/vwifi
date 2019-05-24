@@ -1,17 +1,17 @@
 #ifndef _CSOCKETSERVER_
 #define _CSOCKETSERVER_
 
-#include "cvsocket.h"
+#include "csocket.h"
 
-class CVSocketClient : public CVSocket
+class CSocketClient : public CSocket
 {
 	bool IsConnected;
 
 	public :
 
-		CVSocketClient();
+		CSocketClient();
 
-		CVSocketClient(TypeSocket type);
+		CSocketClient(TypeSocket type);
 
 		void Init();
 

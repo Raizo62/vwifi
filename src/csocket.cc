@@ -6,11 +6,11 @@
 #include <arpa/inet.h> // struct sockaddr_in & inet_ntoa & ntohs
 #include <unistd.h> // close
 
-#include "cvsocket.h"
+#include "csocket.h"
 
 using namespace std;
 
-CVSocket::CVSocket()
+CSocket::CSocket()
 {
 	Master=0;
 #ifdef _USE_VSOCK_
@@ -22,18 +22,18 @@ CVSocket::CVSocket()
 #endif
 }
 
-CVSocket::CVSocket(TypeSocket type)
+CSocket::CSocket(TypeSocket type)
 {
 	Master=0;
 	Type=type;
 }
 
-CVSocket::~CVSocket()
+CSocket::~CSocket()
 {
 	Close();
 }
 
-bool CVSocket::Configure()
+bool CSocket::Configure()
 {
 	//create a master socket
 
@@ -48,17 +48,17 @@ bool CVSocket::Configure()
 	return true;
 }
 
-ssize_t CVSocket::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
+ssize_t CSocket::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
 {
 	return send(descriptor, data, sizeOfData, 0);
 }
 
-ssize_t CVSocket::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
+ssize_t CSocket::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
 {
 	return recv(descriptor , data, sizeOfData, 0);
 }
 
-void CVSocket::ShowInfo(Descriptor descriptor)
+void CSocket::ShowInfo(Descriptor descriptor)
 {
 	struct sockaddr_in address;
 	int addrlen = sizeof(address);
@@ -67,12 +67,12 @@ void CVSocket::ShowInfo(Descriptor descriptor)
 	cout<<"ip "<<inet_ntoa(address.sin_addr)<<" , port "<<ntohs(address.sin_port);
 }
 
-CVSocket::operator int()
+CSocket::operator int()
 {
 	return Master;
 }
 
-void CVSocket::Close()
+void CSocket::Close()
 {
 	close(Master);
 }
