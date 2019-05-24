@@ -4,6 +4,7 @@
 
 #include <sys/socket.h> //socket
 #include <arpa/inet.h> // struct sockaddr_in & inet_ntoa & ntohs
+#include <linux/vm_sockets.h> // struct sockaddr_vm
 #include <unistd.h> // close
 
 #include "csocket.h"
@@ -60,11 +61,29 @@ ssize_t CSocket::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
 
 void CSocket::ShowInfo(Descriptor descriptor)
 {
+	int id=-1;
+
 	struct sockaddr_in address;
 	int addrlen = sizeof(address);
 
 	getpeername(descriptor , (struct sockaddr*)&address , (socklen_t*)&addrlen);
-	cout<<"ip "<<inet_ntoa(address.sin_addr)<<" , port "<<ntohs(address.sin_port);
+
+	switch ( Type )
+	{
+		case AF_VSOCK :
+			{
+				id = ((struct sockaddr_vm*)&address)->svm_cid;
+				break ;
+			}
+
+		case AF_INET :
+			{
+				id = ntohs(address.sin_port);
+				break;
+			}
+	}
+
+	cout<<"["<<id<<"]";
 }
 
 CSocket::operator int()
