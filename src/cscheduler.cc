@@ -36,7 +36,6 @@ bool CScheduler::AddNode(Descriptor descriptor)
 		return false;
 
 	//add new socket to array of sockets
-	cout<<"Adding to list of node as "<<NumberNode<<endl;
 	ListNodes[NumberNode++] = descriptor;
 
 	//add child sockets to set
@@ -76,7 +75,6 @@ Descriptor CScheduler::Wait()
 
 	//wait for an activity on one of the sockets , timeout is NULL ,
 	//so wait indefinitely
-	cout<<"MaxDescriptor : "<<MaxDescriptor<<endl;
 	int activity=select( MaxDescriptor + 1 , &Dup , NULL , NULL , NULL);
 
 	if ((activity < 0) && (errno!=EINTR))

@@ -124,8 +124,23 @@ Descriptor CSocketServer::Accept()
 	}
 
 	//add new socket to array of sockets
-	cout<<"Adding to list of sockets as "<<NumberClient<<endl;
-	SocketClients[NumberClient++] = new_socket;
+	SocketClients[NumberClient] = new_socket;
+	switch ( Type )
+	{
+		case AF_VSOCK :
+			{
+				InfoClient[NumberClient] = ((struct sockaddr_vm*)&address)->svm_cid;
+				break ;
+			}
+
+		case AF_INET :
+			{
+				InfoClient[NumberClient] = ntohs(address.sin_port);
+				break;
+			}
+	}
+
+	NumberClient++;
 
 	return new_socket;
 }
@@ -155,14 +170,19 @@ void CSocketServer::CloseClient(unsigned int number)
 	for (unsigned int i = number; i < NumberClient; i++)
 	{
 		SocketClients[i] = SocketClients[i+1];
+		InfoClient[i] = InfoClient[i+1];
 	}
 
 	return;
 }
 
+void CSocketServer::ShowInfoClient(unsigned int number)
+{
+	cout<<"["<<InfoClient[number]<<"]";
+}
+
 void CSocketServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
 {
-	cout<<"SendAllOtherClient de "<<number<<" vers "<<NumberClient<<" clients ("<<sizeOfData<<" octets)"<<endl;
 	for (unsigned int i = 0; i < NumberClient; i++)
 	{
 		if( i != number )
