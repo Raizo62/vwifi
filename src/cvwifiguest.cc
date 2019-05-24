@@ -14,7 +14,7 @@
 #include <iostream>
 #include <thread>
 
-#include "cvsocketclient.h"
+#include "csocketclient.h"
 #include "vwifi-host-test.h"
 
 
@@ -252,7 +252,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 
 
 	/* here code of  to send (char *)nlh with  msg_len as size*/ 
-	CVSocketClient socket;
+	CSocketClient socket;
 
 #ifdef _USE_VSOCK_
 	if( ! socket.Connect(PORT) )
