@@ -6,32 +6,39 @@
 #include <string>
 #include <mutex>
 
+#include "csocketclient.h"
 
 class CallFromStaticFunc ;
 
 class VWifiGuest {
 
 
+/** pointer for tcp or vsocket */
+CSocketClient  _socket ;
 
 /** pointer for netlink socket */
-struct nl_sock * m_sock = nullptr;
+struct nl_sock * m_sock { nullptr };
+
 /** pointer for netlink callback function */
-struct nl_cb * m_cb = nullptr;
+struct nl_cb * m_cb { nullptr };
+
 /** For the family ID used by hwsim */
-int m_family_id = -1;
+int m_family_id { 1 };
 
-void mac_address_to_string(char *address, struct ether_addr *mac);
 
-bool m_initialized = false ;
-bool m_started = false ;
+bool m_initialized { false } ;
+bool m_started  { false } ;
 
 std::mutex m_mutex_ctrl_run ;
 std::mutex m_mutex_init ;
+
+void mac_address_to_string(char *address, struct ether_addr *mac);
 
 public :
 
 
 	static CallFromStaticFunc * forward ;
+	
 	/**
  	* 	@brief Default Constructor
  	*/	
@@ -46,13 +53,11 @@ public :
 	/**
 	 * @brief start the all activity
 	 */
-
 	int start();
 
 	/**
 	 * @brief stop the all activity
 	 */
-
 	int stop();
 
 	int process_messages(struct nl_msg *msg, void *arg);
