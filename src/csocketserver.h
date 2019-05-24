@@ -8,8 +8,10 @@ const int MAX_CLIENT = 30;
 class CSocketServer : public CSocket
 {
 		unsigned int Port;
-		Descriptor SocketClients[MAX_CLIENT];
+
 		unsigned int NumberClient;
+		Descriptor SocketClients[MAX_CLIENT];
+		int InfoClient[MAX_CLIENT];
 
 		Descriptor GetSocketClient(unsigned int number);
 
