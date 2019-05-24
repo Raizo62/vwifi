@@ -152,7 +152,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 
 	//if (!(attrs[HWSIM_ATTR_ADDR_RECEIVER]))
 
-	//	std::cout << "hwsim dst mac is not present" << std::endl ;
+	//	std::cout << "hwsim dst mac  (hwsim id) is not present" << std::endl ;
 
 	/* we get the attributes*/
 	//dst = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_RECEIVER]);
@@ -380,78 +380,53 @@ int VWifiGuest::init_netlink(void)
 
 
 
-/**
- *      @brief Send a cloned frame to the kernel space driver.
- *	This will send a frame to the driver using netlink.
- *	It is received by hwsim with hwsim_cloned_frame_received_nl()
- *	This is taken from wmediumd and modified. It is called after the
- *	message has been received from wmasterd.
- *	@param dst - mac address of receving radio
- *	@param data - frame data
- *	@param data_len - length of frame
- *	@param rate_idx - number of attempts
- *	@param signal - signal strength
- *	@param freq - frequency
- *	@return success or failure
- */
-//int send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,
-//		int rate_idx, int signal, uint32_t freq)
-//{
-//	int rc;
-//	struct nl_msg *msg;
-//	char addr[18];
-//	int bytes;
-//
-//	msg = nlmsg_alloc();
-//
-//	if (!msg) {
-//		printf("Error allocating new message MSG!\n");
-//		goto out;
-//	}
-//	if (family_id < 0)
-//		goto out;
-//
-//	genlmsg_put(msg, NL_AUTO_PID, NL_AUTO_SEQ, family_id, 0, NLM_F_REQUEST, HWSIM_CMD_FRAME, VERSION_NR);
-//
-//	rc = nla_put(msg, HWSIM_ATTR_ADDR_RECEIVER, sizeof(struct ether_addr), dst);
-//	rc = nla_put(msg, HWSIM_ATTR_FRAME, data_len, data);
-//	rc = nla_put_u32(msg, HWSIM_ATTR_RX_RATE, rate_idx);
-//	rc = nla_put_u32(msg, HWSIM_ATTR_SIGNAL, signal);
-//	if (freq)
-//		rc = nla_put_u32(msg, HWSIM_ATTR_FREQ, freq);
-//	/* this signal rate will not match the signal acked to the sender
-//	 * unless we set the same rate in both functions. normally,
-//	 * the calling function determines this signal, and could
-//	 * send the info back to the transmitting radio via wmasterd
-//	 */
-//
-//	if (rc != 0) {
-//		printf("Error filling payload\n");
-//		goto out;
-//	}
-//	/*
-//	printf("#### welled -> hwsim nlmsg cloned beg ####\n");
-//	struct nlmsghdr *nlh = nlmsg_hdr(msg);
-//	struct genlmsghdr *gnlh = nlmsg_data(nlh);
-//	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
-//	genlmsg_parse(nlh, 0, attrs, HWSIM_ATTR_MAX, NULL);
-//	nlh_print(nlh);
-//	gnlh_print(gnlh);
-//	attrs_print(attrs);
-//	printf("#### welled -> hwsim nlmsg cloned end ####\n");
-//	*/
-//	bytes = nl_send_auto_complete(sock, msg);
-//	nlmsg_free(msg);
-//	if (verbose) {
-//		mac_address_to_string(addr, dst);
-//		printf("sent %d bytes to %s\n", bytes, addr);
-//	}
-//	return 0;
-//out:
-//	nlmsg_free(msg);
-//	return -1;
-//}
-//
+int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, uint32_t freq)
+{
+	int rc;
+	struct nl_msg *msg;
+	char addr[18];
+	int bytes;
+
+	msg = nlmsg_alloc();
+
+	if (!msg) {
+		std::cout << "Error allocating new message MSG!" << std::endl ;
+		nlmsg_free(msg);
+		return 0 ;
+	}
+	if (m_family_id < 0){
+		nlmsg_free(msg);
+		return 0 ;
+	}
+
+	genlmsg_put(msg, NL_AUTO_PID, NL_AUTO_SEQ, m_family_id, 0, NLM_F_REQUEST, HWSIM_CMD_FRAME, VERSION_NR);
+
+	rc = nla_put(msg, HWSIM_ATTR_ADDR_RECEIVER, sizeof(struct ether_addr), dst);
+	rc = nla_put(msg, HWSIM_ATTR_FRAME, data_len, data);
+	rc = nla_put_u32(msg, HWSIM_ATTR_RX_RATE, rate_idx);
+	rc = nla_put_u32(msg, HWSIM_ATTR_SIGNAL, signal);
+	if (freq)
+		rc = nla_put_u32(msg, HWSIM_ATTR_FREQ, freq);
+	/* this signal rate will not match the signal acked to the sender
+	 * unless we set the same rate in both functions. normally,
+	 * the calling function determines this signal, and could
+	 * send the info back to the transmitting radio via wmasterd
+	 */
+
+	if (rc != 0) {
+		std::cout << "Error filling payload" << std::endl;
+		nlmsg_free(msg);
+		return 0 ;
+	}
+
+	bytes = nl_send_auto_complete(m_sock, msg);
+	nlmsg_free(msg);
+	mac_address_to_string(addr, dst);
+	std::cout << "Sent " << bytes <<  "to " <<  addr << std::endl;
+	
+	return 1;
+}
+
 
 
 
@@ -465,30 +440,30 @@ void VWifiGuest::recv_from_server(){
 
 
 	char buf[1024];
-	//struct timeval tv; /* timer to break out of recvfrom function */
 	int bytes;
 	
 	struct nlmsghdr *nlh;
 	struct genlmsghdr *gnlh;
 	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
-//	uint32_t freq;
+	uint32_t freq;
 	struct ether_addr *src = nullptr;
-	//unsigned int data_len = 0;
+	unsigned int data_len = 0;
 	char *data;
-	//int rate_idx;
-	//int signal;
+	int rate_idx;
+	int signal;
 	//struct ether_addr *dst;	/* stores user mac */
 	//int i;
 	char addr[18];
 	//struct ether_addr radiomac;
-	//struct device_node *node;
+	struct ether_addr framesrc;
 	struct ether_addr framedst;
 	//int should_ack;
 	//int retval;
 	//int distance;
 
-//	tv.tv_sec = 1;
-//	tv.tv_usec = 0;
+
+	signal = -10;
+	rate_idx = 7;
 
 
 	/* receive bytes packets from server and store them in buf */
@@ -499,8 +474,11 @@ void VWifiGuest::recv_from_server(){
 		return ;
 	}
 
+	buf[bytes]='\0';
+	std::string sbuffer(buf);
+	std::cout<<sbuffer<<std::endl;
 
-
+	
 	/* netlink header */
 	nlh = (struct nlmsghdr *)buf;
 
@@ -511,25 +489,22 @@ void VWifiGuest::recv_from_server(){
 	/* exit if the message does not contain frame data */
 	if (gnlh->cmd != HWSIM_CMD_FRAME) {
 	
-#ifdef DEBUG	
-		printf("Error - received no frame data in message\n");
-#endif
+//#ifdef DEBUG	
+		std::cout << "Error - received no frame data in message" << std::endl;
+//#endif
 		return ;
 	}
 
 	/* we get the attributes*/
 	genlmsg_parse(nlh, 0, attrs, HWSIM_ATTR_MAX, NULL);
 
-	//if (attrs[HWSIM_ATTR_FREQ])
-	//	freq = nla_get_u32(attrs[HWSIM_ATTR_FREQ]);
-//	else
-//		freq = 0;
+	if (attrs[HWSIM_ATTR_FREQ])
+		freq = nla_get_u32(attrs[HWSIM_ATTR_FREQ]);
+	else
+		freq = 0;
 
-	
-	/* TODO: check whether this is an ACK FRAME
-	 * it would have TX info, COOKIE, and SIGNAL data
-	 * i could then sent tx info message to the driver
-	 */
+
+	std::cout << "freq : " << freq << std::endl ;
 
 	/*  ignore HWSIM_CMD_TX_INFO_FRAME for now */
 	if (gnlh->cmd == HWSIM_CMD_TX_INFO_FRAME) {
@@ -542,36 +517,35 @@ void VWifiGuest::recv_from_server(){
 		return;
 	}
 	
-	//src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
+	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
 
 	mac_address_to_string(addr, src);
-	std::cout << "src: " << addr << std::endl ;
+	std::cout << "src hwsim: " << addr << std::endl ;
 
-	//data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
+//#ifdef DEBUG
+	data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
 	data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
-
-
-	/*
- 
-	 * if we want to get crazy, we could send an ack back to the server
-	 * and then the server could send an ack back to the orignal client
-	 * the server would have to keep track of the mac/client pairings
-	*/
+//#endif
 
 	/* we extract and handle a distance here */
 
-	/* copy dst address from frame */
+	/* copy mac src  address from frame */
+	memcpy(&framesrc, data + 10, ETH_ALEN);
+//#ifdef DEBUG
+	mac_address_to_string(addr, &framesrc);
+	std::cout << "frame src:" << addr << std::endl;
+//#endif
+
+	/* copy mac dst address from frame */
 	memcpy(&framedst, data + 4, ETH_ALEN);
 
-#ifdef DEBUG
-		mac_address_to_string(addr, &framedst);
-		std::cout << "frame dst:" << addr std::endl;
-#endif
+//#ifdef DEBUG
+	mac_address_to_string(addr, &framedst);
+	std::cout << "frame dst:" << addr << std::endl;
+//#endif
 
  			
-	//	send_cloned_frame_msg(dst, data, data_len,rate_idx, signal, freq);
-				
-	//	generate_ack_frame(freq, src, dst);
+//	//	send_cloned_frame_msg(dst, data, data_len,rate_idx, signal, freq);
 }
 
 
@@ -616,7 +590,7 @@ void VWifiGuest::recv_msg_from_server_loop_start(){
 		if(!check_if_started())
 			break ;
 	
-		//recv_from_server();
+		recv_from_server();
 	}
 }
 
@@ -659,6 +633,23 @@ int VWifiGuest::start(){
 		std::cout<<"socket.Connect error"<<std::endl;
 		return 0;
 	}
+
+
+	char buf[1024] ;
+	int bytes=_socket.Read(buf,sizeof(buf));
+	if( bytes == SOCKET_ERROR )
+	{
+		std::cout<<"socket.Read error"<<std::endl;
+		return 0 ;
+	}
+
+	buf[bytes]='\0';
+	std::string sbuffer(buf);
+	std::cout<<sbuffer<<std::endl;
+
+
+
+	std::cout << "Connection to Server Ok" << std::endl;
 
 	std::thread hwsimloop(&VWifiGuest::recv_msg_from_hwsim_loop_start,this);
 	std::thread serverloop(&VWifiGuest::recv_msg_from_server_loop_start,this);

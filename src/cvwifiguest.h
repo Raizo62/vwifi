@@ -128,6 +128,23 @@ private:
 	void recv_msg_from_server_loop_start();
 
 	/**
+ 	*      @brief Send a cloned frame to the kernel space driver.
+ 	*	This will send a frame to the driver using netlink.
+ 	*	It is received by hwsim with hwsim_cloned_frame_received_nl()
+ 	*	This is taken from wmediumd and modified. It is called after the
+ 	*	message has been received from wmasterd.
+ 	*	@param dst - mac address of receving radio
+ 	*	@param data - frame data
+ 	*	@param data_len - length of frame
+ 	*	@param rate_idx - number of attempts
+ 	*	@param signal - signal strength
+ 	*	@param freq - frequency
+ 	*	@return success or failure
+ 	*/
+	int send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, uint32_t freq);
+
+
+	/**
 	 * @brief hadle messages received from server
 	 */
 
