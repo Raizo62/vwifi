@@ -35,9 +35,6 @@ int main(int argc , char *argv[])
 
 	while( true )
 	{
-		//accept the incoming connection
-		cout<<"Waiting actions ..."<<endl;
-
 		//wait for an activity on one of the sockets , timeout is NULL ,
 		//so wait indefinitely
 		if( scheduler.Wait() == SCHEDULER_ERROR )
@@ -49,7 +46,6 @@ int main(int argc , char *argv[])
 
 			//If something happened on the master socket ,
 			//then its an incoming connection
-			cout<<"scheduler.NodeHasAction"<<endl;
 			if( scheduler.NodeHasAction(socketServer) )
 			{
 				socket = socketServer.Accept();
@@ -63,21 +59,12 @@ int main(int argc , char *argv[])
 				scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection , socket fd is : "<<socket<<" "; socketServer.ShowInfo(socket) ; cout<<endl;
-
-				//send new connection greeting message
-				if (  (socklen_t) socketServer.Send(socket,message.c_str(), message.length()) != message.length() )
-				{
-					cout<<"Error : socketServer.Send"<<endl;
-				}
-
-				cout<<"Welcome message sent successfully"<<endl;
+				cout<<"New connection : socket fd is : "<<socket<<" "; socketServer.ShowInfo(socket) ; cout<<endl;
 			}
 
 			//else its some IO operation on some other socket
 			for ( i = 0 ; i < socketServer.GetNumberClient() ; i++)
 			{
-				cout<<"socketServer.GetSocketClient(i)"<<endl;
 				socket = socketServer[i];
 
 				if( scheduler.NodeHasAction(socket) )
@@ -107,6 +94,7 @@ int main(int argc , char *argv[])
 							//buffer[valread] = '\0';
 							//socketServer.Send(socket,buffer , strlen(buffer));
 							// send to all other clients
+							cout<<"Send message from "; socketServer.ShowInfoClient(i); cout<<" to "<< socketServer.GetNumberClient()-1 << " others clients" <<endl;
 							socketServer.SendAllOtherClients(i,buffer,valread);
 						}
 					}

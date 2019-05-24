@@ -124,7 +124,6 @@ Descriptor CSocketServer::Accept()
 	}
 
 	//add new socket to array of sockets
-	cout<<"Adding to list of sockets as "<<NumberClient<<endl;
 	SocketClients[NumberClient] = new_socket;
 	switch ( Type )
 	{
@@ -184,7 +183,6 @@ void CSocketServer::ShowInfoClient(unsigned int number)
 
 void CSocketServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
 {
-	cout<<"SendAllOtherClient de "<<number<<" vers "<<NumberClient<<" clients ("<<sizeOfData<<" octets)"<<endl;
 	for (unsigned int i = 0; i < NumberClient; i++)
 	{
 		if( i != number )

@@ -22,18 +22,22 @@ int main(int argc , char *argv[])
 	}
 
 	char buffer[1025]; //data buffer of 1K
+	int value;
 
-	int value=socket.Read(buffer,sizeof(buffer));
+	/*
+	value=socket.Read(buffer,sizeof(buffer));
 	if( value == SOCKET_ERROR )
 	{
 		cout<<"socket.Read error"<<endl;
 		return 1;
 	}
 
+
 	buffer[value]='\0';
 	string sbuffer(buffer);
 
 	cout<<sbuffer<<endl;
+	*/
 
 	int number;
 	for(int i=0; i< 3 ; i++ )
