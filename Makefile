@@ -13,7 +13,7 @@ MAN		=	man
 
 CC		=	g++
 
-MODE= -O4 -Wall -fomit-frame-pointer # //////////      RELEASE
+MODE= -O4 -Wall -fomit-frame-pointer -std=c++14 # //////////      RELEASE
 #MODE= -g -Wall -D_DEBUG # //////////      DEBUG
 #MODE= -pg # //////////      PROFILER --> view with : gprof $(NAME)
 
@@ -55,7 +55,7 @@ vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/cvsocket.o $
 vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/cvsocket.o $(OBJ)/cvsocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
-vwifi-guest : vwifi-guest.cc $(OBJ)/cvwifiguest.o
+vwifi-guest : vwifi-guest.cc $(OBJ)/cvwifiguest.o  $(OBJ)/cvsocket.o $(OBJ)/cvsocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ $^
 
 $(OBJ)/%.o: %.cc

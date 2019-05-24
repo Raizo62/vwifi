@@ -14,6 +14,9 @@
 #include <iostream>
 #include <thread>
 
+#include "cvsocketclient.h"
+#include "vwifi-host-test.h"
+
 
 /* allow calling non static function from static function */
 CallFromStaticFunc * VWifiGuest::forward = nullptr ;
@@ -84,7 +87,8 @@ int VWifiGuest::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags
 
 int VWifiGuest::process_messages_cb(struct nl_msg *msg, void *arg){
 
-	forward->process_messages(msg,arg);	
+	forward->process_messages(msg,arg);
+	return 0 ;	
 
 }
 
@@ -102,7 +106,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	struct genlmsghdr * gnlh;
 	struct nlmsgerr *err;
 	struct ether_addr *src;
-	struct ether_addr *dst;
+	//struct ether_addr *dst;
 	unsigned int flags;
 	struct hwsim_tx_rate *tx_rates;
 	unsigned long cookie;
@@ -116,7 +120,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	struct ether_addr framedst;
 
 	char addr[18];
-	int bytes;
+	//int bytes;
 
 	nlh = nlmsg_hdr(msg);
 	gnlh = (struct genlmsghdr *) nlmsg_data(nlh);
@@ -151,7 +155,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 		std::cout << "hwsim dst mac is not present" << std::endl ;
 
 	/* we get the attributes*/
-	dst = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_RECEIVER]);
+	//dst = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_RECEIVER]);
 	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
 	flags = nla_get_u32(attrs[HWSIM_ATTR_FLAGS]);
 	tx_rates = (struct hwsim_tx_rate *)nla_data(attrs[HWSIM_ATTR_TX_INFO]);
@@ -247,8 +251,27 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 
 
 
-	/* here code of david to send 	(char *)nlh with  msg_len as size*/ 
+	/* here code of  to send (char *)nlh with  msg_len as size*/ 
+	CVSocketClient socket;
 
+#ifdef _USE_VSOCK_
+	if( ! socket.Connect(PORT) )
+#else
+	if( ! socket.Connect(ADDRESS_IP,PORT) )
+#endif
+	{
+		std::cout<<"socket.Connect error"<<std::endl;
+		return 1;
+	}
+	
+	int value=socket.Send((char*)nlh,msg_len);
+	
+	if( value == SOCKET_ERROR )
+	
+	{
+		std::cout<<"socket.Send error"<<std::endl;
+		return 1;
+	}
 
 
 	return 0 ;
@@ -452,30 +475,30 @@ void VWifiGuest::recv_from_server(){
 
 
 	char buf[1024];
-	struct timeval tv; /* timer to break out of recvfrom function */
-	int bytes;
+	//struct timeval tv; /* timer to break out of recvfrom function */
+	//int bytes;
 	
 	struct nlmsghdr *nlh;
 	struct genlmsghdr *gnlh;
 	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
-	uint32_t freq;
-	struct ether_addr *src;
-	unsigned int data_len;
+//	uint32_t freq;
+	//struct ether_addr *src = nullptr;
+	//unsigned int data_len = 0;
 	char *data;
-	int rate_idx;
-	int signal;
-	struct ether_addr *dst;	/* stores user mac */
-	int i;
-	char addr[18];
-	struct ether_addr radiomac;
-	struct device_node *node;
+	//int rate_idx;
+	//int signal;
+	//struct ether_addr *dst;	/* stores user mac */
+	//int i;
+	//char addr[18];
+	//struct ether_addr radiomac;
+	//struct device_node *node;
 	struct ether_addr framedst;
-	int should_ack;
-	int retval;
-	int distance;
+	//int should_ack;
+	//int retval;
+	//int distance;
 
-	tv.tv_sec = 1;
-	tv.tv_usec = 0;
+//	tv.tv_sec = 1;
+//	tv.tv_usec = 0;
 
 
 	/* receive bytes packets from server and store them in buf */
@@ -500,10 +523,10 @@ void VWifiGuest::recv_from_server(){
 	/* we get the attributes*/
 	genlmsg_parse(nlh, 0, attrs, HWSIM_ATTR_MAX, NULL);
 
-	if (attrs[HWSIM_ATTR_FREQ])
-		freq = nla_get_u32(attrs[HWSIM_ATTR_FREQ]);
-	else
-		freq = 0;
+	//if (attrs[HWSIM_ATTR_FREQ])
+	//	freq = nla_get_u32(attrs[HWSIM_ATTR_FREQ]);
+//	else
+//		freq = 0;
 
 	
 	/* TODO: check whether this is an ACK FRAME
@@ -522,9 +545,9 @@ void VWifiGuest::recv_from_server(){
 		return;
 	}
 	
-	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
+	//src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
 
-	data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
+	//data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
 	data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
 
 
@@ -648,7 +671,7 @@ int VWifiGuest::stop(){
 		m_mutex_ctrl_run.lock();
 		m_started = false ;
 		m_mutex_ctrl_run.unlock();
-	
+		return 0 ;	
 }
 
 
@@ -667,9 +690,14 @@ void VWifiGuest::clean_all(){
 
 }
 
-VWifiGuest::VWifiGuest() : m_initialized(0),m_started(0),m_sock(nullptr),m_cb(nullptr) {
+/*VWifiGuest::VWifiGuest() : m_initialized(false),m_started(false),m_sock(nullptr),m_cb(nullptr) {
+
+}*/
+
+VWifiGuest::VWifiGuest()  {
 
 }
+
 
 
 VWifiGuest::~VWifiGuest(){
