@@ -85,27 +85,30 @@ int main(int argc , char *argv[])
 					//Check if it was for closing , and also read the
 					//incoming message
 					valread = socketServer.Read( socket , buffer, 1024);
-					if ( valread == 0 )
+					if ( valread >= 0 )
 					{
-						//Somebody disconnected , get his details and print
-						cout<<"Host disconnected , "; socketServer.ShowInfo(socket) ; cout<<endl;
+						if ( valread == 0 )
+						{
+							//Somebody disconnected , get his details and print
+							cout<<"Host disconnected , "; socketServer.ShowInfo(socket) ; cout<<endl;
 
-						//Close the socket
-						socketServer.CloseClient(i);
+							//Close the socket
+							socketServer.CloseClient(i);
 
-						//del master socket to set
-						scheduler.DelNode(socket);
-					}
+							//del master socket to set
+							scheduler.DelNode(socket);
+						}
 
-					//Echo back the message that came in
-					else
-					{
-						//set the string terminating NULL byte on the end
-						//of the data read
-						//buffer[valread] = '\0';
-						//socketServer.Send(socket,buffer , strlen(buffer));
-						// send to all other clients
-						socketServer.SendAllOtherClients(i,buffer,valread);
+						//Echo back the message that came in
+						else
+						{
+							//set the string terminating NULL byte on the end
+							//of the data read
+							//buffer[valread] = '\0';
+							//socketServer.Send(socket,buffer , strlen(buffer));
+							// send to all other clients
+							socketServer.SendAllOtherClients(i,buffer,valread);
+						}
 					}
 				}
 			}
