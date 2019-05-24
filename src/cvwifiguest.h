@@ -14,7 +14,7 @@ class VWifiGuest {
 
 
 /** pointer for tcp or vsocket */
-CSocketClient * _socket {nullptr};
+CSocketClient  _socket ;
 
 /** pointer for netlink socket */
 struct nl_sock * m_sock { nullptr };

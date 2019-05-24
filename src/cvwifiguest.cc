@@ -150,8 +150,9 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 		return 1;
 
 
-	if (!(attrs[HWSIM_ATTR_ADDR_RECEIVER]))
-		std::cout << "hwsim dst mac is not present" << std::endl ;
+	//if (!(attrs[HWSIM_ATTR_ADDR_RECEIVER]))
+
+	//	std::cout << "hwsim dst mac is not present" << std::endl ;
 
 	/* we get the attributes*/
 	//dst = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_RECEIVER]);
@@ -243,17 +244,17 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	}
 
 
-	mac_address_to_string(addr, src);
-	std::cout << "src: " << addr << std::endl ;
-	mac_address_to_string(addr, &framesrc);
-	std::cout << "frame src: " << addr << std::endl;
+//	mac_address_to_string(addr, src);
+//	std::cout << "src: " << addr << std::endl ;
+//	mac_address_to_string(addr, &framesrc);
+//	std::cout << "frame src: " << addr << std::endl;
 
 
 
 	/* here code of  to send (char *)nlh with  msg_len as size*/ 
 
 	
-	int value=_socket->Send((char*)nlh,msg_len);
+	int value=_socket.Send((char*)nlh,msg_len);
 	
 	if( value == SOCKET_ERROR )
 	
@@ -465,20 +466,20 @@ void VWifiGuest::recv_from_server(){
 
 	char buf[1024];
 	//struct timeval tv; /* timer to break out of recvfrom function */
-	//int bytes;
+	int bytes;
 	
 	struct nlmsghdr *nlh;
 	struct genlmsghdr *gnlh;
 	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
 //	uint32_t freq;
-	//struct ether_addr *src = nullptr;
+	struct ether_addr *src = nullptr;
 	//unsigned int data_len = 0;
 	char *data;
 	//int rate_idx;
 	//int signal;
 	//struct ether_addr *dst;	/* stores user mac */
 	//int i;
-	//char addr[18];
+	char addr[18];
 	//struct ether_addr radiomac;
 	//struct device_node *node;
 	struct ether_addr framedst;
@@ -491,6 +492,13 @@ void VWifiGuest::recv_from_server(){
 
 
 	/* receive bytes packets from server and store them in buf */
+	bytes=_socket.Read(buf,sizeof(buf));
+	if( bytes == SOCKET_ERROR )
+	{
+		std::cout<<"socket.Read error"<<std::endl;
+		return ;
+	}
+
 
 
 	/* netlink header */
@@ -535,6 +543,9 @@ void VWifiGuest::recv_from_server(){
 	}
 	
 	//src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
+
+	mac_address_to_string(addr, src);
+	std::cout << "src: " << addr << std::endl ;
 
 	//data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
 	data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
@@ -638,12 +649,11 @@ int VWifiGuest::start(){
 
 	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
 
-	_socket = new CSocketClient();
 	
 #ifdef _USE_VSOCK_
-	if( ! _socket->Connect(PORT) )
+	if( ! _socket.Connect(PORT) )
 #else
-	if( ! _socket->Connect(ADDRESS_IP,PORT) )
+	if( ! _socket.Connect(ADDRESS_IP,PORT) )
 #endif
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
@@ -681,7 +691,6 @@ void VWifiGuest::clean_all(){
 #endif
 
 
-	delete _socket ;
 	nl_close(m_sock);
 	nl_socket_free(m_sock);
 	nl_cb_put(m_cb);
