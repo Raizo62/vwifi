@@ -94,8 +94,11 @@ int main(int argc , char *argv[])
 							//buffer[valread] = '\0';
 							//socketServer.Send(socket,buffer , strlen(buffer));
 							// send to all other clients
-							cout<<"Send message from "; socketServer.ShowInfoClient(i); cout<<" to "<< socketServer.GetNumberClient()-1 << " others clients" <<endl;
-							socketServer.SendAllOtherClients(i,buffer,valread);
+							if( socketServer.GetNumberClient() > 1 )
+							{
+								cout<<"Forward "<<valread<<" bytes from "; socketServer.ShowInfoClient(i); cout<<" to "<< socketServer.GetNumberClient()-1 << " others clients" <<endl;
+								socketServer.SendAllOtherClients(i,buffer,valread);
+							}
 						}
 					}
 				}
