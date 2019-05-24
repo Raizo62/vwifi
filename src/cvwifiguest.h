@@ -14,16 +14,16 @@ class VWifiGuest {
 
 
 /** pointer for netlink socket */
-struct nl_sock * m_sock;
+struct nl_sock * m_sock = nullptr;
 /** pointer for netlink callback function */
-struct nl_cb * m_cb;
+struct nl_cb * m_cb = nullptr;
 /** For the family ID used by hwsim */
-int m_family_id;
+int m_family_id = -1;
 
 void mac_address_to_string(char *address, struct ether_addr *mac);
 
-bool m_initialized ;
-bool m_started ;
+bool m_initialized = false ;
+bool m_started = false ;
 
 std::mutex m_mutex_ctrl_run ;
 std::mutex m_mutex_init ;
@@ -172,6 +172,7 @@ class CallFromStaticFunc {
 		
 				// add exception to check null ptr
 				m_obj->process_messages(msg , arg);
+				return 0 ;
 		};
 
 
