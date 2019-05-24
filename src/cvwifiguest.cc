@@ -14,7 +14,6 @@
 #include <iostream>
 #include <thread>
 
-#include "csocketclient.h"
 #include "vwifi-host-test.h"
 
 
@@ -252,19 +251,9 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 
 
 	/* here code of  to send (char *)nlh with  msg_len as size*/ 
-	CSocketClient socket;
 
-#ifdef _USE_VSOCK_
-	if( ! socket.Connect(PORT) )
-#else
-	if( ! socket.Connect(ADDRESS_IP,PORT) )
-#endif
-	{
-		std::cout<<"socket.Connect error"<<std::endl;
-		return 1;
-	}
 	
-	int value=socket.Send((char*)nlh,msg_len);
+	int value=_socket->Send((char*)nlh,msg_len);
 	
 	if( value == SOCKET_ERROR )
 	
@@ -616,7 +605,7 @@ void VWifiGuest::recv_msg_from_server_loop_start(){
 		if(!check_if_started())
 			break ;
 	
-		//eecv_from_server();
+		//recv_from_server();
 	}
 }
 
@@ -647,11 +636,20 @@ int VWifiGuest::start(){
 	if (!send_register_msg())
 		return 0 ;
 
-	
-
 	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
 
+	_socket = new CSocketClient();
 	
+#ifdef _USE_VSOCK_
+	if( ! _socket->Connect(PORT) )
+#else
+	if( ! _socket->Connect(ADDRESS_IP,PORT) )
+#endif
+	{
+		std::cout<<"socket.Connect error"<<std::endl;
+		return 0;
+	}
+
 	std::thread hwsimloop(&VWifiGuest::recv_msg_from_hwsim_loop_start,this);
 	std::thread serverloop(&VWifiGuest::recv_msg_from_server_loop_start,this);
 
@@ -683,6 +681,7 @@ void VWifiGuest::clean_all(){
 #endif
 
 
+	delete _socket ;
 	nl_close(m_sock);
 	nl_socket_free(m_sock);
 	nl_cb_put(m_cb);

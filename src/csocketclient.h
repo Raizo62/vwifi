@@ -10,6 +10,7 @@ class CSocketClient : public CSocket
 	public :
 
 		CSocketClient();
+		~CSocketClient();
 
 		CSocketClient(TypeSocket type);
 

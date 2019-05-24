@@ -10,6 +10,13 @@
 
 using namespace std;
 
+CSocketClient::~CSocketClient() 
+{
+
+}
+
+
+
 CSocketClient::CSocketClient() : CSocket()
 {
 	Init();
