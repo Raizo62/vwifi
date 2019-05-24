@@ -177,6 +177,11 @@ void CSocketServer::CloseClient(unsigned int number)
 	return;
 }
 
+void CSocketServer::ShowInfoClient(unsigned int number)
+{
+	cout<<"["<<InfoClient[number]<<"]";
+}
+
 void CSocketServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
 {
 	cout<<"SendAllOtherClient de "<<number<<" vers "<<NumberClient<<" clients ("<<sizeOfData<<" octets)"<<endl;

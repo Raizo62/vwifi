@@ -90,7 +90,7 @@ int main(int argc , char *argv[])
 						if ( valread == 0 )
 						{
 							//Somebody disconnected , get his details and print
-							cout<<"Host disconnected , "; socketServer.ShowInfo(socket) ; cout<<endl;
+							cout<<"Host disconnected : "; socketServer.ShowInfoClient(i) ; cout<<endl;
 
 							//Close the socket
 							socketServer.CloseClient(i);

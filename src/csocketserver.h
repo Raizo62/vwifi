@@ -31,6 +31,8 @@ class CSocketServer : public CSocket
 
 		unsigned int GetNumberClient();
 
+		void ShowInfoClient(unsigned int number);
+
 		void CloseClient(unsigned int number);
 
 		void SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData);
