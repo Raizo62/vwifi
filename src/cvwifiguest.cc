@@ -234,14 +234,14 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 
 	/* compare tx src to frame src, update TX src ATTR in msg if needed */
 	/* if we rebuild the nl msg, this can change */
-	if (memcmp(&framesrc, src, ETH_ALEN) != 0) {
-
-#ifdef DEBUG	
-		std::cout << "updating the TX src ATTR" << std::endl ; 
-#endif
-		/* copy dest address from frame to nlh */
-		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
-	}
+//	if (memcmp(&framesrc, src, ETH_ALEN) != 0) {
+//
+//#ifdef _DEBUG	
+//		std::cout << "updating the TX src ATTR" << std::endl ; 
+//#endif
+//		/* copy dest address from frame to nlh */
+//		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
+//	}
 
 
 //	mac_address_to_string(addr, src);
@@ -432,7 +432,7 @@ int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int da
 
 void VWifiGuest::recv_from_server(){
 
-#ifdef DEBUG
+#ifdef _DEBUG
 
 	std::cout <<  __func__ << std::endl ;
 #endif
@@ -474,9 +474,9 @@ void VWifiGuest::recv_from_server(){
 		return ;
 	}
 
-	buf[bytes]='\0';
-	std::string sbuffer(buf);
-	std::cout<<sbuffer<<std::endl;
+	//buf[bytes]='\0';
+	//std::string sbuffer(buf);
+	//std::cout<<sbuffer<<std::endl;
 
 	
 	/* netlink header */
@@ -544,8 +544,16 @@ void VWifiGuest::recv_from_server(){
 	std::cout << "frame dst:" << addr << std::endl;
 //#endif
 
- 			
-//	//	send_cloned_frame_msg(dst, data, data_len,rate_idx, signal, freq);
+	struct ether_addr mac = { 0X42,0,0,0,0,0 } ;
+	mac_address_to_string(addr, &mac);
+	std::cout << "MAC 1:" << addr << std::endl ;
+	send_cloned_frame_msg(&mac, data, data_len,rate_idx, signal, freq);
+
+	mac = { 0X42,0,0,0,1,0 } ;
+	mac_address_to_string(addr, &mac);
+	std::cout << "MAC 2:" << addr << std::endl ;
+	send_cloned_frame_msg(&mac, data, data_len,rate_idx, signal, freq);
+
 }
 
 
