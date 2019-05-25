@@ -22,10 +22,38 @@ Virtual Wifi between Virtual Machines
 
 ### Host
 
+    $ sudo rmmod vhost_vsock vmw_vsock_virtio_transport_common vsock
+
+    $ sudo modprobe vhost_vsock
+    $ sudo chmod a+rw /dev/vhost-vsock
+
 * QEmu : add the option : -device vhost-vsock-pci,id=vhost-vsock-pci0,guest-cid=NUM		NUM an identifier > 2
 * GNS3 : add the option : -device vhost-vsock-pci,id=vhost-vsock-pci0,guest-cid=%console-port%
 
-## Test Wifi
+    $ ./vwifi-host-server
+
+### Guest
+
+    $ cd /hosthome/vwifi
+    $ tmux
+    $ modprobe mac80211_hwsim radios=2
+    $ ./vwifi-guest
+
+#### Test Wifi
+
+* Guest Wifi 1
+    $ hostapd tests/hostapd.conf
+    $ ip a a 10.0.0.1/8 dev wlan0
+* Guest Wifi 2
+    $ wpa_supplicant -Dnl80211 -iwlan1 -c tests/wpa_supplicant.conf
+    $ ip a a 10.0.0.2/8 dev wlan1
 
     $ sudo wpa_supplicant -Dnl80211 -iwlan1 -c wpa_supplicant.conf
     $ sudo hostapd hostapd.conf
+
+## Tools
+
+* nc-vsock : https://github.com/stefanha/nc-vsock
+    $ wget https://github.com/stefanha/nc-vsock/archive/master.zip
+    $ cd nc-vsock-master
+    $ make
