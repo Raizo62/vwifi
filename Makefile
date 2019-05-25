@@ -5,7 +5,7 @@ VERSION	=	1
 BINDIR	=	$(DESTDIR)/usr/local/bin
 MANDIR	=	$(DESTDIR)/usr/local/man/man1
 
-EXEC	=	vwifi-host-server vwifi-guest vwifi-host-test
+EXEC	=	vwifi-host-server vwifi-guest vwifi-host-test vwifi-inet-monitor
 
 SRC		=	src
 OBJ		=	obj
@@ -46,6 +46,9 @@ $(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.h
 
 $(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.h
 
+$(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h 
+
+
 $(OBJ)/cvwifiguest.o: cvwifiguest.cc cvwifiguest.h hwsim.h ieee80211.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ -c $<
 
@@ -55,8 +58,12 @@ vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/csocket.o $(
 vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
-vwifi-guest : vwifi-guest.cc $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o
+vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ $^
+
+vwifi-inet-monitor :  vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o 
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS)  -o $@ $^
+
 
 $(OBJ)/%.o: %.cc
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ -c $<

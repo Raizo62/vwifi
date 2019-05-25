@@ -13,17 +13,17 @@ class WirelessDevice {
 	std::string _name;
 	int _index;
 	int _iftype;
-	unsigned char _macaddr[ETH_ALEN];
-
+	//unsigned char _macaddr[ETH_ALEN];
+	struct ether_addr _macaddr ;
 
 	public:
 
 	WirelessDevice();
 	~WirelessDevice();
-	WirelessDevice(std::string,int,int,const unsigned char *);
+	WirelessDevice(std::string,int,int,const struct ether_addr &);
 	friend std::ostream &   operator<< ( std::ostream & , WirelessDevice &);
-        const unsigned char * getMacaddr() const  ;
-	void setMacaddr(const unsigned char *);	
+        struct ether_addr getMacaddr() const  ;
+	void setMacaddr(const struct  ether_addr &);	
 
 };
 
