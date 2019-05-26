@@ -8,8 +8,6 @@
 
 #include "csocketserver.h"
 
-const int TRUE=1;
-
 using namespace std;
 
 CSocketServer::CSocketServer() : CSocket()
@@ -46,7 +44,7 @@ bool CSocketServer::Listen()
 
 	//set master socket to allow multiple connections ,
 	//this is just a good habit, it will work without this
-	int opt = TRUE;
+	int opt = 1 ; // TRUE
 	if( setsockopt(Master, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
 	{
 		perror("setsockopt");
