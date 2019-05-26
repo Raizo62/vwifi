@@ -3,9 +3,11 @@
 
 #include "csocketserver.h"
 
+typedef int CInfoWifi;
+
 class CWifiServer : public CSocketServer
 {
-		int InfoClient[MAX_CLIENT];
+		CInfoWifi InfoClient[MAX_CLIENT];
 
 	public :
 

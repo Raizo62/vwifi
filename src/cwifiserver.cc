@@ -56,7 +56,7 @@ void CWifiServer::CloseClient(unsigned int number)
 	// be careful : NumberClient is already decrease
 	// InfoClient : [number,NumberClient[ <-=- [number+1,NumberClient]
 	if( number <  NumberClient )
-		memcpy(&(InfoClient[number]),&(InfoClient[number+1]),(NumberClient-number)*sizeof(int));
+		memcpy(&(InfoClient[number]),&(InfoClient[number+1]),(NumberClient-number)*sizeof(CInfoWifi));
 }
 
 void CWifiServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
