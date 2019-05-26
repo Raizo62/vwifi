@@ -4,7 +4,7 @@
 #include <string.h> //strlen
 
 #include "vwifi-host-server.h"
-#include "csocketserver.h"
+#include "cwifiserver.h"
 #include "cscheduler.h"
 
 using namespace std;
@@ -22,16 +22,16 @@ int main(int argc , char *argv[])
 
 	CScheduler scheduler;
 
-	CSocketServer socketServer;
-	socketServer.Init(PORT);
-	if( ! socketServer.Listen() )
+	CWifiServer socketWifi;
+	socketWifi.Init(PORT);
+	if( ! socketWifi.Listen() )
 	{
-		cout<<"Error : socketServer.Listen"<<endl;
+		cout<<"Error : socketWifi.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
 	//add master socket to set
-	scheduler.AddNode(socketServer);
+	scheduler.AddNode(socketWifi);
 
 	while( true )
 	{
@@ -46,12 +46,12 @@ int main(int argc , char *argv[])
 
 			//If something happened on the master socket ,
 			//then its an incoming connection
-			if( scheduler.NodeHasAction(socketServer) )
+			if( scheduler.NodeHasAction(socketWifi) )
 			{
-				socket = socketServer.Accept();
+				socket = socketWifi.Accept();
 				if ( socket == SOCKET_ERROR )
 				{
-					cout<<"Error : socketServer.Accept"<<endl;
+					cout<<"Error : socketWifi.Accept"<<endl;
 					exit(EXIT_FAILURE);
 				}
 
@@ -59,28 +59,28 @@ int main(int argc , char *argv[])
 				scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection : socket fd is : "<<socket<<" "; socketServer.ShowInfo(socket) ; cout<<endl;
+				cout<<"New connection : socket fd is : "<<socket<<" "; socketWifi.ShowInfo(socket) ; cout<<endl;
 			}
 
 			//else its some IO operation on some other socket
-			for ( i = 0 ; i < socketServer.GetNumberClient() ; i++)
+			for ( i = 0 ; i < socketWifi.GetNumberClient() ; i++)
 			{
-				socket = socketServer[i];
+				socket = socketWifi[i];
 
 				if( scheduler.NodeHasAction(socket) )
 				{
 					//Check if it was for closing , and also read the
 					//incoming message
-					valread = socketServer.Read( socket , buffer, 1024);
+					valread = socketWifi.Read( socket , buffer, 1024);
 					if ( valread >= 0 )
 					{
 						if ( valread == 0 )
 						{
 							//Somebody disconnected , get his details and print
-							cout<<"Host disconnected : "; socketServer.ShowInfoClient(i) ; cout<<endl;
+							cout<<"Host disconnected : "; socketWifi.ShowInfoClient(i) ; cout<<endl;
 
 							//Close the socket
-							socketServer.CloseClient(i);
+							socketWifi.CloseClient(i);
 
 							//del master socket to set
 							scheduler.DelNode(socket);
@@ -92,12 +92,12 @@ int main(int argc , char *argv[])
 							//set the string terminating NULL byte on the end
 							//of the data read
 							//buffer[valread] = '\0';
-							//socketServer.Send(socket,buffer , strlen(buffer));
+							//socketWifi.Send(socket,buffer , strlen(buffer));
 							// send to all other clients
-							if( socketServer.GetNumberClient() > 1 )
+							if( socketWifi.GetNumberClient() > 1 )
 							{
-								cout<<"Forward "<<valread<<" bytes from "; socketServer.ShowInfoClient(i); cout<<" to "<< socketServer.GetNumberClient()-1 << " others clients" <<endl;
-								socketServer.SendAllOtherClients(i,buffer,valread);
+								cout<<"Forward "<<valread<<" bytes from "; socketWifi.ShowInfoClient(i); cout<<" to "<< socketWifi.GetNumberClient()-1 << " others clients" <<endl;
+								socketWifi.SendAllOtherClients(i,buffer,valread);
 							}
 						}
 					}

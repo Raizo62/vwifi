@@ -32,17 +32,19 @@ EUID	:= $(shell id -u -r)
 
 vpath %.cc $(SRC)
 vpath %.h $(SRC)
-# vpath %.o $(OBJ)
 
 .PHONY: all clean build install man directories
 
 build : directories $(EXEC) # man
+
 
 $(OBJ)/cscheduler.o: cscheduler.cc  cscheduler.h
 
 $(OBJ)/csocket.o: csocket.cc csocket.h
 
 $(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.h
+
+$(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h csocketserver.h
 
 $(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.h
 
@@ -52,7 +54,8 @@ $(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h
 $(OBJ)/cvwifiguest.o: cvwifiguest.cc cvwifiguest.h hwsim.h ieee80211.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ -c $<
 
-vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cscheduler.o
+
+vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cwifiserver.o $(OBJ)/cscheduler.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o
