@@ -643,20 +643,6 @@ int VWifiGuest::start(){
 	}
 
 
-	char buf[1024] ;
-	int bytes=_socket.Read(buf,sizeof(buf));
-	if( bytes == SOCKET_ERROR )
-	{
-		std::cout<<"socket.Read error"<<std::endl;
-		return 0 ;
-	}
-
-//	buf[bytes]='\0';
-//	std::string sbuffer(buf);
-//	std::cout<<sbuffer<<std::endl;
-
-
-
 	std::cout << "Connection to Server Ok" << std::endl;
 
 	std::thread hwsimloop(&VWifiGuest::recv_msg_from_hwsim_loop_start,this);
