@@ -7,11 +7,14 @@ const int MAX_CLIENT = 30;
 
 class CSocketServer : public CSocket
 {
+	protected :
+
 		unsigned int Port;
 
 		unsigned int NumberClient;
 		Descriptor SocketClients[MAX_CLIENT];
-		int InfoClient[MAX_CLIENT];
+
+		Descriptor Accept(struct sockaddr_in& address);
 
 		Descriptor GetSocketClient(unsigned int number);
 
@@ -27,15 +30,11 @@ class CSocketServer : public CSocket
 
 		bool Listen();
 
-		Descriptor Accept();
+		virtual Descriptor Accept();
 
 		unsigned int GetNumberClient();
 
-		void ShowInfoClient(unsigned int number);
-
 		void CloseClient(unsigned int number);
-
-		void SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData);
 
 		ssize_t Send(Descriptor descriptor, const char* data, ssize_t sizeOfData);
 

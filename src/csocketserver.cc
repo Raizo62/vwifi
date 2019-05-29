@@ -1,5 +1,6 @@
 #include <iostream> // cout
 #include <cstdio> //perror
+#include <cstring> // memcpy
 
 #include <arpa/inet.h> // INADDR_ANY
 #include <sys/socket.h>
@@ -7,8 +8,6 @@
 #include <unistd.h> // close
 
 #include "csocketserver.h"
-
-const int TRUE=1;
 
 using namespace std;
 
@@ -46,7 +45,7 @@ bool CSocketServer::Listen()
 
 	//set master socket to allow multiple connections ,
 	//this is just a good habit, it will work without this
-	int opt = TRUE;
+	int opt = 1 ; // TRUE
 	if( setsockopt(Master, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
 	{
 		perror("setsockopt");
@@ -107,13 +106,20 @@ bool CSocketServer::Listen()
 
 Descriptor CSocketServer::Accept()
 {
-	Descriptor new_socket;
 	struct sockaddr_in address;
+
+	return Accept(address);
+}
+
+Descriptor CSocketServer::Accept(struct sockaddr_in& address)
+{
+	Descriptor new_socket;
+
 	int addrlen = sizeof(address);
 
 	if ((new_socket = accept(Master, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
 	{
-		perror("accept");
+		perror("CSocketServer::Accept");
 		return SOCKET_ERROR;
 	}
 
@@ -125,20 +131,6 @@ Descriptor CSocketServer::Accept()
 
 	//add new socket to array of sockets
 	SocketClients[NumberClient] = new_socket;
-	switch ( Type )
-	{
-		case AF_VSOCK :
-			{
-				InfoClient[NumberClient] = ((struct sockaddr_vm*)&address)->svm_cid;
-				break ;
-			}
-
-		case AF_INET :
-			{
-				InfoClient[NumberClient] = ntohs(address.sin_port);
-				break;
-			}
-	}
 
 	NumberClient++;
 
@@ -167,27 +159,9 @@ void CSocketServer::CloseClient(unsigned int number)
 
 	NumberClient--;
 
-	for (unsigned int i = number; i < NumberClient; i++)
-	{
-		SocketClients[i] = SocketClients[i+1];
-		InfoClient[i] = InfoClient[i+1];
-	}
-
-	return;
-}
-
-void CSocketServer::ShowInfoClient(unsigned int number)
-{
-	cout<<"["<<InfoClient[number]<<"]";
-}
-
-void CSocketServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
-{
-	for (unsigned int i = 0; i < NumberClient; i++)
-	{
-		if( i != number )
-			Send(SocketClients[i], data, sizeOfData);
-	}
+	// SocketClients : [number,NumberClient[ <-=- [number+1,NumberClient]
+	if( number <  NumberClient )
+		memcpy(&(SocketClients[number]),&(SocketClients[number+1]),(NumberClient-number)*sizeof(Descriptor));
 }
 
 ssize_t CSocketServer::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
