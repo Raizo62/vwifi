@@ -651,9 +651,9 @@ int VWifiGuest::start(){
 		return 0 ;
 	}
 
-	buf[bytes]='\0';
-	std::string sbuffer(buf);
-	std::cout<<sbuffer<<std::endl;
+//	buf[bytes]='\0';
+//	std::string sbuffer(buf);
+//	std::cout<<sbuffer<<std::endl;
 
 
 
