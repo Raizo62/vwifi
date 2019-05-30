@@ -1,8 +1,9 @@
 #include "cwirelessdevice.h"
-
+#include "cmonwirelessdevice.h"
 #include <stdio.h>
 #include <iostream>
 
+#include <unistd.h>
 int main (int agc, char ** argv){
 
 
@@ -19,6 +20,15 @@ int main (int agc, char ** argv){
 	
 	std::cout << wdevice2 << std::endl ;
 	std::cout << wdevice << std::endl ;
+
+	MonitorWirelessDevice monitor ;
+
+	monitor.start();
+
+	sleep(4);
+
+	std::cout << "end" << std::endl ;
+	monitor.stop();
 
 	return 0 ;
 

@@ -15,7 +15,9 @@
 #include <thread>
 
 #include "vwifi-host-test.h"
+#include "cwirelessdevice.h"
 
+#include <cstring>
 
 /* allow calling non static function from static function */
 CallFromStaticFunc * VWifiGuest::forward = nullptr ;
@@ -125,7 +127,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	gnlh = (struct genlmsghdr *) nlmsg_data(nlh);
 	memset(addr, 0, 18);
 
-	/* get message length needed for sendto */
+	/* get message length needed for vsock sending */
 	msg_len = nlh->nlmsg_len;
 
 	if (nlh->nlmsg_type != m_family_id) 
@@ -234,14 +236,14 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 
 	/* compare tx src to frame src, update TX src ATTR in msg if needed */
 	/* if we rebuild the nl msg, this can change */
-//	if (memcmp(&framesrc, src, ETH_ALEN) != 0) {
+	if (memcmp(&framesrc, src, ETH_ALEN) != 0) {
 //
 //#ifdef _DEBUG	
 //		std::cout << "updating the TX src ATTR" << std::endl ; 
 //#endif
-//		/* copy dest address from frame to nlh */
-//		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
-//	}
+		/* copy dest address from frame to nlh */
+		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
+	}
 
 
 //	mac_address_to_string(addr, src);
@@ -452,15 +454,10 @@ void VWifiGuest::recv_from_server(){
 	int rate_idx;
 	int signal;
 	//struct ether_addr *dst;	/* stores user mac */
-	//int i;
 	char addr[18];
-	//struct ether_addr radiomac;
 	struct ether_addr framesrc;
 	struct ether_addr framedst;
-	//int should_ack;
-	//int retval;
-	//int distance;
-
+	struct ether_addr broadcast = { 0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF } ;
 
 	signal = -10;
 	rate_idx = 7;
@@ -489,7 +486,7 @@ void VWifiGuest::recv_from_server(){
 	/* exit if the message does not contain frame data */
 	if (gnlh->cmd != HWSIM_CMD_FRAME) {
 	
-//#ifdef DEBUG	
+//#ifdef _DEBUG	
 		std::cout << "Error - received no frame data in message" << std::endl;
 //#endif
 		return ;
@@ -522,7 +519,7 @@ void VWifiGuest::recv_from_server(){
 	mac_address_to_string(addr, src);
 	std::cout << "src hwsim: " << addr << std::endl ;
 
-//#ifdef DEBUG
+//#ifdef _DEBUG
 	data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
 	data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
 //#endif
@@ -531,7 +528,7 @@ void VWifiGuest::recv_from_server(){
 
 	/* copy mac src  address from frame */
 	memcpy(&framesrc, data + 10, ETH_ALEN);
-//#ifdef DEBUG
+//#ifdef _DEBUG
 	mac_address_to_string(addr, &framesrc);
 	std::cout << "frame src:" << addr << std::endl;
 //#endif
@@ -539,20 +536,20 @@ void VWifiGuest::recv_from_server(){
 	/* copy mac dst address from frame */
 	memcpy(&framedst, data + 4, ETH_ALEN);
 
-//#ifdef DEBUG
+//#ifdef _DEBUG
 	mac_address_to_string(addr, &framedst);
 	std::cout << "frame dst:" << addr << std::endl;
 //#endif
 
-	struct ether_addr mac = { 0X42,0,0,0,0,0 } ;
-	mac_address_to_string(addr, &mac);
-	std::cout << "MAC 1:" << addr << std::endl ;
-	send_cloned_frame_msg(&mac, data, data_len,rate_idx, signal, freq);
+	/*if(std::memcmp(&framedst, &broadcast , 6) == 0)
+	 * send to all wireless interfaces
+	*/
 
-	mac = { 0X42,0,0,0,1,0 } ;
-	mac_address_to_string(addr, &mac);
-	std::cout << "MAC 2:" << addr << std::endl ;
-	send_cloned_frame_msg(&mac, data, data_len,rate_idx, signal, freq);
+	framedst.ether_addr_octet[0] =  0x42;
+
+	mac_address_to_string(addr, &framedst);
+	std::cout << "MAC 1:" << addr << std::endl ;
+	send_cloned_frame_msg(&framedst, data, data_len,rate_idx, signal, freq);
 
 }
 
@@ -642,6 +639,8 @@ int VWifiGuest::start(){
 		return 0;
 	}
 
+
+	
 
 	std::cout << "Connection to Server Ok" << std::endl;
 
@@ -756,4 +755,5 @@ void VWifiGuest::mac_address_to_string(char *address, struct ether_addr *mac)
 		mac->ether_addr_octet[0], mac->ether_addr_octet[1], mac->ether_addr_octet[2],
 		mac->ether_addr_octet[3], mac->ether_addr_octet[4], mac->ether_addr_octet[5]);
 }
+
 

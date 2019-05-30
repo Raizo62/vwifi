@@ -1,10 +1,43 @@
+#include "cwirelessdevice.h"
+#include <list>
+#include <mutex>
 
-class MonitorNetDevice {
 
 
-	int start();
-	int stop();
+/** Buffer size for netlink route interface list */
+#define IFLIST_REPLY_BUFFER     4096
 
+class MonitorWirelessDevice {
+
+
+
+	bool _outsideloop { true } ;
+	bool _started { false } ;
+	int _inetsock ;
+	
+	std::mutex _startedmutex ;
+	std::mutex _outsideloopmutex ;
+
+	int main_loop();
+
+	/**
+	 *	@brief processes netlink route events from the kernel
+	 *	Determines the event type for netlink route messages (del/new).
+	 *	@return void
+ 	*/
+	void recv_inet_event();
+	bool outside_loop();
+	void clean();
+
+public:
+
+
+	MonitorWirelessDevice();
+	~MonitorWirelessDevice();
+
+	void start();
+	void stop();
+	bool started(); 
 
 	/*
 	 * @brief returns a list of existing wireless network interfaces 
@@ -13,4 +46,4 @@ class MonitorNetDevice {
 
 
 
-}
+};
