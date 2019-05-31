@@ -52,7 +52,7 @@ $(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h
 
 
 $(OBJ)/cvwifiguest.o: cvwifiguest.cc cvwifiguest.h hwsim.h ieee80211.h
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ -c $<
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -c $<
 
 
 vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cwifiserver.o $(OBJ)/cscheduler.o
@@ -62,10 +62,10 @@ vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/csocket.o $(OBJ)/c
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ $^
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) $^
 
 vwifi-inet-monitor :  vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o 
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS)  -o $@ $^
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 
 $(OBJ)/%.o: %.cc

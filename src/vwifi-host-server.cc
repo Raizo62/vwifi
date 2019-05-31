@@ -16,9 +16,7 @@ int main(int argc , char *argv[])
 	unsigned int i;
 	int valread;
 
-	//a message
-	string message = "ECHO Daemon v1.0 \r\n";
-	char buffer[1025]; //data buffer of 1K
+	char buffer[1024]; //data buffer
 
 	CScheduler scheduler;
 
@@ -71,7 +69,7 @@ int main(int argc , char *argv[])
 				{
 					//Check if it was for closing , and also read the
 					//incoming message
-					valread = socketWifi.Read( socket , buffer, 1024);
+					valread = socketWifi.Read( socket , buffer, sizeof(buffer));
 					if ( valread >= 0 )
 					{
 						if ( valread == 0 )
@@ -96,7 +94,9 @@ int main(int argc , char *argv[])
 							// send to all other clients
 							if( socketWifi.GetNumberClient() > 1 )
 							{
+#ifdef _DEBUG
 								cout<<"Forward "<<valread<<" bytes from "; socketWifi.ShowInfoClient(i); cout<<" to "<< socketWifi.GetNumberClient()-1 << " others clients" <<endl;
+#endif
 								socketWifi.SendAllOtherClients(i,buffer,valread);
 							}
 						}
