@@ -96,7 +96,9 @@ int main(int argc , char *argv[])
 							// send to all other clients
 							if( socketWifi.GetNumberClient() > 1 )
 							{
+#ifdef _DEBUG
 								cout<<"Forward "<<valread<<" bytes from "; socketWifi.ShowInfoClient(i); cout<<" to "<< socketWifi.GetNumberClient()-1 << " others clients" <<endl;
+#endif
 								socketWifi.SendAllOtherClients(i,buffer,valread);
 							}
 						}
