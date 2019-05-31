@@ -29,6 +29,14 @@ class MonitorWirelessDevice {
 	bool outside_loop();
 	void clean();
 
+	/**
+	 *	@brief processes RTM_NEWLINK messages
+	 *	Detects when interfaces are created and modified
+	 *	@param h - netlink message header
+	 *	@return void
+ 	*/
+	void new_net_interface(struct nlmsghdr *) ;
+
 public:
 
 
