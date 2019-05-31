@@ -150,6 +150,13 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 		return 1;
 
 
+	/* this check if signal attr is present */
+	//if (!(attrs[HWSIM_ATTR_SIGNAL]))
+	//	std::cout << "signal attr is not present" << std::endl;
+
+
+
+
 	//if (!(attrs[HWSIM_ATTR_ADDR_RECEIVER]))
 
 	//	std::cout << "hwsim dst mac  (hwsim id) is not present" << std::endl ;
