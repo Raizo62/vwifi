@@ -36,6 +36,9 @@ MonitorWirelessDevice::MonitorWirelessDevice(){
 
 MonitorWirelessDevice::~MonitorWirelessDevice(){
 
+#ifdef _DEBUG
+	std::cout << __func__ << std::endl ;
+#endif
 	if (started())
 		stop();
 
@@ -121,7 +124,7 @@ void MonitorWirelessDevice::start() {
 	_startedmutex.unlock();
 
 	
-	mainloop.join();
+	mainloop.detach();
 
 }
 
