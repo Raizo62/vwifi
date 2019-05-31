@@ -16,8 +16,6 @@ int main(int argc , char *argv[])
 	unsigned int i;
 	int valread;
 
-	//a message
-	string message = "ECHO Daemon v1.0 \r\n";
 	char buffer[1025]; //data buffer of 1K
 
 	CScheduler scheduler;
