@@ -16,7 +16,7 @@ int main(int argc , char *argv[])
 	unsigned int i;
 	int valread;
 
-	char buffer[1025]; //data buffer of 1K
+	char buffer[1024]; //data buffer
 
 	CScheduler scheduler;
 
@@ -69,7 +69,7 @@ int main(int argc , char *argv[])
 				{
 					//Check if it was for closing , and also read the
 					//incoming message
-					valread = socketWifi.Read( socket , buffer, 1024);
+					valread = socketWifi.Read( socket , buffer, sizeof(buffer));
 					if ( valread >= 0 )
 					{
 						if ( valread == 0 )
