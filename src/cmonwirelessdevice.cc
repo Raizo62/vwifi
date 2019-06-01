@@ -16,7 +16,14 @@
 
 #include <thread>
 
-#include <regex>
+
+
+void MonitorWirelessDevice::setCallback(CallbackFunction cb){
+
+	_cb = cb ;
+}
+
+
 
 MonitorWirelessDevice::MonitorWirelessDevice(){
 
@@ -248,9 +255,7 @@ void MonitorWirelessDevice::new_net_interface(struct nlmsghdr *h)
 		WirelessDevice inetdevice (inet_name,ifi->ifi_index,ifi->ifi_type,macaddr);
 	
 		if(inetdevice.checkif_wireless_device()){
-#ifdef _DEBUG	
-			std::cout << inetdevice << std::endl ;
-#endif	
+		_cb(inetdevice);	
 		}
 	}
 }

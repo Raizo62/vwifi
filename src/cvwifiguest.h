@@ -7,6 +7,7 @@
 #include <mutex>
 
 #include "csocketclient.h"
+#include "cwirelessdevice.h"
 
 class CallFromStaticFunc ;
 
@@ -172,6 +173,13 @@ private:
 	 * @brief check the value  m_started member using m_mutex_ctr_run 
 	 */
 	bool check_if_started();
+
+
+	/**
+	 * @brief callback from cmonitorwirelessdevice that is called to 
+	 * handle changes in wireless configuration
+	 */
+	void handle_wireless_notification(WirelessDevice);
 
 
 };

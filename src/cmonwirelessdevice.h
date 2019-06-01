@@ -7,7 +7,10 @@
 /** Buffer size for netlink route interface list */
 #define IFLIST_REPLY_BUFFER     4096
 
+typedef std::function<void(WirelessDevice)> CallbackFunction ;
+
 class MonitorWirelessDevice {
+
 
 
 
@@ -37,11 +40,15 @@ class MonitorWirelessDevice {
  	*/
 	void new_net_interface(struct nlmsghdr *) ;
 
+	CallbackFunction _cb ;
+
 public:
 
 
 	MonitorWirelessDevice();
 	~MonitorWirelessDevice();
+	MonitorWirelessDevice(const MonitorWirelessDevice &) = delete ;
+	MonitorWirelessDevice & operator=(const MonitorWirelessDevice&) = delete ;
 
 	void start();
 	void stop();
@@ -53,5 +60,6 @@ public:
 	std::list<WirelessDevice> &  get_wireless_devices_list();
 
 
+	void setCallback(CallbackFunction);
 
 };

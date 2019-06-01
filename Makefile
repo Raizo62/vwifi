@@ -63,7 +63,7 @@ vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/csocket.o $(
 vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
-vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o
+vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ $^
 
 vwifi-inet-monitor :  vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o $(OBJ)/cmonwirelessdevice.o  

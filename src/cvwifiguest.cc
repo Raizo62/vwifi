@@ -4,7 +4,6 @@
 #include <netlink/genl/family.h>
 #include <netlink/route/link.h>
 
-
 #include <linux/if_arp.h>
 #include <linux/nl80211.h>
 
@@ -13,11 +12,11 @@
 
 #include <iostream>
 #include <thread>
+#include <cstring>
 
 #include "vwifi-host-test.h"
-#include "cwirelessdevice.h"
+#include "cmonwirelessdevice.h"
 
-#include <cstring>
 
 /* allow calling non static function from static function */
 CallFromStaticFunc * VWifiGuest::forward = nullptr ;
@@ -608,6 +607,16 @@ int VWifiGuest::start(){
 	std::cout <<  __func__ << std::endl ;
 #endif
 
+
+	MonitorWirelessDevice monwireless ;
+
+	monwireless.setCallback(
+		[this](WirelessDevice wd) { return handle_wireless_notification(wd);
+}	);
+
+	monwireless.start();
+
+
 	/* allows calls from  static callback to non static member function */ 
 	forward = new CallFromStaticFunc(this);
 
@@ -629,6 +638,7 @@ int VWifiGuest::start(){
 	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
 
 	
+	/*connect to vsock/tcp server */
 #ifdef _USE_VSOCK_
 	if( ! _socket.Connect(PORT) )
 #else
@@ -640,11 +650,14 @@ int VWifiGuest::start(){
 	}
 
 
-	
-
 	std::cout << "Connection to Server Ok" << std::endl;
 
+
+	
+	/* start thread that handle incoming msg from hwsim driver */
 	std::thread hwsimloop(&VWifiGuest::recv_msg_from_hwsim_loop_start,this);
+
+	/* start thread that handle incoming msg from tcp or vsock connection to server */
 	std::thread serverloop(&VWifiGuest::recv_msg_from_server_loop_start,this);
 
 	
@@ -755,5 +768,17 @@ void VWifiGuest::mac_address_to_string(char *address, struct ether_addr *mac)
 		mac->ether_addr_octet[0], mac->ether_addr_octet[1], mac->ether_addr_octet[2],
 		mac->ether_addr_octet[3], mac->ether_addr_octet[4], mac->ether_addr_octet[5]);
 }
+
+
+
+void VWifiGuest::handle_wireless_notification(WirelessDevice wirelessdevice){
+
+#ifdef _DEBUG	
+
+	std::cout << wirelessdevice << std::endl ;
+#endif
+
+}
+
 
 
