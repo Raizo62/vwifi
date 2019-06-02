@@ -2,8 +2,7 @@
 #define _CWIFISERVER_
 
 #include "csocketserver.h"
-
-typedef int CInfoWifi;
+#include "cinfowifi.h"
 
 class CWifiServer : public CSocketServer
 {

@@ -44,18 +44,20 @@ $(OBJ)/csocket.o: csocket.cc csocket.h
 
 $(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.h
 
-$(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h csocketserver.h
+$(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h csocketserver.h cinfowifi.h
 
 $(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.h
 
 $(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h 
+
+$(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h
 
 
 $(OBJ)/cvwifiguest.o: cvwifiguest.cc cvwifiguest.h hwsim.h ieee80211.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -c $<
 
 
-vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cwifiserver.o $(OBJ)/cscheduler.o
+vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cwifiserver.o $(OBJ)/cscheduler.o $(OBJ)/cinfowifi.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o

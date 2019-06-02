@@ -27,13 +27,13 @@ Descriptor CWifiServer::Accept()
 	{
 		case AF_VSOCK :
 			{
-				InfoClient[NumberClient-1] = ((struct sockaddr_vm*)&address)->svm_cid;
+				InfoClient[NumberClient-1].SetCid(((struct sockaddr_vm*)&address)->svm_cid);
 				break ;
 			}
 
 		case AF_INET :
 			{
-				InfoClient[NumberClient-1] = ntohs(address.sin_port);
+				InfoClient[NumberClient-1].SetCid(ntohs(address.sin_port));
 				break;
 			}
 	}
