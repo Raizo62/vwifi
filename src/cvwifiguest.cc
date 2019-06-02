@@ -19,7 +19,7 @@
 
 
 /* allow calling non static function from static function */
-CallFromStaticFunc * VWifiGuest::forward = nullptr ;
+vwifiguest::CallFromStaticFunc * VWifiGuest::forward = nullptr ;
 
 
 
@@ -33,7 +33,6 @@ void VWifiGuest::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
 		tx_rate[i].count = 0;
 	}
 }
-
 
 
 int VWifiGuest::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
@@ -456,7 +455,7 @@ void VWifiGuest::recv_from_server(){
 	char addr[18];
 	struct ether_addr framesrc;
 	struct ether_addr framedst;
-	struct ether_addr broadcast = { 0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF } ;
+	//struct ether_addr broadcast = { 0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF } ;
 
 	signal = -10;
 	rate_idx = 7;
@@ -469,10 +468,6 @@ void VWifiGuest::recv_from_server(){
 		std::cout<<"socket.Read error"<<std::endl;
 		return ;
 	}
-
-	//buf[bytes]='\0';
-	//std::string sbuffer(buf);
-	//std::cout<<sbuffer<<std::endl;
 
 	
 	/* netlink header */
@@ -610,15 +605,12 @@ int VWifiGuest::start(){
 
 	MonitorWirelessDevice monwireless ;
 
-	monwireless.setCallback(
-		[this](WirelessDevice wd) { return handle_wireless_notification(wd);
-}	);
+	monwireless.setNewInetCallback([this](WirelessDevice wd) { return handle_new_winet_notification(wd);});
+	monwireless.setDelInetCallback([this](WirelessDevice wd) { return handle_del_winet_notification(wd);});
 
 	monwireless.start();
 
-
-	/* allows calls from  static callback to non static member function */ 
-	forward = new CallFromStaticFunc(this);
+	monwireless.get_winterface_infos();
 
 	m_started = true ;
 	
@@ -628,8 +620,6 @@ int VWifiGuest::start(){
 		std::cout << "ERROR: could not initialize netlink" << std::endl;
 		return 0 ;
 	} 
-
-
 
 	/* Send a register msg to the kernel */
 	if (!send_register_msg())
@@ -651,8 +641,6 @@ int VWifiGuest::start(){
 
 
 	std::cout << "Connection to Server Ok" << std::endl;
-
-
 	
 	/* start thread that handle incoming msg from hwsim driver */
 	std::thread hwsimloop(&VWifiGuest::recv_msg_from_hwsim_loop_start,this);
@@ -701,6 +689,8 @@ void VWifiGuest::clean_all(){
 
 VWifiGuest::VWifiGuest()  {
 
+	/* allows calls from  static callback to non static member function */ 
+	forward = new vwifiguest::CallFromStaticFunc(this);
 }
 
 
@@ -771,7 +761,16 @@ void VWifiGuest::mac_address_to_string(char *address, struct ether_addr *mac)
 
 
 
-void VWifiGuest::handle_wireless_notification(WirelessDevice wirelessdevice){
+void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
+
+#ifdef _DEBUG	
+
+	std::cout << wirelessdevice << std::endl ;
+#endif
+
+}
+
+void VWifiGuest::handle_del_winet_notification(WirelessDevice wirelessdevice){
 
 #ifdef _DEBUG	
 
