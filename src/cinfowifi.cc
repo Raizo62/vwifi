@@ -10,9 +10,9 @@ TypeCID CInfoWifi::GetCid()
 	return Cid;
 }
 
-void CInfoWifi::Display(ostream &flux) const
+void CInfoWifi::Display(ostream& os) const
 {
-	flux << "[" << Cid << "]";
+	os << "[" << Cid << "]";
 }
 
 ostream& operator<<(ostream& os, const CInfoWifi& infowifi)

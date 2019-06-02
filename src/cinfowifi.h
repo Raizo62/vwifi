@@ -17,7 +17,7 @@ class CInfoWifi
 		
 		TypeCID GetCid();
 
-		void Display(ostream &flux) const;
+		void Display(ostream& os) const;
 
 		friend ostream& operator<<(ostream& os, const CInfoWifi& infowifi);
 };
