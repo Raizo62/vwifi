@@ -13,6 +13,7 @@ TypeCID CInfoWifi::GetCid()
 void CInfoWifi::Display(ostream& os) const
 {
 	os << "[" << Cid << "]";
+	CCoordinate::Display(os);
 }
 
 ostream& operator<<(ostream& os, const CInfoWifi& infowifi)

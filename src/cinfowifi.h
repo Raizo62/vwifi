@@ -3,11 +3,13 @@
 
 #include <iostream>
 
+#include "ccoordinate.h"
+
 using namespace std;
 
 typedef int TypeCID;
 
-class CInfoWifi
+class CInfoWifi : public CCoordinate
 {
 		TypeCID Cid;
 
