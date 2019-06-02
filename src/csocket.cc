@@ -59,33 +59,6 @@ ssize_t CSocket::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
 	return recv(descriptor , data, sizeOfData, 0);
 }
 
-void CSocket::ShowInfo(Descriptor descriptor)
-{
-	int id=-1;
-
-	struct sockaddr_in address;
-	int addrlen = sizeof(address);
-
-	getpeername(descriptor , (struct sockaddr*)&address , (socklen_t*)&addrlen);
-
-	switch ( Type )
-	{
-		case AF_VSOCK :
-			{
-				id = ((struct sockaddr_vm*)&address)->svm_cid;
-				break ;
-			}
-
-		case AF_INET :
-			{
-				id = ntohs(address.sin_port);
-				break;
-			}
-	}
-
-	cout<<"["<<id<<"]";
-}
-
 CSocket::operator int()
 {
 	return Master;

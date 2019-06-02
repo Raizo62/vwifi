@@ -31,8 +31,6 @@ class CSocket
 
 	public :
 
-		void ShowInfo(Descriptor descriptor);
-
 		void Close();
 
 		~CSocket();
