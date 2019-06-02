@@ -57,7 +57,7 @@ int main(int argc , char *argv[])
 				scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection : socket fd is : "<<socket<<" "; socketWifi.ShowInfo(socket) ; cout<<endl;
+				cout<<"New connection from : "; socketWifi.ShowInfo(socket) ; cout<<endl;
 			}
 
 			//else its some IO operation on some other socket
