@@ -5,7 +5,7 @@
 
 const int SCHEDULER_ERROR=-1;
 
-const int MAX_NODE = 30;
+const int MAX_NODE = (1+30);
 
 typedef int Descriptor;
 
