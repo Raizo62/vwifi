@@ -17,7 +17,7 @@ int main(int argc , char *argv[])
 	if( ! socket.Connect(ADDRESS_IP,PORT) )
 #endif
 	{
-		cout<<"socket.Connect error"<<endl;
+		cerr<<"Error : socket.Connect error"<<endl;
 		return 1;
 	}
 
@@ -47,7 +47,7 @@ int main(int argc , char *argv[])
 		value=socket.Send((char*)buffer,strlen(buffer));
 		if( value == SOCKET_ERROR )
 		{
-			cout<<"socket.Send error"<<endl;
+			cerr<<"Error : socket.Send error"<<endl;
 			return 1;
 		}
 	}

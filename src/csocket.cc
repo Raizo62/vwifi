@@ -42,7 +42,7 @@ bool CSocket::Configure()
 
 	if( Master == SOCKET_ERROR )
 	{
-		perror("socket : failed");
+		perror("CSocket::Configure : socket");
 		return false;
 	}
 

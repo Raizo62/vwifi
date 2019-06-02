@@ -15,8 +15,6 @@ CSocketClient::~CSocketClient()
 
 }
 
-
-
 CSocketClient::CSocketClient() : CSocket()
 {
 	Init();
@@ -37,7 +35,7 @@ bool CSocketClient::Connect(const char* IP, unsigned int port)
 	//create a master socket
 	if( ! Configure() )
 	{
-		perror("socket failed");
+		cerr<<"Error : CSocketClient::Connect : Configure"<<endl;
 		return false;
 	}
 
@@ -48,7 +46,7 @@ bool CSocketClient::Connect(const char* IP, unsigned int port)
 
 	if( connect(Master,(struct sockaddr*) &server,sizeof(server)) != 0 )
 	{
-		perror("connect");
+		perror("CSocketClient::Connect : connect");
 		return false;
 	}
 
@@ -62,7 +60,7 @@ bool CSocketClient::Connect(unsigned int port)
 	//create a master socket
 	if( ! Configure() )
 	{
-		perror("socket failed");
+		cerr<<"Error : CSocketClient::Connect : Configure"<<endl;
 		return false;
 	}
 
@@ -76,7 +74,7 @@ bool CSocketClient::Connect(unsigned int port)
 
 	if( connect(Master,(struct sockaddr*) &server,sizeof(server)) != 0 )
 	{
-		perror("connect");
+		perror("CSocketClient::Connect : connect");
 		return false;
 	}
 

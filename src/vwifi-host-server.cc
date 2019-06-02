@@ -24,7 +24,7 @@ int main(int argc , char *argv[])
 	socketWifi.Init(PORT);
 	if( ! socketWifi.Listen() )
 	{
-		cout<<"Error : socketWifi.Listen"<<endl;
+		cerr<<"Error : socketWifi.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -37,7 +37,7 @@ int main(int argc , char *argv[])
 		//so wait indefinitely
 		if( scheduler.Wait() == SCHEDULER_ERROR )
 		{
-			cout<<"Error : scheduler.Wait"<<endl;
+			cerr<<"Error : scheduler.Wait"<<endl;
 			return 1;
 		}
 		else {
@@ -49,7 +49,7 @@ int main(int argc , char *argv[])
 				socket = socketWifi.Accept();
 				if ( socket == SOCKET_ERROR )
 				{
-					cout<<"Error : socketWifi.Accept"<<endl;
+					cerr<<"Error : socketWifi.Accept"<<endl;
 					exit(EXIT_FAILURE);
 				}
 

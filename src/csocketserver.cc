@@ -39,7 +39,7 @@ bool CSocketServer::Listen()
 	//create a master socket
 	if( ! Configure() )
 	{
-		perror("socket failed");
+		cerr<<"Error : CSocketServer::Listen : Configure"<<endl;
 		return false;
 	}
 
@@ -48,7 +48,7 @@ bool CSocketServer::Listen()
 	int opt = 1 ; // TRUE
 	if( setsockopt(Master, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
 	{
-		perror("setsockopt");
+		perror("CSocketServer::Listen : setsockopt");
 		return false;
 	}
 
@@ -67,7 +67,7 @@ bool CSocketServer::Listen()
 				//bind the socket
 				if (bind(Master, (struct sockaddr*)&address, sizeof(address)) != 0)
 				{
-					perror("bind failed");
+					perror("CSocketServer::Listen : bind");
 					return false;
 				}
 
@@ -85,7 +85,7 @@ bool CSocketServer::Listen()
 				//bind the socket
 				if (bind(Master, (struct sockaddr *)&address, sizeof(address))<0)
 				{
-					perror("bind failed");
+					perror("CSocketServer::Listen : bind");
 					return false;
 				}
 
@@ -97,7 +97,7 @@ bool CSocketServer::Listen()
 	//try to specify maximum of 3 pending connections for the master socket
 	if( listen(Master, 3) < 0 )
 	{
-		perror("listen");
+		perror("CSocketServer::Listen : listen");
 		return false;
 	}
 
@@ -119,7 +119,7 @@ Descriptor CSocketServer::Accept(struct sockaddr_in& address)
 
 	if ((new_socket = accept(Master, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
 	{
-		perror("CSocketServer::Accept");
+		perror("CSocketServer::Accept : accept");
 		return SOCKET_ERROR;
 	}
 
