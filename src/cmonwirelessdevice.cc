@@ -400,10 +400,9 @@ int MonitorWirelessDevice::get_winterface_infos()
 		nlmsg_free(msg);
 	      	return -ENOMEM;
 	}
-//	nl_cb_set(cb, NL_CB_VALID, NL_CB_CUSTOM,recv_winterface_infos_cb, NULL);
 
-	nl_cb_set(cb, NL_CB_MSG_IN, NL_CB_CUSTOM,recv_winterface_infos_cb, NULL);
-//	nl_cb_set(m_cb, NL_CB_MSG_IN, NL_CB_CUSTOM, &process_messages_cb, NULL);
+	nl_cb_set(cb, NL_CB_VALID, NL_CB_CUSTOM,recv_winterface_infos_cb, NULL);
+
 
 	/* send get inerface  command to deriver */
 	genlmsg_put(msg, 0, 0, wifi.nl80211_id, 0,NLM_F_DUMP, NL80211_CMD_GET_INTERFACE, 0);
@@ -427,10 +426,9 @@ int MonitorWirelessDevice::get_winterface_infos()
 	nl_cb_set(cb, NL_CB_FINISH, NL_CB_CUSTOM, handle_iee80211_com_finish_cb, &err);
 
 
-	nl_recvmsgs_default(wifi.nls);
 
-//	while (err > 0)
-//	       	nl_recvmsgs(wifi.nls, cb);
+	while (err > 0)
+	       	nl_recvmsgs(wifi.nls, cb);
 
 
 	std::cout << "hoooooooooooooooooooooooooo" << std::endl ;
