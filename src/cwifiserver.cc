@@ -43,7 +43,13 @@ Descriptor CWifiServer::Accept()
 
 void CWifiServer::ShowInfoClient(unsigned int number)
 {
-	cout<<"["<<InfoClient[number]<<"]";
+	if( number >= NumberClient )
+	{
+		cerr<<"Error : CWifiServer::ShowInfoClient : " << number <<" >= "<<NumberClient<<endl;
+		return;
+	}
+
+	cout<<"{"<<InfoClient[number]<<"}";
 }
 
 void CWifiServer::CloseClient(unsigned int number)
