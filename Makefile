@@ -50,6 +50,8 @@ $(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.h
 
 $(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h 
 
+$(OBJ)/cwirelessdevicelist.o: cwirelessdevicelist.cc cwirelessdevicelist.h  
+
 $(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h 
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ -c $<
 
@@ -63,7 +65,7 @@ vwifi-host-server : vwifi-host-server.cc vwifi-host-server.h $(OBJ)/csocket.o $(
 vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
-vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o
+vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o  $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o 
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ $^
 
 vwifi-inet-monitor :  vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o $(OBJ)/cmonwirelessdevice.o  

@@ -1,3 +1,7 @@
+#ifndef _CMONITORWIRELESSDEVICE_H_
+#define _CMONITORWIRELESSDEVICE_H_
+
+
 #include "cwirelessdevice.h"
 #include <list>
 #include <mutex>
@@ -69,9 +73,16 @@ class MonitorWirelessDevice {
 	CallbackFunction _delinet_cb ;
 
 
+	/**
+	 * \brief callback to be set through setCallback function by another object
+	 * this callback is called by recv_winterface_infos function in order to send infos of each existing wireless interface 
+	 */
+	CallbackFunction _initinet_cb ;
+
 	static int recv_winterface_infos_cb(struct nl_msg *msg, void *arg);
 	static int handle_iee80211_com_finish_cb(struct nl_msg *msg, void *arg);
 
+	static monitorinet::CallFromStaticFunc * forward ;
 public:
 
 
@@ -84,10 +95,6 @@ public:
 	void stop();
 	bool started(); 
 
-	/*
-	 * \brief returns a list of existing wireless network interfaces 
-	 */
-	std::list<WirelessDevice> &  get_wireless_devices_list();
 
 	/**
 	 * \brief set new interface notification callback
@@ -97,7 +104,16 @@ public:
 	void setNewInetCallback(CallbackFunction);
 
 	/**
-	 * \brief set a delete interface notification callback
+	 * \brief set delete interface notification callback
+	 * \param CallbackFunction - defined earlier as  typedef std::function<void(WirelessDevice)> CallbackFunction 
+	 * \return void
+	 */
+	void setInitInetCallback(CallbackFunction);
+
+
+
+	/**
+	 * \brief set interface initial list notification callback
 	 * \param CallbackFunction - defined earlier as  typedef std::function<void(WirelessDevice)> CallbackFunction 
 	 * \return void
 	 */
@@ -114,9 +130,11 @@ public:
 	int recv_winterface_infos(struct nl_msg *msg, void *arg);
 	int handle_iee80211_com_finish(struct nl_msg *msg, void *arg);
 
-	static monitorinet::CallFromStaticFunc * forward ;
 
 };
+
+
+
 
 /**
  * \namespace monitorinet
@@ -158,4 +176,4 @@ namespace monitorinet {
 	};
 }
 
-
+#endif

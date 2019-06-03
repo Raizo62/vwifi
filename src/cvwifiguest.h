@@ -8,6 +8,7 @@
 
 #include "csocketclient.h"
 #include "cwirelessdevice.h"
+#include "cwirelessdevicelist.h"
 
 namespace vwifiguest{
 
@@ -15,6 +16,10 @@ namespace vwifiguest{
 }
 class VWifiGuest {
 
+
+/** list of available interfaces */
+
+WirelessDeviceList _list_winterfaces ;
 
 /** pointer for tcp or vsocket */
 CSocketClient  _socket ;
@@ -189,6 +194,12 @@ private:
 	 */
 	void handle_del_winet_notification(WirelessDevice);
 
+
+	/**
+	 * \brief callback from cmonitorwirelessdevice that is called to 
+	 * handle initial wireless  inet 
+	 */
+	void handle_init_winet_notification(WirelessDevice);
 
 };
 

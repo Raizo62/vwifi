@@ -25,10 +25,8 @@ vwifiguest::CallFromStaticFunc * VWifiGuest::forward = nullptr ;
 
 void VWifiGuest::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
 {
-	int i;
-
 	/* Set up all unused rates to be -1 */
-	for (i = 0; i < IEEE80211_MAX_RATES_PER_TX; i++) {
+	for (int i = 0; i < IEEE80211_MAX_RATES_PER_TX; i++) {
 		tx_rate[i].idx = -1;
 		tx_rate[i].count = 0;
 	}
@@ -551,10 +549,15 @@ void VWifiGuest::recv_from_server(){
 
 void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 
+
 #ifdef DEBUG
 
 	std::cout <<  __func__ << std::endl ;
 #endif
+
+	std::cout << _list_winterfaces << std::endl ; 
+
+
 
 	if (! check_if_netlink_initialized())
 		return  ;
@@ -574,6 +577,7 @@ void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 
 
 void VWifiGuest::recv_msg_from_server_loop_start(){
+
 
 #ifdef DEBUG
 
@@ -603,14 +607,25 @@ int VWifiGuest::start(){
 #endif
 
 
-	MonitorWirelessDevice monwireless ;
+	try{
 
-	monwireless.setNewInetCallback([this](WirelessDevice wd) { return handle_new_winet_notification(wd);});
-	monwireless.setDelInetCallback([this](WirelessDevice wd) { return handle_del_winet_notification(wd);});
+		/** make it attribute member if you would use it elsewhere */	
+		MonitorWirelessDevice monwireless ;
+	
+		monwireless.setNewInetCallback([this](WirelessDevice wd) { return handle_new_winet_notification(wd);});
+		monwireless.setDelInetCallback([this](WirelessDevice wd) { return handle_del_winet_notification(wd);});
+		monwireless.setInitInetCallback([this](WirelessDevice wd) { return handle_init_winet_notification(wd);});
+	
+		monwireless.start();
+		monwireless.get_winterface_infos();
 
-	monwireless.start();
+	}catch ( const std::exception & e){
+	
+		std::cerr << e.what() << std::endl ;
+		return 0 ;
+	
+	}
 
-	monwireless.get_winterface_infos();
 
 	m_started = true ;
 	
@@ -775,6 +790,15 @@ void VWifiGuest::handle_del_winet_notification(WirelessDevice wirelessdevice){
 #ifdef _DEBUG	
 
 	std::cout << wirelessdevice << std::endl ;
+#endif
+
+}
+
+void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
+
+#ifdef _DEBUG	
+
+	_list_winterfaces.add_device(wirelessdevice);
 #endif
 
 }

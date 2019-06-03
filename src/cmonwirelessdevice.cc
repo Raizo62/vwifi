@@ -39,6 +39,11 @@ void MonitorWirelessDevice::setDelInetCallback(CallbackFunction cb){
 	_delinet_cb = cb ;
 }
 
+void MonitorWirelessDevice::setInitInetCallback(CallbackFunction cb){
+
+	_initinet_cb = cb ;
+}
+
 
 
 MonitorWirelessDevice::MonitorWirelessDevice(){
@@ -425,13 +430,8 @@ int MonitorWirelessDevice::get_winterface_infos()
 	int err = 1;
 	nl_cb_set(cb, NL_CB_FINISH, NL_CB_CUSTOM, handle_iee80211_com_finish_cb, &err);
 
+	nl_recvmsgs(wifi.nls, cb);
 
-
-	while (err > 0)
-	       	nl_recvmsgs(wifi.nls, cb);
-
-
-	std::cout << "hoooooooooooooooooooooooooo" << std::endl ;
 	/*cleanup*/
 	nlmsg_free(msg);
 	nl_cb_put(cb);
@@ -451,18 +451,55 @@ int MonitorWirelessDevice::recv_winterface_infos_cb(struct nl_msg *msg, void *ar
 
 int MonitorWirelessDevice::recv_winterface_infos(struct nl_msg *msg, void *arg){
 
-	
+
+#ifdef _DEBUG
+	std::cout << __func__ << std::endl ;
+#endif
+
 	struct nlattr *tb_msg[NL80211_ATTR_MAX + 1];
 	struct genlmsghdr *gnlh = (struct genlmsghdr *) nlmsg_data(nlmsg_hdr(msg));
-    
-	nla_parse(tb_msg, NL80211_ATTR_MAX, genlmsg_attrdata(gnlh, 0),genlmsg_attrlen(gnlh, 0), NULL);
 
+     	char *ifname;
+	int ifindex;
+	int iftype;
+	struct ether_addr macaddr ;
+
+	nla_parse(tb_msg, NL80211_ATTR_MAX, genlmsg_attrdata(gnlh, 0),genlmsg_attrlen(gnlh, 0), NULL);
     
 	if (tb_msg[NL80211_ATTR_IFNAME])
         
-		std::cout << "Interfaceeeeee: " << nla_get_string(tb_msg[NL80211_ATTR_IFNAME]) << std::endl;
+		ifname = nla_get_string(tb_msg[NL80211_ATTR_IFNAME]) ;
 
-       	return NL_SKIP;
+	else
+		return NL_SKIP;
+
+	if (tb_msg[NL80211_ATTR_IFINDEX])
+		
+		ifindex = nla_get_u32(tb_msg[NL80211_ATTR_IFINDEX]);
+	else
+		return NL_SKIP;
+
+	if (tb_msg[NL80211_ATTR_MAC])
+	
+		std::memcpy(&macaddr, nla_data(tb_msg[NL80211_ATTR_MAC]), ETH_ALEN);
+	else
+		return NL_SKIP;
+
+	
+	if (tb_msg[NL80211_ATTR_IFTYPE])
+	
+		iftype = nla_get_u32(tb_msg[NL80211_ATTR_IFTYPE]);
+	else
+		return NL_SKIP;
+
+
+	std::string inet_name(ifname);
+	
+	WirelessDevice inetdevice (inet_name,ifindex,iftype,macaddr);
+
+	_initinet_cb(inetdevice);	
+
+	return NL_SKIP;
 }
 
 
@@ -476,10 +513,13 @@ int MonitorWirelessDevice::handle_iee80211_com_finish_cb(struct nl_msg *msg, voi
 
 int MonitorWirelessDevice::handle_iee80211_com_finish(struct nl_msg *msg, void *arg){
 
+#ifdef _DEBUG
+	std::cout << __func__ << std::endl ;
+#endif
+
 	int *ret = (int*) arg;
     	*ret = 0;
     	return NL_SKIP;
-
 }
 
 

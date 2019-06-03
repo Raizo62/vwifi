@@ -54,7 +54,14 @@ bool WirelessDevice::checkif_wireless_device(){
 		return true ;
 	else
 		return false;
+}
+
+int WirelessDevice::getIndex() const {
+
+
+	return _index ;
 }	
+
 
 // friend functions
 
