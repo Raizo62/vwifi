@@ -53,14 +53,19 @@ void CCTRLServer::ChangeCoordinate()
 
 void CCTRLServer::ReceiveOrder()
 {
+	if ( Accept() == SOCKET_ERROR )
+		return;
+
 	Order order=GetOrder();
 
 	switch( order )
 	{
-			case NO_ORDER : return ;
+			case NO_ORDER : break ;
 
 			case CHANGE_COORDINATE :
 				ChangeCoordinate();
-				return;
+				break;
 	}
+
+	CloseClient(0);
 }
