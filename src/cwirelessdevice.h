@@ -25,7 +25,7 @@ class WirelessDevice {
         struct ether_addr getMacaddr() const  ;
 	void setMacaddr(const struct  ether_addr &);
 	bool checkif_wireless_device();
-	int getIndex() const ;	
+	int getIndex() const ;
 
 };
 
