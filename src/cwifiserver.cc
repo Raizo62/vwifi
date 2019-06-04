@@ -73,3 +73,14 @@ void CWifiServer::SendAllOtherClients(unsigned int number,const char* data, ssiz
 			Send(SocketClients[i], data, sizeOfData);
 	}
 }
+
+CInfoWifi* CWifiServer::GetReferenceOnInfoClient(TypeCID cid)
+{
+	for (unsigned int i = 0; i < NumberClient; i++)
+	{
+		if( InfoClient[i].GetCid() == cid )
+			return &(InfoClient[i]);
+	}
+
+	return NULL;
+}
