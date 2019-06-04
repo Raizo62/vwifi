@@ -48,7 +48,7 @@ void CCTRLServer::ChangeCoordinate()
 		return;
 
 	infoWifi->Set(x, y, z);
-	cout<<*infoWifi<<endl;
+	cout<<"-> "<<*infoWifi<<endl;
 }
 
 void CCTRLServer::ReceiveOrder()
