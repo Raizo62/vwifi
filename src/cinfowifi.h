@@ -1,7 +1,7 @@
 #ifndef _CINFOWIFI_
 #define _CINFOWIFI_
 
-#include <iostream>
+#include <iostream> // ostream
 
 #include "ccoordinate.h"
 
