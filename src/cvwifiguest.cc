@@ -614,17 +614,19 @@ int VWifiGuest::start(){
 #endif
 
 
+	MonitorWirelessDevice * monwireless = nullptr ;
+
 	try{
 
 		/** make it attribute member if you would use it elsewhere */	
-		MonitorWirelessDevice monwireless ;
+		monwireless = new MonitorWirelessDevice() ;
 	
-		monwireless.setNewInetCallback([this](WirelessDevice wd) { return handle_new_winet_notification(wd);});
-		monwireless.setDelInetCallback([this](WirelessDevice wd) { return handle_del_winet_notification(wd);});
-		monwireless.setInitInetCallback([this](WirelessDevice wd) { return handle_init_winet_notification(wd);});
+		monwireless->setNewInetCallback([this](WirelessDevice wd) { return handle_new_winet_notification(wd);});
+		monwireless->setDelInetCallback([this](WirelessDevice wd) { return handle_del_winet_notification(wd);});
+		monwireless->setInitInetCallback([this](WirelessDevice wd) { return handle_init_winet_notification(wd);});
 	
-		monwireless.start();
-		monwireless.get_winterface_infos();
+		monwireless->start();
+		monwireless->get_winterface_infos();
 
 	}catch ( const std::exception & e){
 	
@@ -673,6 +675,8 @@ int VWifiGuest::start(){
 	
 	hwsimloop.join();
 	serverloop.join();
+
+	delete monwireless ;
 
 //	clean_all() ;
 

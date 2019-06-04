@@ -187,6 +187,12 @@ bool MonitorWirelessDevice::started() {
 
 void MonitorWirelessDevice::recv_inet_event()
 {
+
+#ifdef _DEBUG
+			std::cout << __func__ << std::endl ;
+#endif
+
+
 	int len;
 	char buf[IFLIST_REPLY_BUFFER];
 	struct iovec iov = { buf, sizeof(buf) };
