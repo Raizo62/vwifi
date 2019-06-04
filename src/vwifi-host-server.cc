@@ -3,8 +3,9 @@
 
 #include <string.h> //strlen
 
-#include "vwifi-host-server.h"
+#include "config.h"
 #include "cwifiserver.h"
+#include "cctrlserver.h"
 #include "cscheduler.h"
 
 using namespace std;
@@ -21,15 +22,24 @@ int main(int argc , char *argv[])
 	CScheduler scheduler;
 
 	CWifiServer socketWifi;
-	socketWifi.Init(PORT);
+	socketWifi.Init(WIFI_PORT);
 	if( ! socketWifi.Listen() )
 	{
 		cerr<<"Error : socketWifi.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
+	CCTRLServer ctrlWifi(&socketWifi);
+	ctrlWifi.Init(CTRL_PORT);
+	if( ! ctrlWifi.Listen() )
+	{
+		cerr<<"Error : ctrlWifi.Listen"<<endl;
+		exit(EXIT_FAILURE);
+	}
+
 	//add master socket to set
 	scheduler.AddNode(socketWifi);
+	scheduler.AddNode(ctrlWifi);
 
 	while( true )
 	{
@@ -58,6 +68,11 @@ int main(int argc , char *argv[])
 
 				//inform user of socket number - used in send and receive commands
 				cout<<"New connection from : "; socketWifi.ShowInfoClient(socketWifi.GetNumberClient()-1) ; cout<<endl;
+			}
+
+			if( scheduler.NodeHasAction(ctrlWifi) )
+			{
+				ctrlWifi.ReceiveOrder();
 			}
 
 			//else its some IO operation on some other socket

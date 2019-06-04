@@ -1,9 +1,8 @@
 #ifndef _CSOCKETSERVER_
 #define _CSOCKETSERVER_
 
+#include "config.h"
 #include "csocket.h"
-
-const int MAX_CLIENT = 30;
 
 class CSocketServer : public CSocket
 {

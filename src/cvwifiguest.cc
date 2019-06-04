@@ -14,8 +14,7 @@
 #include <iostream>
 #include <thread>
 
-#include "vwifi-host-test.h"
-
+#include "config.h"
 
 /* allow calling non static function from static function */
 CallFromStaticFunc * VWifiGuest::forward = nullptr ;
@@ -640,9 +639,9 @@ int VWifiGuest::start(){
 
 	
 #ifdef _USE_VSOCK_
-	if( ! _socket.Connect(PORT) )
+	if( ! _socket.Connect(WIFI_PORT) )
 #else
-	if( ! _socket.Connect(ADDRESS_IP,PORT) )
+	if( ! _socket.Connect(ADDRESS_IP,WIFI_PORT) )
 #endif
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
