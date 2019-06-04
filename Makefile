@@ -63,7 +63,7 @@ $(OBJ)/cvwifiguest.o: cvwifiguest.cc cvwifiguest.h hwsim.h ieee80211.h config.h
 vwifi-host-server : vwifi-host-server.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cwifiserver.o $(OBJ)/cscheduler.o $(OBJ)/cinfowifi.o $(OBJ)/ccoordinate.o $(OBJ)/cctrlserver.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
-vwifi-host-test : vwifi-host-test.cc vwifi-host-test.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o
+vwifi-host-test : vwifi-host-test.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o

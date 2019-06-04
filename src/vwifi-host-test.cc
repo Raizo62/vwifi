@@ -2,55 +2,61 @@
 
 #include <string.h> //strlen
 
-#include "vwifi-host-test.h"
+#include "config.h"
 #include "csocketclient.h"
 
 using namespace std;
 
 int main(int argc , char *argv[])
 {
-	CSocketClient socket;
+	CSocketClient socket(AF_INET);
 
-#ifdef _USE_VSOCK_
-	if( ! socket.Connect(PORT) )
-#else
-	if( ! socket.Connect(ADDRESS_IP,PORT) )
-#endif
+	if( ! socket.Connect("127.0.0.1",CTRL_PORT) )
 	{
 		cerr<<"Error : socket.Connect error"<<endl;
 		return 1;
 	}
 
-	char buffer[1025]; //data buffer of 1K
 	int value;
+	int err;
 
-	/*
-	value=socket.Read(buffer,sizeof(buffer));
-	if( value == SOCKET_ERROR )
+	value=1;
+	err=socket.Send((char*)&value,sizeof(value));
+	if( err == SOCKET_ERROR )
 	{
-		cout<<"socket.Read error"<<endl;
+		cerr<<"socket.Read error"<<endl;
+		return 1;
+	}
+	value=10;
+	err=socket.Send((char*)&value,sizeof(value));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"socket.Read error"<<endl;
+		return 1;
+	}
+	value=11;
+	err=socket.Send((char*)&value,sizeof(value));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"socket.Read error"<<endl;
+		return 1;
+	}
+	value=12;
+	err=socket.Send((char*)&value,sizeof(value));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"socket.Read error"<<endl;
+		return 1;
+	}
+	value=13;
+	err=socket.Send((char*)&value,sizeof(value));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"socket.Read error"<<endl;
 		return 1;
 	}
 
-
-	buffer[value]='\0';
-	string sbuffer(buffer);
-
-	cout<<sbuffer<<endl;
-	*/
-
-	int number;
-	for(int i=0; i< 3 ; i++ )
-	{
-		number=i+1;
-		sprintf(buffer,"%d\n",number);
-		value=socket.Send((char*)buffer,strlen(buffer));
-		if( value == SOCKET_ERROR )
-		{
-			cerr<<"Error : socket.Send error"<<endl;
-			return 1;
-		}
-	}
+	socket.Close();
 
 	return 0;
 }
