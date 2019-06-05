@@ -536,15 +536,8 @@ void VWifiGuest::recv_from_server(){
 	std::cout << "frame dst:" << addr << std::endl;
 #endif
 
-	/*if(std::memcmp(&framedst, &broadcast , 6) == 0)
-	 * send to all wireless interfaces
-	*/
 
-	framedst.ether_addr_octet[0] |= 0x40 ; 
-
-	send_cloned_frame_msg(&framedst, data, data_len,rate_idx, signal, freq);
-
-/*	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
+	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
 
 	for (auto & inet : inets)
 	{
@@ -553,7 +546,7 @@ void VWifiGuest::recv_from_server(){
 		send_cloned_frame_msg(&macdst, data, data_len,rate_idx, signal, freq);
 
 	}
-*/
+
 }
 
 
@@ -618,26 +611,26 @@ int VWifiGuest::start(){
 #endif
 
 
-//	MonitorWirelessDevice * monwireless = nullptr ;
-//
-//	try{
-//
-//		/** make it attribute member if you would use it elsewhere */	
-//		monwireless = new MonitorWirelessDevice() ;
-//	
-//		monwireless->setNewInetCallback([this](WirelessDevice wd) { return handle_new_winet_notification(wd);});
-//		monwireless->setDelInetCallback([this](WirelessDevice wd) { return handle_del_winet_notification(wd);});
-//		monwireless->setInitInetCallback([this](WirelessDevice wd) { return handle_init_winet_notification(wd);});
-//	
-//		monwireless->start();
-//		monwireless->get_winterface_infos();
-//
-//	}catch ( const std::exception & e){
-//	
-//		std::cerr << e.what() << std::endl ;
-//		return 0 ;
-//	
-//	}
+	MonitorWirelessDevice * monwireless = nullptr ;
+
+	try{
+
+		/** make it attribute member if you would use it elsewhere */	
+		monwireless = new MonitorWirelessDevice() ;
+	
+		monwireless->setNewInetCallback([this](WirelessDevice wd) { return handle_new_winet_notification(wd);});
+		monwireless->setDelInetCallback([this](WirelessDevice wd) { return handle_del_winet_notification(wd);});
+		monwireless->setInitInetCallback([this](WirelessDevice wd) { return handle_init_winet_notification(wd);});
+	
+		monwireless->start();
+		monwireless->get_winterface_infos();
+
+	}catch ( const std::exception & e){
+	
+		std::cerr << e.what() << std::endl ;
+		return 0 ;
+	
+	}
 
 
 	m_started = true ;
@@ -680,7 +673,7 @@ int VWifiGuest::start(){
 	hwsimloop.join();
 	serverloop.join();
 
-//	delete monwireless ;
+	delete monwireless ;
 
 //	clean_all() ;
 
@@ -811,10 +804,8 @@ void VWifiGuest::handle_del_winet_notification(WirelessDevice wirelessdevice){
 
 void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 
-#ifdef _DEBUG	
 
 	_list_winterfaces.add_device(wirelessdevice);
-#endif
 
 }
 
