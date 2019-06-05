@@ -1,5 +1,11 @@
 #include "ccoordinate.h"
 
+CCoordinate::CCoordinate(Value x, Value y, Value z)
+{
+	Set(x, y);
+	SetZ(z);
+}
+
 CCoordinate::CCoordinate()
 {
 	X=0;
@@ -46,6 +52,11 @@ void CCoordinate::Set(Value x, Value y, Value z)
 {
 	Set(x, y);
 	SetZ(z);
+}
+
+void CCoordinate::Set(CCoordinate coo)
+{
+	*this=coo;
 }
 
 float CCoordinate::DistanceWith(Value x, Value y, Value z)

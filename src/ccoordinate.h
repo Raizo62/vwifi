@@ -15,6 +15,7 @@ class CCoordinate
 
 	public :
 		CCoordinate();
+		CCoordinate(Value x, Value y, Value z);
 
 		void SetX(Value x);
 		void SetY(Value y);
@@ -22,6 +23,8 @@ class CCoordinate
 
 		void Set(Value x, Value y);
 		void Set(Value x, Value y, Value z);
+
+		void Set(CCoordinate coo);
 
 		Value GetX();
 		Value GetY();
