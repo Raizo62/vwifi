@@ -1,4 +1,5 @@
 #include "cctrlserver.h"
+#include "ccoordinate.h" // CCoordinate
 
 CCTRLServer::CCTRLServer(CWifiServer* wifiServer) : CSocketServer(AF_INET)
 {
@@ -30,15 +31,9 @@ void CCTRLServer::ChangeCoordinate()
 	if( Read((char*)&cid, sizeof(TypeCID)) == SOCKET_ERROR )
 		return;
 
-	Value x;
-	Value y;
-	Value z;
+	CCoordinate coo;
 
-	if( Read((char*)&x, sizeof(Value)) == SOCKET_ERROR )
-		return;
-	if( Read((char*)&y, sizeof(Value)) == SOCKET_ERROR )
-		return;
-	if( Read((char*)&z, sizeof(Value)) == SOCKET_ERROR )
+	if( Read((char*)&coo, sizeof(coo)) == SOCKET_ERROR )
 		return;
 
 	CInfoWifi* infoWifi;
@@ -47,7 +42,7 @@ void CCTRLServer::ChangeCoordinate()
 	if( infoWifi == NULL )
 		return;
 
-	infoWifi->Set(x, y, z);
+	infoWifi->Set(coo);
 	cout<<"-> "<<*infoWifi<<endl;
 }
 
