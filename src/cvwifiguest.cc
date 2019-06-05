@@ -540,7 +540,9 @@ void VWifiGuest::recv_from_server(){
 	 * send to all wireless interfaces
 	*/
 
-	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
+	send_cloned_frame_msg(&framedst, data, data_len,rate_idx, signal, freq);
+
+/*	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
 
 	for (auto & inet : inets)
 	{
@@ -549,7 +551,7 @@ void VWifiGuest::recv_from_server(){
 		send_cloned_frame_msg(&macdst, data, data_len,rate_idx, signal, freq);
 
 	}
-
+*/
 }
 
 
