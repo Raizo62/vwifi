@@ -67,10 +67,13 @@ void CWifiServer::CloseClient(unsigned int number)
 
 void CWifiServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
 {
+	CCoordinate coo=InfoClient[number];
+
 	for (unsigned int i = 0; i < NumberClient; i++)
 	{
 		if( i != number )
-			Send(SocketClients[i], data, sizeOfData);
+			if ( coo.DistanceWith(InfoClient[i]) < 10 )
+				Send(SocketClients[i], data, sizeOfData);
 	}
 }
 
