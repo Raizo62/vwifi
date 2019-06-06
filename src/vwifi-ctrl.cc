@@ -6,7 +6,7 @@
 #include "csocketclient.h"
 #include "cctrlserver.h" // the type of orders
 #include "ccoordinate.h" // CCoordinate and Type of x, y and z
-#include "cinfowifi.h" //Type of CID
+#include "cinfowifi.h"
 
 using namespace std;
 
@@ -14,8 +14,53 @@ void Help(char* nameOfProg)
 {
 	cout<<nameOfProg<<" [order]"<<endl;
 	cout<<" with [order] :"<<endl;
+	cout<<"	-	List the VMs :"<<endl;
+	cout<<"			list"<<endl;
 	cout<<"	-	Change the coordinate of the VM with cid :"<<endl;
 	cout<<"			coo cid x y z"<<endl;
+}
+
+int AskList()
+{
+	CSocketClient socket(AF_INET);
+
+	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	{
+		cerr<<"Error : AskList : socket.Connect error"<<endl;
+		return 1;
+	}
+
+	int err;
+	err=socket.Send((char*)&ORDER_LIST,sizeof(ORDER_LIST));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskList : socket.Send : order"<<endl;
+		return 1;
+	}
+
+	unsigned int number;
+	err=socket.Read((char*)&number,sizeof(number));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskList : socket.Read : number"<<endl;
+		return 1;
+	}
+
+	CInfoWifi info;
+	for(unsigned int i=0; i<number;i++)
+	{
+		err=socket.Read((char*)&info,sizeof(info));
+		if( err == SOCKET_ERROR )
+		{
+			cerr<<"Error : AskList : socket.Read : CInfoWifi"<<endl;
+			return 1;
+		}
+		cout<<info<<endl;
+	}
+
+	socket.Close();
+
+	return 0;
 }
 
 int ChangeCoordinate(int argc, char *argv[])
@@ -76,7 +121,11 @@ int main(int argc , char *argv[])
 		return 0;
 	}
 
-	return ChangeCoordinate(argc, argv);
+	if( ! strcmp(argv[1],"list") )
+		return AskList();
+
+	if( ! strcmp(argv[1],"coo") )
+		return ChangeCoordinate(argc, argv);
 
 	return 0;
 }

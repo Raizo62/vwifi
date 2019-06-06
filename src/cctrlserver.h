@@ -6,7 +6,8 @@
 typedef int Order;
 
 const int NO_ORDER=0;
-const int CHANGE_COORDINATE=1;
+const int ORDER_LIST=1;
+const int CHANGE_COORDINATE=2;
 
 class CCTRLServer : public CSocketServer
 {
@@ -14,7 +15,11 @@ class CCTRLServer : public CSocketServer
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
 
+		ssize_t Send(char* data, ssize_t sizeOfData);
+
 		Order GetOrder();
+
+		void SendList();
 
 		void ChangeCoordinate();
 
