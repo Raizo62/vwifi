@@ -34,7 +34,7 @@ sudo rmmod vhost_vsock vmw_vsock_virtio_transport_common vsock
 sudo modprobe vhost_vsock
 sudo chmod a+rw /dev/vhost-vsock
 
-./vwifi-host-server
+./vwifi-server
 ```
 
  - QEmu : add the option : `-device vhost-vsock-pci,id=vhost-vsock-pci0,guest-cid=NUM` with NUM an identifier
