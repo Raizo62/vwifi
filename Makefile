@@ -5,7 +5,7 @@ VERSION	=	1
 BINDIR	=	$(DESTDIR)/usr/local/bin
 MANDIR	=	$(DESTDIR)/usr/local/man/man1
 
-EXEC	=	vwifi-server vwifi-guest vwifi-host-ctrl vwifi-host-test vwifi-inet-monitor
+EXEC	=	vwifi-server vwifi-guest vwifi-ctrl vwifi-host-test vwifi-inet-monitor
 
 SRC		=	src
 OBJ		=	obj
@@ -66,7 +66,7 @@ vwifi-server : vwifi-server.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o 
 vwifi-host-test : vwifi-host-test.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
-vwifi-host-ctrl : vwifi-host-ctrl.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/ccoordinate.o
+vwifi-ctrl : vwifi-ctrl.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/ccoordinate.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o
