@@ -12,7 +12,7 @@ using namespace std;
 
 CSocketClient::~CSocketClient() 
 {
-
+	CSocket::Close();
 }
 
 CSocketClient::CSocketClient() : CSocket()
