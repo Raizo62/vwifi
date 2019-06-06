@@ -77,7 +77,7 @@ void CWifiServer::SendAllOtherClients(unsigned int number,const char* data, ssiz
 	}
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoClient(TypeCID cid)
+CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TypeCID cid)
 {
 	for (unsigned int i = 0; i < NumberClient; i++)
 	{
@@ -86,4 +86,15 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClient(TypeCID cid)
 	}
 
 	return NULL;
+}
+
+CInfoWifi* CWifiServer::GetReferenceOnInfoClientByNumber(unsigned int number)
+{
+	if( number >= NumberClient )
+	{
+		cerr<<"Error : CWifiServer::GetReferenceOnInfoClientByNumber : " << number <<" >= "<<NumberClient<<endl;
+		return NULL;
+	}
+
+	return &(InfoClient[number]);
 }
