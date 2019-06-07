@@ -13,8 +13,8 @@ MAN		=	man
 
 CC		=	g++
 
-#MODE= -O4 -Wall -fomit-frame-pointer # //////////      RELEASE
-MODE= -g -Wall -D_DEBUG # //////////      DEBUG
+MODE= -O4 -Wall -fomit-frame-pointer # //////////      RELEASE
+#MODE= -g -Wall -D_DEBUG # //////////      DEBUG
 #MODE= -pg # //////////      PROFILER --> view with : gprof $(NAME)
 
 CFLAGS  +=  $(MODE)
@@ -50,7 +50,14 @@ $(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.h
 
 $(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h 
 
+<<<<<<< HEAD
 $(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h ccoordinate.h
+=======
+$(OBJ)/cwirelessdevicelist.o: cwirelessdevicelist.cc cwirelessdevicelist.h  
+
+$(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h 
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ -c $<
+>>>>>>> getinterfaceinfo
 
 $(OBJ)/ccoordinate.o: ccoordinate.cc ccoordinate.h
 
@@ -66,11 +73,19 @@ vwifi-server : vwifi-server.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o 
 vwifi-ctrl : vwifi-ctrl.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/ccoordinate.o $(OBJ)/cinfowifi.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
 
+<<<<<<< HEAD
 vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) $^
 
 vwifi-inet-monitor :  vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o 
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $^
+=======
+vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o  $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o 
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -o $@ $^
+
+vwifi-inet-monitor :  vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o $(OBJ)/cmonwirelessdevice.o  
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS)  -o $@ $^
+>>>>>>> getinterfaceinfo
 
 
 $(OBJ)/%.o: %.cc
