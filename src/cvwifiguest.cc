@@ -14,16 +14,12 @@
 #include <thread>
 #include <cstring>
 
-<<<<<<< HEAD
 #include "config.h"
-=======
-#include "vwifi-host-test.h"
 #include "cmonwirelessdevice.h"
 
->>>>>>> getinterfaceinfo
 
 /* allow calling non static function from static function */
-CallFromStaticFunc * VWifiGuest::forward = nullptr ;
+vwifiguest::CallFromStaticFunc * VWifiGuest::forward = nullptr ;
 
 
 

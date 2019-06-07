@@ -4,7 +4,7 @@
 #include <sys/types.h> // ssize_t
 #include <sys/socket.h> // AF_INET / AF_VSOCK
 
-#define _USE_VSOCK_
+//#define _USE_VSOCK_
 
 const int SOCKET_ERROR=-1;
 const int SOCKET_OK=0;
