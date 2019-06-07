@@ -24,7 +24,7 @@
 
 #include <linux/nl80211.h>
 
-/* allow a call of non static function from static function */
+/* allow calling a non static function from static function */
 monitorinet::CallFromStaticFunc * MonitorWirelessDevice::forward = nullptr ;
 
 
@@ -66,10 +66,8 @@ MonitorWirelessDevice::MonitorWirelessDevice(){
 
 	/* allows calls from  static callback to non static member function */ 
 	forward = new monitorinet::CallFromStaticFunc(this);
-
-
-
 }
+
 
 MonitorWirelessDevice::~MonitorWirelessDevice(){
 
@@ -82,9 +80,7 @@ MonitorWirelessDevice::~MonitorWirelessDevice(){
 	while(!outside_loop());
 	
 	clean();
-	
 }
-
 
 
 void MonitorWirelessDevice::clean(){
@@ -185,13 +181,14 @@ bool MonitorWirelessDevice::started() {
 
 
 
+
+/***********************************************************************************************/
+/***************** handle netlink net device events from kernel ******************************/
+/**********************************************************************************************/
+
+
 void MonitorWirelessDevice::recv_inet_event()
 {
-
-#ifdef _DEBUG
-			std::cout << __func__ << std::endl ;
-#endif
-
 
 	int len;
 	char buf[IFLIST_REPLY_BUFFER];
@@ -208,11 +205,12 @@ void MonitorWirelessDevice::recv_inet_event()
 
 		switch (nlmsgheader->nlmsg_type) {
 		case NLMSG_DONE:
-			//nlmsg_end = 1;
 			break;
+		
 		case NLMSG_ERROR:
 			perror("read_netlink");
 			break;
+		
 		case RTM_NEWLINK:
 #ifdef _DEBUG
 			std::cout << "Network interface added" << std::endl ;
@@ -226,6 +224,7 @@ void MonitorWirelessDevice::recv_inet_event()
 			del_net_interface(nlmsgheader);
 
 			break;
+
 		default:
 			break;
 		}
@@ -361,6 +360,9 @@ void MonitorWirelessDevice::del_net_interface(struct nlmsghdr *h)
 
 
 
+/***********************************************************************************************/
+/***************** handle communication with nl80211 module ***********************************/
+/**********************************************************************************************/
 
 int MonitorWirelessDevice::get_winterface_infos()
 {

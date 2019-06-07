@@ -20,10 +20,18 @@ WirelessDevice::~WirelessDevice(){
 
 WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr):_name(name),_index(index),_iftype(iftype){
 
+	_macaddr = macaddr ;
+//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN); 
+
+}
+
+
+
+WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr,const struct ether_addr & machwsim):_name(name),_index(index),_iftype(iftype){
 
 
 	_macaddr = macaddr ;
-//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN); 
+	_machwsim = machwsim ;
 
 }
 
@@ -38,12 +46,21 @@ struct ether_addr WirelessDevice::getMacaddr() const  {
 
 void  WirelessDevice::setMacaddr(const struct ether_addr & macaddr)  {
 
-
 	_macaddr = macaddr ;
 //	std::memcpy(&_macaddr,&macaddr,ETH_ALEN); 
 
 }
 
+void  WirelessDevice::setMachwsim(const struct ether_addr & machwsim)  {
+
+	_machwsim = machwsim ;
+//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN); 
+}
+
+struct ether_addr WirelessDevice::getMachwsim() const  {
+
+	return _machwsim ;
+}
 
 
 bool WirelessDevice::checkif_wireless_device(){
