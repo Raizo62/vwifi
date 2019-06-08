@@ -14,10 +14,10 @@ void Help(char* nameOfProg)
 {
 	cout<<nameOfProg<<" [order]"<<endl;
 	cout<<" with [order] :"<<endl;
-	cout<<"	-	List the VMs :"<<endl;
-	cout<<"			list"<<endl;
-	cout<<"	-	Change the coordinate of the VM with cid :"<<endl;
-	cout<<"			coo cid x y z"<<endl;
+	cout<<"	ls"<<endl;
+	cout<<"		- List the VMs"<<endl;
+	cout<<"	set cid x y z"<<endl;
+	cout<<"		- Change the coordinate of the VM with cid"<<endl;
 }
 
 int AskList()
@@ -121,10 +121,10 @@ int main(int argc , char *argv[])
 		return 0;
 	}
 
-	if( ! strcmp(argv[1],"list") )
+	if( ! strcmp(argv[1],"ls") )
 		return AskList();
 
-	if( ! strcmp(argv[1],"coo") )
+	if( ! strcmp(argv[1],"set") )
 		return ChangeCoordinate(argc, argv);
 
 	return 0;
