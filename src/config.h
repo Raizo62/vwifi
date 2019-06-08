@@ -4,7 +4,7 @@
 #include "csocket.h" // TPort
 #include "csocketserver.h" // Number
 
-const Number MAX_CLIENT_WIFI = 30;
+const Number MAX_CLIENT_WIFI = 15;
 
 const TPort WIFI_PORT = 8211;
 const TPort CTRL_PORT = 8212;
