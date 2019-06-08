@@ -10,7 +10,7 @@
 
 using namespace std;
 
-bool CWifiServer::Listen(unsigned int maxClient)
+bool CWifiServer::Listen(Number maxClient)
 {
 	if( ! CSocketServer::Listen(maxClient) )
 		return false;
@@ -56,7 +56,7 @@ Descriptor CWifiServer::Accept()
 	return new_socket;
 }
 
-void CWifiServer::ShowInfoClient(unsigned int number)
+void CWifiServer::ShowInfoClient(Number number)
 {
 	if( number >= NumberClient )
 	{
@@ -67,7 +67,7 @@ void CWifiServer::ShowInfoClient(unsigned int number)
 	cout<<"{"<<InfoClient[number]<<"}";
 }
 
-void CWifiServer::CloseClient(unsigned int number)
+void CWifiServer::CloseClient(Number number)
 {
 	if( number >= NumberClient )
 		return;
@@ -80,11 +80,11 @@ void CWifiServer::CloseClient(unsigned int number)
 		memcpy(&(InfoClient[number]),&(InfoClient[number+1]),(NumberClient-number)*sizeof(CInfoWifi));
 }
 
-void CWifiServer::SendAllOtherClients(unsigned int number,const char* data, ssize_t sizeOfData)
+void CWifiServer::SendAllOtherClients(Number number,const char* data, ssize_t sizeOfData)
 {
 	CCoordinate coo=InfoClient[number];
 
-	for (unsigned int i = 0; i < NumberClient; i++)
+	for (Number i = 0; i < NumberClient; i++)
 	{
 		if( i != number )
 			if ( coo.DistanceWith(InfoClient[i]) < 10 )
@@ -94,7 +94,7 @@ void CWifiServer::SendAllOtherClients(unsigned int number,const char* data, ssiz
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TypeCID cid)
 {
-	for (unsigned int i = 0; i < NumberClient; i++)
+	for (Number i = 0; i < NumberClient; i++)
 	{
 		if( InfoClient[i].GetCid() == cid )
 			return &(InfoClient[i]);
@@ -103,7 +103,7 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TypeCID cid)
 	return NULL;
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoClientByNumber(unsigned int number)
+CInfoWifi* CWifiServer::GetReferenceOnInfoClientByNumber(Number number)
 {
 	if( number >= NumberClient )
 	{

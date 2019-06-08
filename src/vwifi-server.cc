@@ -14,9 +14,9 @@ int main(int argc , char *argv[])
 {
 	Descriptor socket;
 
-	unsigned int i;
-	int valread;
+	Number i;
 
+	int valread;
 	char buffer[1024]; //data buffer
 
 	CScheduler scheduler;

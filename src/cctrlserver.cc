@@ -31,11 +31,11 @@ Order CCTRLServer::GetOrder()
 
 void CCTRLServer::SendList()
 {
-	unsigned int number=WifiServer->GetNumberClient();
+	Number number=WifiServer->GetNumberClient();
 	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
 		return;
 
-	for(unsigned int i=0; i<number;i++)
+	for(Number i=0; i<number;i++)
 	{
 		CInfoWifi* infoWifi=WifiServer->GetReferenceOnInfoClientByNumber(i);
 		if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )

@@ -32,13 +32,13 @@ void CSocketServer::Init(unsigned int port)
 
 CSocketServer::~CSocketServer()
 {
-	for (unsigned int i = 0; i < NumberClient; i++)
+	for (Number i = 0; i < NumberClient; i++)
 		close(SocketClients[i]);
 
 	CSocket::Close();
 }
 
-bool CSocketServer::Listen(unsigned int maxClient)
+bool CSocketServer::Listen(Number maxClient)
 {
 	MaxClient=maxClient;
 
@@ -150,7 +150,7 @@ Descriptor CSocketServer::Accept(struct sockaddr_in& address)
 	return new_socket;
 }
 
-Descriptor CSocketServer::GetSocketClient(unsigned int number)
+Descriptor CSocketServer::GetSocketClient(Number number)
 {
 	if( number >= NumberClient )
 		return SOCKET_ERROR;
@@ -158,12 +158,12 @@ Descriptor CSocketServer::GetSocketClient(unsigned int number)
 	return SocketClients[number];
 }
 
-unsigned int CSocketServer::GetNumberClient()
+Number CSocketServer::GetNumberClient()
 {
 	return NumberClient;
 }
 
-void CSocketServer::CloseClient(unsigned int number)
+void CSocketServer::CloseClient(Number number)
 {
 	if( number >= NumberClient )
 		return;
