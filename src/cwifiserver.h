@@ -6,9 +6,11 @@
 
 class CWifiServer : public CSocketServer
 {
-		CInfoWifi InfoClient[MAX_CLIENT];
+		CInfoWifi* InfoClient;
 
 	public :
+
+		bool Listen(unsigned int maxClient);
 
 		Descriptor Accept();
 

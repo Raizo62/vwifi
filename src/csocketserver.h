@@ -10,8 +10,10 @@ class CSocketServer : public CSocket
 
 		unsigned int Port;
 
+		unsigned int MaxClient;
 		unsigned int NumberClient;
-		Descriptor SocketClients[MAX_CLIENT];
+
+		Descriptor* SocketClients;
 
 		Descriptor Accept(struct sockaddr_in& address);
 
@@ -27,7 +29,7 @@ class CSocketServer : public CSocket
 
 		void Init(unsigned int port);
 
-		bool Listen();
+		virtual bool Listen(unsigned int maxClient);
 
 		virtual Descriptor Accept();
 

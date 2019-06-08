@@ -13,17 +13,21 @@ using namespace std;
 
 CSocketServer::CSocketServer() : CSocket()
 {
+	NumberClient=0;
+	MaxClient=0;
+	SocketClients=NULL;
 };
 
 CSocketServer::CSocketServer(TypeSocket type) : CSocket(type)
 {
+	NumberClient=0;
+	MaxClient=0;
+	SocketClients=NULL;
 };
 
 void CSocketServer::Init(unsigned int port)
 {
 	Port=port;
-
-	NumberClient=0;
 }
 
 CSocketServer::~CSocketServer()
@@ -34,8 +38,10 @@ CSocketServer::~CSocketServer()
 	CSocket::Close();
 }
 
-bool CSocketServer::Listen()
+bool CSocketServer::Listen(unsigned int maxClient)
 {
+	MaxClient=maxClient;
+
 	//create a master socket
 	if( ! Configure() )
 	{
@@ -101,6 +107,13 @@ bool CSocketServer::Listen()
 		return false;
 	}
 
+	SocketClients = new Descriptor [ MaxClient ];
+	if( SocketClients == NULL )
+	{
+		perror("CSocketServer::Listen : new");
+		return false;
+	}
+
 	return true;
 }
 
@@ -123,7 +136,7 @@ Descriptor CSocketServer::Accept(struct sockaddr_in& address)
 		return SOCKET_ERROR;
 	}
 
-	if ( NumberClient >= MAX_CLIENT )
+	if ( NumberClient >= MaxClient )
 	{
 		cerr<<"Error : CSocketServer::Accept : too much clients"<<endl;
 		return SOCKET_ERROR;

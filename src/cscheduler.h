@@ -7,7 +7,7 @@
 
 const int SCHEDULER_ERROR=-1;
 
-const int MAX_NODE = (2+(MAX_CLIENT)); // 2 = socketWifi and ctrlWifi
+const int MAX_NODE = (2+(MAX_CLIENT_WIFI)); // 2 = socketWifi and ctrlWifi
 
 typedef int Descriptor;
 

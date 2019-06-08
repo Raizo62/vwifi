@@ -23,7 +23,7 @@ int main(int argc , char *argv[])
 
 	CWifiServer socketWifi;
 	socketWifi.Init(WIFI_PORT);
-	if( ! socketWifi.Listen() )
+	if( ! socketWifi.Listen(MAX_CLIENT_WIFI) )
 	{
 		cerr<<"Error : socketWifi.Listen"<<endl;
 		exit(EXIT_FAILURE);
@@ -31,11 +31,13 @@ int main(int argc , char *argv[])
 
 	CCTRLServer ctrlWifi(&socketWifi);
 	ctrlWifi.Init(CTRL_PORT);
-	if( ! ctrlWifi.Listen() )
+	if( ! ctrlWifi.Listen(1) )
 	{
 		cerr<<"Error : ctrlWifi.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
+
+
 
 	//add master socket to set
 	scheduler.AddNode(socketWifi);

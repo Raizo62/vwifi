@@ -1,7 +1,7 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-const int MAX_CLIENT = 30;
+const int MAX_CLIENT_WIFI = 30;
 
 const int WIFI_PORT = 8211;
 const int CTRL_PORT = 8888;

@@ -10,6 +10,21 @@
 
 using namespace std;
 
+bool CWifiServer::Listen(unsigned int maxClient)
+{
+	if( ! CSocketServer::Listen(maxClient) )
+		return false;
+
+	InfoClient = new CInfoWifi [ maxClient ];
+	if( InfoClient == NULL )
+	{
+		perror("CWifiServer::Listen : new");
+		return false;
+	}
+
+	return true;
+}
+
 Descriptor CWifiServer::Accept()
 {
 	Descriptor new_socket;
