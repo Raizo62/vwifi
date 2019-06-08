@@ -14,7 +14,7 @@ using namespace std;
 CSocket::CSocket()
 {
 	Master=0;
-#ifdef _USE_VSOCK_
+#ifdef _USE_VSOCK_BY_DEFAULT_
 	cout<<"Type : AF_VSOCK"<<endl;
 	Type=AF_VSOCK;
 #else

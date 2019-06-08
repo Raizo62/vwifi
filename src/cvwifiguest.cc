@@ -657,7 +657,7 @@ int VWifiGuest::start(){
 
 	
 	/*connect to vsock/tcp server */
-#ifdef _USE_VSOCK_
+#ifdef _USE_VSOCK_BY_DEFAULT_
 	if( ! _socket.Connect(WIFI_PORT) )
 #else
 	if( ! _socket.Connect(ADDRESS_IP,WIFI_PORT) )
