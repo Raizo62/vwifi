@@ -89,7 +89,7 @@ int ChangeCoordinate(int argc, char *argv[])
 	}
 
 	int err;
-	err=socket.Send((char*)&CHANGE_COORDINATE,sizeof(CHANGE_COORDINATE));
+	err=socket.Send((char*)&ORDER_CHANGE_COORDINATE,sizeof(ORDER_CHANGE_COORDINATE));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : ChangeCoordinate : socket.Send : order"<<endl;

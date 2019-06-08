@@ -5,9 +5,9 @@
 
 typedef int Order;
 
-const int NO_ORDER=0;
+const int ORDER_NO=0;
 const int ORDER_LIST=1;
-const int CHANGE_COORDINATE=2;
+const int ORDER_CHANGE_COORDINATE=2;
 
 class CCTRLServer : public CSocketServer
 {

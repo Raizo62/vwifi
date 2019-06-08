@@ -21,10 +21,10 @@ Order CCTRLServer::GetOrder()
 	Order order;
 
 	if( GetNumberClient() != 1 )
-		return NO_ORDER;
+		return ORDER_NO;
 
 	if( Read((char*)&order, sizeof(Order)) == SOCKET_ERROR )
-		return NO_ORDER;
+		return ORDER_NO;
 
 	return order;
 }
@@ -78,13 +78,13 @@ void CCTRLServer::ReceiveOrder()
 
 	switch( order )
 	{
-			case NO_ORDER : break ;
+			case ORDER_NO : break ;
 
 			case ORDER_LIST :
 				SendList();
 				break;
 
-			case CHANGE_COORDINATE :
+			case ORDER_CHANGE_COORDINATE :
 				ChangeCoordinate();
 				break;
 	}
