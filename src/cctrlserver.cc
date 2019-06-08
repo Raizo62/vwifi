@@ -43,7 +43,6 @@ void CCTRLServer::SendList()
 			cerr<<"Error : AskList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
 			return;
 		}
-		cout<<*infoWifi<<endl;
 	}
 }
 
@@ -66,7 +65,6 @@ void CCTRLServer::ChangeCoordinate()
 		return;
 
 	infoWifi->Set(coo);
-	cout<<"-> "<<*infoWifi<<endl;
 }
 
 void CCTRLServer::ReceiveOrder()
