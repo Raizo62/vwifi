@@ -1,5 +1,5 @@
-#ifndef _CSOCKET_
-#define _CSOCKET_
+#ifndef _CSOCKET_H_
+#define _CSOCKET_H_
 
 #include <sys/types.h> // ssize_t
 #include <sys/socket.h> // AF_INET / AF_VSOCK

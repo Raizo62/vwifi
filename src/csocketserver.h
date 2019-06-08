@@ -1,7 +1,6 @@
-#ifndef _CSOCKETSERVER_
-#define _CSOCKETSERVER_
+#ifndef _CSOCKETSERVER_H_
+#define _CSOCKETSERVER_H_
 
-#include "config.h"
 #include "csocket.h"
 
 typedef unsigned int Number;

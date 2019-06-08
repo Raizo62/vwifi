@@ -1,5 +1,5 @@
-#ifndef _CCTRLSERVER_
-#define _CCTRLSERVER_
+#ifndef _CCTRLSERVER_H_
+#define _CCTRLSERVER_H_
 
 #include "cwifiserver.h" // WifiServer CSocketServer
 

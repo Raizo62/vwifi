@@ -1,5 +1,5 @@
-#ifndef _CINFOWIFI_
-#define _CINFOWIFI_
+#ifndef _CINFOWIFI_H_
+#define _CINFOWIFI_H_
 
 #include <iostream> // ostream
 

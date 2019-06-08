@@ -1,5 +1,5 @@
-#ifndef _CSOCKETCLIENT_
-#define _CSOCKETCLIENT_
+#ifndef _CSOCKETCLIENT_H_
+#define _CSOCKETCLIENT_H_
 
 #include "csocket.h"
 

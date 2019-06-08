@@ -1,5 +1,5 @@
-#ifndef _CSCHEDULER_
-#define _CSCHEDULER_
+#ifndef _CSCHEDULER_H_
+#define _CSCHEDULER_H_
 
 #include <sys/socket.h>
 

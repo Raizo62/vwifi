@@ -1,5 +1,5 @@
-#ifndef _CWIFISERVER_
-#define _CWIFISERVER_
+#ifndef _CWIFISERVER_H_
+#define _CWIFISERVER_H_
 
 #include "csocketserver.h"
 #include "cinfowifi.h"

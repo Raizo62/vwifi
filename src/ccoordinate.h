@@ -1,5 +1,5 @@
-#ifndef _CCOORDINATE_
-#define _CCOORDINATE_
+#ifndef _CCOORDINATE_H_
+#define _CCOORDINATE_H_
 
 #include <iostream>
 
