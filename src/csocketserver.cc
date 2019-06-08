@@ -25,7 +25,7 @@ CSocketServer::CSocketServer(TypeSocket type) : CSocket(type)
 	SocketClients=NULL;
 };
 
-void CSocketServer::Init(unsigned int port)
+void CSocketServer::Init(TPort port)
 {
 	Port=port;
 }

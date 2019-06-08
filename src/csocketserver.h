@@ -10,7 +10,7 @@ class CSocketServer : public CSocket
 {
 	protected :
 
-		unsigned int Port;
+		TPort Port;
 
 		Number MaxClient;
 		Number NumberClient;
@@ -29,7 +29,7 @@ class CSocketServer : public CSocket
 
 		~CSocketServer();
 
-		void Init(unsigned int port);
+		void Init(TPort port);
 
 		virtual bool Listen(Number maxClient);
 

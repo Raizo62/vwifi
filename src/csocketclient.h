@@ -17,10 +17,10 @@ class CSocketClient : public CSocket
 		void Init();
 
 		// TypeSocket : AF_INET :
-		bool Connect(const char* IP, unsigned int port);
+		bool Connect(const char* IP, TPort port);
 
 		// TypeSocket : AF_VSOCK :
-		bool Connect(unsigned int port);
+		bool Connect(TPort port);
 
 		ssize_t Send(const char* data, ssize_t sizeOfData);
 

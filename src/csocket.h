@@ -15,6 +15,8 @@ typedef int TypeSocket;
 // AF_INET : use IP
 // AF_VSOCK : use vsock
 
+typedef unsigned int TPort;
+
 class CSocket
 {
 	protected :

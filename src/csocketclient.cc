@@ -30,7 +30,7 @@ void CSocketClient::Init()
 	IsConnected=false;
 }
 
-bool CSocketClient::Connect(const char* IP, unsigned int port)
+bool CSocketClient::Connect(const char* IP, TPort port)
 {
 	//create a master socket
 	if( ! Configure() )
@@ -55,7 +55,7 @@ bool CSocketClient::Connect(const char* IP, unsigned int port)
 	return true;
 }
 
-bool CSocketClient::Connect(unsigned int port)
+bool CSocketClient::Connect(TPort port)
 {
 	//create a master socket
 	if( ! Configure() )
