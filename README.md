@@ -9,18 +9,24 @@ Virtual Wifi between Virtual Machines
 ```bash
 sudo apt-get install build-essential
 sudo apt-get install libnl-3-dev libnl-genl-3-dev
-sudo apt-get install pkg-config
 ```
 
 ## Building
 
 ```bash
 make
+```
+
+* Old method :
+
+```bash
+sudo apt-get install pkg-config
 
 gcc $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0)
 gcc vwifi.c nodes.c $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0) -o vwifi
 g++ vwifi-guest.cc cvwifiguest.cc $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0) -o vwifi -lpthread -DDEBUG
 ```
+
 
 ## Configuration
 
@@ -37,22 +43,21 @@ sudo chmod a+rw /dev/vhost-vsock
 ./vwifi-server
 ```
 
- - QEmu : add the option : `-device vhost-vsock-pci,id=vhost-vsock-pci0,guest-cid=NUM` with NUM an identifier
-   greater than  2
- - GNS3 : add the option : `-device vhost-vsock-pci,id=vhost-vsock-pci0,guest-cid=%console-port%`
-
-
+ - QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=NUM` with NUM an identifier greater than  2
+ - GNS3 : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%console-port%`
 
 ### Guest
 
 ```bash
 cd /hosthome/vwifi
 tmux
-modprobe mac80211_hwsim radios=2
+modprobe mac80211_hwsim radios=3
 ./vwifi-guest
 ```
 
-#### Test Wifi
+## Test Wifi
+
+### Guest
 
 * Guest Wifi 1 :
 
@@ -65,14 +70,31 @@ ip a a 10.0.0.1/8 dev wlan0
 ```bash
 wpa_supplicant -Dnl80211 -iwlan1 -c tests/wpa_supplicant.conf
 ip a a 10.0.0.2/8 dev wlan1
+ping 10.0.0.1
 ```
 
+* Guest Wifi 3 :
 ```bash
-sudo wpa_supplicant -Dnl80211 -iwlan1 -c wpa_supplicant.conf
-sudo hostapd hostapd.conf
+wpa_supplicant -Dnl80211 -iwlan2 -c tests/wpa_supplicant.conf
+ip a a 10.0.0.3/8 dev wlan1
+ping 10.0.0.2
 ```
 
-## Tools
+## Control
+
+### Host
+
+* Show the list of connected guest (display : cid and coordinate x, y z)
+```bash
+./vwifi-ctrl ls
+```
+
+* Set the new coordinate (11, 12, 13) of the guest with the cid 10
+```bash
+./vwifi-ctrl 10 11 12 13
+```
+
+## Others Tools
 
 * nc-vsock : https://github.com/stefanha/nc-vsock
 ```bash
