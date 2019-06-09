@@ -21,6 +21,9 @@ WirelessDevice::~WirelessDevice(){
 WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr):_name(name),_index(index),_iftype(iftype){
 
 	_macaddr = macaddr ;
+	_machwsim = macaddr ;
+	_machwsim.ether_addr_octet[0] |= 0x40 ; 
+
 //	std::memcpy(&_macaddr,&macaddr,ETH_ALEN); 
 
 }
@@ -86,11 +89,19 @@ std::ostream &   operator<< ( std::ostream & os , WirelessDevice & wdevice ){
 
 
 	char macstring[18];
-
+	char machwsimstring[18];
+	
 	sprintf(macstring, "%02X:%02X:%02X:%02X:%02X:%02X",
 		wdevice._macaddr.ether_addr_octet[0], wdevice._macaddr.ether_addr_octet[1], wdevice._macaddr.ether_addr_octet[2],
 		wdevice._macaddr.ether_addr_octet[3], wdevice._macaddr.ether_addr_octet[4], wdevice._macaddr.ether_addr_octet[5]);
 
+
+	sprintf(machwsimstring, "%02X:%02X:%02X:%02X:%02X:%02X",
+		wdevice._machwsim.ether_addr_octet[0], wdevice._machwsim.ether_addr_octet[1], wdevice._machwsim.ether_addr_octet[2],
+		wdevice._machwsim.ether_addr_octet[3], wdevice._machwsim.ether_addr_octet[4], wdevice._machwsim.ether_addr_octet[5]);
+
+
+	
 	os << "name: " << wdevice._name << std::endl ;
 
 	os << "index: " << wdevice._index << std::endl ;
@@ -112,6 +123,8 @@ std::ostream &   operator<< ( std::ostream & os , WirelessDevice & wdevice ){
 
         os <<  "mac:" << macstring << std::endl   ;
 	
+	os <<  "mac hwsim:" << machwsimstring << std::endl   ;
+
 	return os ;
 }
 

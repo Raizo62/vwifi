@@ -91,6 +91,9 @@ private:
  	*/
 	int send_register_msg();
 
+	int send_get_info_radio_msg();
+
+	
 	/**
  	*	\brief Initialize netlink communications
  	*	Taken from wmediumd
