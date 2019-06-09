@@ -1,6 +1,6 @@
 #include "ccoordinate.h"
 
-CCoordinate::CCoordinate(Value x, Value y, Value z)
+CCoordinate::CCoordinate(TValue x, TValue y, TValue z)
 {
 	Set(x, y);
 	SetZ(z);
@@ -13,42 +13,42 @@ CCoordinate::CCoordinate()
 	Z=0;
 }
 
-void CCoordinate::SetX(Value x)
+void CCoordinate::SetX(TValue x)
 {
 	X=x;
 }
-void CCoordinate::SetY(Value y)
+void CCoordinate::SetY(TValue y)
 {
 	Y=y;
 }
 
-void CCoordinate::SetZ(Value z)
+void CCoordinate::SetZ(TValue z)
 {
 	Z=z;
 }
 
-Value CCoordinate::GetX()
+TValue CCoordinate::GetX()
 {
 	return X;
 }
 
-Value CCoordinate::GetY()
+TValue CCoordinate::GetY()
 {
 	return Y;
 }
 
-Value CCoordinate::GetZ()
+TValue CCoordinate::GetZ()
 {
 	return Z;
 }
 
-void CCoordinate::Set(Value x, Value y)
+void CCoordinate::Set(TValue x, TValue y)
 {
 	SetX(x);
 	SetY(y);
 }
 
-void CCoordinate::Set(Value x, Value y, Value z)
+void CCoordinate::Set(TValue x, TValue y, TValue z)
 {
 	Set(x, y);
 	SetZ(z);
@@ -59,7 +59,7 @@ void CCoordinate::Set(CCoordinate coo)
 	*this=coo;
 }
 
-float CCoordinate::DistanceWith(Value x, Value y, Value z)
+float CCoordinate::DistanceWith(TValue x, TValue y, TValue z)
 {
 	return (X-x)*(X-x)+(Y-y)*(Y-y)+(Z-z)*(Z-z);
 }

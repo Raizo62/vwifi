@@ -1,7 +1,7 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
-typedef int Value;
+typedef int TValue;
 
 typedef int TypeCID;
 

@@ -3,34 +3,34 @@
 
 #include <iostream>
 
-#include "types.h" // Value
+#include "types.h" // TValue
 
 using namespace std;
 
 class CCoordinate
 {
-		Value X;
-		Value Y;
-		Value Z;
+		TValue X;
+		TValue Y;
+		TValue Z;
 
 	public :
 		CCoordinate();
-		CCoordinate(Value x, Value y, Value z);
+		CCoordinate(TValue x, TValue y, TValue z);
 
-		void SetX(Value x);
-		void SetY(Value y);
-		void SetZ(Value z);
+		void SetX(TValue x);
+		void SetY(TValue y);
+		void SetZ(TValue z);
 
-		void Set(Value x, Value y);
-		void Set(Value x, Value y, Value z);
+		void Set(TValue x, TValue y);
+		void Set(TValue x, TValue y, TValue z);
 
 		void Set(CCoordinate coo);
 
-		Value GetX();
-		Value GetY();
-		Value GetZ();
+		TValue GetX();
+		TValue GetY();
+		TValue GetZ();
 
-		float DistanceWith(Value x, Value y, Value z);
+		float DistanceWith(TValue x, TValue y, TValue z);
 		float DistanceWith(CCoordinate coo);
 
 		void Display(ostream& os) const;

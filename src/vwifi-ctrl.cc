@@ -73,9 +73,9 @@ int ChangeCoordinate(int argc, char *argv[])
 	}
 
 	TypeCID cid=atoi(argv[2]);
-	Value x=atoi(argv[3]);
-	Value y=atoi(argv[4]);
-	Value z=atoi(argv[5]);
+	TValue x=atoi(argv[3]);
+	TValue y=atoi(argv[4]);
+	TValue z=atoi(argv[5]);
 	CCoordinate coo(x,y,z);
 
 	cout<<cid<<" "<<coo<<" "<<endl;
