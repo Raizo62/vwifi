@@ -3,7 +3,7 @@
 
 #include <sys/socket.h>
 
-#include "config.h"
+#include "config.h" // MAX_CLIENT_WIFI
 #include "types.h" // Descriptor
 
 const int SCHEDULER_ERROR=-1;

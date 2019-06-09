@@ -1,8 +1,7 @@
 #ifndef _CCTRLSERVER_H_
 #define _CCTRLSERVER_H_
 
-#include "cwifiserver.h" // WifiServer CSocketServer
-
+#include "cwifiserver.h" // CWifiServer CSocketServer
 #include "types.h" // Order
 
 class CCTRLServer : public CSocketServer

@@ -1,5 +1,4 @@
 #include "cctrlserver.h"
-#include "ccoordinate.h" // CCoordinate
 
 CCTRLServer::CCTRLServer(CWifiServer* wifiServer) : CSocketServer(AF_INET)
 {

@@ -1,5 +1,4 @@
 #include <errno.h> // errno
-
 #include <iostream> // cout & NULL
 
 #include "cscheduler.h"

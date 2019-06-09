@@ -38,11 +38,11 @@ vpath %.h $(SRC)
 build : directories $(EXEC) # man
 
 
-$(OBJ)/cscheduler.o: cscheduler.cc  cscheduler.h
+$(OBJ)/cscheduler.o: cscheduler.cc cscheduler.h types.h config.h
 
-$(OBJ)/csocket.o: csocket.cc csocket.h
+$(OBJ)/csocket.o: csocket.cc csocket.h types.h
 
-$(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.h
+$(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.h types.h
 
 $(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h csocketserver.h cinfowifi.h
 
@@ -50,11 +50,11 @@ $(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.h
 
 $(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h 
 
-$(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h ccoordinate.h
+$(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h ccoordinate.h types.h
 
-$(OBJ)/ccoordinate.o: ccoordinate.cc ccoordinate.h
+$(OBJ)/ccoordinate.o: ccoordinate.cc ccoordinate.h types.h
 
-$(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h cwifiserver.h
+$(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h cwifiserver.h types.h
 
 
 $(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h

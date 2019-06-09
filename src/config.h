@@ -1,8 +1,7 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#include "csocket.h" // TPort
-#include "csocketserver.h" // Number
+#include "types.h" // Number / TPort
 
 const Number MAX_CLIENT_WIFI = 15;
 

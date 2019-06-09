@@ -4,8 +4,8 @@
 
 #include "config.h"
 #include "csocketclient.h"
-#include "cctrlserver.h" // the type of orders
-#include "ccoordinate.h" // CCoordinate and Type of x, y and z
+#include "types.h"
+#include "ccoordinate.h" // CCoordinate
 #include "cinfowifi.h"
 
 using namespace std;
