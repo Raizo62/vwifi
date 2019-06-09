@@ -5,10 +5,9 @@ typedef int TValue;
 
 typedef int TCID;
 
-typedef int TOrder;
-const int TORDER_NO=0;
-const int TORDER_LIST=1;
-const int TORDER_CHANGE_COORDINATE=2;
+enum TOrder {
+    TORDER_NO, TORDER_LIST, TORDER_CHANGE_COORDINATE
+};
 
 typedef int TDescriptor;
 
