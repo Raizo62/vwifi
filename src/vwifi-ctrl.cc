@@ -31,7 +31,7 @@ int AskList()
 	}
 
 	int err;
-	err=socket.Send((char*)&ORDER_LIST,sizeof(ORDER_LIST));
+	err=socket.Send((char*)&TORDER_LIST,sizeof(TORDER_LIST));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : AskList : socket.Send : order"<<endl;
@@ -89,7 +89,7 @@ int ChangeCoordinate(int argc, char *argv[])
 	}
 
 	int err;
-	err=socket.Send((char*)&ORDER_CHANGE_COORDINATE,sizeof(ORDER_CHANGE_COORDINATE));
+	err=socket.Send((char*)&TORDER_CHANGE_COORDINATE,sizeof(TORDER_CHANGE_COORDINATE));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : ChangeCoordinate : socket.Send : order"<<endl;

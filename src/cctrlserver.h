@@ -2,7 +2,7 @@
 #define _CCTRLSERVER_H_
 
 #include "cwifiserver.h" // CWifiServer CSocketServer
-#include "types.h" // Order
+#include "types.h" // TOrder
 
 class CCTRLServer : public CSocketServer
 {
@@ -12,7 +12,7 @@ class CCTRLServer : public CSocketServer
 
 		ssize_t Send(char* data, ssize_t sizeOfData);
 
-		Order GetOrder();
+		TOrder GetOrder();
 
 		void SendList();
 

@@ -5,10 +5,10 @@ typedef int TValue;
 
 typedef int TCID;
 
-typedef int Order;
-const int ORDER_NO=0;
-const int ORDER_LIST=1;
-const int ORDER_CHANGE_COORDINATE=2;
+typedef int TOrder;
+const int TORDER_NO=0;
+const int TORDER_LIST=1;
+const int TORDER_CHANGE_COORDINATE=2;
 
 typedef int Descriptor;
 

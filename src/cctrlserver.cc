@@ -15,15 +15,15 @@ ssize_t CCTRLServer::Send(char* data, ssize_t sizeOfData)
 		return CSocket::Send(GetSocketClient(0),data, sizeOfData);
 }
 
-Order CCTRLServer::GetOrder()
+TOrder CCTRLServer::GetOrder()
 {
-	Order order;
+	TOrder order;
 
 	if( GetNumberClient() != 1 )
-		return ORDER_NO;
+		return TORDER_NO;
 
-	if( Read((char*)&order, sizeof(Order)) == SOCKET_ERROR )
-		return ORDER_NO;
+	if( Read((char*)&order, sizeof(TOrder)) == SOCKET_ERROR )
+		return TORDER_NO;
 
 	return order;
 }
@@ -71,17 +71,17 @@ void CCTRLServer::ReceiveOrder()
 	if ( Accept() == SOCKET_ERROR )
 		return;
 
-	Order order=GetOrder();
+	TOrder order=GetOrder();
 
 	switch( order )
 	{
-			case ORDER_NO : break ;
+			case TORDER_NO : break ;
 
-			case ORDER_LIST :
+			case TORDER_LIST :
 				SendList();
 				break;
 
-			case ORDER_CHANGE_COORDINATE :
+			case TORDER_CHANGE_COORDINATE :
 				ChangeCoordinate();
 				break;
 	}
