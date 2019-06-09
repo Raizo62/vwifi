@@ -6,7 +6,9 @@
 
 #include "types.h" // TDescriptor / TSocket
 
-//#define _USE_VSOCK_BY_DEFAULT_
+#ifndef _DEBUG
+	#define _USE_VSOCK_BY_DEFAULT_
+#endif
 
 const int SOCKET_ERROR=-1;
 const int SOCKET_OK=0;
