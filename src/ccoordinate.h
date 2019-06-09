@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-typedef int Value;
+#include "types.h" // Value
 
 using namespace std;
 

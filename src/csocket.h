@@ -4,18 +4,12 @@
 #include <sys/types.h> // ssize_t
 #include <sys/socket.h> // AF_INET / AF_VSOCK
 
+#include "types.h" // Descriptor / TypeSocket
+
 //#define _USE_VSOCK_BY_DEFAULT_
 
 const int SOCKET_ERROR=-1;
 const int SOCKET_OK=0;
-
-typedef int Descriptor;
-
-typedef int TypeSocket;
-// AF_INET : use IP
-// AF_VSOCK : use vsock
-
-typedef unsigned int TPort;
 
 class CSocket
 {

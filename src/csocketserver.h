@@ -2,8 +2,7 @@
 #define _CSOCKETSERVER_H_
 
 #include "csocket.h"
-
-typedef unsigned int Number;
+#include "types.h" // Descriptor
 
 class CSocketServer : public CSocket
 {

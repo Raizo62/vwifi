@@ -4,10 +4,9 @@
 #include <iostream> // ostream
 
 #include "ccoordinate.h"
+#include "types.h" // TypeCID
 
 using namespace std;
-
-typedef int TypeCID;
 
 class CInfoWifi : public CCoordinate
 {
