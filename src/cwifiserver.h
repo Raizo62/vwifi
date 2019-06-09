@@ -12,7 +12,7 @@ class CWifiServer : public CSocketServer
 
 		bool Listen(Number maxClient);
 
-		Descriptor Accept();
+		TDescriptor Accept();
 
 		void ShowInfoClient(Number number);
 

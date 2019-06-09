@@ -107,7 +107,7 @@ bool CSocketServer::Listen(Number maxClient)
 		return false;
 	}
 
-	SocketClients = new Descriptor [ MaxClient ];
+	SocketClients = new TDescriptor [ MaxClient ];
 	if( SocketClients == NULL )
 	{
 		perror("CSocketServer::Listen : new");
@@ -117,16 +117,16 @@ bool CSocketServer::Listen(Number maxClient)
 	return true;
 }
 
-Descriptor CSocketServer::Accept()
+TDescriptor CSocketServer::Accept()
 {
 	struct sockaddr_in address;
 
 	return Accept(address);
 }
 
-Descriptor CSocketServer::Accept(struct sockaddr_in& address)
+TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 {
-	Descriptor new_socket;
+	TDescriptor new_socket;
 
 	int addrlen = sizeof(address);
 
@@ -150,7 +150,7 @@ Descriptor CSocketServer::Accept(struct sockaddr_in& address)
 	return new_socket;
 }
 
-Descriptor CSocketServer::GetSocketClient(Number number)
+TDescriptor CSocketServer::GetSocketClient(Number number)
 {
 	if( number >= NumberClient )
 		return SOCKET_ERROR;
@@ -174,15 +174,15 @@ void CSocketServer::CloseClient(Number number)
 
 	// SocketClients : [number,NumberClient[ <-=- [number+1,NumberClient]
 	if( number <  NumberClient )
-		memcpy(&(SocketClients[number]),&(SocketClients[number+1]),(NumberClient-number)*sizeof(Descriptor));
+		memcpy(&(SocketClients[number]),&(SocketClients[number+1]),(NumberClient-number)*sizeof(TDescriptor));
 }
 
-ssize_t CSocketServer::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
+ssize_t CSocketServer::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)
 {
 	return CSocket::Send(descriptor, data, sizeOfData);
 }
 
-ssize_t CSocketServer::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
+ssize_t CSocketServer::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 {
 	return CSocket::Read(descriptor , data, sizeOfData);
 }

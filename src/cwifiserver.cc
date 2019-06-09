@@ -25,9 +25,9 @@ bool CWifiServer::Listen(Number maxClient)
 	return true;
 }
 
-Descriptor CWifiServer::Accept()
+TDescriptor CWifiServer::Accept()
 {
-	Descriptor new_socket;
+	TDescriptor new_socket;
 
 	struct sockaddr_in address;
 

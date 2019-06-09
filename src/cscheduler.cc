@@ -22,14 +22,14 @@ void CScheduler::Init()
 	MaxDescriptor=-1;
 }
 
-void CScheduler::UpdateMaxDescriptor(Descriptor descriptor)
+void CScheduler::UpdateMaxDescriptor(TDescriptor descriptor)
 {
 	//highest file descriptor number, need it for the select function
 	if ( descriptor > MaxDescriptor )
 		MaxDescriptor=descriptor;
 }
 
-bool CScheduler::AddNode(Descriptor descriptor)
+bool CScheduler::AddNode(TDescriptor descriptor)
 {
 	if ( NumberNode >= MAX_NODE )
 		return false;
@@ -46,7 +46,7 @@ bool CScheduler::AddNode(Descriptor descriptor)
 	return true;
 }
 
-void CScheduler::DelNode(Descriptor descriptor)
+void CScheduler::DelNode(TDescriptor descriptor)
 {
 	MaxDescriptor=-1;
 	for (int i = 0; i < NumberNode; i++)
@@ -67,7 +67,7 @@ void CScheduler::DelNode(Descriptor descriptor)
 	}
 }
 
-Descriptor CScheduler::Wait()
+TDescriptor CScheduler::Wait()
 {
 	/* back up master */
 	Dup = Master;
@@ -82,7 +82,7 @@ Descriptor CScheduler::Wait()
 	return activity;
 }
 
-bool CScheduler::NodeHasAction(Descriptor descriptor)
+bool CScheduler::NodeHasAction(TDescriptor descriptor)
 {
 	return FD_ISSET( descriptor , &Dup);
 }

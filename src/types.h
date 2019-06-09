@@ -10,7 +10,7 @@ const int TORDER_NO=0;
 const int TORDER_LIST=1;
 const int TORDER_CHANGE_COORDINATE=2;
 
-typedef int Descriptor;
+typedef int TDescriptor;
 
 typedef unsigned int Number;
 

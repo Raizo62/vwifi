@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 
 #include "config.h" // MAX_CLIENT_WIFI
-#include "types.h" // Descriptor
+#include "types.h" // TDescriptor
 
 const int SCHEDULER_ERROR=-1;
 
@@ -14,30 +14,30 @@ class CScheduler
 {
 	private :
 
-	//set of socket descriptors
-	fd_set Master;
-	fd_set Dup;
+		//set of socket descriptors
+		fd_set Master;
+		fd_set Dup;
 
-	Descriptor MaxDescriptor;
+		TDescriptor MaxDescriptor;
 
-	Descriptor ListNodes[MAX_NODE];
-	int NumberNode;
+		TDescriptor ListNodes[MAX_NODE];
+		int NumberNode;
 
-	void UpdateMaxDescriptor(Descriptor descriptor);
+		void UpdateMaxDescriptor(TDescriptor descriptor);
 
 	public :
 
-	CScheduler();
+		CScheduler();
 
-	void Init();
+		void Init();
 
-	bool AddNode(Descriptor descriptor);
+		bool AddNode(TDescriptor descriptor);
 
-	void DelNode(Descriptor descriptor);
+		void DelNode(TDescriptor descriptor);
 
-	Descriptor Wait();
+		TDescriptor Wait();
 
-	bool NodeHasAction(Descriptor descriptor);
+		bool NodeHasAction(TDescriptor descriptor);
 };
 
 #endif

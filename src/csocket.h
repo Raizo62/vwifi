@@ -4,7 +4,7 @@
 #include <sys/types.h> // ssize_t
 #include <sys/socket.h> // AF_INET / AF_VSOCK
 
-#include "types.h" // Descriptor / TypeSocket
+#include "types.h" // TDescriptor / TypeSocket
 
 //#define _USE_VSOCK_BY_DEFAULT_
 
@@ -15,7 +15,7 @@ class CSocket
 {
 	protected :
 
-		Descriptor Master;
+		TDescriptor Master;
 		TypeSocket	Type;
 
 		CSocket();
@@ -24,9 +24,9 @@ class CSocket
 
 		bool Configure();
 
-		virtual ssize_t Send(Descriptor descriptor, const char* data, ssize_t sizeOfData);
+		virtual ssize_t Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData);
 
-		virtual ssize_t Read(Descriptor descriptor, char* data, ssize_t sizeOfData);
+		virtual ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
 
 	public :
 

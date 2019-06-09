@@ -49,12 +49,12 @@ bool CSocket::Configure()
 	return true;
 }
 
-ssize_t CSocket::Send(Descriptor descriptor, const char* data, ssize_t sizeOfData)
+ssize_t CSocket::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)
 {
 	return send(descriptor, data, sizeOfData, 0);
 }
 
-ssize_t CSocket::Read(Descriptor descriptor, char* data, ssize_t sizeOfData)
+ssize_t CSocket::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 {
 	return recv(descriptor , data, sizeOfData, 0);
 }

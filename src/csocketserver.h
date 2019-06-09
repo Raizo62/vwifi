@@ -2,7 +2,7 @@
 #define _CSOCKETSERVER_H_
 
 #include "csocket.h"
-#include "types.h" // Descriptor
+#include "types.h" // TDescriptor
 
 class CSocketServer : public CSocket
 {
@@ -13,11 +13,11 @@ class CSocketServer : public CSocket
 		Number MaxClient;
 		Number NumberClient;
 
-		Descriptor* SocketClients;
+		TDescriptor* SocketClients;
 
-		Descriptor Accept(struct sockaddr_in& address);
+		TDescriptor Accept(struct sockaddr_in& address);
 
-		Descriptor GetSocketClient(Number number);
+		TDescriptor GetSocketClient(Number number);
 
 	public :
 
@@ -31,17 +31,17 @@ class CSocketServer : public CSocket
 
 		virtual bool Listen(Number maxClient);
 
-		virtual Descriptor Accept();
+		virtual TDescriptor Accept();
 
 		Number GetNumberClient();
 
 		void CloseClient(Number number);
 
-		ssize_t Send(Descriptor descriptor, const char* data, ssize_t sizeOfData);
+		ssize_t Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData);
 
-		ssize_t Read(Descriptor descriptor, char* data, ssize_t sizeOfData);
+		ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
 
-		Descriptor operator[] (Number number)
+		TDescriptor operator[] (Number number)
 		{
 			return GetSocketClient(number);
 		}
