@@ -14,7 +14,7 @@ typedef int TDescriptor;
 
 typedef unsigned int TNumber;
 
-typedef int TypeSocket;
+typedef int TSocket;
 // AF_INET : use IP
 // AF_VSOCK : use vsock
 

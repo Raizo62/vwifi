@@ -23,7 +23,7 @@ class CSocketServer : public CSocket
 
 		CSocketServer();
 
-		CSocketServer(TypeSocket type);
+		CSocketServer(TSocket type);
 
 		~CSocketServer();
 

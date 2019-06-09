@@ -4,7 +4,7 @@
 #include <sys/types.h> // ssize_t
 #include <sys/socket.h> // AF_INET / AF_VSOCK
 
-#include "types.h" // TDescriptor / TypeSocket
+#include "types.h" // TDescriptor / TSocket
 
 //#define _USE_VSOCK_BY_DEFAULT_
 
@@ -16,11 +16,11 @@ class CSocket
 	protected :
 
 		TDescriptor Master;
-		TypeSocket	Type;
+		TSocket	Type;
 
 		CSocket();
 
-		CSocket(TypeSocket type);
+		CSocket(TSocket type);
 
 		bool Configure();
 

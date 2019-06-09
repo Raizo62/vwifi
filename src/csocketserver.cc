@@ -18,7 +18,7 @@ CSocketServer::CSocketServer() : CSocket()
 	SocketClients=NULL;
 };
 
-CSocketServer::CSocketServer(TypeSocket type) : CSocket(type)
+CSocketServer::CSocketServer(TSocket type) : CSocket(type)
 {
 	NumberClient=0;
 	MaxClient=0;

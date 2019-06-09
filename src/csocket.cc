@@ -23,7 +23,7 @@ CSocket::CSocket()
 #endif
 }
 
-CSocket::CSocket(TypeSocket type)
+CSocket::CSocket(TSocket type)
 {
 	Master=0;
 	Type=type;

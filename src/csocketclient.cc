@@ -20,7 +20,7 @@ CSocketClient::CSocketClient() : CSocket()
 	Init();
 }
 
-CSocketClient::CSocketClient(TypeSocket type) : CSocket(type)
+CSocketClient::CSocketClient(TSocket type) : CSocket(type)
 {
 	Init();
 }
