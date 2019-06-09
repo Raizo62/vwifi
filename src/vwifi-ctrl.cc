@@ -72,7 +72,7 @@ int ChangeCoordinate(int argc, char *argv[])
 			return 1;
 	}
 
-	TypeCID cid=atoi(argv[2]);
+	TCID cid=atoi(argv[2]);
 	TValue x=atoi(argv[3]);
 	TValue y=atoi(argv[4]);
 	TValue z=atoi(argv[5]);

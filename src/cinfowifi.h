@@ -4,19 +4,19 @@
 #include <iostream> // ostream
 
 #include "ccoordinate.h"
-#include "types.h" // TypeCID
+#include "types.h" // TCID
 
 using namespace std;
 
 class CInfoWifi : public CCoordinate
 {
-		TypeCID Cid;
+		TCID Cid;
 
 	public :
 
-		void SetCid(TypeCID cid);
+		void SetCid(TCID cid);
 		
-		TypeCID GetCid();
+		TCID GetCid();
 
 		void Display(ostream& os) const;
 

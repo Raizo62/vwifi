@@ -92,7 +92,7 @@ void CWifiServer::SendAllOtherClients(Number number,const char* data, ssize_t si
 	}
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TypeCID cid)
+CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 {
 	for (Number i = 0; i < NumberClient; i++)
 	{

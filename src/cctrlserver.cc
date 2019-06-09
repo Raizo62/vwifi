@@ -47,9 +47,9 @@ void CCTRLServer::SendList()
 
 void CCTRLServer::ChangeCoordinate()
 {
-	TypeCID cid;
+	TCID cid;
 
-	if( Read((char*)&cid, sizeof(TypeCID)) == SOCKET_ERROR )
+	if( Read((char*)&cid, sizeof(TCID)) == SOCKET_ERROR )
 		return;
 
 	CCoordinate coo;

@@ -3,7 +3,7 @@
 
 typedef int TValue;
 
-typedef int TypeCID;
+typedef int TCID;
 
 typedef int Order;
 const int ORDER_NO=0;

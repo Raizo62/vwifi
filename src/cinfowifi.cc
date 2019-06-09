@@ -1,11 +1,11 @@
 #include "cinfowifi.h"
 
-void CInfoWifi::SetCid(TypeCID cid)
+void CInfoWifi::SetCid(TCID cid)
 {
 	Cid=cid;
 }
 
-TypeCID CInfoWifi::GetCid()
+TCID CInfoWifi::GetCid()
 {
 	return Cid;
 }

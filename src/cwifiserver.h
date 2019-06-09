@@ -20,7 +20,7 @@ class CWifiServer : public CSocketServer
 
 		void SendAllOtherClients(Number number,const char* data, ssize_t sizeOfData);
 
-		CInfoWifi* GetReferenceOnInfoClientByCID(TypeCID cid);
+		CInfoWifi* GetReferenceOnInfoClientByCID(TCID cid);
 
 		CInfoWifi* GetReferenceOnInfoClientByNumber(Number number);
 
