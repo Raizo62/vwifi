@@ -12,7 +12,7 @@ const int TORDER_CHANGE_COORDINATE=2;
 
 typedef int TDescriptor;
 
-typedef unsigned int Number;
+typedef unsigned int TNumber;
 
 typedef int TypeSocket;
 // AF_INET : use IP

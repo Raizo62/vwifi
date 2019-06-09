@@ -10,14 +10,14 @@ class CSocketServer : public CSocket
 
 		TPort Port;
 
-		Number MaxClient;
-		Number NumberClient;
+		TNumber MaxClient;
+		TNumber NumberClient;
 
 		TDescriptor* SocketClients;
 
 		TDescriptor Accept(struct sockaddr_in& address);
 
-		TDescriptor GetSocketClient(Number number);
+		TDescriptor GetSocketClient(TNumber number);
 
 	public :
 
@@ -29,19 +29,19 @@ class CSocketServer : public CSocket
 
 		void Init(TPort port);
 
-		virtual bool Listen(Number maxClient);
+		virtual bool Listen(TNumber maxClient);
 
 		virtual TDescriptor Accept();
 
-		Number GetNumberClient();
+		TNumber GetNumberClient();
 
-		void CloseClient(Number number);
+		void CloseClient(TNumber number);
 
 		ssize_t Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData);
 
 		ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
 
-		TDescriptor operator[] (Number number)
+		TDescriptor operator[] (TNumber number)
 		{
 			return GetSocketClient(number);
 		}

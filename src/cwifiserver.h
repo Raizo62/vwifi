@@ -10,19 +10,19 @@ class CWifiServer : public CSocketServer
 
 	public :
 
-		bool Listen(Number maxClient);
+		bool Listen(TNumber maxClient);
 
 		TDescriptor Accept();
 
-		void ShowInfoClient(Number number);
+		void ShowInfoClient(TNumber number);
 
-		void CloseClient(Number number);
+		void CloseClient(TNumber number);
 
-		void SendAllOtherClients(Number number,const char* data, ssize_t sizeOfData);
+		void SendAllOtherClients(TNumber number,const char* data, ssize_t sizeOfData);
 
 		CInfoWifi* GetReferenceOnInfoClientByCID(TCID cid);
 
-		CInfoWifi* GetReferenceOnInfoClientByNumber(Number number);
+		CInfoWifi* GetReferenceOnInfoClientByNumber(TNumber number);
 
 };
 

@@ -30,11 +30,11 @@ TOrder CCTRLServer::GetOrder()
 
 void CCTRLServer::SendList()
 {
-	Number number=WifiServer->GetNumberClient();
+	TNumber number=WifiServer->GetNumberClient();
 	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
 		return;
 
-	for(Number i=0; i<number;i++)
+	for(TNumber i=0; i<number;i++)
 	{
 		CInfoWifi* infoWifi=WifiServer->GetReferenceOnInfoClientByNumber(i);
 		if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )

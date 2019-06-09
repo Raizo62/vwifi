@@ -38,7 +38,7 @@ int AskList()
 		return 1;
 	}
 
-	Number number;
+	TNumber number;
 	err=socket.Read((char*)&number,sizeof(number));
 	if( err == SOCKET_ERROR )
 	{
@@ -47,7 +47,7 @@ int AskList()
 	}
 
 	CInfoWifi info;
-	for(Number i=0; i<number;i++)
+	for(TNumber i=0; i<number;i++)
 	{
 		err=socket.Read((char*)&info,sizeof(info));
 		if( err == SOCKET_ERROR )

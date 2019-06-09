@@ -14,7 +14,7 @@ int main(int argc , char *argv[])
 {
 	TDescriptor socket;
 
-	Number i;
+	TNumber i;
 
 	int valread;
 	char buffer[1024]; //data buffer

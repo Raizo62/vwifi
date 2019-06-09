@@ -32,13 +32,13 @@ void CSocketServer::Init(TPort port)
 
 CSocketServer::~CSocketServer()
 {
-	for (Number i = 0; i < NumberClient; i++)
+	for (TNumber i = 0; i < NumberClient; i++)
 		close(SocketClients[i]);
 
 	CSocket::Close();
 }
 
-bool CSocketServer::Listen(Number maxClient)
+bool CSocketServer::Listen(TNumber maxClient)
 {
 	MaxClient=maxClient;
 
@@ -150,7 +150,7 @@ TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 	return new_socket;
 }
 
-TDescriptor CSocketServer::GetSocketClient(Number number)
+TDescriptor CSocketServer::GetSocketClient(TNumber number)
 {
 	if( number >= NumberClient )
 		return SOCKET_ERROR;
@@ -158,12 +158,12 @@ TDescriptor CSocketServer::GetSocketClient(Number number)
 	return SocketClients[number];
 }
 
-Number CSocketServer::GetNumberClient()
+TNumber CSocketServer::GetNumberClient()
 {
 	return NumberClient;
 }
 
-void CSocketServer::CloseClient(Number number)
+void CSocketServer::CloseClient(TNumber number)
 {
 	if( number >= NumberClient )
 		return;
