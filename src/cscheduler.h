@@ -21,7 +21,7 @@ class CScheduler
 		TDescriptor MaxDescriptor;
 
 		TDescriptor ListNodes[MAX_NODE];
-		int NumberNode;
+		TIndex NumberNode;
 
 		void UpdateMaxDescriptor(TDescriptor descriptor);
 

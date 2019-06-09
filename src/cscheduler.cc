@@ -49,14 +49,14 @@ bool CScheduler::AddNode(TDescriptor descriptor)
 void CScheduler::DelNode(TDescriptor descriptor)
 {
 	MaxDescriptor=-1;
-	for (int i = 0; i < NumberNode; i++)
+	for (TIndex i = 0; i < NumberNode; i++)
 	{
 		if( ListNodes[i] == descriptor )
 		{
 			FD_CLR(descriptor , &Master);
 
 			NumberNode--;
-			for(int j=i;j<NumberNode;j++)
+			for(TIndex j=i;j<NumberNode;j++)
 			{
 				ListNodes[j] = ListNodes[j+1];
 				UpdateMaxDescriptor(ListNodes[j]);
