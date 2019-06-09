@@ -30,13 +30,13 @@ TOrder CCTRLServer::GetOrder()
 
 void CCTRLServer::SendList()
 {
-	TNumber number=WifiServer->GetNumberClient();
+	TIndex number=WifiServer->GetNumberClient();
 	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
 		return;
 
-	for(TNumber i=0; i<number;i++)
+	for(TIndex i=0; i<number;i++)
 	{
-		CInfoWifi* infoWifi=WifiServer->GetReferenceOnInfoClientByNumber(i);
+		CInfoWifi* infoWifi=WifiServer->GetReferenceOnInfoClientByIndex(i);
 		if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 		{
 			cerr<<"Error : AskList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;

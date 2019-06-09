@@ -32,13 +32,13 @@ void CSocketServer::Init(TPort port)
 
 CSocketServer::~CSocketServer()
 {
-	for (TNumber i = 0; i < NumberClient; i++)
+	for (TIndex i = 0; i < NumberClient; i++)
 		close(SocketClients[i]);
 
 	CSocket::Close();
 }
 
-bool CSocketServer::Listen(TNumber maxClient)
+bool CSocketServer::Listen(TIndex maxClient)
 {
 	MaxClient=maxClient;
 
@@ -150,31 +150,31 @@ TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 	return new_socket;
 }
 
-TDescriptor CSocketServer::GetSocketClient(TNumber number)
+TDescriptor CSocketServer::GetSocketClient(TIndex index)
 {
-	if( number >= NumberClient )
+	if( index >= NumberClient )
 		return SOCKET_ERROR;
 
-	return SocketClients[number];
+	return SocketClients[index];
 }
 
-TNumber CSocketServer::GetNumberClient()
+TIndex CSocketServer::GetNumberClient()
 {
 	return NumberClient;
 }
 
-void CSocketServer::CloseClient(TNumber number)
+void CSocketServer::CloseClient(TIndex index)
 {
-	if( number >= NumberClient )
+	if( index >= NumberClient )
 		return;
 
-	close(SocketClients[number]);
+	close(SocketClients[index]);
 
 	NumberClient--;
 
-	// SocketClients : [number,NumberClient[ <-=- [number+1,NumberClient]
-	if( number <  NumberClient )
-		memcpy(&(SocketClients[number]),&(SocketClients[number+1]),(NumberClient-number)*sizeof(TDescriptor));
+	// SocketClients : [index,NumberClient[ <-=- [index+1,NumberClient]
+	if( index <  NumberClient )
+		memcpy(&(SocketClients[index]),&(SocketClients[index+1]),(NumberClient-index)*sizeof(TDescriptor));
 }
 
 ssize_t CSocketServer::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)

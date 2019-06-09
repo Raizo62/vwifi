@@ -10,7 +10,7 @@
 
 using namespace std;
 
-bool CWifiServer::Listen(TNumber maxClient)
+bool CWifiServer::Listen(TIndex maxClient)
 {
 	if( ! CSocketServer::Listen(maxClient) )
 		return false;
@@ -56,37 +56,37 @@ TDescriptor CWifiServer::Accept()
 	return new_socket;
 }
 
-void CWifiServer::ShowInfoClient(TNumber number)
+void CWifiServer::ShowInfoClient(TIndex index)
 {
-	if( number >= NumberClient )
+	if( index >= NumberClient )
 	{
-		cerr<<"Error : CWifiServer::ShowInfoClient : " << number <<" >= "<<NumberClient<<endl;
+		cerr<<"Error : CWifiServer::ShowInfoClient : " << index <<" >= "<<NumberClient<<endl;
 		return;
 	}
 
-	cout<<"{"<<InfoClient[number]<<"}";
+	cout<<"{"<<InfoClient[index]<<"}";
 }
 
-void CWifiServer::CloseClient(TNumber number)
+void CWifiServer::CloseClient(TIndex index)
 {
-	if( number >= NumberClient )
+	if( index >= NumberClient )
 		return;
 
-	CSocketServer::CloseClient(number);
+	CSocketServer::CloseClient(index);
 
 	// be careful : NumberClient is already decrease
-	// InfoClient : [number,NumberClient[ <-=- [number+1,NumberClient]
-	if( number <  NumberClient )
-		memcpy(&(InfoClient[number]),&(InfoClient[number+1]),(NumberClient-number)*sizeof(CInfoWifi));
+	// InfoClient : [index,NumberClient[ <-=- [index+1,NumberClient]
+	if( index <  NumberClient )
+		memcpy(&(InfoClient[index]),&(InfoClient[index+1]),(NumberClient-index)*sizeof(CInfoWifi));
 }
 
-void CWifiServer::SendAllOtherClients(TNumber number,const char* data, ssize_t sizeOfData)
+void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t sizeOfData)
 {
-	CCoordinate coo=InfoClient[number];
+	CCoordinate coo=InfoClient[index];
 
-	for (TNumber i = 0; i < NumberClient; i++)
+	for (TIndex i = 0; i < NumberClient; i++)
 	{
-		if( i != number )
+		if( i != index )
 			if ( coo.DistanceWith(InfoClient[i]) < 10 )
 				Send(SocketClients[i], data, sizeOfData);
 	}
@@ -94,7 +94,7 @@ void CWifiServer::SendAllOtherClients(TNumber number,const char* data, ssize_t s
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 {
-	for (TNumber i = 0; i < NumberClient; i++)
+	for (TIndex i = 0; i < NumberClient; i++)
 	{
 		if( InfoClient[i].GetCid() == cid )
 			return &(InfoClient[i]);
@@ -103,13 +103,13 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 	return NULL;
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoClientByNumber(TNumber number)
+CInfoWifi* CWifiServer::GetReferenceOnInfoClientByIndex(TIndex index)
 {
-	if( number >= NumberClient )
+	if( index >= NumberClient )
 	{
-		cerr<<"Error : CWifiServer::GetReferenceOnInfoClientByNumber : " << number <<" >= "<<NumberClient<<endl;
+		cerr<<"Error : CWifiServer::GetReferenceOnInfoClientByIndex : " << index <<" >= "<<NumberClient<<endl;
 		return NULL;
 	}
 
-	return &(InfoClient[number]);
+	return &(InfoClient[index]);
 }

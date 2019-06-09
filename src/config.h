@@ -1,9 +1,9 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#include "types.h" // TNumber / TPort
+#include "types.h" // TIndex / TPort
 
-const TNumber MAX_CLIENT_WIFI = 15;
+const TIndex MAX_CLIENT_WIFI = 15;
 
 const TPort WIFI_PORT = 8211;
 const TPort CTRL_PORT = 8212;
