@@ -42,7 +42,7 @@ int VWifiGuest::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags
 
 	if (!msg) {
 		
-		std::cout << "Error allocating new message MSG !" << std::endl ;
+		std::cerr << "Error allocating new message MSG !" << std::endl ;
 		nlmsg_free(msg);
 		return 0;
 	}
@@ -74,7 +74,7 @@ int VWifiGuest::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags
 		return 0;
 	}
 
-	nl_send_auto_complete(m_sock, msg);
+	nl_send_auto_complete(_netlink_socket, msg);
 	
 	nlmsg_free(msg);
 
@@ -92,10 +92,6 @@ int VWifiGuest::process_messages_cb(struct nl_msg *msg, void *arg){
 
 int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 {
-
-#ifdef _DEBUG
-	std::cout << __func__ << std::endl ;
-#endif
 
 	int msg_len;
 	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
@@ -197,9 +193,11 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	/* round -1 is the last element of the array */
 	/* this is the signal sent to the sender, not the receiver */
 	signal = -10;
+	
 	/* Let's flag this frame as ACK'ed */
 	/* whatever that means... */
 	flags |= HWSIM_TX_STAT_ACK;
+	
 	/* this has to be an ack the driver expects */
 	/* what does the driver do with these values? can i remove them? */
 	send_tx_info_frame_nl(src, flags, signal, tx_attempts,cookie);
@@ -225,9 +223,10 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	/* compare tx src to frame src, update TX src ATTR in msg if needed */
 	/* if we rebuild the nl msg, this can change */
 	if (memcmp(&framesrc, src, ETH_ALEN) != 0) {
-//#ifdef _DEBUG	
-//		std::cout << "updating the TX src ATTR" << std::endl ; 
-//#endif
+
+#ifdef _DEBUG	
+		std::cout << "updating the TX src ATTR" << std::endl ; 
+#endif
 		/* copy dest address from frame to nlh */
 		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
 	}
@@ -260,7 +259,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	
 
 	/* here code of  to send (char *)nlh with  msg_len as size*/ 
-	int value=_socket.Send((char*)nlh,msg_len);
+	int value=_vsocket.Send((char*)nlh,msg_len);
 	
 	if( value == SOCKET_ERROR )
 	
@@ -278,10 +277,6 @@ int VWifiGuest::send_register_msg()
 {
 	struct nl_msg *msg;
 
-	if (! check_if_netlink_initialized())
-		return 0 ;
-
-
 	msg = nlmsg_alloc();
 
 	if (!msg) {
@@ -289,29 +284,23 @@ int VWifiGuest::send_register_msg()
 		return 0;
 	}
 
-	// It may be not useful since I already check it with check_if_netlink_initialized() above
-	/*if (m_family_id < 0) {
-		nlmsg_free(msg);
-		return 0;
-	}*/
-
 	genlmsg_put(msg, NL_AUTO_PID, NL_AUTO_SEQ, m_family_id,0, NLM_F_REQUEST, HWSIM_CMD_REGISTER, VERSION_NR);
 
-	if (nl_send_auto(m_sock, msg) < 0)
+	if (nl_send_auto(_netlink_socket, msg) < 0)
 	{
 		nlmsg_free(msg);
 		return 0 ;
 	}
 
-	nl_complete_msg(m_sock,msg);
+	nl_complete_msg(_netlink_socket,msg);
 	
-	if (nl_send(m_sock, msg) < 0)
+	if (nl_send(_netlink_socket, msg) < 0)
 	{
 		nlmsg_free(msg);
 		return 0 ;
 	}
 
-	//nl_send_auto_complete(m_sock, msg);
+	//nl_send_auto_complete(_netlink_socket, msg);
 	nlmsg_free(msg);
 
 	return 1;
@@ -320,9 +309,6 @@ int VWifiGuest::send_register_msg()
 int VWifiGuest::send_get_info_radio_msg()
 {
 	struct nl_msg *msg;
-
-	if (! check_if_netlink_initialized())
-		return 0 ;
 
 
 	msg = nlmsg_alloc();
@@ -335,15 +321,15 @@ int VWifiGuest::send_get_info_radio_msg()
 
 	genlmsg_put(msg, NL_AUTO_PID, NL_AUTO_SEQ, m_family_id,0, NLM_F_REQUEST, HWSIM_CMD_GET_RADIO, VERSION_NR);
 
-	if (nl_send_auto(m_sock, msg) < 0)
+	if (nl_send_auto(_netlink_socket, msg) < 0)
 	{
 		nlmsg_free(msg);
 		return 0 ;
 	}
 
-	nl_complete_msg(m_sock,msg);
+	nl_complete_msg(_netlink_socket,msg);
 	
-	if (nl_send(m_sock, msg) < 0)
+	if (nl_send(_netlink_socket, msg) < 0)
 	{
 		nlmsg_free(msg);
 		return 0 ;
@@ -358,7 +344,7 @@ int VWifiGuest::send_get_info_radio_msg()
 
 
 
-// free better m_cb and m_sock
+// free better _cb and _netlink_socket
 // improve the stoping process
 int VWifiGuest::init_netlink(void)
 {
@@ -367,36 +353,38 @@ int VWifiGuest::init_netlink(void)
 	struct timeval tv;
 
 
-	if (check_if_netlink_initialized())
-		return 0 ;
-
-//	m_cb = nl_cb_alloc(NL_CB_DEBUG);
-	m_cb = nl_cb_alloc(NL_CB_CUSTOM);
+//	_cb = nl_cb_alloc(NL_CB_DEBUG);
+	_cb = nl_cb_alloc(NL_CB_CUSTOM);
 	
-	if (!m_cb) {
+	if (!_cb) {
 		std::cerr << "Error allocating netlink callbacks" << std::endl ;
 		return 0;
 	}
 
-	m_sock = nl_socket_alloc_cb(m_cb);
-	if (!m_sock) {
+	_netlink_socket = nl_socket_alloc_cb(_cb);
+	if (!_netlink_socket) {
 		std::cerr << "Error allocationg netlink socket" << std::endl;
+		nl_cb_put(_cb);
 		return 0;
 	}
 
 	/* disable auto-ack from kernel to reduce load */
-	nl_socket_disable_auto_ack(m_sock);
+	nl_socket_disable_auto_ack(_netlink_socket);
 	
-	if(genl_connect(m_sock) < 0)
-		return 0 ;
+	if(genl_connect(_netlink_socket) < 0){
 
-	m_family_id = genl_ctrl_resolve(m_sock, "MAC80211_HWSIM");
+		nl_close(_netlink_socket);
+		nl_socket_free(_netlink_socket);
+		nl_cb_put(_cb);
+
+		return 0 ;
+	}
+
+	m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
 
 
 	while (m_family_id < 0 ) {
 
-		if(! check_if_started())
-			return 0 ;
 #ifdef _DEBUG
 		std::cout << "Family MAC80211_HWSIM not registered" << std::endl ;
 #endif
@@ -404,23 +392,24 @@ int VWifiGuest::init_netlink(void)
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(1s);
 
-		m_family_id = genl_ctrl_resolve(m_sock, "MAC80211_HWSIM");
+		m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
 	}
 
-	// add check_if_started() return 0  here in order to avoid the next steps, thus kill him earlier
 
-	nl_cb_set(m_cb, NL_CB_MSG_IN, NL_CB_CUSTOM, &process_messages_cb, NULL);
-	nlsockfd = nl_socket_get_fd(m_sock);
+	nl_cb_set(_cb, NL_CB_MSG_IN, NL_CB_CUSTOM, &process_messages_cb, NULL);
+	nlsockfd = nl_socket_get_fd(_netlink_socket);
 
 	tv.tv_sec = 1;
 	tv.tv_usec = 0;
 
 	if (setsockopt(nlsockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
+
+		nl_close(_netlink_socket);
+		nl_socket_free(_netlink_socket);
+		nl_cb_put(_cb);
 		perror("setsockopt");
 	}
 
-	
-	setInitialized(1) ;
 	return 1;
 }
 
@@ -430,8 +419,6 @@ int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int da
 {
 	int rc;
 	struct nl_msg *msg;
-	char addr[18];
-	int bytes;
 
 	msg = nlmsg_alloc();
 
@@ -465,10 +452,22 @@ int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int da
 		return 0 ;
 	}
 
-	bytes = nl_send_auto_complete(m_sock, msg);
+
+	if (nl_send_auto(_netlink_socket, msg) < 0)
+	{
+		nlmsg_free(msg);
+		return 0 ;
+	}
+
+	nl_complete_msg(_netlink_socket,msg);
+	
+	if (nl_send(_netlink_socket, msg) < 0)
+	{
+		nlmsg_free(msg);
+		return 0 ;
+	}
+
 	nlmsg_free(msg);
-//	mac_address_to_string(addr, dst);
-//	std::cout << "Sent " << bytes <<  "to " <<  addr << std::endl;
 	
 	return 1;
 }
@@ -478,12 +477,6 @@ int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int da
 
 void VWifiGuest::recv_from_server(){
 
-#ifdef _DEBUG
-
-	std::cout <<  __func__ << std::endl ;
-#endif
-
-
 
 	char buf[1024];
 	int bytes;
@@ -492,13 +485,11 @@ void VWifiGuest::recv_from_server(){
 	struct genlmsghdr *gnlh;
 	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
 	uint32_t freq;
-	struct ether_addr *src = nullptr;
 	unsigned int data_len = 0;
 	char *data;
 	int rate_idx;
 	int signal;
 	char addr[18];
-	struct ether_addr framesrc;
 	struct ether_addr framedst;
 
 	signal = -10;
@@ -506,10 +497,10 @@ void VWifiGuest::recv_from_server(){
 
 
 	/* receive bytes packets from server and store them in buf */
-	bytes=_socket.Read(buf,sizeof(buf));
+	bytes=_vsocket.Read(buf,sizeof(buf));
 	if( bytes == SOCKET_ERROR )
 	{
-		std::cerr<<"socket.Read error"<<std::endl;
+	//	std::cerr<<"socket.Read error"<<std::endl;
 		return ;
 	}
 
@@ -564,6 +555,10 @@ void VWifiGuest::recv_from_server(){
 
 #ifdef _DEBUG
 
+
+	struct ether_addr *src = nullptr;
+	struct ether_addr framesrc;
+	
 	/* copy hwsim id src */
 	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
 	mac_address_to_string(addr, src);
@@ -591,7 +586,6 @@ void VWifiGuest::recv_from_server(){
 		struct ether_addr macdsthwsim = inet.getMachwsim();
 		
 		mac_address_to_string(addr, &macdsthwsim);
-		std::cout << "frame machswim:" << addr << std::endl;
 
 		send_cloned_frame_msg(&macdsthwsim, data, data_len,rate_idx, signal, freq);
 
@@ -604,27 +598,21 @@ void VWifiGuest::recv_from_server(){
 void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 
 
-//#ifdef _DEBUG
-
-	std::cout <<  __func__ << std::endl ;
-
 	std::cout << _list_winterfaces << std::endl ; 
 
-//#endif
-
-
-	if (! check_if_netlink_initialized())
-		return  ;
 	
 	/* loop for waiting  incoming msg from hwsim driver*/
 	while (true) {
 
 
-		if(!check_if_started())
+		if(!started())
 			break ;
 	
-		nl_recvmsgs_default(m_sock);
+		nl_recvmsgs_default(_netlink_socket);
 	}
+
+	thread_dead();
+
 }
 
 
@@ -632,34 +620,64 @@ void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 
 void VWifiGuest::recv_msg_from_server_loop_start(){
 
-
-#ifdef _DEBUG
-
-	std::cout <<  __func__ << std::endl ;
-#endif
-
-	if (! check_if_netlink_initialized())
-		return  ;
-
-
 	while(true){
-	
-		if(!check_if_started())
+
+		if(!started())
 			break ;
 	
 		recv_from_server();
 	}
+
+	thread_dead();
+}
+
+
+int VWifiGuest::init(){
+
+	/* init netlink will loop until driver is loaded */
+	if ( ! init_netlink()){
+		
+		std::cout << "ERROR: could not initialize netlink" << std::endl;
+		return 0 ;
+	} 
+
+	/* Send a register msg to the kernel */
+	if (!send_register_msg()){
+	
+		nl_close(_netlink_socket);
+		nl_socket_free(_netlink_socket);
+		nl_cb_put(_cb);
+		return 0 ;
+	}
+
+	_mutex_initialized.lock();
+	_initialized = true ;
+	_mutex_initialized.unlock();
+
+	
+	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
+
+	return 1 ;
 }
 
 
 
 int VWifiGuest::start(){
 
-#ifdef _DEBUG
 
-	std::cout <<  __func__ << std::endl ;
-#endif
+	// check if initialized here, if we forget calling init function before ??
+	if(! initialized()){
+		
+		std::cerr << "You must call init() function before" << std::endl ;
+		return 0 ;
+	}
 
+	// check _stoped instead m_started or check all_thread_dead ?
+	if( ! stopped())
+	{
+		std::cerr << "vwifi-guest is already started" <<  std::endl ;
+		return 0 ;
+	}
 
 	MonitorWirelessDevice * monwireless = nullptr ;
 
@@ -673,6 +691,8 @@ int VWifiGuest::start(){
 		monwireless->setInitInetCallback([this](WirelessDevice wd) { return handle_init_winet_notification(wd);});
 	
 		monwireless->start();
+		
+		/* get initial wireless network interfaces created when we called sudo modprobe mac80211_hwsim */
 		monwireless->get_winterface_infos();
 
 	}catch ( const std::exception & e){
@@ -683,36 +703,27 @@ int VWifiGuest::start(){
 	}
 
 
-	m_started = true ;
-	
-	/* init netlink will loop until driver is loaded */
-	if ( ! init_netlink()){
-		
-		std::cout << "ERROR: could not initialize netlink" << std::endl;
-		return 0 ;
-	} 
-
-	/* Send a register msg to the kernel */
-	if (!send_register_msg())
-		return 0 ;
-
-	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
-
-
-	
-	/*connect to vsock/tcp server */
+		/*connect to vsock/tcp server */
 #ifdef _USE_VSOCK_
-	if( ! _socket.Connect(WIFI_PORT) )
+	if( ! _vsocket.Connect(WIFI_PORT) )
 #else
-	if( ! _socket.Connect(ADDRESS_IP,WIFI_PORT) )
+	if( ! _vsocket.Connect(ADDRESS_IP,WIFI_PORT) )
 #endif
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return 0;
 	}
 
+	/* we can also call this in constructor ? */
+	_vsocket.SetBloking(0);
 
 	std::cout << "Connection to Server Ok" << std::endl;
+
+
+	_mutex_all_thread_dead.lock();
+	_all_thread_dead = 0;
+	_mutex_all_thread_dead.unlock();
+
 	
 	/* start thread that handle incoming msg from hwsim driver */
 	std::thread hwsimloop(&VWifiGuest::recv_msg_from_hwsim_loop_start,this);
@@ -720,46 +731,49 @@ int VWifiGuest::start(){
 	/* start thread that handle incoming msg from tcp or vsock connection to server */
 	std::thread serverloop(&VWifiGuest::recv_msg_from_server_loop_start,this);
 
-	
+	m_mutex_ctrl_run.lock();
+	m_started = true ;
+	m_mutex_ctrl_run.unlock();
+
+	_mutex_stopped.lock();
+	_stopped = false ;
+	_mutex_stopped.unlock();
+
+
 	hwsimloop.join();
 	serverloop.join();
 
 	delete monwireless ;
 
-//	clean_all() ;
-
 	return 1;
-
 }
 
 
 int VWifiGuest::stop(){
 
-		m_mutex_ctrl_run.lock();
-		m_started = false ;
-		m_mutex_ctrl_run.unlock();
-		return 0 ;	
+	m_mutex_ctrl_run.lock();
+	m_started = false ;
+	m_mutex_ctrl_run.unlock();
+
+	_vsocket.Close();
+
+	while(!all_thread_dead(2));
+
+	_mutex_stopped.lock();
+	_stopped = true ;
+	_mutex_stopped.unlock();
+
+	return 0 ;	
 }
 
 
 void VWifiGuest::clean_all(){
 
-#ifdef _DEBUG
-
-	std::cout <<  __func__ << std::endl ;
-#endif
-
-
-	nl_close(m_sock);
-	nl_socket_free(m_sock);
-	nl_cb_put(m_cb);
-	setInitialized(0);
-
+	nl_close(_netlink_socket);
+	nl_socket_free(_netlink_socket);
+	nl_cb_put(_cb);
 }
 
-/*VWifiGuest::VWifiGuest() : m_initialized(false),m_started(false),m_sock(nullptr),m_cb(nullptr) {
-
-}*/
 
 VWifiGuest::VWifiGuest()  {
 
@@ -771,46 +785,43 @@ VWifiGuest::VWifiGuest()  {
 
 VWifiGuest::~VWifiGuest(){
 
+	std::cout << __func__ << std::endl ;
 
-#ifdef _DEBUG
-
-	std::cout <<  __func__ << std::endl ;
-#endif
+	if (started())
+		stop();
 
 	clean_all();
+	
 	if (forward)
 		delete forward ;
-
-
 }
 
 
-void VWifiGuest::setInitialized(int val){
+bool VWifiGuest::all_thread_dead(int nb_thread){
 
-	m_mutex_init.lock();
-	m_initialized = val ;
-	m_mutex_init.unlock();
+	_mutex_all_thread_dead.lock();
 
-}
+	if(_all_thread_dead == nb_thread){
 
-
-bool VWifiGuest::check_if_netlink_initialized() {
-
-
-	m_mutex_init.lock();
-	
-	if (!m_initialized){
-		m_mutex_init.unlock() ;
-		return false ;
+		_mutex_all_thread_dead.unlock();
+		return true ;
 	}
+		
+	_mutex_all_thread_dead.unlock();
 
-	m_mutex_init.unlock();
-	return true ;
+	return false ;
 }
 
 
 
-bool VWifiGuest::check_if_started(){
+void VWifiGuest::thread_dead(){
+
+	_mutex_all_thread_dead.lock();
+	_all_thread_dead += 1;
+	_mutex_all_thread_dead.unlock();
+}
+
+bool VWifiGuest::started(){
 
 	m_mutex_ctrl_run.lock();
 		
@@ -826,6 +837,42 @@ bool VWifiGuest::check_if_started(){
 
 }
 
+bool VWifiGuest::stopped(){
+
+	_mutex_stopped.lock();
+		
+		if(! _stopped){
+			_mutex_stopped.unlock();
+			return false ;
+
+		}
+		
+	_mutex_stopped.unlock();
+
+	return true ;
+
+}
+
+
+
+bool VWifiGuest::initialized(){
+
+	_mutex_initialized.lock();
+		
+		if(! _initialized){
+			_mutex_initialized.unlock();
+			return false ;
+
+		}
+		
+	_mutex_initialized.unlock();
+
+	return true ;
+
+}
+
+
+
 void VWifiGuest::mac_address_to_string(char *address, struct ether_addr *mac)
 {
 	sprintf(address, "%02X:%02X:%02X:%02X:%02X:%02X",
@@ -837,19 +884,15 @@ void VWifiGuest::mac_address_to_string(char *address, struct ether_addr *mac)
 
 void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
 
-#ifdef _DEBUG	
 
-	std::cout << wirelessdevice << std::endl ;
-#endif
+	std::cout << "Change in wireless configuration of : " <<  wirelessdevice << std::endl ;
 
 }
 
 void VWifiGuest::handle_del_winet_notification(WirelessDevice wirelessdevice){
 
-#ifdef _DEBUG	
 
-	std::cout << wirelessdevice << std::endl ;
-#endif
+	std::cout << "Delete wireless intarface : " << wirelessdevice << std::endl ;
 
 }
 
@@ -858,7 +901,6 @@ void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 
 	_list_winterfaces.add_device(wirelessdevice);
 
-	send_get_info_radio_msg();
 }
 
 

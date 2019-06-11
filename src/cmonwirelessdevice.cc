@@ -249,6 +249,19 @@ void MonitorWirelessDevice::new_net_interface(struct nlmsghdr *h)
 		return;
 	}*/
 	
+
+#ifdef _DEBUG
+	if (ifi->ifi_flags & IFF_UP) { // get UP flag of the network interface
+        
+		std::cout << "intarface UP" << std::endl;
+                
+	} else {
+   
+	       	std::cout << "Interface DOWN" << std::endl;
+	
+                
+	}
+#endif
 	
 	/* retrieve all attributes */
 	memset(tb, 0, sizeof(tb));
@@ -264,7 +277,7 @@ void MonitorWirelessDevice::new_net_interface(struct nlmsghdr *h)
 	if (tb[IFLA_IFNAME]) {
 		name = (char *)RTA_DATA(tb[IFLA_IFNAME]);
 	} else {
-		std::cout << "do not find interface name" << std::endl ;
+		std::cerr << "do not find interface name" << std::endl ;
 		return;
 	}
 
@@ -327,7 +340,7 @@ void MonitorWirelessDevice::del_net_interface(struct nlmsghdr *h)
 	if (tb[IFLA_IFNAME]) {
 		name = (char *)RTA_DATA(tb[IFLA_IFNAME]);
 	} else {
-		std::cout << "do not find interface name" << std::endl ;
+		std::cerr << "do not find interface name" << std::endl ;
 		return;
 	}
 

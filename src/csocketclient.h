@@ -25,6 +25,8 @@ class CSocketClient : public CSocket
 		ssize_t Send(const char* data, ssize_t sizeOfData);
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
+		
+		int SetBloking(int blocking); 
 };
 
 #endif
