@@ -4,11 +4,9 @@
 #include <sys/types.h> // ssize_t
 #include <sys/socket.h> // AF_INET / AF_VSOCK
 
-#include "types.h" // TDescriptor / TSocket
+#include "config.h" // _USE_VSOCK_BY_DEFAULT_
 
-#ifndef _DEBUG
-	#define _USE_VSOCK_BY_DEFAULT_
-#endif
+#include "types.h" // TDescriptor / TSocket
 
 const int SOCKET_ERROR=-1;
 const int SOCKET_OK=0;

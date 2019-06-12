@@ -6,7 +6,16 @@
 const TIndex MAX_CLIENT_WIFI = 15;
 
 const TPort WIFI_PORT = 8211;
-const TPort CTRL_PORT = 8212;
+
+#ifndef _DEBUG
+	#define _USE_VSOCK_BY_DEFAULT_
+#endif
+
+#ifdef _USE_VSOCK_BY_DEFAULT_
+	const TPort CTRL_PORT = WIFI_PORT;
+#else
+	const TPort CTRL_PORT = WIFI_PORT+1;
+#endif
 
 #ifndef _DEBUG
 	#define ADDRESS_IP "127.0.0.1"
