@@ -135,6 +135,12 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	}
 
 
+	if (gnlh->cmd == HWSIM_CMD_GET_RADIO) {
+	
+		std::cout << "HWSIM_CMD_GET_RADIO" << std::endl;
+		return 1;
+	}
+
 	/* ignore if anything other than a frame
 	do we need to free the msg? */
 	if (!(gnlh->cmd == HWSIM_CMD_FRAME))
@@ -150,30 +156,18 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 
 	/* this check if signal attr is present */
 	//if (!(attrs[HWSIM_ATTR_SIGNAL]))
-	//	std::cout << "signal attr is not present" << std::endl;
-
-
-
+	//	std::cerr << "signal attr is not present" << std::endl;
 
 	//if (!(attrs[HWSIM_ATTR_ADDR_RECEIVER]))
 
-	//	std::cout << "hwsim dst mac  (hwsim id) is not present" << std::endl ;
+	//	std::cerr << "hwsim dst mac  (hwsim id) is not present" << std::endl ;
 
-	/* we get the attributes*/
-	//dst = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_RECEIVER]);
+	/* we get hwsim mac (id)*/
 	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
+
 	flags = nla_get_u32(attrs[HWSIM_ATTR_FLAGS]);
 	tx_rates = (struct hwsim_tx_rate *)nla_data(attrs[HWSIM_ATTR_TX_INFO]);
 	cookie = nla_get_u64(attrs[HWSIM_ATTR_COOKIE]);
-
-//	mac_address_to_string(addr, src);
-//	std::cout << "src: " << addr << std::endl ;
-	
-//	if (!dst){
-	
-//		mac_address_to_string(addr, dst);
-//		std::cout << "dst: " << addr << std::endl;
-//	}
 
 	round = 0;
 	tx_ok = 0;
@@ -221,7 +215,6 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	/* we get the attributes*/
 	data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
 
-
 	/* copy source address from frame */
 	/* if we rebuild the nl msg, this can change */
 	memcpy(&framesrc, data + 10, ETH_ALEN);
@@ -229,18 +222,9 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	/* copy dst address from frame */
 	memcpy(&framedst, data + 4, ETH_ALEN);
 
-	
-	//mac_address_to_string(addr, &framesrc);
-	//std::cout << "frame src: " << addr << std::endl;
-
-	//mac_address_to_string(addr, &framedst);
-	//std::cout << "frame dst: " << addr << std::endl;
-
-
 	/* compare tx src to frame src, update TX src ATTR in msg if needed */
 	/* if we rebuild the nl msg, this can change */
 	if (memcmp(&framesrc, src, ETH_ALEN) != 0) {
-//
 //#ifdef _DEBUG	
 //		std::cout << "updating the TX src ATTR" << std::endl ; 
 //#endif
@@ -249,16 +233,33 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	}
 
 
-//	mac_address_to_string(addr, src);
-//	std::cout << "src: " << addr << std::endl ;
-//	mac_address_to_string(addr, &framesrc);
-//	std::cout << "frame src: " << addr << std::endl;
 
+	/* we iterate the _list_winterfaces list (local wireless network devices) and see if machwsim corresponding toframesrc is set ( != 0). The value must be src */ 
+/*	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
 
+	mac_address_to_string(addr, src);
+	std::cout << "hwsim src :" <<  addr << std::endl;
+	
+	
+	for (auto & inet : inets)
+	{
+		struct ether_addr macaddr = inet.getMacaddr();
+		if(std::memcmp(&macaddr,&framesrc,6) == 0){
+		
+			struct ether_addr zeroid = {0x00,0X00,0x00,0X00,0x00,0X00};
+			struct ether_addr machwsim = inet.getMachwsim();
+			if(std::memcmp(&machwsim,&zeroid,6) == 0){
+		
+				inet.setMachwsim((*src));
+				std::cout << inet << std::endl ;	
+				break ;
+			}
+		}
+	}
+*/
+	
 
 	/* here code of  to send (char *)nlh with  msg_len as size*/ 
-
-	
 	int value=_socket.Send((char*)nlh,msg_len);
 	
 	if( value == SOCKET_ERROR )
@@ -273,7 +274,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 }
 
 
-int VWifiGuest::send_register_msg(void)
+int VWifiGuest::send_register_msg()
 {
 	struct nl_msg *msg;
 
@@ -316,6 +317,46 @@ int VWifiGuest::send_register_msg(void)
 	return 1;
 }
 
+int VWifiGuest::send_get_info_radio_msg()
+{
+	struct nl_msg *msg;
+
+	if (! check_if_netlink_initialized())
+		return 0 ;
+
+
+	msg = nlmsg_alloc();
+
+	if (!msg) {
+		std::cout << "Error allocating new message MSG!" << std::endl ;
+		return 0;
+	}
+
+
+	genlmsg_put(msg, NL_AUTO_PID, NL_AUTO_SEQ, m_family_id,0, NLM_F_REQUEST, HWSIM_CMD_GET_RADIO, VERSION_NR);
+
+	if (nl_send_auto(m_sock, msg) < 0)
+	{
+		nlmsg_free(msg);
+		return 0 ;
+	}
+
+	nl_complete_msg(m_sock,msg);
+	
+	if (nl_send(m_sock, msg) < 0)
+	{
+		nlmsg_free(msg);
+		return 0 ;
+	}
+
+	std::cout << "send get info cmd " << std::endl ;
+
+	nlmsg_free(msg);
+
+	return 1;
+}
+
+
 
 // free better m_cb and m_sock
 // improve the stoping process
@@ -333,13 +374,13 @@ int VWifiGuest::init_netlink(void)
 	m_cb = nl_cb_alloc(NL_CB_CUSTOM);
 	
 	if (!m_cb) {
-		std::cout << "Error allocating netlink callbacks" << std::endl ;
+		std::cerr << "Error allocating netlink callbacks" << std::endl ;
 		return 0;
 	}
 
 	m_sock = nl_socket_alloc_cb(m_cb);
 	if (!m_sock) {
-		std::cout << "Error allocationg netlink socket" << std::endl;
+		std::cerr << "Error allocationg netlink socket" << std::endl;
 		return 0;
 	}
 
@@ -426,8 +467,8 @@ int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int da
 
 	bytes = nl_send_auto_complete(m_sock, msg);
 	nlmsg_free(msg);
-	mac_address_to_string(addr, dst);
-	std::cout << "Sent " << bytes <<  "to " <<  addr << std::endl;
+//	mac_address_to_string(addr, dst);
+//	std::cout << "Sent " << bytes <<  "to " <<  addr << std::endl;
 	
 	return 1;
 }
@@ -459,7 +500,6 @@ void VWifiGuest::recv_from_server(){
 	char addr[18];
 	struct ether_addr framesrc;
 	struct ether_addr framedst;
-	//struct ether_addr broadcast = { 0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF } ;
 
 	signal = -10;
 	rate_idx = 7;
@@ -548,9 +588,12 @@ void VWifiGuest::recv_from_server(){
 
 	for (auto & inet : inets)
 	{
-		struct ether_addr macdst = inet.getMacaddr();
-		macdst.ether_addr_octet[0] |= 0x40 ; 
-		send_cloned_frame_msg(&macdst, data, data_len,rate_idx, signal, freq);
+		struct ether_addr macdsthwsim = inet.getMachwsim();
+		
+		mac_address_to_string(addr, &macdsthwsim);
+		std::cout << "frame machswim:" << addr << std::endl;
+
+		send_cloned_frame_msg(&macdsthwsim, data, data_len,rate_idx, signal, freq);
 
 	}
 
@@ -561,13 +604,13 @@ void VWifiGuest::recv_from_server(){
 void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 
 	std::cout <<  __func__ << std::endl ;
 
 	std::cout << _list_winterfaces << std::endl ; 
 
-#endif
+//#endif
 
 
 	if (! check_if_netlink_initialized())
@@ -654,6 +697,7 @@ int VWifiGuest::start(){
 		return 0 ;
 
 	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
+
 
 	
 	/*connect to vsock/tcp server */
@@ -814,6 +858,7 @@ void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 
 	_list_winterfaces.add_device(wirelessdevice);
 
+	send_get_info_radio_msg();
 }
 
 

@@ -15,7 +15,7 @@ class WirelessDevice {
 	int _iftype;
 	//unsigned char _macaddr[ETH_ALEN];
 	struct ether_addr _macaddr ;
-	struct ether_addr _machwsim ;
+	struct ether_addr _machwsim = {0x00,0X00,0x00,0X00,0x00,0X00};
 
 	public:
 
