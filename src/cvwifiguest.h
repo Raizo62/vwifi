@@ -22,23 +22,35 @@ class VWifiGuest {
 WirelessDeviceList _list_winterfaces ;
 
 /** pointer for tcp or vsocket */
-CSocketClient  _socket ;
+CSocketClient  _vsocket ;
 
 /** pointer for netlink socket */
-struct nl_sock * m_sock { nullptr };
+struct nl_sock * _netlink_socket { nullptr };
 
 /** pointer for netlink callback function */
-struct nl_cb * m_cb { nullptr };
+struct nl_cb * _cb { nullptr };
 
 /** For the family ID used by hwsim */
 int m_family_id { 1 };
 
 
-bool m_initialized { false } ;
 bool m_started  { false } ;
 
 std::mutex m_mutex_ctrl_run ;
-std::mutex m_mutex_init ;
+
+int _all_thread_dead  { 0 } ;
+
+std::mutex _mutex_all_thread_dead ;
+
+bool _initialized { false } ;
+
+std::mutex _mutex_initialized ;
+
+bool _stopped { true } ;
+
+std::mutex _mutex_stopped ;
+
+
 
 void mac_address_to_string(char *address, struct ether_addr *mac);
 
@@ -70,6 +82,16 @@ public :
 
 	int process_messages(struct nl_msg *msg, void *arg);
 
+
+	int init();
+
+
+	/**
+	 * \brief free dynamicly allocated memory and socket descriptors
+	 */
+	void clean_all();
+
+	bool initialized();
 
 private:
 	
@@ -161,28 +183,17 @@ private:
 
 	void recv_from_server();
 
-	/**
-	 * \brief free dynamicly allocated memory and socket descriptors
-	 */
-	void clean_all();
-
 	
-	/**
-	 * \brief set m_initialized member using m_mutex_init 
-	 */
-	void setInitialized(int);
+	void thread_dead();
 
-
-	/**
-	 * \brief check the value  m_initialized member using m_mutex_init 
-	 */
-	bool check_if_netlink_initialized();
-	
-	
+	bool all_thread_dead(int);
+		
 	/**
 	 * \brief check the value  m_started member using m_mutex_ctr_run 
 	 */
-	bool check_if_started();
+	bool started();
+
+	bool stopped();
 
 
 	/**

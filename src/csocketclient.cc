@@ -8,6 +8,8 @@
 
 #include "csocketclient.h"
 
+#include <fcntl.h>
+
 using namespace std;
 
 CSocketClient::~CSocketClient() 
@@ -97,4 +99,29 @@ ssize_t CSocketClient::Read(char* data, ssize_t sizeOfData)
 		return CSocket::Read(Master, data, sizeOfData);
 
 	return SOCKET_ERROR;
+}
+
+
+
+/** 
+ * \fn int SetBloking(int blocking) 
+ * \biref Set a file descriptor to blocking or non-blocking mode.
+ *
+ * \param blocking 0:non-blocking mode, 1:blocking mode
+ *
+ * \return 1:success, 0:failure.
+ **/
+int CSocketClient::SetBloking(int blocking) {
+    
+   /* Save the current flags */
+    int flags = fcntl(Master, F_GETFL, 0);
+    if (flags == -1)
+        return 0;
+
+    if (blocking)
+        flags &= ~O_NONBLOCK;
+    else
+        flags |= O_NONBLOCK;
+    return fcntl(Master, F_SETFL, flags) != -1;
+
 }
