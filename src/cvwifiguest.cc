@@ -751,6 +751,9 @@ int VWifiGuest::start(){
 
 int VWifiGuest::stop(){
 
+	if( stopped())
+		return 0 ;
+
 	m_mutex_ctrl_run.lock();
 	m_started = false ;
 	m_mutex_ctrl_run.unlock();

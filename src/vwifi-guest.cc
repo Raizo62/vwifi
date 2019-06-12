@@ -6,23 +6,29 @@
 
 #include <memory>
 
-#define STARTED 1
-#define STOPPED 2
-#define SUSPENDED 3
+enum STATE {
+
+	STARTED=1,
+	STOPPED ,
+	SUSPENDED 
+};
 
 VWifiGuest  vwifi_guest ;
 
-int _state = STOPPED ;
+enum STATE  _state = STOPPED ;
 
 
 void  signal_handler(int signal_num)
 {
+
+	std::cout << "signal " << signal_num << " received" << std::endl ;
 
 	switch(signal_num)
 	{
 		case SIGINT :
 		case SIGTERM :
 		case SIGQUIT :
+			
 			vwifi_guest.stop() ;
 			_state = STOPPED ;
 			break ;
