@@ -6,6 +6,7 @@
 #include <arpa/inet.h> // struct sockaddr_in & inet_ntoa & ntohs
 #include <linux/vm_sockets.h> // struct sockaddr_vm
 #include <unistd.h> // close
+#include <fcntl.h> // F_GETFL O_NONBLOCK
 
 #include "csocket.h"
 
@@ -49,6 +50,29 @@ bool CSocket::Configure()
 	return true;
 }
 
+/**
+ * \fn int SetBlocking(int blocking)
+ * \biref Set a file descriptor to blocking or non-blocking mode.
+ *
+ * \param blocking false:non-blocking mode, true:blocking mode
+ *
+ * \return true:success, false:failure.
+ **/
+bool CSocket::SetBlocking(TDescriptor descriptor, bool blocking)
+{
+	/* Save the current flags */
+	int flags = fcntl(descriptor, F_GETFL, 0);
+	if (flags == -1)
+		return 0;
+
+	if( blocking )
+		flags &= ~O_NONBLOCK;
+	else
+		flags |= O_NONBLOCK;
+
+	return fcntl(descriptor, F_SETFL, flags) != -1;
+}
+
 ssize_t CSocket::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)
 {
 	return send(descriptor, data, sizeOfData, 0);
@@ -68,5 +92,3 @@ void CSocket::Close()
 {
 	close(Master);
 }
-
-
