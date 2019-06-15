@@ -29,6 +29,7 @@ int main(int argc , char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	cout<<"CTRL : ";
 	CCTRLServer ctrlWifi(&socketWifi);
 	ctrlWifi.Init(CTRL_PORT);
 	if( ! ctrlWifi.Listen(1) )
@@ -36,8 +37,6 @@ int main(int argc , char *argv[])
 		cerr<<"Error : ctrlWifi.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
-
-
 
 	//add master socket to set
 	scheduler.AddNode(socketWifi);
