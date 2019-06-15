@@ -17,11 +17,10 @@ VWifiGuest  vwifi_guest ;
 
 enum STATE  _state = STOPPED ;
 
+enum STATE pstate = _state ;
 
 void  signal_handler(int signal_num)
 {
-
-	std::cout << "signal " << signal_num << " received" << std::endl ;
 
 	switch(signal_num)
 	{
@@ -29,21 +28,29 @@ void  signal_handler(int signal_num)
 		case SIGTERM :
 		case SIGQUIT :
 			
+			std::cout << signal_num << std::endl ;
 			vwifi_guest.stop() ;
 			_state = STOPPED ;
 			break ;
+		
 		case  SIGTSTP :
-			std::cout << "Suspended" << std::endl ;
+			
+			std::cout << signal_num << std::endl ;
 			vwifi_guest.stop();
 			_state = SUSPENDED ;
 			break ;
 
 		case SIGCONT :
 
-			std::cout << "Resume" << std::endl ;
-			if(!vwifi_guest.start())
-				std::cout << "Starting process aborted" << std::endl ;
+			std::cout << signal_num << std::endl ;
+			pstate = _state ;
 			_state = STARTED ;
+			if(!vwifi_guest.start()){
+			
+				std::cout << "Starting process aborted" << std::endl ;
+				_state = pstate ;
+				break ;
+			}
 			break;
 
 		default :
@@ -51,6 +58,7 @@ void  signal_handler(int signal_num)
 	
 	}
 
+	std::cout << "OUT SWITCH" << std::endl ;
 }
 
 
@@ -65,8 +73,6 @@ int main (int argc , char ** argv){
 	signal(SIGTSTP, signal_handler);
 	signal(SIGCONT, signal_handler);
 
-	if(!vwifi_guest.init())
-		std::cout << "Init process aborted" << std::endl ;
 
 
 	if(!vwifi_guest.start())
@@ -75,12 +81,16 @@ int main (int argc , char ** argv){
 
 	while(true){
 	
-		if (_state == STOPPED )
-		         
+		if (_state == STOPPED ){
+		        
+		       		std::cout << "its time to live" << std::endl ;	
 				break ;
+		}
 		
 		if ((_state == SUSPENDED )|| (_state == STARTED )){
-		
+	
+				std::cout << "SUSPENDED or CONT" << std::endl ;	
+
 				pause();
 				continue;
 		}

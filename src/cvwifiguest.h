@@ -185,8 +185,10 @@ private:
 
 	
 	void thread_dead();
+	
+	void thread_start();
 
-	bool all_thread_dead(int);
+	bool all_thread_dead();
 		
 	/**
 	 * \brief check the value  m_started member using m_mutex_ctr_run 
