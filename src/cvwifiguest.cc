@@ -383,7 +383,11 @@ int VWifiGuest::init_netlink(void)
 	m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
 
 
-	while (m_family_id < 0 ) {
+	while (m_family_id  < 0 ) {
+
+		if ( ! started()){
+			return 0 ;
+		}
 
 #ifdef _DEBUG
 		std::cout << "Family MAC80211_HWSIM not registered" << std::endl ;
@@ -498,7 +502,7 @@ void VWifiGuest::recv_from_server(){
 
 	/* receive bytes packets from server and store them in buf */
 	bytes=_vsocket.Read(buf,sizeof(buf));
-	if( bytes == SOCKET_ERROR )
+	if(( bytes == SOCKET_ERROR ) || ( bytes == 0 )) // bytes == 0 if non blocking socket
 	{
 	//	std::cerr<<"socket.Read error"<<std::endl;
 		return ;
@@ -600,6 +604,7 @@ void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 
 	std::cout << _list_winterfaces << std::endl ; 
 
+	thread_start();
 	
 	/* loop for waiting  incoming msg from hwsim driver*/
 	while (true) {
@@ -619,6 +624,8 @@ void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 
 
 void VWifiGuest::recv_msg_from_server_loop_start(){
+
+	thread_start();
 
 	while(true){
 
@@ -665,19 +672,41 @@ int VWifiGuest::init(){
 int VWifiGuest::start(){
 
 
-	// check if initialized here, if we forget calling init function before ??
-	if(! initialized()){
-		
-		std::cerr << "You must call init() function before" << std::endl ;
-		return 0 ;
-	}
-
-	// check _stoped instead m_started or check all_thread_dead ?
-	if( ! stopped())
+	if( started())
+	
 	{
 		std::cerr << "vwifi-guest is already started" <<  std::endl ;
 		return 0 ;
 	}
+
+	m_mutex_ctrl_run.lock();
+	m_started = true ;
+	m_mutex_ctrl_run.unlock();
+
+	// check if initialized here, if we forget calling init function before ??
+	if(! initialized()){
+	
+		if (!init()){
+	
+			m_mutex_ctrl_run.lock();
+			m_started = false ;
+			m_mutex_ctrl_run.unlock();
+		
+			return 0;
+		}
+	}
+
+	//  check that  all_thread_dead in before starting ?
+	if( ! stopped())
+	{
+
+		m_mutex_ctrl_run.lock();
+		m_started = false ;
+		m_mutex_ctrl_run.unlock();
+		std::cerr << "One or several threads are running" <<  std::endl ;
+		return 0 ;
+	}
+
 
 	MonitorWirelessDevice * monwireless = nullptr ;
 
@@ -731,10 +760,7 @@ int VWifiGuest::start(){
 	/* start thread that handle incoming msg from tcp or vsock connection to server */
 	std::thread serverloop(&VWifiGuest::recv_msg_from_server_loop_start,this);
 
-	m_mutex_ctrl_run.lock();
-	m_started = true ;
-	m_mutex_ctrl_run.unlock();
-
+	
 	_mutex_stopped.lock();
 	_stopped = false ;
 	_mutex_stopped.unlock();
@@ -751,16 +777,19 @@ int VWifiGuest::start(){
 
 int VWifiGuest::stop(){
 
-	if( stopped())
-		return 0 ;
-
 	m_mutex_ctrl_run.lock();
 	m_started = false ;
 	m_mutex_ctrl_run.unlock();
 
+	if( stopped())
+		return 0 ;
+
+
 	_vsocket.Close();
 
-	while(!all_thread_dead(2));
+	while(!all_thread_dead());
+
+	std::cout << "int stop after kill" << std::endl ;
 
 	_mutex_stopped.lock();
 	_stopped = true ;
@@ -800,11 +829,11 @@ VWifiGuest::~VWifiGuest(){
 }
 
 
-bool VWifiGuest::all_thread_dead(int nb_thread){
+bool VWifiGuest::all_thread_dead(){
 
 	_mutex_all_thread_dead.lock();
 
-	if(_all_thread_dead == nb_thread){
+	if(_all_thread_dead == 0){
 
 		_mutex_all_thread_dead.unlock();
 		return true ;
@@ -820,9 +849,17 @@ bool VWifiGuest::all_thread_dead(int nb_thread){
 void VWifiGuest::thread_dead(){
 
 	_mutex_all_thread_dead.lock();
+	_all_thread_dead -= 1;
+	_mutex_all_thread_dead.unlock();
+}
+
+void VWifiGuest::thread_start(){
+
+	_mutex_all_thread_dead.lock();
 	_all_thread_dead += 1;
 	_mutex_all_thread_dead.unlock();
 }
+
 
 bool VWifiGuest::started(){
 
