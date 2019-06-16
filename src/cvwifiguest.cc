@@ -744,7 +744,7 @@ int VWifiGuest::start(){
 	}
 
 	/* we can also call this in constructor ? */
-	_vsocket.SetBlocking(1);
+	_vsocket.SetBlocking(0);
 
 	std::cout << "Connection to Server Ok" << std::endl;
 
