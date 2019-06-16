@@ -77,9 +77,23 @@ int main(int argc , char *argv[])
 			}
 
 			//else its some IO operation on some other socket
-			for ( i = 0 ; i < socketWifi.GetNumberClient() ; i++)
+			for ( i = 0 ; i < socketWifi.GetNumberClient() ; )
 			{
 				socket = socketWifi[i];
+
+				if( ! socketWifi.IsEnable(i) )
+				{
+							//Somebody disconnected , get his details and print
+							cout<<"Host disable : "; socketWifi.ShowInfoClient(i) ; cout<<endl;
+
+							//Close the socket
+							socketWifi.CloseClient(i);
+
+							//del master socket to set
+							scheduler.DelNode(socket);
+
+							continue;
+				}
 
 				if( scheduler.NodeHasAction(socket) )
 				{
@@ -98,6 +112,8 @@ int main(int argc , char *argv[])
 
 							//del master socket to set
 							scheduler.DelNode(socket);
+
+							continue;
 						}
 
 						//Echo back the message that came in
@@ -118,6 +134,8 @@ int main(int argc , char *argv[])
 						}
 					}
 				}
+
+				i++;
 			}
 		}
 	}
