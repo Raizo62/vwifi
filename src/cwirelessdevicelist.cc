@@ -27,6 +27,16 @@ void WirelessDeviceList::add_device(const WirelessDevice & wdevice){
 	_listaccess.unlock();
 }
 
+void WirelessDeviceList::delete_device(const WirelessDevice & wdevice){
+
+	_listaccess.lock();
+	
+	_wdevices_list.erase(wdevice.getIndex()) ;	
+
+	_listaccess.unlock();
+}
+
+
 void WirelessDeviceList::delete_device(int index){
 
 	_listaccess.lock();

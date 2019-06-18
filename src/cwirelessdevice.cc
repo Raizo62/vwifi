@@ -39,6 +39,19 @@ WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const str
 }
 
 
+void WirelessDevice::setName(const std::string & name){
+
+	_name = name ;
+
+}
+
+
+std::string WirelessDevice::getName() const {
+
+	return _name ;
+}
+
+
 struct ether_addr WirelessDevice::getMacaddr() const  {
 
 

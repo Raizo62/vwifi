@@ -51,6 +51,15 @@ class WirelessDeviceList {
 	 */
 	void delete_device(int index);
 
+
+	/**
+	 * \fn delete_device(const WirelessDevice & wdevice)
+	 * \brief Remove from _wdevice_list a wireless network device by index
+	 * \param wdevice wireless network device to remove from  _wdevices_list
+	 * \return void  
+	 */
+	void delete_device(const WirelessDevice & wdevice);
+
 	/**
 	 * \fn list_devices()
 	 * \brief Get a list of all wireless network devices
