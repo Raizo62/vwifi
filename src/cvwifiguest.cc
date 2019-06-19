@@ -7,6 +7,10 @@
 #include <linux/if_arp.h>
 #include <linux/nl80211.h>
 
+#include <linux/ethtool.h>
+#include <sys/ioctl.h>
+#include <linux/sockios.h>
+
 #include "ieee80211.h"
 #include "cvwifiguest.h"
 
@@ -15,7 +19,7 @@
 #include <cstring>
 
 #include "config.h"
-#include "cmonwirelessdevice.h"
+#include <unistd.h>
 
 
 /* allow calling non static function from static function */
@@ -49,15 +53,12 @@ int VWifiGuest::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags
 	
 	if (m_family_id < 0){
 		
-#ifdef _DEBUG
-		std::cout << __func__ <<  "m_family_id < 0" << std::endl ;
-#endif
+		std::cerr << __func__ <<  "m_family_id < 0" << std::endl ;
 		nlmsg_free(msg);
 		return 0;
 	}
 
-	genlmsg_put(msg, NL_AUTO_PID, NL_AUTO_SEQ, m_family_id,
-			0, NLM_F_REQUEST, HWSIM_CMD_TX_INFO_FRAME, VERSION_NR);
+	genlmsg_put(msg, NL_AUTO_PID, NL_AUTO_SEQ, m_family_id,	0, NLM_F_REQUEST, HWSIM_CMD_TX_INFO_FRAME, VERSION_NR);
 
 	/* i have to ack the src the driver expects
 	 * so there are no mac address modifications here
@@ -69,7 +70,8 @@ int VWifiGuest::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags
 	rc = nla_put_u64(msg, HWSIM_ATTR_COOKIE, cookie);
 
 	if (rc != 0) {
-		printf("Error filling payload\n");
+
+		std::cerr << "Error filling payload" << std::endl;
 		nlmsg_free(msg);
 		return 0;
 	}
@@ -122,6 +124,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	/* get message length needed for vsock sending */
 	msg_len = nlh->nlmsg_len;
 
+
 	if (nlh->nlmsg_type != m_family_id) 
 		return 1;
 	
@@ -130,33 +133,22 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 		return err->error ;
 	}
 
-
-	if (gnlh->cmd == HWSIM_CMD_GET_RADIO) {
 	
-		std::cout << "HWSIM_CMD_GET_RADIO" << std::endl;
-		return 1;
-	}
-
 	/* ignore if anything other than a frame
 	do we need to free the msg? */
-	if (!(gnlh->cmd == HWSIM_CMD_FRAME))
+	if (!(gnlh->cmd == HWSIM_CMD_FRAME)){
+	
+		std::cerr << "Not HWSIM_CMD_FRAME" << std::endl ;
 		return 1;
-
+	}
+	
 	/* processing original HWSIM_CMD_FRAME */
 	genlmsg_parse(nlh, 0, attrs, HWSIM_ATTR_MAX, NULL);
+	
 
 	/* this check was duplicated below in a second if statement, now gone */
 	if (!(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]))
 		return 1;
-
-
-	/* this check if signal attr is present */
-	//if (!(attrs[HWSIM_ATTR_SIGNAL]))
-	//	std::cerr << "signal attr is not present" << std::endl;
-
-	//if (!(attrs[HWSIM_ATTR_ADDR_RECEIVER]))
-
-	//	std::cerr << "hwsim dst mac  (hwsim id) is not present" << std::endl ;
 
 	/* we get hwsim mac (id)*/
 	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
@@ -232,33 +224,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	}
 
 
-
-	/* we iterate the _list_winterfaces list (local wireless network devices) and see if machwsim corresponding toframesrc is set ( != 0). The value must be src */ 
-/*	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
-
-	mac_address_to_string(addr, src);
-	std::cout << "hwsim src :" <<  addr << std::endl;
-	
-	
-	for (auto & inet : inets)
-	{
-		struct ether_addr macaddr = inet.getMacaddr();
-		if(std::memcmp(&macaddr,&framesrc,6) == 0){
-		
-			struct ether_addr zeroid = {0x00,0X00,0x00,0X00,0x00,0X00};
-			struct ether_addr machwsim = inet.getMachwsim();
-			if(std::memcmp(&machwsim,&zeroid,6) == 0){
-		
-				inet.setMachwsim((*src));
-				std::cout << inet << std::endl ;	
-				break ;
-			}
-		}
-	}
-*/
-	
-
-	/* here code of  to send (char *)nlh with  msg_len as size*/ 
+	/* send msg to a server */ 
 	int value=_vsocket.Send((char*)nlh,msg_len);
 	
 	if( value == SOCKET_ERROR )
@@ -305,43 +271,6 @@ int VWifiGuest::send_register_msg()
 
 	return 1;
 }
-
-int VWifiGuest::send_get_info_radio_msg()
-{
-	struct nl_msg *msg;
-
-
-	msg = nlmsg_alloc();
-
-	if (!msg) {
-		std::cout << "Error allocating new message MSG!" << std::endl ;
-		return 0;
-	}
-
-
-	genlmsg_put(msg, NL_AUTO_PID, NL_AUTO_SEQ, m_family_id,0, NLM_F_REQUEST, HWSIM_CMD_GET_RADIO, VERSION_NR);
-
-	if (nl_send_auto(_netlink_socket, msg) < 0)
-	{
-		nlmsg_free(msg);
-		return 0 ;
-	}
-
-	nl_complete_msg(_netlink_socket,msg);
-	
-	if (nl_send(_netlink_socket, msg) < 0)
-	{
-		nlmsg_free(msg);
-		return 0 ;
-	}
-
-	std::cout << "send get info cmd " << std::endl ;
-
-	nlmsg_free(msg);
-
-	return 1;
-}
-
 
 
 // free better _cb and _netlink_socket
@@ -598,6 +527,54 @@ void VWifiGuest::recv_from_server(){
 }
 
 
+void  VWifiGuest::monitor_hwsim_loop()
+{
+	struct nl_sock *sock;
+	int family_id ;
+	
+	sock = nl_socket_alloc();
+	genl_connect(sock);
+
+
+	thread_start();
+	
+	/* loop for waiting  incoming msg from hwsim driver*/
+	while (true) {
+
+		if(!started())
+			break ;
+
+		using namespace  std::chrono_literals;
+		std::this_thread::sleep_for(1s);
+
+		family_id = genl_ctrl_resolve(sock, "MAC80211_HWSIM");
+
+		if (family_id < 0) {
+		
+			std::cout << "Hwsim Driver unloaded" << std::endl ;
+			_mutex_initialized.lock();
+			_initialized = false ;
+			_mutex_initialized.unlock();
+		
+			if(!init()){
+				break;
+			}
+
+			monwireless->get_winterface_infos();
+			std::cout << _list_winterfaces << std::endl ; 
+
+
+		}
+	}
+
+	nl_close(sock);
+	nl_socket_free(sock);
+
+	thread_dead();
+}
+
+
+
 
 void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 
@@ -608,19 +585,24 @@ void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 	
 	/* loop for waiting  incoming msg from hwsim driver*/
 	while (true) {
-
-
+		
 		if(!started())
 			break ;
-	
+		/* added for monitor_hwsim_loop */	
+		if(!initialized()){
+		
+			std::cout << __func__ << "driver still unloaded" << std::endl ;	
+			using namespace  std::chrono_literals;
+			std::this_thread::sleep_for(1s);
+			continue ;
+		}
+
 		nl_recvmsgs_default(_netlink_socket);
 	}
 
 	thread_dead();
 
 }
-
-
 
 
 void VWifiGuest::recv_msg_from_server_loop_start(){
@@ -631,6 +613,15 @@ void VWifiGuest::recv_msg_from_server_loop_start(){
 
 		if(!started())
 			break ;
+
+		/* added for monitor_hwsim_loop */
+		if(!initialized()){
+		
+			std::cout <<  __func__ << "driver still unloaded" << std::endl ;	
+			using namespace  std::chrono_literals;
+			std::this_thread::sleep_for(1s);
+			continue ;
+		}
 	
 		recv_from_server();
 	}
@@ -707,9 +698,6 @@ int VWifiGuest::start(){
 		return 0 ;
 	}
 
-
-	MonitorWirelessDevice * monwireless = nullptr ;
-
 	try{
 
 		/** make it attribute member if you would use it elsewhere */	
@@ -760,12 +748,16 @@ int VWifiGuest::start(){
 	/* start thread that handle incoming msg from tcp or vsock connection to server */
 	std::thread serverloop(&VWifiGuest::recv_msg_from_server_loop_start,this);
 
-	
+	/* start thread monitoring  the starting of hwsim driver*/
+	std::thread monitorloop(&VWifiGuest::monitor_hwsim_loop,this);
+
+
 	_mutex_stopped.lock();
 	_stopped = false ;
 	_mutex_stopped.unlock();
 
 
+	monitorloop.join();
 	hwsimloop.join();
 	serverloop.join();
 
@@ -933,15 +925,76 @@ void VWifiGuest::handle_del_winet_notification(WirelessDevice wirelessdevice){
 
 
 	std::cout << "Delete wireless intarface : " << wirelessdevice << std::endl ;
+	_list_winterfaces.delete_device(wirelessdevice);
 
 }
 
 void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 
 
-	_list_winterfaces.add_device(wirelessdevice);
+        struct ether_addr paddr ;
+	std::memset(&paddr, 0, sizeof(paddr));
 
+	if(get_pmaddr(paddr,wirelessdevice.getName().c_str())){
+      
+		paddr.ether_addr_octet[0] |= 0x40 ; 
+		wirelessdevice.setMachwsim(paddr); 
+		_list_winterfaces.add_device(wirelessdevice);
+	}
 }
 
 
+bool VWifiGuest::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
+
+{
+    int sock;
+    struct ifreq ifr;
+    struct ethtool_perm_addr *epmaddr;
+
+ 
+    epmaddr = (ethtool_perm_addr *) malloc(sizeof(struct ethtool_perm_addr) + MAX_ADDR_LEN);
+    if (!epmaddr)
+    {
+         perror("malloc");
+         return 0;
+    }
+ 
+    std::memset(&ifr, 0, sizeof(ifr));
+ 
+    if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+    {
+         free(epmaddr);
+         perror("socket");
+         return 0;
+    }
+ 
+    strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+    epmaddr->cmd = ETHTOOL_GPERMADDR;
+    epmaddr->size = MAX_ADDR_LEN;
+    ifr.ifr_data = (char *) epmaddr;
+ 
+    if (ioctl(sock, SIOCETHTOOL, &ifr) == -1)
+    {
+         perror("ioctl");
+         return 0;    
+    }
+    else
+    {
+         if (epmaddr->size != ETH_ALEN)
+         {
+              return 0;
+         }
+         else
+         {
+		 for(int i=0 ; i < 6 ; i++)
+	 		 paddr.ether_addr_octet[i] = epmaddr->data[i] ;
+             
+	 }
+    }
+ 
+    free(epmaddr);
+    close(sock);
+ 
+    return 1;
+}
 

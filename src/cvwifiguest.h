@@ -9,6 +9,8 @@
 #include "csocketclient.h"
 #include "cwirelessdevice.h"
 #include "cwirelessdevicelist.h"
+#include "cmonwirelessdevice.h"
+
 
 namespace vwifiguest{
 
@@ -49,6 +51,9 @@ std::mutex _mutex_initialized ;
 bool _stopped { true } ;
 
 std::mutex _mutex_stopped ;
+
+MonitorWirelessDevice * monwireless = nullptr ;
+
 
 
 
@@ -113,8 +118,6 @@ private:
  	*/
 	int send_register_msg();
 
-	int send_get_info_radio_msg();
-
 	
 	/**
  	*	\brief Initialize netlink communications
@@ -159,6 +162,17 @@ private:
 	 * 	\brief  start receiving hwsim frame from vwifi-server loop
 	 */
 	void recv_msg_from_server_loop_start();
+
+
+
+	/**
+	 *	@brief this is meant to be a thread which detects removal of driver
+ 	*	Used to suspend normal actions until driver is loaded
+ 	*	@return void
+	 */
+	void  monitor_hwsim_loop();
+
+
 
 	/**
  	*      \brief Send a cloned frame to the kernel space driver.
@@ -216,6 +230,12 @@ private:
 	 * handle initial wireless  inet 
 	 */
 	void handle_init_winet_notification(WirelessDevice);
+
+	/**
+	 * \brief get permanent mac address of ifname interface
+	 */
+	bool get_pmaddr(struct ether_addr &,const char *ifname);
+
 
 };
 

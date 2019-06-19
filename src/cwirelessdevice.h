@@ -43,12 +43,16 @@ class WirelessDevice {
 	 */
 	WirelessDevice(std::string,int,int,const struct ether_addr &);
 
-	
 	friend std::ostream &   operator<< ( std::ostream & , WirelessDevice &);
-        struct ether_addr getMacaddr() const  ;
-	 struct ether_addr getMachwsim() const  ;
+        
+	struct ether_addr getMacaddr() const  ;
+       	struct ether_addr getMachwsim() const  ;
+	
 	void setMacaddr(const struct  ether_addr &);
 	void setMachwsim(const struct  ether_addr &);
+
+	void setName(const std::string &);
+	std::string getName() const ;
 
 	bool checkif_wireless_device();
 	int getIndex() const ;
