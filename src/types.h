@@ -3,7 +3,7 @@
 
 typedef int TValue;
 
-typedef int TCID;
+typedef unsigned int TCID;
 const TCID TCID_DISABLE=0;
 
 enum TOrder {
