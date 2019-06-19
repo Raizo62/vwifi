@@ -52,6 +52,7 @@ sudo chmod a+rw /dev/vhost-vsock
 cd /hosthome/vwifi
 tmux
 modprobe mac80211_hwsim radios=3
+macchanger -a wlan0
 ./vwifi-guest
 ```
 
@@ -68,15 +69,15 @@ ip a a 10.0.0.1/8 dev wlan0
 
 * Guest Wifi 2 :
 ```bash
-wpa_supplicant -Dnl80211 -iwlan1 -c tests/wpa_supplicant.conf
-ip a a 10.0.0.2/8 dev wlan1
+wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
+ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
 * Guest Wifi 3 :
 ```bash
-wpa_supplicant -Dnl80211 -iwlan2 -c tests/wpa_supplicant.conf
-ip a a 10.0.0.3/8 dev wlan1
+wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
+ip a a 10.0.0.3/8 dev wlan0
 ping 10.0.0.2
 ```
 
