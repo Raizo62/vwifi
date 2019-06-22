@@ -40,7 +40,7 @@ build : directories $(EXEC) # man
 
 $(OBJ)/cscheduler.o: cscheduler.cc cscheduler.h types.h config.h
 
-$(OBJ)/csocket.o: csocket.cc csocket.h types.h
+$(OBJ)/csocket.o: csocket.cc csocket.h types.h config.h
 
 $(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.h types.h
 
