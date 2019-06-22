@@ -5,7 +5,9 @@
 
 class CSocketClient : public CSocket
 {
-	bool IsConnected;
+		bool IsConnected;
+
+		bool ConnectLoop(struct sockaddr* server, size_t size_of_server);
 
 	public :
 

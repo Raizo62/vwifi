@@ -30,13 +30,8 @@ void CSocketClient::Init()
 	IsConnected=false;
 }
 
-bool CSocketClient::Connect(const char* IP, TPort port)
+bool CSocketClient::ConnectLoop(struct sockaddr* server, size_t size_of_server)
 {
-	struct sockaddr_in server;
-	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = inet_addr(IP);
-	server.sin_port = htons(port);
-
 	while ( 1 )
 	{
 		//create a master socket
@@ -46,7 +41,7 @@ bool CSocketClient::Connect(const char* IP, TPort port)
 			return false;
 		}
 
-		if( ! connect(Master,(struct sockaddr*) &server,sizeof(server)) )
+		if( ! connect(Master,server,size_of_server) )
 		{
 			IsConnected=true;
 
@@ -62,6 +57,16 @@ bool CSocketClient::Connect(const char* IP, TPort port)
 	return false;
 }
 
+bool CSocketClient::Connect(const char* IP, TPort port)
+{
+	struct sockaddr_in server;
+	server.sin_family = AF_INET;
+	server.sin_addr.s_addr = inet_addr(IP);
+	server.sin_port = htons(port);
+
+	return ConnectLoop((struct sockaddr*) &server, sizeof(server));
+}
+
 bool CSocketClient::Connect(TPort port)
 {
 	//type of socket created
@@ -72,30 +77,7 @@ bool CSocketClient::Connect(TPort port)
 		.svm_cid = 2
 	};
 
-
-	while ( 1 )
-	{
-		//create a master socket
-		if( ! Configure() )
-		{
-			cerr<<"Error : CSocketClient::Connect : Configure"<<endl;
-			return false;
-		}
-
-		if( ! connect(Master,(struct sockaddr*) &server,sizeof(server)) )
-		{
-			IsConnected=true;
-
-			return true;
-		}
-
-		perror("CSocketClient::Connect : connect");
-		Close();
-		sleep(2);
-	}
-
-	// impossible to be here
-	return false;
+	return ConnectLoop((struct sockaddr*) &server, sizeof(server));
 }
 
 ssize_t CSocketClient::Send(const char* data, ssize_t sizeOfData)
