@@ -46,7 +46,7 @@ sudo chmod a+rw /dev/vhost-vsock
  - QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=NUM` with NUM an identifier greater than  2
  - GNS3 : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%console-port%`
 
-### Guest
+### Each Guest
 
 ```bash
 cd /hosthome/vwifi
@@ -58,12 +58,14 @@ macchanger -a wlan0
 
 ## Test Wifi
 
-### Guest
+### Test 1 : WPA
+
+#### Guests
 
 * Guest Wifi 1 :
 
 ```bash
-hostapd tests/hostapd.conf
+hostapd tests/hostapd_wpa.conf
 ip a a 10.0.0.1/8 dev wlan0
 ```
 
@@ -79,6 +81,38 @@ ping 10.0.0.1
 wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
 ip a a 10.0.0.3/8 dev wlan0
 ping 10.0.0.2
+```
+
+### Test 2 : Open
+
+#### Guests
+
+* Guest Wifi 1 :
+
+```bash
+hostapd tests/hostapd_open.conf
+ip a a 10.0.0.1/8 dev wlan0
+```
+
+* Guest Wifi 2 :
+```bash
+ip link set up wlan0
+iw wlan0 scan
+iw dev wlan0 connect mac80211_open
+ip a a 10.0.0.2/8 dev wlan0
+ping 10.0.0.1
+```
+
+* Guest Wifi 3 :
+```bash
+iwconfig wlan0 mode Monitor
+ip link set up wlan0
+tcpdump -n -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
+```
+
+* Host :
+```bash
+tail -f -c +0b /home/user/projects/vwifi_capture_wlan0.pcap | wireshark -k -i -
 ```
 
 ## Control
