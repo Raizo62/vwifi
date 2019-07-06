@@ -12,7 +12,9 @@ using namespace std;
 
 bool CWifiServer::Listen(TIndex maxClient)
 {
-	if( ! CSocketServer::Listen(maxClient) )
+	MaxClient=maxClient;
+
+	if( ! CSocketServer::Listen() )
 		return false;
 
 	InfoClient = new CInfoWifi [ maxClient ];

@@ -32,7 +32,7 @@ int main(int argc , char *argv[])
 	cout<<"CTRL : ";
 	CCTRLServer ctrlWifi(&socketWifi);
 	ctrlWifi.Init(CTRL_PORT);
-	if( ! ctrlWifi.Listen(1) )
+	if( ! ctrlWifi.Listen() )
 	{
 		cerr<<"Error : ctrlWifi.Listen"<<endl;
 		exit(EXIT_FAILURE);

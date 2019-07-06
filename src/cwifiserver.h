@@ -8,6 +8,8 @@
 
 class CWifiServer : public CSocketServer
 {
+		TIndex MaxClient;
+
 		CInfoWifi* InfoClient;
 		std::list<CInfoWifi> InfoClientDeconnected;
 

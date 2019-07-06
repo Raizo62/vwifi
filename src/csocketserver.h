@@ -12,7 +12,6 @@ class CSocketServer : public CSocket
 
 		TPort Port;
 
-		TIndex MaxClient;
 		TIndex NumberClient;
 
 		std::vector<TDescriptor> SocketClients;
@@ -31,7 +30,7 @@ class CSocketServer : public CSocket
 
 		void Init(TPort port);
 
-		virtual bool Listen(TIndex maxClient);
+		virtual bool Listen();
 
 		virtual TDescriptor Accept();
 

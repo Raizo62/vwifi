@@ -14,13 +14,11 @@ using namespace std;
 CSocketServer::CSocketServer() : CSocket()
 {
 	NumberClient=0;
-	MaxClient=0;
 };
 
 CSocketServer::CSocketServer(TSocket type) : CSocket(type)
 {
 	NumberClient=0;
-	MaxClient=0;
 };
 
 void CSocketServer::Init(TPort port)
@@ -36,10 +34,8 @@ CSocketServer::~CSocketServer()
 	CSocket::Close();
 }
 
-bool CSocketServer::Listen(TIndex maxClient)
+bool CSocketServer::Listen()
 {
-	MaxClient=maxClient;
-
 	//create a master socket
 	if( ! Configure() )
 	{
@@ -124,12 +120,6 @@ TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 	if ((new_socket = accept(Master, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
 	{
 		perror("CSocketServer::Accept : accept");
-		return SOCKET_ERROR;
-	}
-
-	if ( NumberClient >= MaxClient )
-	{
-		cerr<<"Error : CSocketServer::Accept : too much clients"<<endl;
 		return SOCKET_ERROR;
 	}
 
