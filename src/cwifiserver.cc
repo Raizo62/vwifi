@@ -22,7 +22,7 @@ bool CWifiServer::Listen(TIndex maxClient)
 
 bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
 {
-	for (std::list<CInfoWifi>::iterator it=InfoClientsDeconnected.begin(); it != InfoClientsDeconnected.end(); ++it)
+	for (list<CInfoWifi>::iterator it=InfoClientsDeconnected.begin(); it != InfoClientsDeconnected.end(); ++it)
 	{
 		if ( it->GetCid() == cid )
 		{
