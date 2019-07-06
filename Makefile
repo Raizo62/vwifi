@@ -89,7 +89,7 @@ directories: $(OBJ)/.
 $(OBJ)/.:
 	mkdir -p $(OBJ)
 
-all : clean build install
+all : clean build # install
 
 clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
