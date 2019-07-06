@@ -17,13 +17,6 @@ bool CWifiServer::Listen(TIndex maxClient)
 	if( ! CSocketServer::Listen() )
 		return false;
 
-	InfoClient = new CInfoWifi [ maxClient ];
-	if( InfoClient == NULL )
-	{
-		perror("CWifiServer::Listen : new");
-		return false;
-	}
-
 	return true;
 }
 
@@ -46,7 +39,7 @@ bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
 
 bool CWifiServer::RecoverCoordinateOfInfoClient(TCID cid, CCoordinate& coo)
 {
-	for (TIndex i = 0; i < GetNumberClient(); i++)
+	for (TIndex i = 0; i < InfoClient.size() ; i++)
 	{
 		if( InfoClient[i].GetCid() == cid )
 		{
@@ -81,11 +74,15 @@ TDescriptor CWifiServer::Accept()
 	else // AF_INET
 		cid=ntohs(address.sin_port);
 
+	CInfoWifi infoWifi;
+
 	CCoordinate coo;
 	if( RecoverCoordinateOfOldInfoClient(cid,coo) || RecoverCoordinateOfInfoClient(cid, coo) )
-		InfoClient[GetNumberClient()-1].Set(coo);
+		infoWifi.Set(coo);
 
-	InfoClient[GetNumberClient()-1].SetCid(cid);
+	infoWifi.SetCid(cid);
+
+	InfoClient.push_back(infoWifi);
 
 	return new_socket;
 }
@@ -124,10 +121,7 @@ void CWifiServer::CloseClient(TIndex index)
 		InfoClientDeconnected.pop_front();
 	InfoClientDeconnected.push_back(InfoClient[index]);
 
-	// be careful : NumberClient is already decrease
-	// InfoClient : [index,NumberClient[ <-=- [index+1,NumberClient]
-	if( index <  GetNumberClient() )
-		memcpy(&(InfoClient[index]),&(InfoClient[index+1]),(GetNumberClient()-index)*sizeof(CInfoWifi));
+	InfoClient.erase (InfoClient.begin()+index);
 }
 
 void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t sizeOfData)

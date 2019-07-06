@@ -10,7 +10,7 @@ class CWifiServer : public CSocketServer
 {
 		TIndex MaxClient;
 
-		CInfoWifi* InfoClient;
+		std::vector<CInfoWifi> InfoClient;
 		std::list<CInfoWifi> InfoClientDeconnected;
 
 		bool RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo);
