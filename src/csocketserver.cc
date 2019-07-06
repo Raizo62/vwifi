@@ -13,12 +13,10 @@ using namespace std;
 
 CSocketServer::CSocketServer() : CSocket()
 {
-	NumberClient=0;
 };
 
 CSocketServer::CSocketServer(TSocket type) : CSocket(type)
 {
-	NumberClient=0;
 };
 
 void CSocketServer::Init(TPort port)
@@ -28,7 +26,7 @@ void CSocketServer::Init(TPort port)
 
 CSocketServer::~CSocketServer()
 {
-	for (TIndex i = 0; i < NumberClient; i++)
+	for (TIndex i = 0; i < SocketClients.size(); i++)
 		close(SocketClients[i]);
 
 	CSocket::Close();
@@ -126,14 +124,12 @@ TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 	//add new socket to array of sockets
 	SocketClients.push_back(new_socket);
 
-	NumberClient++;
-
 	return new_socket;
 }
 
 TDescriptor CSocketServer::GetSocketClient(TIndex index)
 {
-	if( index >= NumberClient )
+	if( index >= SocketClients.size() )
 		return SOCKET_ERROR;
 
 	return SocketClients[index];
@@ -146,17 +142,15 @@ TDescriptor CSocketServer::operator[] (TIndex index)
 
 TIndex CSocketServer::GetNumberClient()
 {
-	return NumberClient;
+	return SocketClients.size();
 }
 
 void CSocketServer::CloseClient(TIndex index)
 {
-	if( index >= NumberClient )
+	if( index >= SocketClients.size() )
 		return;
 
 	close(SocketClients[index]);
-
-	NumberClient--;
 
 	SocketClients.erase (SocketClients.begin()+index);
 }

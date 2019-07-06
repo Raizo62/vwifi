@@ -12,8 +12,6 @@ class CSocketServer : public CSocket
 
 		TPort Port;
 
-		TIndex NumberClient;
-
 		std::vector<TDescriptor> SocketClients;
 
 		TDescriptor Accept(struct sockaddr_in& address);

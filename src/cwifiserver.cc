@@ -46,7 +46,7 @@ bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
 
 bool CWifiServer::RecoverCoordinateOfInfoClient(TCID cid, CCoordinate& coo)
 {
-	for (TIndex i = 0; i < NumberClient; i++)
+	for (TIndex i = 0; i < GetNumberClient(); i++)
 	{
 		if( InfoClient[i].GetCid() == cid )
 		{
@@ -83,18 +83,18 @@ TDescriptor CWifiServer::Accept()
 
 	CCoordinate coo;
 	if( RecoverCoordinateOfOldInfoClient(cid,coo) || RecoverCoordinateOfInfoClient(cid, coo) )
-		InfoClient[NumberClient-1].Set(coo);
+		InfoClient[GetNumberClient()-1].Set(coo);
 
-	InfoClient[NumberClient-1].SetCid(cid);
+	InfoClient[GetNumberClient()-1].SetCid(cid);
 
 	return new_socket;
 }
 
 bool CWifiServer::IsEnable(TIndex index)
 {
-	if( index >= NumberClient )
+	if( index >= GetNumberClient() )
 	{
-		cerr<<"Error : CWifiServer::IsEnable : " << index <<" >= "<<NumberClient<<endl;
+		cerr<<"Error : CWifiServer::IsEnable : " << index <<" >= "<<GetNumberClient()<<endl;
 		return false;
 	}
 
@@ -103,9 +103,9 @@ bool CWifiServer::IsEnable(TIndex index)
 
 void CWifiServer::ShowInfoClient(TIndex index)
 {
-	if( index >= NumberClient )
+	if( index >= GetNumberClient() )
 	{
-		cerr<<"Error : CWifiServer::ShowInfoClient : " << index <<" >= "<<NumberClient<<endl;
+		cerr<<"Error : CWifiServer::ShowInfoClient : " << index <<" >= "<<GetNumberClient()<<endl;
 		return;
 	}
 
@@ -114,7 +114,7 @@ void CWifiServer::ShowInfoClient(TIndex index)
 
 void CWifiServer::CloseClient(TIndex index)
 {
-	if( index >= NumberClient )
+	if( index >= GetNumberClient() )
 		return;
 
 	CSocketServer::CloseClient(index);
@@ -126,15 +126,15 @@ void CWifiServer::CloseClient(TIndex index)
 
 	// be careful : NumberClient is already decrease
 	// InfoClient : [index,NumberClient[ <-=- [index+1,NumberClient]
-	if( index <  NumberClient )
-		memcpy(&(InfoClient[index]),&(InfoClient[index+1]),(NumberClient-index)*sizeof(CInfoWifi));
+	if( index <  GetNumberClient() )
+		memcpy(&(InfoClient[index]),&(InfoClient[index+1]),(GetNumberClient()-index)*sizeof(CInfoWifi));
 }
 
 void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t sizeOfData)
 {
 //	CCoordinate coo=InfoClient[index];
 
-	for (TIndex i = 0; i < NumberClient; i++)
+	for (TIndex i = 0; i < GetNumberClient(); i++)
 	{
 		if( i != index )
 			if( InfoClient[i].IsEnable() )
@@ -144,7 +144,7 @@ void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t siz
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 {
-	for (TIndex i = 0; i < NumberClient; i++)
+	for (TIndex i = 0; i < GetNumberClient(); i++)
 	{
 		if( InfoClient[i].GetCid() == cid )
 			return &(InfoClient[i]);
@@ -155,9 +155,9 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoClientByIndex(TIndex index)
 {
-	if( index >= NumberClient )
+	if( index >= GetNumberClient() )
 	{
-		cerr<<"Error : CWifiServer::GetReferenceOnInfoClientByIndex : " << index <<" >= "<<NumberClient<<endl;
+		cerr<<"Error : CWifiServer::GetReferenceOnInfoClientByIndex : " << index <<" >= "<<GetNumberClient()<<endl;
 		return NULL;
 	}
 
