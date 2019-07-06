@@ -44,7 +44,7 @@ sudo chmod a+rw /dev/vhost-vsock
 ```
 
  - QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=NUM` with NUM an identifier greater than  2
- - GNS3 : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%console-port%`
+ - GNS3 (>= 2.2) : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%guest-cid%`
 
 ### Each Guest
 
