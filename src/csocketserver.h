@@ -1,6 +1,8 @@
 #ifndef _CSOCKETSERVER_H_
 #define _CSOCKETSERVER_H_
 
+#include <vector> // vector
+
 #include "csocket.h"
 #include "types.h" // TDescriptor
 
@@ -13,7 +15,7 @@ class CSocketServer : public CSocket
 		TIndex MaxClient;
 		TIndex NumberClient;
 
-		TDescriptor* SocketClients;
+		std::vector<TDescriptor> SocketClients;
 
 		TDescriptor Accept(struct sockaddr_in& address);
 
