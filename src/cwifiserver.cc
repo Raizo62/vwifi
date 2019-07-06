@@ -10,9 +10,9 @@
 
 using namespace std;
 
-bool CWifiServer::Listen(TIndex maxClient)
+bool CWifiServer::Listen(TIndex maxClientDeconnected)
 {
-	MaxClient=maxClient;
+	MaxClientDeconnected=maxClientDeconnected;
 
 	if( ! CSocketServer::Listen() )
 		return false;
@@ -117,7 +117,7 @@ void CWifiServer::CloseClient(TIndex index)
 	CSocketServer::CloseClient(index);
 
 	// save the InfoClient (the coordinate of the cid)
-	if( InfoClientsDeconnected.size() >= MaxClient )
+	if( InfoClientsDeconnected.size() >= MaxClientDeconnected )
 		InfoClientsDeconnected.pop_front();
 	InfoClientsDeconnected.push_back(InfoClients[index]);
 

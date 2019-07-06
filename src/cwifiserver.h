@@ -8,7 +8,7 @@
 
 class CWifiServer : public CSocketServer
 {
-		TIndex MaxClient;
+		TIndex MaxClientDeconnected;
 
 		std::vector<CInfoWifi> InfoClients;
 		std::list<CInfoWifi> InfoClientsDeconnected;
@@ -19,7 +19,7 @@ class CWifiServer : public CSocketServer
 
 	public :
 
-		bool Listen(TIndex maxClient);
+		bool Listen(TIndex maxClientDeconnected);
 
 		TDescriptor Accept();
 
