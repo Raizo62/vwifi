@@ -39,13 +39,13 @@ bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
 
 bool CWifiServer::RecoverCoordinateOfInfoClient(TCID cid, CCoordinate& coo)
 {
-	for (TIndex i = 0; i < InfoClient.size() ; i++)
+	for (TIndex i = 0; i < InfoClients.size() ; i++)
 	{
-		if( InfoClient[i].GetCid() == cid )
+		if( InfoClients[i].GetCid() == cid )
 		{
-			coo=InfoClient[i];
+			coo=InfoClients[i];
 
-			InfoClient[i].DisableIt();
+			InfoClients[i].DisableIt();
 
 			return true;
 		}
@@ -82,7 +82,7 @@ TDescriptor CWifiServer::Accept()
 
 	infoWifi.SetCid(cid);
 
-	InfoClient.push_back(infoWifi);
+	InfoClients.push_back(infoWifi);
 
 	return new_socket;
 }
@@ -95,7 +95,7 @@ bool CWifiServer::IsEnable(TIndex index)
 		return false;
 	}
 
-	return InfoClient[index].IsEnable();
+	return InfoClients[index].IsEnable();
 }
 
 void CWifiServer::ShowInfoClient(TIndex index)
@@ -106,7 +106,7 @@ void CWifiServer::ShowInfoClient(TIndex index)
 		return;
 	}
 
-	cout<<"{"<<InfoClient[index]<<"}";
+	cout<<"{"<<InfoClients[index]<<"}";
 }
 
 void CWifiServer::CloseClient(TIndex index)
@@ -119,19 +119,19 @@ void CWifiServer::CloseClient(TIndex index)
 	// save the InfoClient (the coordinate of the cid)
 	if( InfoClientDeconnected.size() >= MaxClient )
 		InfoClientDeconnected.pop_front();
-	InfoClientDeconnected.push_back(InfoClient[index]);
+	InfoClientDeconnected.push_back(InfoClients[index]);
 
-	InfoClient.erase (InfoClient.begin()+index);
+	InfoClients.erase (InfoClients.begin()+index);
 }
 
 void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t sizeOfData)
 {
-//	CCoordinate coo=InfoClient[index];
+//	CCoordinate coo=InfoClients[index];
 
 	for (TIndex i = 0; i < GetNumberClient(); i++)
 	{
 		if( i != index )
-			if( InfoClient[i].IsEnable() )
+			if( InfoClients[i].IsEnable() )
 				Send(SocketClients[i], data, sizeOfData);
 	}
 }
@@ -140,8 +140,8 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 {
 	for (TIndex i = 0; i < GetNumberClient(); i++)
 	{
-		if( InfoClient[i].GetCid() == cid )
-			return &(InfoClient[i]);
+		if( InfoClients[i].GetCid() == cid )
+			return &(InfoClients[i]);
 	}
 
 	return NULL;
@@ -155,5 +155,5 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByIndex(TIndex index)
 		return NULL;
 	}
 
-	return &(InfoClient[index]);
+	return &(InfoClients[index]);
 }
