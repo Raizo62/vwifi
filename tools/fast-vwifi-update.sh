@@ -38,7 +38,7 @@ NbValue=0
 VMWithWifi=false
 
 IFS=$'\n'
-for line in $(jq -M '.[] | select (.node_type=="qemu" and .status=="started") | {x: .x, y: .y, z: .z , option: .properties.options} ' "${ConfigProjectGNS3}")
+for line in $(jq -M '.[] | select (.node_type=="qemu" and .status=="started") | {x: .x, y: .y, z: .z , option: .command_line} ' "${ConfigProjectGNS3}")
 do
 	if [[ "${line}" =~ ^[[:space:]]+\"x\":.* ]]
 	then
@@ -65,7 +65,7 @@ do
 		fi
 	fi
 
-	if (( NbValue = 4 ))
+	if (( NbValue == 4 ))
 	then
 		NbValue=0
 		if ${VMWithWifi}
