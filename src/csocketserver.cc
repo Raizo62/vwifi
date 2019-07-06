@@ -186,3 +186,8 @@ ssize_t CSocketServer::Read(TDescriptor descriptor, char* data, ssize_t sizeOfDa
 {
 	return CSocket::Read(descriptor , data, sizeOfData);
 }
+
+TDescriptor CSocketServer::operator[] (TIndex index)
+{
+	return GetSocketClient(index);
+}

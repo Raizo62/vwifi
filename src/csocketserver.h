@@ -41,10 +41,7 @@ class CSocketServer : public CSocket
 
 		ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
 
-		TDescriptor operator[] (TIndex index)
-		{
-			return GetSocketClient(index);
-		}
+		TDescriptor operator[] (TIndex index);
 };
 
 #endif
