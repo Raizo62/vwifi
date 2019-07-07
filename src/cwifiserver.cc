@@ -39,13 +39,13 @@ bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
 
 bool CWifiServer::RecoverCoordinateOfInfoClient(TCID cid, CCoordinate& coo)
 {
-	for (TIndex i = 0; i < InfoClients.size() ; i++)
+	for (vector<CInfoWifi>::iterator it = InfoClients.begin() ; it != InfoClients.end(); ++it)
 	{
-		if( InfoClients[i].GetCid() == cid )
+		if( it->GetCid() == cid )
 		{
-			coo=InfoClients[i];
+			coo=(*it);
 
-			InfoClients[i].DisableIt();
+			it->DisableIt();
 
 			return true;
 		}
@@ -138,10 +138,10 @@ void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t siz
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 {
-	for (TIndex i = 0; i < GetNumberClient(); i++)
+	for (vector<CInfoWifi>::iterator it = InfoClients.begin() ; it != InfoClients.end(); ++it)
 	{
-		if( InfoClients[i].GetCid() == cid )
-			return &(InfoClients[i]);
+		if( it->GetCid() == cid )
+			return &(*it);
 	}
 
 	return NULL;
