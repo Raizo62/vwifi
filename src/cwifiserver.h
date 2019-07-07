@@ -29,6 +29,8 @@ class CWifiServer : public CSocketServer
 
 		void CloseClient(TIndex index);
 
+		void CloseAllClient();
+
 		void SendAllOtherClients(TIndex index,const char* data, ssize_t sizeOfData);
 
 		CInfoWifi* GetReferenceOnInfoClientByCID(TCID cid);

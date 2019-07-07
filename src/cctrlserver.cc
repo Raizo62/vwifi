@@ -1,8 +1,9 @@
 #include "cctrlserver.h"
 
-CCTRLServer::CCTRLServer(CWifiServer* wifiServer) : CSocketServer(AF_INET)
+CCTRLServer::CCTRLServer(CWifiServer* wifiServer, CScheduler* scheduler) : CSocketServer(AF_INET)
 {
 	WifiServer=wifiServer;
+	Scheduler=scheduler;
 }
 
 ssize_t CCTRLServer::Read(char* data, ssize_t sizeOfData)
@@ -71,6 +72,15 @@ void CCTRLServer::ChangeCoordinate()
 	infoWifi->Set(coo);
 }
 
+void CCTRLServer::CloseAllClient()
+{
+	// be careful : In the Scheduler, i must delete only the nodes of Wifi Guest, not the node of the CTRLServer
+	for (TIndex i = 0; i < WifiServer->GetNumberClient(); i++)
+		Scheduler->DelNode((*WifiServer)[i]);
+
+	WifiServer->CloseAllClient();
+}
+
 void CCTRLServer::ReceiveOrder()
 {
 	if ( Accept() == SOCKET_ERROR )
@@ -88,6 +98,10 @@ void CCTRLServer::ReceiveOrder()
 
 			case TORDER_CHANGE_COORDINATE :
 				ChangeCoordinate();
+				break;
+
+			case TORDER_CLOSE_ALL_CLIENT :
+				CloseAllClient();
 				break;
 	}
 

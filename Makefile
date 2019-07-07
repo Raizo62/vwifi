@@ -54,7 +54,7 @@ $(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h ccoordinate.h types.h
 
 $(OBJ)/ccoordinate.o: ccoordinate.cc ccoordinate.h types.h
 
-$(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h cwifiserver.h types.h
+$(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h cwifiserver.h cscheduler.h types.h
 
 
 $(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h

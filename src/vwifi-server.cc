@@ -30,7 +30,7 @@ int main(int argc , char *argv[])
 	}
 
 	cout<<"CTRL : ";
-	CCTRLServer ctrlWifi(&socketWifi);
+	CCTRLServer ctrlWifi(&socketWifi,&scheduler);
 	ctrlWifi.Init(CTRL_PORT);
 	if( ! ctrlWifi.Listen() )
 	{
@@ -104,9 +104,6 @@ int main(int argc , char *argv[])
 					{
 						if ( valread == 0 )
 						{
-							//Somebody disconnected , get his details and print
-							cout<<"Host disconnected : "; socketWifi.ShowInfoClient(i) ; cout<<endl;
-
 							//Close the socket
 							socketWifi.CloseClient(i);
 

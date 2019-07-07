@@ -114,6 +114,8 @@ void CWifiServer::CloseClient(TIndex index)
 	if( index >= GetNumberClient() )
 		return;
 
+	cout<<"Host disconnected : "; ShowInfoClient(index) ; cout<<endl;
+
 	CSocketServer::CloseClient(index);
 
 	// save the InfoClient (the coordinate of the cid)
@@ -121,7 +123,17 @@ void CWifiServer::CloseClient(TIndex index)
 		InfoClientsDeconnected.erase(InfoClientsDeconnected.begin());
 	InfoClientsDeconnected.push_back(InfoClients[index]);
 
-	InfoClients.erase (InfoClients.begin()+index);
+	InfoClients.erase(InfoClients.begin()+index);
+}
+
+void CWifiServer::CloseAllClient()
+{
+	// ( be careful : "TIndex i" is a **unsigned** int : i=0 ; i-1 != -1 but = 65534 )
+
+	TIndex nbre=GetNumberClient(); // because CloseClient changes the value of GetNumberClient()
+	for (TIndex i = 0; i < nbre; i++)
+		if( InfoClients[0].IsEnable() )
+			CloseClient(0); // we can Close the 0 because we use the shift
 }
 
 void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t sizeOfData)

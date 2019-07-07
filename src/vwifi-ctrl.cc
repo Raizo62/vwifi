@@ -18,6 +18,8 @@ void Help(char* nameOfProg)
 	cout<<"		- List the VMs"<<endl;
 	cout<<"	set cid x y z"<<endl;
 	cout<<"		- Change the coordinate of the VM with cid"<<endl;
+	cout<<"	close"<<endl;
+	cout<<"		- Close all the connections with Wifi VMs"<<endl;
 }
 
 int AskList()
@@ -117,6 +119,31 @@ int ChangeCoordinate(int argc, char *argv[])
 	return 0;
 }
 
+int CloseAllClient()
+{
+	CSocketClient socket(AF_INET);
+
+	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	{
+		cerr<<"Error : CloseAllClient : socket.Connect error"<<endl;
+		return 1;
+	}
+
+	int err;
+
+	TOrder order=TORDER_CLOSE_ALL_CLIENT;
+	err=socket.Send((char*)&order,sizeof(order));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : CloseAllClient : socket.Send : order"<<endl;
+		return 1;
+	}
+
+	socket.Close();
+
+	return 0;
+}
+
 int main(int argc , char *argv[])
 {
 	if( argc == 1 )
@@ -130,6 +157,9 @@ int main(int argc , char *argv[])
 
 	if( ! strcmp(argv[1],"set") )
 		return ChangeCoordinate(argc, argv);
+
+	if( ! strcmp(argv[1],"close") )
+		return CloseAllClient();
 
 	return 0;
 }

@@ -2,11 +2,13 @@
 #define _CCTRLSERVER_H_
 
 #include "cwifiserver.h" // CWifiServer CSocketServer
+#include "cscheduler.h" // CScheduler
 #include "types.h" // TOrder
 
 class CCTRLServer : public CSocketServer
 {
 		CWifiServer* WifiServer;
+		CScheduler* Scheduler;
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
 
@@ -18,9 +20,11 @@ class CCTRLServer : public CSocketServer
 
 		void ChangeCoordinate();
 
+		void CloseAllClient();
+
 	public :
 
-		CCTRLServer(CWifiServer* socketWifi);
+		CCTRLServer(CWifiServer* socketWifi, CScheduler* scheduler);
 
 		void ReceiveOrder();
 };
