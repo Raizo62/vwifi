@@ -23,7 +23,7 @@ int main(int argc , char *argv[])
 
 	CWifiServer socketWifi;
 	socketWifi.Init(WIFI_PORT);
-	if( ! socketWifi.Listen(MAX_CLIENT_WIFI) )
+	if( ! socketWifi.Listen(MAX_DECONNECTED_CLIENT_WIFI) )
 	{
 		cerr<<"Error : socketWifi.Listen"<<endl;
 		exit(EXIT_FAILURE);

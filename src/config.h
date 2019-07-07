@@ -3,7 +3,7 @@
 
 #include "types.h" // TIndex / TPort
 
-const TIndex MAX_CLIENT_WIFI = 15;
+const TIndex MAX_DECONNECTED_CLIENT_WIFI = 15;
 
 const TPort WIFI_PORT = 8211;
 
