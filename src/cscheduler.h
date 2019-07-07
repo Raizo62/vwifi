@@ -19,7 +19,6 @@ class CScheduler
 		TDescriptor MaxDescriptor;
 
 		std::vector<TDescriptor> ListNodes;
-		TIndex NumberNode;
 
 		void UpdateMaxDescriptor(TDescriptor descriptor);
 

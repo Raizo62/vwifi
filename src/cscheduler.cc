@@ -18,7 +18,6 @@ void CScheduler::Init()
 	//clear the socket set
 	FD_ZERO(&Dup);
 
-	NumberNode=0;
 	MaxDescriptor=-1;
 }
 
@@ -33,7 +32,6 @@ bool CScheduler::AddNode(TDescriptor descriptor)
 {
 	//add new socket to array of sockets
 	ListNodes.push_back(descriptor);
-	NumberNode++;
 
 	//add child sockets to set
 	FD_SET( descriptor , &Master);
@@ -54,7 +52,6 @@ void CScheduler::DelNode(TDescriptor descriptor)
 			FD_CLR(descriptor , &Master);
 
 			ListNodes.erase (it);
-			NumberNode--;
 
 			for (vector<TDescriptor>::iterator it2 = it ; it2 != ListNodes.end(); ++it2)
 				UpdateMaxDescriptor(*it2);
