@@ -31,11 +31,9 @@ void CScheduler::UpdateMaxDescriptor(TDescriptor descriptor)
 
 bool CScheduler::AddNode(TDescriptor descriptor)
 {
-	if ( NumberNode >= MAX_NODE )
-		return false;
-
 	//add new socket to array of sockets
-	ListNodes[NumberNode++] = descriptor;
+	ListNodes.push_back(descriptor);
+	NumberNode++;
 
 	//add child sockets to set
 	FD_SET( descriptor , &Master);
@@ -55,12 +53,12 @@ void CScheduler::DelNode(TDescriptor descriptor)
 		{
 			FD_CLR(descriptor , &Master);
 
+			ListNodes.erase (ListNodes.begin()+i);
 			NumberNode--;
+
 			for(TIndex j=i;j<NumberNode;j++)
-			{
-				ListNodes[j] = ListNodes[j+1];
 				UpdateMaxDescriptor(ListNodes[j]);
-			}
+
 			return;
 		}
 		UpdateMaxDescriptor(ListNodes[i]);

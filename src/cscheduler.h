@@ -2,6 +2,7 @@
 #define _CSCHEDULER_H_
 
 #include <sys/socket.h>
+#include <vector> // vector
 
 #include "config.h" // MAX_CLIENT_WIFI
 #include "types.h" // TDescriptor
@@ -20,7 +21,7 @@ class CScheduler
 
 		TDescriptor MaxDescriptor;
 
-		TDescriptor ListNodes[MAX_NODE];
+		std::vector<TDescriptor> ListNodes;
 		TIndex NumberNode;
 
 		void UpdateMaxDescriptor(TDescriptor descriptor);
