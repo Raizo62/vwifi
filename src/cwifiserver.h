@@ -33,6 +33,8 @@ class CWifiServer : public CSocketServer
 
 		CInfoWifi* GetReferenceOnInfoClientByCID(TCID cid);
 
+		CInfoWifi* GetReferenceOnInfoClientDeconnectedByCID(TCID cid);
+
 		CInfoWifi* GetReferenceOnInfoClientByIndex(TIndex index);
 
 };

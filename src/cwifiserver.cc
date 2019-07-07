@@ -147,6 +147,17 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 	return NULL;
 }
 
+CInfoWifi* CWifiServer::GetReferenceOnInfoClientDeconnectedByCID(TCID cid)
+{
+	for (list<CInfoWifi>::iterator it = InfoClientsDeconnected.begin() ; it != InfoClientsDeconnected.end(); ++it)
+	{
+		if( it->GetCid() == cid )
+			return &(*it);
+	}
+
+	return NULL;
+}
+
 CInfoWifi* CWifiServer::GetReferenceOnInfoClientByIndex(TIndex index)
 {
 	if( index >= GetNumberClient() )
