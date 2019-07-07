@@ -1,7 +1,7 @@
 #ifndef _CWIFISERVER_H_
 #define _CWIFISERVER_H_
 
-#include <list> // list
+#include <vector> // vector
 
 #include "csocketserver.h"
 #include "cinfowifi.h"
@@ -11,7 +11,7 @@ class CWifiServer : public CSocketServer
 		TIndex MaxClientDeconnected;
 
 		std::vector<CInfoWifi> InfoClients;
-		std::list<CInfoWifi> InfoClientsDeconnected;
+		std::vector<CInfoWifi> InfoClientsDeconnected;
 
 		bool RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo);
 

@@ -22,7 +22,7 @@ bool CWifiServer::Listen(TIndex maxClientDeconnected)
 
 bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
 {
-	for (list<CInfoWifi>::iterator it=InfoClientsDeconnected.begin(); it != InfoClientsDeconnected.end(); ++it)
+	for (vector<CInfoWifi>::iterator it=InfoClientsDeconnected.begin(); it != InfoClientsDeconnected.end(); ++it)
 	{
 		if ( it->GetCid() == cid )
 		{
@@ -118,7 +118,7 @@ void CWifiServer::CloseClient(TIndex index)
 
 	// save the InfoClient (the coordinate of the cid)
 	if( InfoClientsDeconnected.size() >= MaxClientDeconnected )
-		InfoClientsDeconnected.pop_front();
+		InfoClientsDeconnected.erase(InfoClientsDeconnected.begin());
 	InfoClientsDeconnected.push_back(InfoClients[index]);
 
 	InfoClients.erase (InfoClients.begin()+index);
@@ -149,7 +149,7 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoClientDeconnectedByCID(TCID cid)
 {
-	for (list<CInfoWifi>::iterator it = InfoClientsDeconnected.begin() ; it != InfoClientsDeconnected.end(); ++it)
+	for (vector<CInfoWifi>::iterator it = InfoClientsDeconnected.begin() ; it != InfoClientsDeconnected.end(); ++it)
 	{
 		if( it->GetCid() == cid )
 			return &(*it);
