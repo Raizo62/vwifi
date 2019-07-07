@@ -47,21 +47,21 @@ bool CScheduler::AddNode(TDescriptor descriptor)
 void CScheduler::DelNode(TDescriptor descriptor)
 {
 	MaxDescriptor=-1;
-	for (TIndex i = 0; i < NumberNode; i++)
+	for (vector<TDescriptor>::iterator it = ListNodes.begin() ; it != ListNodes.end(); ++it)
 	{
-		if( ListNodes[i] == descriptor )
+		if( *it == descriptor )
 		{
 			FD_CLR(descriptor , &Master);
 
-			ListNodes.erase (ListNodes.begin()+i);
+			ListNodes.erase (it);
 			NumberNode--;
 
-			for(TIndex j=i;j<NumberNode;j++)
-				UpdateMaxDescriptor(ListNodes[j]);
+			for (vector<TDescriptor>::iterator it2 = it ; it2 != ListNodes.end(); ++it2)
+				UpdateMaxDescriptor(*it2);
 
 			return;
 		}
-		UpdateMaxDescriptor(ListNodes[i]);
+		UpdateMaxDescriptor(*it);
 	}
 }
 
