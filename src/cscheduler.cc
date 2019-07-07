@@ -53,8 +53,8 @@ void CScheduler::DelNode(TDescriptor descriptor)
 
 			ListNodes.erase(it);
 
-			for (vector<TDescriptor>::iterator it2 = it ; it2 != ListNodes.end(); ++it2)
-				UpdateMaxDescriptor(*it2);
+			for (; it != ListNodes.end(); ++it)
+				UpdateMaxDescriptor(*it);
 
 			return;
 		}
