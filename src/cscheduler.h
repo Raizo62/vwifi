@@ -4,12 +4,9 @@
 #include <sys/socket.h>
 #include <vector> // vector
 
-#include "config.h" // MAX_CLIENT_WIFI
 #include "types.h" // TDescriptor
 
 const int SCHEDULER_ERROR=-1;
-
-const int MAX_NODE = (2+(MAX_CLIENT_WIFI)); // 2 = socketWifi and ctrlWifi
 
 class CScheduler
 {
