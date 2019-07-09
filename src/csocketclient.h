@@ -7,7 +7,7 @@ class CSocketClient : public CSocket
 {
 		bool IsConnected;
 
-		bool StopTheReconnect = false  ;
+		bool StopTheReconnect;
 
 		bool ConnectLoop(struct sockaddr* server, size_t size_of_server);
 

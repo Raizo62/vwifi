@@ -28,6 +28,7 @@ CSocketClient::CSocketClient(TSocket type) : CSocket(type)
 void CSocketClient::Init()
 {
 	IsConnected=false;
+	StopTheReconnect=true ;
 }
 
 bool CSocketClient::ConnectLoop(struct sockaddr* server, size_t size_of_server)
@@ -104,6 +105,5 @@ bool CSocketClient::SetBlocking(bool blocking)
 void CSocketClient::StopReconnect(bool status){
 
 	StopTheReconnect = true ;
-
 }
 
