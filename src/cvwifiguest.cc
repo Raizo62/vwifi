@@ -773,6 +773,9 @@ int VWifiGuest::stop(){
 	m_started = false ;
 	m_mutex_ctrl_run.unlock();
 
+	/* stop the retrying connection to vsock server */
+	_vsocket.StopReconnect(true);
+
 	if( stopped())
 		return 0 ;
 

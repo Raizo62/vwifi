@@ -32,7 +32,7 @@ void CSocketClient::Init()
 
 bool CSocketClient::ConnectLoop(struct sockaddr* server, size_t size_of_server)
 {
-	while ( 1 )
+	while ( ! StopTheReconnect )
 	{
 		//create a master socket
 		if( ! Configure() )
@@ -100,3 +100,10 @@ bool CSocketClient::SetBlocking(bool blocking)
 {
 	return CSocket::SetBlocking(Master,blocking);
 }
+
+void CSocketClient::StopReconnect(bool status){
+
+	StopTheReconnect = true ;
+
+}
+

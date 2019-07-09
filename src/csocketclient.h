@@ -7,6 +7,8 @@ class CSocketClient : public CSocket
 {
 		bool IsConnected;
 
+		bool StopTheReconnect = false  ;
+
 		bool ConnectLoop(struct sockaddr* server, size_t size_of_server);
 
 	public :
@@ -29,6 +31,8 @@ class CSocketClient : public CSocket
 		ssize_t Read(char* data, ssize_t sizeOfData);
 		
 		bool SetBlocking(bool blocking);
+
+		void StopReconnect(bool status);
 };
 
 #endif
