@@ -60,6 +60,12 @@ macchanger -a wlan0
 
 ### Test 1 : WPA
 
+#### Packages needed on the guests for this test
+
+```bash
+sudo apt install hostapd wpasupplicant
+```
+
 #### Guests
 
 * Guest Wifi 1 :
@@ -84,6 +90,12 @@ ping 10.0.0.2
 ```
 
 ### Test 2 : Open
+
+#### Packages needed on the guests for this test
+
+```bash
+sudo apt install hostapd iw wireless-tools tcpdump
+```
 
 #### Guests
 
