@@ -236,6 +236,10 @@ private:
 	 */
 	bool get_pmaddr(struct ether_addr &,const char *ifname);
 
+	/**
+	 *\biref reconnecting to a server when detecting a socket disconncetion (read or write return -2 (SOCKET_DISCONNECT))
+	 */
+	void manage_server_crash();
 
 };
 

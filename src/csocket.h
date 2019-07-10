@@ -9,6 +9,7 @@
 #include "types.h" // TDescriptor / TSocket
 
 const int SOCKET_ERROR=-1;
+const int SOCKET_DISCONNECT=-2;
 const int SOCKET_OK=0;
 
 class CSocket

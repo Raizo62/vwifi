@@ -226,7 +226,10 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 
 	/* send msg to a server */ 
 	int value=_vsocket.Send((char*)nlh,msg_len);
-	
+
+	if (value == SOCKET_DISCONNECT)
+		manage_server_crash();
+
 	if( value == SOCKET_ERROR )
 	
 	{
@@ -431,7 +434,11 @@ void VWifiGuest::recv_from_server(){
 
 	/* receive bytes packets from server and store them in buf */
 	bytes=_vsocket.Read(buf,sizeof(buf));
-	if(( bytes == SOCKET_ERROR ) || ( bytes == 0 )) // bytes == 0 if non blocking socket
+
+	if (bytes == SOCKET_DISCONNECT)
+		manage_server_crash();
+
+	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
 	{
 	//	std::cerr<<"socket.Read error"<<std::endl;
 		return ;
@@ -801,6 +808,31 @@ void VWifiGuest::clean_all(){
 	nl_cb_put(_cb);
 }
 
+void VWifiGuest::manage_server_crash(){
+
+	std::cout << "vsock/tcp connection with  server is lost" << std::endl ;
+	_vsocket.Close();
+
+	std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
+
+	/*connect to vsock/tcp server */
+#ifdef _USE_VSOCK_BY_DEFAULT_
+	if( ! _vsocket.Connect(WIFI_PORT) )
+#else
+	if( ! _vsocket.Connect(ADDRESS_IP,WIFI_PORT) )
+#endif
+	{
+		std::cout<<"socket.Connect error"<<std::endl;
+		return ;
+	}
+
+	/* we can also call this in constructor ? */
+	_vsocket.SetBlocking(0);
+
+	std::cout << "Reconnection to Server Ok" << std::endl;
+
+
+}
 
 VWifiGuest::VWifiGuest()  {
 
