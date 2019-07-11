@@ -22,13 +22,13 @@ bool CWifiServer::Listen(TIndex maxClientDeconnected)
 
 bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
 {
-	for (vector<CInfoWifi>::iterator it=InfoClientsDeconnected.begin(); it != InfoClientsDeconnected.end(); ++it)
+	for (vector<CInfoWifi>::iterator it=InfoWifisDeconnected.begin(); it != InfoWifisDeconnected.end(); ++it)
 	{
 		if ( it->GetCid() == cid )
 		{
 			coo=*it;
 
-			InfoClientsDeconnected.erase(it);
+			InfoWifisDeconnected.erase(it);
 
 			return true;
 		}
@@ -39,7 +39,7 @@ bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
 
 bool CWifiServer::RecoverCoordinateOfInfoClient(TCID cid, CCoordinate& coo)
 {
-	for (vector<CInfoWifi>::iterator it = InfoClients.begin() ; it != InfoClients.end(); ++it)
+	for (vector<CInfoWifi>::iterator it = InfoWifis.begin() ; it != InfoWifis.end(); ++it)
 	{
 		if( it->GetCid() == cid )
 		{
@@ -82,7 +82,7 @@ TDescriptor CWifiServer::Accept()
 
 	infoWifi.SetCid(cid);
 
-	InfoClients.push_back(infoWifi);
+	InfoWifis.push_back(infoWifi);
 
 	return new_socket;
 }
@@ -95,7 +95,7 @@ bool CWifiServer::IsEnable(TIndex index)
 		return false;
 	}
 
-	return InfoClients[index].IsEnable();
+	return InfoWifis[index].IsEnable();
 }
 
 void CWifiServer::ShowInfoClient(TIndex index)
@@ -106,7 +106,7 @@ void CWifiServer::ShowInfoClient(TIndex index)
 		return;
 	}
 
-	cout<<"{"<<InfoClients[index]<<"}";
+	cout<<"{"<<InfoWifis[index]<<"}";
 }
 
 void CWifiServer::CloseClient(TIndex index)
@@ -119,11 +119,11 @@ void CWifiServer::CloseClient(TIndex index)
 	CSocketServer::CloseClient(index);
 
 	// save the InfoClient (the coordinate of the cid)
-	if( InfoClientsDeconnected.size() >= MaxClientDeconnected )
-		InfoClientsDeconnected.erase(InfoClientsDeconnected.begin());
-	InfoClientsDeconnected.push_back(InfoClients[index]);
+	if( InfoWifisDeconnected.size() >= MaxClientDeconnected )
+		InfoWifisDeconnected.erase(InfoWifisDeconnected.begin());
+	InfoWifisDeconnected.push_back(InfoWifis[index]);
 
-	InfoClients.erase(InfoClients.begin()+index);
+	InfoWifis.erase(InfoWifis.begin()+index);
 }
 
 void CWifiServer::CloseAllClient()
@@ -132,25 +132,25 @@ void CWifiServer::CloseAllClient()
 
 	TIndex nbre=GetNumberClient(); // because CloseClient changes the value of GetNumberClient()
 	for (TIndex i = 0; i < nbre; i++)
-		if( InfoClients[0].IsEnable() )
+		if( InfoWifis[0].IsEnable() )
 			CloseClient(0); // we can Close the 0 because we use the shift
 }
 
 void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t sizeOfData)
 {
-//	CCoordinate coo=InfoClients[index];
+//	CCoordinate coo=InfoWifis[index];
 
 	for (TIndex i = 0; i < GetNumberClient(); i++)
 	{
 		if( i != index )
-			if( InfoClients[i].IsEnable() )
+			if( InfoWifis[i].IsEnable() )
 				Send(SocketClients[i], data, sizeOfData);
 	}
 }
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 {
-	for (vector<CInfoWifi>::iterator it = InfoClients.begin() ; it != InfoClients.end(); ++it)
+	for (vector<CInfoWifi>::iterator it = InfoWifis.begin() ; it != InfoWifis.end(); ++it)
 	{
 		if( it->GetCid() == cid )
 			return &(*it);
@@ -161,7 +161,7 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoClientDeconnectedByCID(TCID cid)
 {
-	for (vector<CInfoWifi>::iterator it = InfoClientsDeconnected.begin() ; it != InfoClientsDeconnected.end(); ++it)
+	for (vector<CInfoWifi>::iterator it = InfoWifisDeconnected.begin() ; it != InfoWifisDeconnected.end(); ++it)
 	{
 		if( it->GetCid() == cid )
 			return &(*it);
@@ -178,5 +178,5 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByIndex(TIndex index)
 		return NULL;
 	}
 
-	return &(InfoClients[index]);
+	return &(InfoWifis[index]);
 }
