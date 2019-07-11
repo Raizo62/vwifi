@@ -20,7 +20,7 @@ bool CWifiServer::Listen(TIndex maxClientDeconnected)
 	return true;
 }
 
-bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
+bool CWifiServer::RecoverCoordinateOfOldInfoWifi(TCID cid, CCoordinate& coo)
 {
 	for (vector<CInfoWifi>::iterator it=InfoWifisDeconnected.begin(); it != InfoWifisDeconnected.end(); ++it)
 	{
@@ -37,7 +37,7 @@ bool CWifiServer::RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo)
 	return false;
 }
 
-bool CWifiServer::RecoverCoordinateOfInfoClient(TCID cid, CCoordinate& coo)
+bool CWifiServer::RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo)
 {
 	for (vector<CInfoWifi>::iterator it = InfoWifis.begin() ; it != InfoWifis.end(); ++it)
 	{
@@ -77,7 +77,7 @@ TDescriptor CWifiServer::Accept()
 	CInfoWifi infoWifi;
 
 	CCoordinate coo;
-	if( RecoverCoordinateOfOldInfoClient(cid,coo) || RecoverCoordinateOfInfoClient(cid, coo) )
+	if( RecoverCoordinateOfOldInfoWifi(cid,coo) || RecoverCoordinateOfInfoWifi(cid, coo) )
 		infoWifi.Set(coo);
 
 	infoWifi.SetCid(cid);
@@ -98,11 +98,11 @@ bool CWifiServer::IsEnable(TIndex index)
 	return InfoWifis[index].IsEnable();
 }
 
-void CWifiServer::ShowInfoClient(TIndex index)
+void CWifiServer::ShowInfoWifi(TIndex index)
 {
 	if( index >= GetNumberClient() )
 	{
-		cerr<<"Error : CWifiServer::ShowInfoClient : " << index <<" >= "<<GetNumberClient()<<endl;
+		cerr<<"Error : CWifiServer::ShowInfoWifi : " << index <<" >= "<<GetNumberClient()<<endl;
 		return;
 	}
 
@@ -114,11 +114,11 @@ void CWifiServer::CloseClient(TIndex index)
 	if( index >= GetNumberClient() )
 		return;
 
-	cout<<"Host disconnected : "; ShowInfoClient(index) ; cout<<endl;
+	cout<<"Host disconnected : "; ShowInfoWifi(index) ; cout<<endl;
 
 	CSocketServer::CloseClient(index);
 
-	// save the InfoClient (the coordinate of the cid)
+	// save the InfoWifi (the coordinate of the cid)
 	if( InfoWifisDeconnected.size() >= MaxClientDeconnected )
 		InfoWifisDeconnected.erase(InfoWifisDeconnected.begin());
 	InfoWifisDeconnected.push_back(InfoWifis[index]);
@@ -148,7 +148,7 @@ void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t siz
 	}
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
+CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
 {
 	for (vector<CInfoWifi>::iterator it = InfoWifis.begin() ; it != InfoWifis.end(); ++it)
 	{
@@ -159,7 +159,7 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientByCID(TCID cid)
 	return NULL;
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoClientDeconnectedByCID(TCID cid)
+CInfoWifi* CWifiServer::GetReferenceOnInfoWifiDeconnectedByCID(TCID cid)
 {
 	for (vector<CInfoWifi>::iterator it = InfoWifisDeconnected.begin() ; it != InfoWifisDeconnected.end(); ++it)
 	{
@@ -170,11 +170,11 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoClientDeconnectedByCID(TCID cid)
 	return NULL;
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoClientByIndex(TIndex index)
+CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByIndex(TIndex index)
 {
 	if( index >= GetNumberClient() )
 	{
-		cerr<<"Error : CWifiServer::GetReferenceOnInfoClientByIndex : " << index <<" >= "<<GetNumberClient()<<endl;
+		cerr<<"Error : CWifiServer::GetReferenceOnInfoWifiByIndex : " << index <<" >= "<<GetNumberClient()<<endl;
 		return NULL;
 	}
 
