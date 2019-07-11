@@ -10,12 +10,12 @@ class CWifiServer : public CSocketServer
 {
 		TIndex MaxClientDeconnected;
 
-		std::vector<CInfoWifi> InfoClients;
-		std::vector<CInfoWifi> InfoClientsDeconnected;
+		std::vector<CInfoWifi> InfoWifis;
+		std::vector<CInfoWifi> InfoWifisDeconnected;
 
-		bool RecoverCoordinateOfOldInfoClient(TCID cid, CCoordinate& coo);
+		bool RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& coo);
 
-		bool RecoverCoordinateOfInfoClient(TCID cid, CCoordinate& coo);
+		bool RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo);
 
 	public :
 
@@ -25,7 +25,7 @@ class CWifiServer : public CSocketServer
 
 		bool IsEnable(TIndex index);
 
-		void ShowInfoClient(TIndex index);
+		void ShowInfoWifi(TIndex index);
 
 		void CloseClient(TIndex index);
 
@@ -33,11 +33,11 @@ class CWifiServer : public CSocketServer
 
 		void SendAllOtherClients(TIndex index,const char* data, ssize_t sizeOfData);
 
-		CInfoWifi* GetReferenceOnInfoClientByCID(TCID cid);
+		CInfoWifi* GetReferenceOnInfoWifiByCID(TCID cid);
 
-		CInfoWifi* GetReferenceOnInfoClientDeconnectedByCID(TCID cid);
+		CInfoWifi* GetReferenceOnInfoWifiDeconnectedByCID(TCID cid);
 
-		CInfoWifi* GetReferenceOnInfoClientByIndex(TIndex index);
+		CInfoWifi* GetReferenceOnInfoWifiByIndex(TIndex index);
 
 };
 

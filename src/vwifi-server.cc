@@ -68,7 +68,7 @@ int main(int argc , char *argv[])
 				scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection from : "; socketWifi.ShowInfoClient(socketWifi.GetNumberClient()-1) ; cout<<endl;
+				cout<<"New connection from : "; socketWifi.ShowInfoWifi(socketWifi.GetNumberClient()-1) ; cout<<endl;
 			}
 
 			if( scheduler.NodeHasAction(ctrlWifi) )
@@ -84,7 +84,7 @@ int main(int argc , char *argv[])
 				if( ! socketWifi.IsEnable(i) )
 				{
 							//Somebody disconnected , get his details and print
-							cout<<"Host disable : "; socketWifi.ShowInfoClient(i) ; cout<<endl;
+							cout<<"Host disable : "; socketWifi.ShowInfoWifi(i) ; cout<<endl;
 
 							//Close the socket
 							socketWifi.CloseClient(i);
@@ -124,7 +124,7 @@ int main(int argc , char *argv[])
 							if( socketWifi.GetNumberClient() > 1 )
 							{
 #ifdef _DEBUG
-								cout<<"Forward "<<valread<<" bytes from "; socketWifi.ShowInfoClient(i); cout<<" to "<< socketWifi.GetNumberClient()-1 << " others clients" <<endl;
+								cout<<"Forward "<<valread<<" bytes from "; socketWifi.ShowInfoWifi(i); cout<<" to "<< socketWifi.GetNumberClient()-1 << " others clients" <<endl;
 #endif
 								socketWifi.SendAllOtherClients(i,buffer,valread);
 							}

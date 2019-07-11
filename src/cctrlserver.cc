@@ -37,7 +37,7 @@ void CCTRLServer::SendList()
 
 	for(TIndex i=0; i<number;i++)
 	{
-		CInfoWifi* infoWifi=WifiServer->GetReferenceOnInfoClientByIndex(i);
+		CInfoWifi* infoWifi=WifiServer->GetReferenceOnInfoWifiByIndex(i);
 		if ( infoWifi->IsEnable() )
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
@@ -61,10 +61,10 @@ void CCTRLServer::ChangeCoordinate()
 
 	CInfoWifi* infoWifi;
 
-	infoWifi=WifiServer->GetReferenceOnInfoClientByCID(cid);
+	infoWifi=WifiServer->GetReferenceOnInfoWifiByCID(cid);
 	if( infoWifi == NULL )
 	{
-		infoWifi=WifiServer->GetReferenceOnInfoClientDeconnectedByCID(cid);
+		infoWifi=WifiServer->GetReferenceOnInfoWifiDeconnectedByCID(cid);
 		if( infoWifi == NULL )
 			return;
 	}

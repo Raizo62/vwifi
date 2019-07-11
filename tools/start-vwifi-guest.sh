@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DEFAULT_PREFIX_MAC_ADDRESS="74:F8:DB"
+
 cd /hosthome/vwifi
 
 if (( $# == 0 ))
@@ -20,9 +22,13 @@ fi
 
 modprobe mac80211_hwsim radios=$NbrWifi
 
+hexchars="0123456789ABCDEF"
 for((i=0;i<NbrWifi;i++))
 do
-        macchanger -a wlan$i
+	middle=$( for i in {1..4} ; do echo -n ${hexchars:$(( $RANDOM % 16 )):1} ; done | sed -e 's/\(..\)/:\1/g' )
+	MAC_ADDRESS="${DEFAULT_PREFIX_MAC_ADDRESS}${middle}:$(printf "%02d" $i)"
+	echo "wlan$i : ${MAC_ADDRESS}"
+	ip link set wlan$i addr ${MAC_ADDRESS}
 done
 
 if [ -v TMUX ]
