@@ -1,6 +1,7 @@
 #include <iostream> // cout
 #include <cstdio> //perror
 #include <cstring> // memcpy
+#include <assert.h> // assert
 
 #include <arpa/inet.h> // INADDR_ANY
 #include <sys/socket.h>
@@ -129,8 +130,7 @@ TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 
 TDescriptor CSocketServer::GetSocketClient(TIndex index)
 {
-	if( index >= SocketClients.size() )
-		return SOCKET_ERROR;
+	assert( index < SocketClients.size() );
 
 	return SocketClients[index];
 }
@@ -147,8 +147,7 @@ TIndex CSocketServer::GetNumberClient()
 
 void CSocketServer::CloseClient(TIndex index)
 {
-	if( index >= SocketClients.size() )
-		return;
+	assert( index < SocketClients.size() );
 
 	close(SocketClients[index]);
 

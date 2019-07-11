@@ -1,6 +1,7 @@
 #include <iostream> // cout
 #include <cstdio> //perror
 #include <cstring> // memcpy
+#include <assert.h> // assert
 
 #include <arpa/inet.h> // struct sockaddr_in
 #include <sys/socket.h> // AF_VSOCK / AF_INET
@@ -89,30 +90,21 @@ TDescriptor CWifiServer::Accept()
 
 bool CWifiServer::IsEnable(TIndex index)
 {
-	if( index >= GetNumberClient() )
-	{
-		cerr<<"Error : CWifiServer::IsEnable : " << index <<" >= "<<GetNumberClient()<<endl;
-		return false;
-	}
+	assert( index < GetNumberClient() );
 
 	return InfoWifis[index].IsEnable();
 }
 
 void CWifiServer::ShowInfoWifi(TIndex index)
 {
-	if( index >= GetNumberClient() )
-	{
-		cerr<<"Error : CWifiServer::ShowInfoWifi : " << index <<" >= "<<GetNumberClient()<<endl;
-		return;
-	}
+	assert( index < GetNumberClient() );
 
 	cout<<"{"<<InfoWifis[index]<<"}";
 }
 
 void CWifiServer::CloseClient(TIndex index)
 {
-	if( index >= GetNumberClient() )
-		return;
+	assert( index < GetNumberClient() );
 
 	cout<<"Host disconnected : "; ShowInfoWifi(index) ; cout<<endl;
 
@@ -172,11 +164,7 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoWifiDeconnectedByCID(TCID cid)
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByIndex(TIndex index)
 {
-	if( index >= GetNumberClient() )
-	{
-		cerr<<"Error : CWifiServer::GetReferenceOnInfoWifiByIndex : " << index <<" >= "<<GetNumberClient()<<endl;
-		return NULL;
-	}
+	assert( index < GetNumberClient() );
 
 	return &(InfoWifis[index]);
 }
