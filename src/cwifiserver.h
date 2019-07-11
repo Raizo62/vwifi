@@ -13,7 +13,7 @@ class CWifiServer : public CSocketServer
 		std::vector<CInfoWifi> InfoWifis;
 		std::vector<CInfoWifi> InfoWifisDeconnected;
 
-		bool RecoverCoordinateOfOldInfoWifi(TCID cid, CCoordinate& coo);
+		bool RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& coo);
 
 		bool RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo);
 

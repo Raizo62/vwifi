@@ -20,7 +20,7 @@ bool CWifiServer::Listen(TIndex maxClientDeconnected)
 	return true;
 }
 
-bool CWifiServer::RecoverCoordinateOfOldInfoWifi(TCID cid, CCoordinate& coo)
+bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& coo)
 {
 	for (vector<CInfoWifi>::iterator it=InfoWifisDeconnected.begin(); it != InfoWifisDeconnected.end(); ++it)
 	{
@@ -77,7 +77,7 @@ TDescriptor CWifiServer::Accept()
 	CInfoWifi infoWifi;
 
 	CCoordinate coo;
-	if( RecoverCoordinateOfOldInfoWifi(cid,coo) || RecoverCoordinateOfInfoWifi(cid, coo) )
+	if( RecoverCoordinateOfInfoWifiDeconnected(cid,coo) || RecoverCoordinateOfInfoWifi(cid, coo) )
 		infoWifi.Set(coo);
 
 	infoWifi.SetCid(cid);
