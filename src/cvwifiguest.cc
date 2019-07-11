@@ -76,8 +76,15 @@ int VWifiGuest::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags
 		return 0;
 	}
 
-	nl_send_auto_complete(_netlink_socket, msg);
+	//nl_send_auto_complete(_netlink_socket, msg); //deprecated
 	
+	if (nl_send_auto(_netlink_socket, msg) < 0)
+	{
+		nlmsg_free(msg);
+		return 0 ;
+	}
+
+
 	nlmsg_free(msg);
 
 	return 1;
@@ -224,6 +231,16 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	}
 
 
+	char macaddrsrc[18];
+	mac_address_to_string(macaddrsrc, src);
+
+	char macaddrdst[18];
+	mac_address_to_string(macaddrdst, &framedst);
+	
+	if ( msg_len != 188)
+
+		std::cout << "Send " << msg_len << "Bytes from " << macaddrsrc << " to " << macaddrdst << std::endl ; 
+
 	/* send msg to a server */ 
 	int value=_vsocket.Send((char*)nlh,msg_len);
 
@@ -261,15 +278,8 @@ int VWifiGuest::send_register_msg()
 		return 0 ;
 	}
 
-	nl_complete_msg(_netlink_socket,msg);
-	
-	if (nl_send(_netlink_socket, msg) < 0)
-	{
-		nlmsg_free(msg);
-		return 0 ;
-	}
 
-	//nl_send_auto_complete(_netlink_socket, msg);
+	//nl_send_auto_complete(_netlink_socket, msg); //deprecated
 	nlmsg_free(msg);
 
 	return 1;
@@ -358,6 +368,12 @@ int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int da
 
 	msg = nlmsg_alloc();
 
+
+	char macaddrdst[18];
+	mac_address_to_string(macaddrdst, dst);
+	std::cout << __func__ << " : " << macaddrdst << std::endl ; 
+
+
 	if (!msg) {
 		std::cout << "Error allocating new message MSG!" << std::endl ;
 		nlmsg_free(msg);
@@ -388,16 +404,10 @@ int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int da
 		return 0 ;
 	}
 
+//	nl_send_auto_complete(_netlink_socket, msg);
+
 
 	if (nl_send_auto(_netlink_socket, msg) < 0)
-	{
-		nlmsg_free(msg);
-		return 0 ;
-	}
-
-	nl_complete_msg(_netlink_socket,msg);
-	
-	if (nl_send(_netlink_socket, msg) < 0)
 	{
 		nlmsg_free(msg);
 		return 0 ;
@@ -444,6 +454,7 @@ void VWifiGuest::recv_from_server(){
 		return ;
 	}
 
+	
 	
 	/* netlink header */
 	nlh = (struct nlmsghdr *)buf;
@@ -518,11 +529,19 @@ void VWifiGuest::recv_from_server(){
 	std::cout << "frame dst:" << addr << std::endl;
 #endif
 
-
 	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
+
+
+	if ( bytes != 188)
+		std::cout << "Receive " << bytes << " Bytes" << std::endl ; 
+
 
 	for (auto & inet : inets)
 	{
+		
+	//	if ( bytes != 188)
+	//		std::cout << "Send the " << bytes << " Bytes to hwsim" << std::endl ; 
+
 		struct ether_addr macdsthwsim = inet.getMachwsim();
 		
 		mac_address_to_string(addr, &macdsthwsim);

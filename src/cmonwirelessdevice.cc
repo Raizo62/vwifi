@@ -439,13 +439,6 @@ int MonitorWirelessDevice::get_winterface_infos()
 		return -1 ;
 	}
 
-	nl_complete_msg(wifi.nls,msg);
-	
-	if (nl_send(wifi.nls, msg) < 0)
-	{
-		nlmsg_free(msg);
-		return -1;
-	}
 
 	/* set a finish callback */
 	int err = 1;
