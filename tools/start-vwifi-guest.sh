@@ -9,6 +9,15 @@ else
 	NbrWifi="$1"
 fi
 
+if [ -e /sys/module/mac80211_hwsim ]
+then
+	OldNbrWifi=$(cat /sys/module/mac80211_hwsim/parameters/radios)
+	if (( NbrWifi != OldNbrWifi ))
+	then
+		rmmod mac80211_hwsim
+	fi
+fi
+
 modprobe mac80211_hwsim radios=$NbrWifi
 
 for((i=0;i<NbrWifi;i++))
