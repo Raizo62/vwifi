@@ -5,6 +5,10 @@
 # Ecris pour : Live Raizo / http://live-raizo.sourceforge.net
 # But : Mettre à jour vwifi-server avec les positions des VMs dans GNS3
 
+LOGIN=user
+PASSWORD=user
+SERVER=localhost
+
 CERROR='\e[0;1;31m' # Rouge
 SansCouleur='\e[0;m'
 
@@ -23,7 +27,7 @@ then
 fi
 
 # récupère l'identifiant du projet
-IdProjet=$(wget -q --user=user --password=user 'http://localhost:3080/v2/projects' -O - | jq -M -r --unbuffered '.[] | select (.status=="opened") | .project_id')
+IdProjet=$(wget -q --user="$LOGIN" --password="$PASSWORD" "http://${SERVER}:3080/v2/projects" -O - | jq -M -r --unbuffered '.[] | select (.status=="opened") | .project_id')
 if [ -z "${IdProjet}" ]
 then
 	>&2 echo -e "${CERROR}Error: No project is open !!!${SansCouleur}"
@@ -32,7 +36,7 @@ fi
 
 # récupère la configuration du projet
 ConfigProjectGNS3="$(mktemp fast-vwifi-update.XXXXXXXXXX --tmpdir=/tmp)"
-wget -q --user=user --password=user "http://localhost:3080/v2/projects/${IdProjet}/nodes" -O "${ConfigProjectGNS3}"
+wget -q --user="$LOGIN" --password="$PASSWORD" "http://${SERVER}:3080/v2/projects/${IdProjet}/nodes" -O "${ConfigProjectGNS3}"
 
 NbValue=0
 VMWithWifi=false
