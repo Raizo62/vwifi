@@ -40,7 +40,7 @@ then
 		# Already in tmux
 		./vwifi-guest
 	else
-		tmux new-session -s vwifi "./vwifi-guest" ; detach &> /dev/null
+		tmux new-session -s vwifi "bash --rcfile <(echo '. ~/.bashrc; ./vwifi-guest')" ; detach &> /dev/null
 
 		tmux attach -t vwifi
 	fi
