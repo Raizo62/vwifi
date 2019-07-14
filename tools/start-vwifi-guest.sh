@@ -31,12 +31,19 @@ do
 	ip link set wlan$i addr ${MAC_ADDRESS}
 done
 
-if [ -v TMUX ]
-then
-	# Already in tmux
-	./vwifi-guest
-else
-	tmux new-session -s vwifi "./vwifi-guest" ; detach &> /dev/null
 
-	tmux attach -t vwifi
+if [ "$(tty)" = '/dev/ttyS0' ]
+then
+	# In Console Mode -> Tmux can be usefull
+	if [ -v TMUX ]
+	then
+		# Already in tmux
+		./vwifi-guest
+	else
+		tmux new-session -s vwifi "./vwifi-guest" ; detach &> /dev/null
+
+		tmux attach -t vwifi
+	fi
+else
+	./vwifi-guest
 fi
