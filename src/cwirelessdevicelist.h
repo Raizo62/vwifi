@@ -8,6 +8,7 @@
 #ifndef _CWIRELESSDEVICELIST_H_
 #define _CWIRELESSDEVICELIST_H_
 
+
 #include <map>
 #include <mutex>
 #include <vector>
@@ -67,6 +68,15 @@ class WirelessDeviceList {
 	 */
 	std::vector<WirelessDevice> & list_devices() ;
 
+	/**
+	 * \fn get_device_by_mac(struct ether_addr macaddr) 
+	 * \brief Get a device related to mac address
+	 * \param wdev : WirelessDevice to find
+	 * \param macaddr : mac address to find
+	 * \return true if found and false otherwise
+	 */
+	bool get_device_by_mac(WirelessDevice & wdev , struct ether_addr macaddr);	
+	
 	/**
 	 * \brief << operator overidden 
 	 */

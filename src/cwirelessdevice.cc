@@ -18,11 +18,12 @@ WirelessDevice::~WirelessDevice(){
 
 }
 
-WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr):_name(name),_index(index),_iftype(iftype){
+WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr,int txpower):_name(name),_index(index),_iftype(iftype), _txpower(txpower){
 
 	_macaddr = macaddr ;
 	_machwsim = macaddr ;
-	_machwsim.ether_addr_octet[0] |= 0x40 ; 
+	_machwsim.ether_addr_octet[0] |= 0x40 ;
+	
 
 //	std::memcpy(&_macaddr,&macaddr,ETH_ALEN); 
 
@@ -30,7 +31,7 @@ WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const str
 
 
 
-WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr,const struct ether_addr & machwsim):_name(name),_index(index),_iftype(iftype){
+WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr,const struct ether_addr & machwsim,int txpower):_name(name),_index(index),_iftype(iftype), _txpower(txpower){
 
 
 	_macaddr = macaddr ;
@@ -93,6 +94,12 @@ int WirelessDevice::getIndex() const {
 
 
 	return _index ;
+}
+
+int WirelessDevice::getTxPower() const {
+
+
+	return _txpower ;
 }	
 
 
@@ -137,6 +144,8 @@ std::ostream &   operator<< ( std::ostream & os , WirelessDevice & wdevice ){
         os <<  "mac:" << macstring << std::endl   ;
 	
 	os <<  "mac hwsim:" << machwsimstring << std::endl   ;
+
+	os << "Tx-Power : " << wdevice._txpower / 100 << "." <<  wdevice._txpower % 100 << "dBm" << std::endl ;
 
 	return os ;
 }

@@ -230,17 +230,15 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
 	}
 
-
-	char macaddrsrc[18];
-	mac_address_to_string(macaddrsrc, src);
-
-	char macaddrdst[18];
-	mac_address_to_string(macaddrdst, &framedst);
+	/*WirelessDevice  dev ;
+        if ( _list_winterfaces.get_device_by_mac(dev,framesrc))
+	{	
+		monwireless->get_winterface_infos(dev.getIndex());
+		std::cout << dev << std::endl ;
+	}*/
 	
-	if ( msg_len != 188)
 
-		std::cout << "Send " << msg_len << "Bytes from " << macaddrsrc << " to " << macaddrdst << std::endl ; 
-
+	
 	/* send msg to a server */ 
 	int value=_vsocket.Send((char*)nlh,msg_len);
 
@@ -253,6 +251,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 		std::cout<<"socket.Send error"<<std::endl;
 		return 1;
 	}
+
 
 
 	return 0 ;
@@ -367,12 +366,6 @@ int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int da
 	struct nl_msg *msg;
 
 	msg = nlmsg_alloc();
-
-
-	char macaddrdst[18];
-	mac_address_to_string(macaddrdst, dst);
-	std::cout << __func__ << " : " << macaddrdst << std::endl ; 
-
 
 	if (!msg) {
 		std::cout << "Error allocating new message MSG!" << std::endl ;
@@ -532,15 +525,10 @@ void VWifiGuest::recv_from_server(){
 	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
 
 
-	if ( bytes != 188)
-		std::cout << "Receive " << bytes << " Bytes" << std::endl ; 
-
 
 	for (auto & inet : inets)
 	{
 		
-	//	if ( bytes != 188)
-	//		std::cout << "Send the " << bytes << " Bytes to hwsim" << std::endl ; 
 
 		struct ether_addr macdsthwsim = inet.getMachwsim();
 		
@@ -548,6 +536,7 @@ void VWifiGuest::recv_from_server(){
 
 		send_cloned_frame_msg(&macdsthwsim, data, data_len,rate_idx, signal, freq);
 
+	
 	}
 
 }
@@ -585,12 +574,8 @@ void  VWifiGuest::monitor_hwsim_loop()
 			if(!init()){
 				break;
 			}
-
-			monwireless->get_winterface_infos();
-			std::cout << _list_winterfaces << std::endl ; 
-
-
 		}
+
 	}
 
 	nl_close(sock);
@@ -605,7 +590,6 @@ void  VWifiGuest::monitor_hwsim_loop()
 void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 
 
-	std::cout << _list_winterfaces << std::endl ; 
 
 	thread_start();
 	
@@ -650,6 +634,7 @@ void VWifiGuest::recv_msg_from_server_loop_start(){
 		}
 	
 		recv_from_server();
+
 	}
 
 	thread_dead();
@@ -736,7 +721,7 @@ int VWifiGuest::start(){
 		monwireless->start();
 		
 		/* get initial wireless network interfaces created when we called sudo modprobe mac80211_hwsim */
-		monwireless->get_winterface_infos();
+		monwireless->get_winterface_infos(0);
 
 	}catch ( const std::exception & e){
 	
@@ -973,6 +958,20 @@ void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
 
 	std::cout << "Change in wireless configuration of : " <<  wirelessdevice << std::endl ;
 
+	struct ether_addr paddr ;
+	std::memset(&paddr, 0, sizeof(paddr));
+
+	if(get_pmaddr(paddr,wirelessdevice.getName().c_str())){
+      
+		paddr.ether_addr_octet[0] |= 0x40 ; 
+		wirelessdevice.setMachwsim(paddr); 
+		_list_winterfaces.add_device(wirelessdevice);
+	}
+
+
+	std::cout << _list_winterfaces << std::endl ; 
+
+
 }
 
 void VWifiGuest::handle_del_winet_notification(WirelessDevice wirelessdevice){
@@ -983,6 +982,7 @@ void VWifiGuest::handle_del_winet_notification(WirelessDevice wirelessdevice){
 
 }
 
+/* called the first time we detect the interface */
 void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 
 
@@ -995,9 +995,12 @@ void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 		wirelessdevice.setMachwsim(paddr); 
 		_list_winterfaces.add_device(wirelessdevice);
 	}
+
+
+	std::cout << _list_winterfaces << std::endl ; 
 }
 
-
+/* get the permanent mac address, this function with nl_recvmsgs(wifi.nls, wifi.cb) permit change mac address before or after launching the application */ 
 bool VWifiGuest::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
 
 {

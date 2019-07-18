@@ -20,6 +20,10 @@ typedef std::function<void(WirelessDevice)> CallbackFunction ;
 typedef struct {
     struct nl_sock *nls;
     int nl80211_id;
+    int err,err1 ;
+    struct nl_cb* cb;
+    struct nl_cb* cb1;
+
 } WIFI;
 
 
@@ -28,6 +32,10 @@ class MonitorWirelessDevice {
 
 
 
+	/* set to true when wireless interfaces are initialised */
+	bool init_interfaces = false ;
+	
+	/* for netlink communication with 80211 module */
 	WIFI wifi ;
 
 	bool _outsideloop { true } ;
@@ -80,6 +88,7 @@ class MonitorWirelessDevice {
 	CallbackFunction _initinet_cb ;
 
 	static int recv_winterface_infos_cb(struct nl_msg *msg, void *arg);
+	static int recv_winterface_extra_infos_cb(struct nl_msg *msg, void *arg);
 	static int handle_iee80211_com_finish_cb(struct nl_msg *msg, void *arg);
 
 	static monitorinet::CallFromStaticFunc * forward ;
@@ -125,11 +134,15 @@ public:
 	 * \brief Uses nl80211 to initialize a list of wireless interfaces Processes multiple netlink messages containing interface data
 	 *\return error codes
  	*/
-	int get_winterface_infos();
+	int get_winterface_infos(int);
+	int get_winterface_extra_infos(int ifindex);
 
 	int recv_winterface_infos(struct nl_msg *msg, void *arg);
+	int recv_winterface_extra_infos(struct nl_msg *msg, void *arg);
+
 	int handle_iee80211_com_finish(struct nl_msg *msg, void *arg);
 
+       	int nl80211_init() ;
 
 };
 
@@ -162,6 +175,13 @@ namespace monitorinet {
 		
 				// add exception to check null ptr
 				m_obj->recv_winterface_infos(msg , arg);
+				return 0 ;
+		};
+
+		int recv_winterface_extra_infos(struct nl_msg *msg, void *arg) {
+		
+				// add exception to check null ptr
+				m_obj->recv_winterface_extra_infos(msg , arg);
 				return 0 ;
 		};
 
