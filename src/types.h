@@ -20,4 +20,6 @@ typedef int TSocket;
 
 typedef unsigned int TPort;
 
+typedef int TPower;
+
 #endif

@@ -128,15 +128,19 @@ void CWifiServer::CloseAllClient()
 			CloseClient(0); // we can Close the 0 because we use the shift
 }
 
-void CWifiServer::SendAllOtherClients(TIndex index,const char* data, ssize_t sizeOfData)
+void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData)
 {
 //	CCoordinate coo=InfoWifis[index];
+	cout<<"Forward "<<sizeOfData<<" bytes with "<<power<<" powers"<<endl;
 
 	for (TIndex i = 0; i < GetNumberClient(); i++)
 	{
 		if( i != index )
 			if( InfoWifis[i].IsEnable() )
+			{
+				Send(SocketClients[i], (const char*) &power, sizeof(power));
 				Send(SocketClients[i], data, sizeOfData);
+			}
 	}
 }
 

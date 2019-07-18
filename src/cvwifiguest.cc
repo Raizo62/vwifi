@@ -238,9 +238,22 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	}*/
 	
 
+	/* send msg to a server */
+	TPower power=10;
+	int value=_vsocket.Send((char*)&power,sizeof(power));
+
+	if (value == SOCKET_DISCONNECT)
+		manage_server_crash();
+
+	if( value == SOCKET_ERROR )
 	
+	{
+		std::cout<<"socket.Send error"<<std::endl;
+		return 1;
+	}
+
 	/* send msg to a server */ 
-	int value=_vsocket.Send((char*)nlh,msg_len);
+	value=_vsocket.Send((char*)nlh,msg_len);
 
 	if (value == SOCKET_DISCONNECT)
 		manage_server_crash();
@@ -434,6 +447,18 @@ void VWifiGuest::recv_from_server(){
 	signal = -10;
 	rate_idx = 7;
 
+	/* receive power from server and store them in power */
+	TPower power;
+	bytes=_vsocket.Read((char*)&power,sizeof(buf));
+
+	if (bytes == SOCKET_DISCONNECT)
+		manage_server_crash();
+
+	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
+	{
+	//	std::cerr<<"socket.Read error"<<std::endl;
+		return ;
+	}
 
 	/* receive bytes packets from server and store them in buf */
 	bytes=_vsocket.Read(buf,sizeof(buf));
