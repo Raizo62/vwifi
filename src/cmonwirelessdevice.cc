@@ -66,6 +66,12 @@ MonitorWirelessDevice::MonitorWirelessDevice(){
 
 	/* allows calls from  static callback to non static member function */ 
 	forward = new monitorinet::CallFromStaticFunc(this);
+
+	/* init netlink 80211 */
+ 	 if (nl80211_init() < 0) 
+		throw std::runtime_error("Error initializing netlink 802.11"); 
+
+	
 }
 
 
@@ -86,6 +92,10 @@ MonitorWirelessDevice::~MonitorWirelessDevice(){
 void MonitorWirelessDevice::clean(){
 
 	close(_inetsock);
+	nl_cb_put(wifi.cb);
+	nl_cb_put(wifi.cb1);
+	nl_close(wifi.nls);
+       	nl_socket_free(wifi.nls);
 }
 
 int MonitorWirelessDevice::main_loop() {
@@ -210,6 +220,13 @@ void MonitorWirelessDevice::recv_inet_event()
 		case NLMSG_ERROR:
 			perror("read_netlink");
 			break;
+
+		case RTM_SETLINK:
+//#ifdef _DEBUG
+			std::cout << "Network interface configuration modified" << std::endl ;
+//#endif
+			break;
+
 		
 		case RTM_NEWLINK:
 #ifdef _DEBUG
@@ -294,17 +311,18 @@ void MonitorWirelessDevice::new_net_interface(struct nlmsghdr *h)
 	if (tb[IFLA_ADDRESS]) {
 		
 		std::memcpy(&macaddr, RTA_DATA(tb[IFLA_ADDRESS]), ETH_ALEN);
-			
 
-		std::string inet_name(name);
-	
-		WirelessDevice inetdevice (inet_name,ifi->ifi_index,ifi->ifi_type,macaddr);
-	
-		if(inetdevice.checkif_wireless_device()){
-
-			_newinet_cb(inetdevice);
-		}
 	}
+
+	std::string inet_name(name);
+
+	WirelessDevice inetdevice (inet_name,ifi->ifi_index,ifi->ifi_type,macaddr,0);
+
+	if(inetdevice.checkif_wireless_device()){
+
+		get_winterface_infos(ifi->ifi_index);
+	}
+
 }
 
 
@@ -361,7 +379,7 @@ void MonitorWirelessDevice::del_net_interface(struct nlmsghdr *h)
 
 		std::string inet_name(name);
 	
-		WirelessDevice inetdevice (inet_name,ifi->ifi_index,ifi->ifi_type,macaddr);
+		WirelessDevice inetdevice (inet_name,ifi->ifi_index,ifi->ifi_type,macaddr,0);
 	
 		if(inetdevice.checkif_wireless_device()){
 
@@ -377,8 +395,10 @@ void MonitorWirelessDevice::del_net_interface(struct nlmsghdr *h)
 /***************** handle communication with nl80211 module ***********************************/
 /**********************************************************************************************/
 
-int MonitorWirelessDevice::get_winterface_infos()
-{
+int MonitorWirelessDevice::nl80211_init(){
+
+
+	std::cout << __func__ << std::endl ; 
 
 	/* init netlink socket with nl80211 module */
 	wifi.nls = nl_socket_alloc();
@@ -395,6 +415,7 @@ int MonitorWirelessDevice::get_winterface_infos()
 	if (genl_connect(wifi.nls)) {
 		
 		std::cerr << "Failed to connect to generic netlink" << std::endl ;
+		nl_close(wifi.nls);
 		nl_socket_free(wifi.nls);
 		return -ENOLINK;
 	}
@@ -403,9 +424,58 @@ int MonitorWirelessDevice::get_winterface_infos()
 	if (wifi.nl80211_id < 0) {
         
 		std::cerr << "nl80211 not found." << std::endl ;
-	       	nl_socket_free(wifi.nls);
+		nl_close(wifi.nls);
+		nl_socket_free(wifi.nls);
 		return -ENOENT;
 	}
+
+
+	/*set a callback that receive messages from a module */
+	wifi.cb = nl_cb_alloc(NL_CB_DEFAULT);
+
+	if (!wifi.cb) {
+        
+		std::cerr << "Failed to allocate netlink callback." << std::endl ;
+		nl_close(wifi.nls);
+		nl_socket_free(wifi.nls);
+	      	return -ENOMEM;
+	}
+
+	/*set a callback that receive messages from a module */
+	wifi.cb1 = nl_cb_alloc(NL_CB_DEFAULT);
+
+	if (!wifi.cb1) {
+        
+		std::cerr << "Failed to allocate netlink callback." << std::endl ;
+		nl_close(wifi.nls);
+		nl_socket_free(wifi.nls);
+	      	return -ENOMEM;
+	}
+
+	/* set callbacks */
+	nl_cb_set(wifi.cb1, NL_CB_VALID, NL_CB_CUSTOM,recv_winterface_extra_infos_cb, &(wifi.err1));
+	nl_cb_set(wifi.cb1, NL_CB_FINISH, NL_CB_CUSTOM, handle_iee80211_com_finish_cb, &(wifi.err1));
+	nl_cb_set(wifi.cb, NL_CB_VALID, NL_CB_CUSTOM,recv_winterface_infos_cb, &(wifi.err));
+	nl_cb_set(wifi.cb, NL_CB_FINISH, NL_CB_CUSTOM, handle_iee80211_com_finish_cb, &(wifi.err));
+
+	return wifi.nl80211_id ;
+}
+
+
+int MonitorWirelessDevice::get_winterface_infos(int ifindex)
+{
+
+
+	wifi.err = 1 ;
+	int flags ;
+
+	/* for one interface or for all interface */
+	if (ifindex != 0)
+
+		flags = 0;
+	else
+		flags = NLM_F_DUMP;
+
 
 
 	/* allocate a msg to send to a module */
@@ -417,21 +487,15 @@ int MonitorWirelessDevice::get_winterface_infos()
 		return -ENOMEM;
 	}
 
-	/*set a callback that receive messages from a module */
-	struct nl_cb *cb = nl_cb_alloc(NL_CB_DEFAULT);
-
-	if (!cb) {
-        
-		std::cerr << "Failed to allocate netlink callback." << std::endl ;
-		nlmsg_free(msg);
-	      	return -ENOMEM;
-	}
-
-	nl_cb_set(cb, NL_CB_VALID, NL_CB_CUSTOM,recv_winterface_infos_cb, NULL);
-
+	
 
 	/* send get inerface  command to deriver */
-	genlmsg_put(msg, 0, 0, wifi.nl80211_id, 0,NLM_F_DUMP, NL80211_CMD_GET_INTERFACE, 0);
+	genlmsg_put(msg, 0, 0, wifi.nl80211_id, 0, flags , NL80211_CMD_GET_INTERFACE, 0);
+	//genlmsg_put(msg,NL_AUTO_PORT,NL_AUTO_SEQ,wifi.nl80211_id,0,flags, NL80211_CMD_GET_INTERFACE, 0);
+
+	if (ifindex != 0)
+		nla_put_u32(msg, NL80211_ATTR_IFINDEX, ifindex);
+
 
 	if (nl_send_auto(wifi.nls, msg) < 0)
 	{
@@ -439,18 +503,14 @@ int MonitorWirelessDevice::get_winterface_infos()
 		return -1 ;
 	}
 
-
-	/* set a finish callback */
-	int err = 1;
-	nl_cb_set(cb, NL_CB_FINISH, NL_CB_CUSTOM, handle_iee80211_com_finish_cb, &err);
-
-	nl_recvmsgs(wifi.nls, cb);
-
-	/*cleanup*/
+	if (ifindex != 0)
+		nl_recvmsgs(wifi.nls, wifi.cb);
+	else
+		while(wifi.err > 0) 
+			nl_recvmsgs(wifi.nls, wifi.cb);
+	
 	nlmsg_free(msg);
-	nl_cb_put(cb);
-	nl_socket_free(wifi.nls);
-
+	
 	return 0 ;
 	
 }
@@ -466,10 +526,6 @@ int MonitorWirelessDevice::recv_winterface_infos_cb(struct nl_msg *msg, void *ar
 int MonitorWirelessDevice::recv_winterface_infos(struct nl_msg *msg, void *arg){
 
 
-#ifdef _DEBUG
-	std::cout << __func__ << std::endl ;
-#endif
-
 	struct nlattr *tb_msg[NL80211_ATTR_MAX + 1];
 	struct genlmsghdr *gnlh = (struct genlmsghdr *) nlmsg_data(nlmsg_hdr(msg));
 
@@ -477,6 +533,7 @@ int MonitorWirelessDevice::recv_winterface_infos(struct nl_msg *msg, void *arg){
 	int ifindex;
 	int iftype;
 	struct ether_addr macaddr ;
+	uint32_t txp = 0;
 
 	nla_parse(tb_msg, NL80211_ATTR_MAX, genlmsg_attrdata(gnlh, 0),genlmsg_attrlen(gnlh, 0), NULL);
     
@@ -506,15 +563,130 @@ int MonitorWirelessDevice::recv_winterface_infos(struct nl_msg *msg, void *arg){
 	else
 		return NL_SKIP;
 
-
+	if (tb_msg[NL80211_ATTR_WIPHY_TX_POWER_LEVEL]) {
+          
+		txp = nla_get_u32(tb_msg[NL80211_ATTR_WIPHY_TX_POWER_LEVEL]);
+      
+	}
+	
 	std::string inet_name(ifname);
 	
-	WirelessDevice inetdevice (inet_name,ifindex,iftype,macaddr);
+	WirelessDevice inetdevice (inet_name,ifindex,iftype,macaddr,txp);
 
-	_initinet_cb(inetdevice);	
+	if(!init_interfaces){
+		
+		_initinet_cb(inetdevice);
+		init_interfaces = true ;
+	}
+	else
+		_newinet_cb(inetdevice) ;	
 
 	return NL_SKIP;
 }
+
+int MonitorWirelessDevice::get_winterface_extra_infos(int ifindex)
+{
+
+	wifi.err1 = 1 ;
+
+	/* allocate a msg to send to a module */
+	struct nl_msg *msg1 = nlmsg_alloc();
+
+	if (!msg1) {
+        
+		std::cerr << "Failed to allocate netlink message." << std::endl ;
+		return -ENOMEM;
+	}
+
+	/* send get inerface  command to deriver */
+	//genlmsg_put(msg1, 0, 0, wifi.nl80211_id, 0,flags, NL80211_CMD_GET_STATION, 0);
+	genlmsg_put(msg1, NL_AUTO_PORT, NL_AUTO_SEQ, wifi.nl80211_id, 0,NLM_F_DUMP, NL80211_CMD_GET_STATION, 0);
+	
+	nla_put_u32(msg1, NL80211_ATTR_IFINDEX, ifindex); 
+	
+	if (nl_send_auto(wifi.nls, msg1) < 0)
+	{
+		nlmsg_free(msg1);
+		return -1 ;
+	}
+
+	
+	while(wifi.err1 > 0) 
+		nl_recvmsgs(wifi.nls, wifi.cb1);
+
+
+	nlmsg_free(msg1);
+
+
+	return 0 ;
+
+	
+}
+
+
+
+int MonitorWirelessDevice::recv_winterface_extra_infos_cb(struct nl_msg *msg, void *arg){
+
+	forward->recv_winterface_extra_infos(msg,arg);
+	return 0 ;
+}
+
+
+
+int MonitorWirelessDevice::recv_winterface_extra_infos(struct nl_msg *msg, void *arg){
+
+
+
+	struct nlattr *tb_msg[NL80211_ATTR_MAX + 1];
+	struct genlmsghdr *gnlh = (struct genlmsghdr *) nlmsg_data(nlmsg_hdr(msg));
+
+	struct nlattr *sinfo[NL80211_STA_INFO_MAX + 1];
+  //	struct nlattr *rinfo[NL80211_RATE_INFO_MAX + 1];
+	int signal = -1 ;
+
+	struct nla_policy stats[NL80211_STA_INFO_MAX + 1]; 
+	stats[NL80211_STA_INFO_INACTIVE_TIME].type = NLA_U32 ;
+	stats[NL80211_STA_INFO_RX_BYTES].type = NLA_U32 ; 
+  	stats[NL80211_STA_INFO_TX_BYTES].type = NLA_U32 ;
+	stats[NL80211_STA_INFO_RX_PACKETS].type = NLA_U32 ; 
+  	stats[NL80211_STA_INFO_TX_PACKETS].type = NLA_U32 ;
+  	stats[NL80211_STA_INFO_SIGNAL].type = NLA_U8 ;
+  	stats[NL80211_STA_INFO_TX_BITRATE].type = NLA_NESTED; 
+  	stats[NL80211_STA_INFO_LLID].type = NLA_U16 ;
+  	stats[NL80211_STA_INFO_PLID].type = NLA_U16 ;
+  	stats[NL80211_STA_INFO_PLINK_STATE].type = NLA_U8 ;
+
+	nla_parse(tb_msg, NL80211_ATTR_MAX, genlmsg_attrdata(gnlh, 0),genlmsg_attrlen(gnlh, 0), NULL);
+ 
+	
+	/* get signal power-tx */
+	if (!tb_msg[NL80211_ATTR_STA_INFO]) {
+		
+		std::cerr << __func__ <<  "sta stats missing!" << std::endl ; 
+		return NL_SKIP;
+	}	
+	
+	if (nla_parse_nested(sinfo, NL80211_STA_INFO_MAX,tb_msg[NL80211_ATTR_STA_INFO], stats)) 
+	
+	{
+
+		std::cerr << "failed to parse nested attributes" << std::endl;
+		return NL_SKIP;
+	
+	}
+
+
+       	if (sinfo[NL80211_STA_INFO_SIGNAL]) {
+        
+		signal = 100+(int8_t)nla_get_u8(sinfo[NL80211_STA_INFO_SIGNAL]);
+		std::cout << __func__ <<  " Signal : " << signal << std::endl ;
+	}
+
+	
+	return NL_SKIP;
+}
+
+
 
 
 

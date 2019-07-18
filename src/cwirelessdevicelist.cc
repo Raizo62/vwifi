@@ -7,6 +7,7 @@
 
 
 #include "cwirelessdevicelist.h"
+#include <cstring>
 
 
 WirelessDeviceList::WirelessDeviceList(){
@@ -15,6 +16,24 @@ WirelessDeviceList::WirelessDeviceList(){
 
 WirelessDeviceList::~WirelessDeviceList(){
 
+}
+
+
+bool WirelessDeviceList::get_device_by_mac(WirelessDevice & wdev , struct ether_addr macaddr) {
+
+	_listaccess.lock();
+	for (auto & wd : _wdevices_list){
+
+		struct ether_addr mac  = wd.second.getMacaddr() ;	
+		if(std::memcmp(&mac,&macaddr,ETH_ALEN) == 0){
+			wdev = wd.second ;
+			_listaccess.unlock();
+			return true ;
+		}
+	}
+	_listaccess.unlock();
+
+	return false ;
 }
 
 

@@ -16,6 +16,7 @@ class WirelessDevice {
 	//unsigned char _macaddr[ETH_ALEN];
 	struct ether_addr _macaddr ;
 	struct ether_addr _machwsim = {0x00,0X00,0x00,0X00,0x00,0X00};
+	int _txpower ;
 
 	public:
 
@@ -31,7 +32,7 @@ class WirelessDevice {
 	 * 	  m -  wireless net device mac address
 	 * 	  h -  wireless net device mac address in hwsim driver 
 	 */
-	WirelessDevice(std::string,int,int,const struct ether_addr &,const struct ether_addr &);
+	WirelessDevice(std::string,int,int,const struct ether_addr &,const struct ether_addr &,int);
 	
 	/**
 	 * \fn WirelessDevice(std::string n,int i,int t,const struct ether_addr & m);
@@ -41,7 +42,7 @@ class WirelessDevice {
 	 * 	  t -  type
 	 * 	  m -  wireless net device mac address
 	 */
-	WirelessDevice(std::string,int,int,const struct ether_addr &);
+	WirelessDevice(std::string,int,int,const struct ether_addr &,int);
 
 	friend std::ostream &   operator<< ( std::ostream & , WirelessDevice &);
         
@@ -56,6 +57,7 @@ class WirelessDevice {
 
 	bool checkif_wireless_device();
 	int getIndex() const ;
+	int getTxPower() const ;
 
 };
 
