@@ -221,11 +221,11 @@ void MonitorWirelessDevice::recv_inet_event()
 			perror("read_netlink");
 			break;
 
-		case RTM_SETLINK:
+//		case RTM_SETLINK: /* we try to use it in order to detect chaging in wireless inet configuration, but it didn't work
 //#ifdef _DEBUG
-			std::cout << "Network interface configuration modified" << std::endl ;
+//			std::cout << "Network interface configuration modified" << std::endl ;
 //#endif
-			break;
+//			break;
 
 		
 		case RTM_NEWLINK:
@@ -320,7 +320,7 @@ void MonitorWirelessDevice::new_net_interface(struct nlmsghdr *h)
 
 	if(inetdevice.checkif_wireless_device()){
 
-		get_winterface_infos(ifi->ifi_index);
+		get_winterface_infos(ifi->ifi_index); // we can call a callback here, instead calling it in recv_winterface_infos, to reduce cpu
 	}
 
 }

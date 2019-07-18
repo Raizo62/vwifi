@@ -532,8 +532,6 @@ void VWifiGuest::recv_from_server(){
 
 		struct ether_addr macdsthwsim = inet.getMachwsim();
 		
-		mac_address_to_string(addr, &macdsthwsim);
-
 		send_cloned_frame_msg(&macdsthwsim, data, data_len,rate_idx, signal, freq);
 
 	
@@ -958,6 +956,7 @@ void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
 
 	std::cout << "Change in wireless configuration of : " <<  wirelessdevice << std::endl ;
 
+	/* it is necessary to do this in the case of reloading hwsim driver and not just adding wirelessdevice to _list_winterfaces */
 	struct ether_addr paddr ;
 	std::memset(&paddr, 0, sizeof(paddr));
 
