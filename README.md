@@ -117,9 +117,8 @@ ping 10.0.0.1
 
 * Guest Wifi 3 :
 ```bash
-iwconfig wlan0 mode Monitor
 ip link set up wlan0
-tcpdump -n -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
+tcpdump -n -e -I -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
 ```
 
 #### Host
