@@ -449,7 +449,7 @@ void VWifiGuest::recv_from_server(){
 
 	/* receive power from server and store them in power */
 	TPower power;
-	bytes=_vsocket.Read((char*)&power,sizeof(buf));
+	bytes=_vsocket.Read((char*)&power,sizeof(power));
 
 	if (bytes == SOCKET_DISCONNECT)
 		manage_server_crash();
