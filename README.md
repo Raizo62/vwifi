@@ -71,8 +71,8 @@ sudo apt install hostapd wpasupplicant
 * Guest Wifi 1 :
 
 ```bash
-hostapd tests/hostapd_wpa.conf
 ip a a 10.0.0.1/8 dev wlan0
+hostapd tests/hostapd_wpa.conf
 ```
 
 * Guest Wifi 2 :
@@ -102,8 +102,8 @@ sudo apt install hostapd iw wireless-tools tcpdump
 * Guest Wifi 1 :
 
 ```bash
-hostapd tests/hostapd_open.conf
 ip a a 10.0.0.1/8 dev wlan0
+hostapd tests/hostapd_open.conf
 ```
 
 * Guest Wifi 2 :
