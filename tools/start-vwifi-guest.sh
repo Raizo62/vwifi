@@ -1,8 +1,12 @@
 #!/bin/bash
 
-DEFAULT_PREFIX_MAC_ADDRESS="74:F8:DB"
+FOLDER_VWIFI='/hosthome/vwifi'
 
-cd /hosthome/vwifi
+DEFAULT_PREFIX_MAC_ADDRESS='74:F8:DB'
+
+# -------------------
+
+cd "${FOLDER_VWIFI}"
 
 if (( $# == 0 ))
 then
