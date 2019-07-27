@@ -72,12 +72,14 @@ sudo apt install hostapd wpasupplicant
 
 ```bash
 ip a a 10.0.0.1/8 dev wlan0
+
 hostapd tests/hostapd_wpa.conf
 ```
 
 * Guest Wifi 2 :
 ```bash
 wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
+
 ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
@@ -94,7 +96,7 @@ ping 10.0.0.2
 #### Packages needed on the guests for this test
 
 ```bash
-sudo apt install hostapd iw wireless-tools tcpdump
+sudo apt install hostapd iw tcpdump
 ```
 
 #### Guests
@@ -103,6 +105,7 @@ sudo apt install hostapd iw wireless-tools tcpdump
 
 ```bash
 ip a a 10.0.0.1/8 dev wlan0
+
 hostapd tests/hostapd_open.conf
 ```
 
@@ -111,6 +114,7 @@ hostapd tests/hostapd_open.conf
 ip link set up wlan0
 iw wlan0 scan
 iw dev wlan0 connect mac80211_open
+
 ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
@@ -125,6 +129,35 @@ tcpdump -n -e -I -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
 
 ```bash
 tail -f -c +0b /home/user/projects/vwifi_capture_wlan0.pcap | wireshark -k -i -
+```
+
+### Test 3 : Ad-Hoc
+
+#### Packages needed on the guests for this test
+
+```bash
+sudo apt install iw
+```
+
+#### Guests
+
+* Guest Wifi 1 :
+```bash
+ip link set up wlan0
+iw wlan0 set type ibss
+iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
+
+ip a a 10.0.0.1/8 dev wlan0
+```
+
+* Guest Wifi 2 :
+```bash
+ip link set up wlan0
+iw wlan0 set type ibss
+iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
+
+ip a a 10.0.0.2/8 dev wlan0
+ping 10.0.0.1
 ```
 
 ## Control
