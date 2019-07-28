@@ -230,16 +230,17 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
 	}
 
-	/*WirelessDevice  dev ;
-        if ( _list_winterfaces.get_device_by_mac(dev,framesrc))
-	{	
-		monwireless->get_winterface_infos(dev.getIndex());
-		std::cout << dev << std::endl ;
-	}*/
-	
-
 	/* send msg to a server */
 	TPower power=10;
+
+	WirelessDevice  dev ;
+        if ( _list_winterfaces.get_device_by_mac(dev,framesrc))
+	{	
+		monwireless->get_winterface_infos(dev.getIndex()); // this update txpower of dev but it is not immediate, the next power varaible can take old value
+		power = dev.getTxPower() / 100; // must add the remainder if not multiple of 2 
+	}
+	
+
 	int value=_vsocket.Send((char*)&power,sizeof(power));
 
 	if (value == SOCKET_DISCONNECT)
