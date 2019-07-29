@@ -236,7 +236,6 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 	WirelessDevice  dev ;
         if ( _list_winterfaces.get_device_by_mac(dev,framesrc))
 	{	
-		monwireless->get_winterface_infos(dev.getIndex()); // this update txpower of dev but it is not immediate, the next power varaible can take old value
 		power = dev.getTxPower() / 100; // must add the remainder if not multiple of 2 
 	}
 	
@@ -602,6 +601,7 @@ void  VWifiGuest::monitor_hwsim_loop()
 			}
 		}
 
+		
 	}
 
 	nl_close(sock);
@@ -665,6 +665,42 @@ void VWifiGuest::recv_msg_from_server_loop_start(){
 
 	thread_dead();
 }
+
+void VWifiGuest::winet_update_loop(){
+
+
+	thread_start();
+	
+	while (true) {
+		
+		if(!started())
+			break ;
+		/* added for monitor_hwsim_loop */	
+		if(!initialized()){
+		
+			std::cout << __func__ << "driver still unloaded" << std::endl ;	
+			using namespace  std::chrono_literals;
+			std::this_thread::sleep_for(1s);
+			continue ;
+		}
+
+
+		/* update txpower of all interfaces. We can do it elsewhere */
+
+			//std::cout << "update interface :  " << inet.getIndex() << std::endl ;
+			monwireless->get_winterface_infos(0); 
+
+		using namespace  std::chrono_literals;
+		std::this_thread::sleep_for(1s);
+
+
+	}
+
+	thread_dead();
+
+}
+
+
 
 
 int VWifiGuest::init(){
@@ -788,6 +824,9 @@ int VWifiGuest::start(){
 	/* start thread monitoring  the starting of hwsim driver*/
 	std::thread monitorloop(&VWifiGuest::monitor_hwsim_loop,this);
 
+	/* start thread updating wireless inet interfaces*/
+	std::thread winterface_update_loop(&VWifiGuest::winet_update_loop,this);
+
 
 	_mutex_stopped.lock();
 	_stopped = false ;
@@ -797,6 +836,7 @@ int VWifiGuest::start(){
 	monitorloop.join();
 	hwsimloop.join();
 	serverloop.join();
+	winterface_update_loop.join();
 
 	delete monwireless ;
 
@@ -995,7 +1035,7 @@ void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
 	}
 
 
-	std::cout << _list_winterfaces << std::endl ; 
+	std::cout << __func__ << _list_winterfaces << std::endl ; 
 
 
 }
@@ -1023,7 +1063,7 @@ void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 	}
 
 
-	std::cout << _list_winterfaces << std::endl ; 
+	std::cout << __func__ << _list_winterfaces << std::endl ; 
 }
 
 /* get the permanent mac address, this function with nl_recvmsgs(wifi.nls, wifi.cb) permit change mac address before or after launching the application */ 
