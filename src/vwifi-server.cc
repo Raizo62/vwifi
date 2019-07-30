@@ -22,16 +22,16 @@ int main(int argc , char *argv[])
 
 	CScheduler scheduler;
 
-	CWifiServer socketWifi;
-	socketWifi.Init(WIFI_PORT);
-	if( ! socketWifi.Listen(MAX_DECONNECTED_CLIENT_WIFI) )
+	CWifiServer wifiServer;
+	wifiServer.Init(WIFI_PORT);
+	if( ! wifiServer.Listen(MAX_DECONNECTED_CLIENT_WIFI) )
 	{
-		cerr<<"Error : socketWifi.Listen"<<endl;
+		cerr<<"Error : wifiServer.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
 	cout<<"CTRL : ";
-	CCTRLServer ctrlWifi(&socketWifi,&scheduler);
+	CCTRLServer ctrlWifi(&wifiServer,&scheduler);
 	ctrlWifi.Init(CTRL_PORT);
 	if( ! ctrlWifi.Listen() )
 	{
@@ -40,7 +40,7 @@ int main(int argc , char *argv[])
 	}
 
 	//add master socket to set
-	scheduler.AddNode(socketWifi);
+	scheduler.AddNode(wifiServer);
 	scheduler.AddNode(ctrlWifi);
 
 	while( true )
@@ -56,12 +56,12 @@ int main(int argc , char *argv[])
 
 			//If something happened on the master socket ,
 			//then its an incoming connection
-			if( scheduler.NodeHasAction(socketWifi) )
+			if( scheduler.NodeHasAction(wifiServer) )
 			{
-				socket = socketWifi.Accept();
+				socket = wifiServer.Accept();
 				if ( socket == SOCKET_ERROR )
 				{
-					cerr<<"Error : socketWifi.Accept"<<endl;
+					cerr<<"Error : wifiServer.Accept"<<endl;
 					exit(EXIT_FAILURE);
 				}
 
@@ -69,7 +69,7 @@ int main(int argc , char *argv[])
 				scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection from : "; socketWifi.ShowInfoWifi(socketWifi.GetNumberClient()-1) ; cout<<endl;
+				cout<<"New connection from : "; wifiServer.ShowInfoWifi(wifiServer.GetNumberClient()-1) ; cout<<endl;
 			}
 
 			if( scheduler.NodeHasAction(ctrlWifi) )
@@ -78,17 +78,17 @@ int main(int argc , char *argv[])
 			}
 
 			//else its some IO operation on some other socket
-			for ( i = 0 ; i < socketWifi.GetNumberClient() ; )
+			for ( i = 0 ; i < wifiServer.GetNumberClient() ; )
 			{
-				socket = socketWifi[i];
+				socket = wifiServer[i];
 
-				if( ! socketWifi.IsEnable(i) )
+				if( ! wifiServer.IsEnable(i) )
 				{
 							//Somebody disconnected , get his details and print
-							cout<<"Host disable : "; socketWifi.ShowInfoWifi(i) ; cout<<endl;
+							cout<<"Host disable : "; wifiServer.ShowInfoWifi(i) ; cout<<endl;
 
 							//Close the socket
-							socketWifi.CloseClient(i);
+							wifiServer.CloseClient(i);
 
 							//del master socket to set
 							scheduler.DelNode(socket);
@@ -102,13 +102,13 @@ int main(int argc , char *argv[])
 					//incoming message
 
 					// read the power
-					valread = socketWifi.Read( socket , (char*)&power, sizeof(power));
+					valread = wifiServer.Read( socket , (char*)&power, sizeof(power));
 					if ( valread >= 0 )
 					{
 						if ( valread == 0 )
 						{
 							//Close the socket
-							socketWifi.CloseClient(i);
+							wifiServer.CloseClient(i);
 
 							//del master socket to set
 							scheduler.DelNode(socket);
@@ -118,13 +118,13 @@ int main(int argc , char *argv[])
 					}
 
 					// read the data
-					valread = socketWifi.Read( socket , buffer, sizeof(buffer));
+					valread = wifiServer.Read( socket , buffer, sizeof(buffer));
 					if ( valread >= 0 )
 					{
 						if ( valread == 0 )
 						{
 							//Close the socket
-							socketWifi.CloseClient(i);
+							wifiServer.CloseClient(i);
 
 							//del master socket to set
 							scheduler.DelNode(socket);
@@ -137,15 +137,16 @@ int main(int argc , char *argv[])
 						//set the string terminating NULL byte on the end
 						//of the data read
 						//buffer[valread] = '\0';
-						//socketWifi.Send(socket,buffer , strlen(buffer));
+						//wifiServer.Send(socket,buffer , strlen(buffer));
 						// send to all other clients
-						if( socketWifi.GetNumberClient() > 1 )
+						if( wifiServer.GetNumberClient() > 1 )
 						{
 #ifdef _DEBUG
-							cout<<"Forward "<<valread<<" bytes from "; socketWifi.ShowInfoWifi(i); cout<<" to "<< socketWifi.GetNumberClient()-1 << " others clients" <<endl;
+							cout<<"Forward "<<valread<<" bytes from "; wifiServer.ShowInfoWifi(i); cout<<" to "<< wifiServer.GetNumberClient()-1 << " others clients" <<endl;
 #endif
-							socketWifi.SendAllOtherClients(i,power,buffer,valread);
+							wifiServer.SendAllOtherClients(i,power,buffer,valread);
 						}
+
 
 					}
 				}
