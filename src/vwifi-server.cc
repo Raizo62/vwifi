@@ -17,6 +17,7 @@ int main(int argc , char *argv[])
 	TIndex i;
 
 	int valread;
+	TPower power;
 	char buffer[1024]; //data buffer
 
 	CScheduler scheduler;
@@ -99,6 +100,24 @@ int main(int argc , char *argv[])
 				{
 					//Check if it was for closing , and also read the
 					//incoming message
+
+					// read the power
+					valread = socketWifi.Read( socket , (char*)&power, sizeof(power));
+					if ( valread >= 0 )
+					{
+						if ( valread == 0 )
+						{
+							//Close the socket
+							socketWifi.CloseClient(i);
+
+							//del master socket to set
+							scheduler.DelNode(socket);
+
+							continue;
+						}
+					}
+
+					// read the data
 					valread = socketWifi.Read( socket , buffer, sizeof(buffer));
 					if ( valread >= 0 )
 					{
@@ -114,21 +133,20 @@ int main(int argc , char *argv[])
 						}
 
 						//Echo back the message that came in
-						else
+
+						//set the string terminating NULL byte on the end
+						//of the data read
+						//buffer[valread] = '\0';
+						//socketWifi.Send(socket,buffer , strlen(buffer));
+						// send to all other clients
+						if( socketWifi.GetNumberClient() > 1 )
 						{
-							//set the string terminating NULL byte on the end
-							//of the data read
-							//buffer[valread] = '\0';
-							//socketWifi.Send(socket,buffer , strlen(buffer));
-							// send to all other clients
-							if( socketWifi.GetNumberClient() > 1 )
-							{
 #ifdef _DEBUG
-								cout<<"Forward "<<valread<<" bytes from "; socketWifi.ShowInfoWifi(i); cout<<" to "<< socketWifi.GetNumberClient()-1 << " others clients" <<endl;
+							cout<<"Forward "<<valread<<" bytes from "; socketWifi.ShowInfoWifi(i); cout<<" to "<< socketWifi.GetNumberClient()-1 << " others clients" <<endl;
 #endif
-								socketWifi.SendAllOtherClients(i,buffer,valread);
-							}
+							socketWifi.SendAllOtherClients(i,power,buffer,valread);
 						}
+
 					}
 				}
 

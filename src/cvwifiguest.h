@@ -173,6 +173,7 @@ private:
 	void  monitor_hwsim_loop();
 
 
+	void winet_update_loop();
 
 	/**
  	*      \brief Send a cloned frame to the kernel space driver.

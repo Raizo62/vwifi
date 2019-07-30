@@ -230,17 +230,30 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
 	}
 
-	/*WirelessDevice  dev ;
+	/* send msg to a server */
+	TPower power=10;
+
+	WirelessDevice  dev ;
         if ( _list_winterfaces.get_device_by_mac(dev,framesrc))
 	{	
-		monwireless->get_winterface_infos(dev.getIndex());
-		std::cout << dev << std::endl ;
-	}*/
+		power = dev.getTxPower() / 100; // must add the remainder if not multiple of 2 
+	}
 	
 
+	int value=_vsocket.Send((char*)&power,sizeof(power));
+
+	if (value == SOCKET_DISCONNECT)
+		manage_server_crash();
+
+	if( value == SOCKET_ERROR )
 	
+	{
+		std::cout<<"socket.Send error"<<std::endl;
+		return 1;
+	}
+
 	/* send msg to a server */ 
-	int value=_vsocket.Send((char*)nlh,msg_len);
+	value=_vsocket.Send((char*)nlh,msg_len);
 
 	if (value == SOCKET_DISCONNECT)
 		manage_server_crash();
@@ -434,6 +447,20 @@ void VWifiGuest::recv_from_server(){
 	signal = -10;
 	rate_idx = 7;
 
+	/* receive power from server and store them in power */
+	TPower power;
+	bytes=_vsocket.Read((char*)&power,sizeof(power));
+	
+	signal = power ;
+
+	if (bytes == SOCKET_DISCONNECT)
+		manage_server_crash();
+
+	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
+	{
+	//	std::cerr<<"socket.Read error"<<std::endl;
+		return ;
+	}
 
 	/* receive bytes packets from server and store them in buf */
 	bytes=_vsocket.Read(buf,sizeof(buf));
@@ -574,6 +601,7 @@ void  VWifiGuest::monitor_hwsim_loop()
 			}
 		}
 
+		
 	}
 
 	nl_close(sock);
@@ -637,6 +665,42 @@ void VWifiGuest::recv_msg_from_server_loop_start(){
 
 	thread_dead();
 }
+
+void VWifiGuest::winet_update_loop(){
+
+
+	thread_start();
+	
+	while (true) {
+		
+		if(!started())
+			break ;
+		/* added for monitor_hwsim_loop */	
+		if(!initialized()){
+		
+			std::cout << __func__ << "driver still unloaded" << std::endl ;	
+			using namespace  std::chrono_literals;
+			std::this_thread::sleep_for(1s);
+			continue ;
+		}
+
+
+		/* update txpower of all interfaces. We can do it elsewhere */
+
+			//std::cout << "update interface :  " << inet.getIndex() << std::endl ;
+			monwireless->get_winterface_infos(0); 
+
+		using namespace  std::chrono_literals;
+		std::this_thread::sleep_for(1s);
+
+
+	}
+
+	thread_dead();
+
+}
+
+
 
 
 int VWifiGuest::init(){
@@ -760,6 +824,9 @@ int VWifiGuest::start(){
 	/* start thread monitoring  the starting of hwsim driver*/
 	std::thread monitorloop(&VWifiGuest::monitor_hwsim_loop,this);
 
+	/* start thread updating wireless inet interfaces*/
+	std::thread winterface_update_loop(&VWifiGuest::winet_update_loop,this);
+
 
 	_mutex_stopped.lock();
 	_stopped = false ;
@@ -769,6 +836,7 @@ int VWifiGuest::start(){
 	monitorloop.join();
 	hwsimloop.join();
 	serverloop.join();
+	winterface_update_loop.join();
 
 	delete monwireless ;
 
@@ -968,7 +1036,7 @@ void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
 	}
 
 
-	std::cout << _list_winterfaces << std::endl ; 
+	std::cout << __func__ << _list_winterfaces << std::endl ; 
 
 
 }
@@ -996,7 +1064,7 @@ void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 	}
 
 
-	std::cout << _list_winterfaces << std::endl ; 
+	std::cout << __func__ << _list_winterfaces << std::endl ; 
 }
 
 /* get the permanent mac address, this function with nl_recvmsgs(wifi.nls, wifi.cb) permit change mac address before or after launching the application */ 
