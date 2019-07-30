@@ -39,23 +39,23 @@ vpath %.h $(SRC)
 build : directories $(EXEC) # man
 
 
-$(OBJ)/cscheduler.o: cscheduler.cc cscheduler.h types.h config.h
+$(OBJ)/cscheduler.o: cscheduler.cc cscheduler.h types.h
 
 $(OBJ)/csocket.o: csocket.cc csocket.h types.h config.h
 
-$(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.h types.h
+$(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.o types.h
 
-$(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h csocketserver.h cinfowifi.h
+$(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h csocketserver.o cinfowifi.o
 
-$(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.h
+$(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.o
 
 $(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h 
 
-$(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h ccoordinate.h types.h
+$(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h ccoordinate.o types.h
 
 $(OBJ)/ccoordinate.o: ccoordinate.cc ccoordinate.h types.h
 
-$(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h cwifiserver.h cscheduler.h types.h
+$(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h cwifiserver.o cscheduler.o types.h
 
 $(OBJ)/tpower.o: tpower.cc tpower.h types.h
 
