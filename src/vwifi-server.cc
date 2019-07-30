@@ -31,17 +31,17 @@ int main(int argc , char *argv[])
 	}
 
 	cout<<"CTRL : ";
-	CCTRLServer ctrlWifi(&wifiServer,&scheduler);
-	ctrlWifi.Init(CTRL_PORT);
-	if( ! ctrlWifi.Listen() )
+	CCTRLServer ctrlServer(&wifiServer,&scheduler);
+	ctrlServer.Init(CTRL_PORT);
+	if( ! ctrlServer.Listen() )
 	{
-		cerr<<"Error : ctrlWifi.Listen"<<endl;
+		cerr<<"Error : ctrlServer.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
 	//add master socket to set
 	scheduler.AddNode(wifiServer);
-	scheduler.AddNode(ctrlWifi);
+	scheduler.AddNode(ctrlServer);
 
 	while( true )
 	{
@@ -72,9 +72,9 @@ int main(int argc , char *argv[])
 				cout<<"New connection from : "; wifiServer.ShowInfoWifi(wifiServer.GetNumberClient()-1) ; cout<<endl;
 			}
 
-			if( scheduler.NodeHasAction(ctrlWifi) )
+			if( scheduler.NodeHasAction(ctrlServer) )
 			{
-				ctrlWifi.ReceiveOrder();
+				ctrlServer.ReceiveOrder();
 			}
 
 			//else its some IO operation on some other socket
@@ -146,7 +146,6 @@ int main(int argc , char *argv[])
 #endif
 							wifiServer.SendAllOtherClients(i,power,buffer,valread);
 						}
-
 
 					}
 				}
