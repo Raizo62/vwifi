@@ -43,21 +43,27 @@ $(OBJ)/cscheduler.o: cscheduler.cc cscheduler.h types.h
 
 $(OBJ)/csocket.o: csocket.cc csocket.h types.h config.h
 
-$(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h csocket.o types.h
-
-$(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h csocketserver.o cinfowifi.o
-
-$(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h csocket.o
-
-$(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h 
-
-$(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h ccoordinate.o types.h
+$(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h
 
 $(OBJ)/ccoordinate.o: ccoordinate.cc ccoordinate.h types.h
 
-$(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h cwifiserver.o cscheduler.o types.h
-
 $(OBJ)/tpower.o: tpower.cc tpower.h types.h
+
+
+$(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h $(OBJ)/csocket.o types.h
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -c $<
+
+$(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h $(OBJ)/csocketserver.o $(OBJ)/cinfowifi.o
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -c $<
+
+$(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h $(OBJ)/csocket.o
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -c $<
+
+$(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h $(OBJ)/ccoordinate.o types.h
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -c $<
+
+$(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h $(OBJ)/cwifiserver.o $(OBJ)/cscheduler.o types.h
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -c $<
 
 
 $(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h
