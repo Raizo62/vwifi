@@ -18,10 +18,6 @@ class CInfoWifi : public CCoordinate
 		
 		TCID GetCid();
 
-		void DisableIt();
-
-		bool IsEnable();
-
 		void Display(ostream& os) const;
 
 		friend ostream& operator<<(ostream& os, const CInfoWifi& infowifi);

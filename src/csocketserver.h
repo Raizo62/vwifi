@@ -4,7 +4,8 @@
 #include <vector> // vector
 
 #include "csocket.h"
-#include "types.h" // TDescriptor
+#include "cinfosocket.h"
+#include "types.h" // TIndex
 
 class CSocketServer : public CSocket
 {
@@ -12,7 +13,7 @@ class CSocketServer : public CSocket
 
 		TPort Port;
 
-		std::vector<TDescriptor> SocketClients;
+		std::vector<CInfoSocket> SocketClients;
 
 		TDescriptor Accept(struct sockaddr_in& address);
 
@@ -33,6 +34,10 @@ class CSocketServer : public CSocket
 		virtual TDescriptor Accept();
 
 		TIndex GetNumberClient();
+
+		bool IsEnable(TIndex index);
+
+		void DisableClient(TIndex index);
 
 		void CloseClient(TIndex index);
 

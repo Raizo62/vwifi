@@ -40,16 +40,18 @@ bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& 
 
 bool CWifiServer::RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo)
 {
-	for (vector<CInfoWifi>::iterator it = InfoWifis.begin() ; it != InfoWifis.end(); ++it)
+	int index=0;
+	for (vector<CInfoWifi>::iterator it = InfoWifis.begin() ; it != InfoWifis.end(); ++it, index++)
 	{
-		if( it->GetCid() == cid )
-		{
-			coo=(*it);
+		if( IsEnable(index) )
+			if( it->GetCid() == cid )
+			{
+				coo=(*it);
 
-			it->DisableIt();
+				DisableClient(index);
 
-			return true;
-		}
+				return true;
+			}
 	}
 
 	return false;
@@ -88,13 +90,6 @@ TDescriptor CWifiServer::Accept()
 	return new_socket;
 }
 
-bool CWifiServer::IsEnable(TIndex index)
-{
-	assert( index < GetNumberClient() );
-
-	return InfoWifis[index].IsEnable();
-}
-
 void CWifiServer::ShowInfoWifi(TIndex index)
 {
 	assert( index < GetNumberClient() );
@@ -124,22 +119,22 @@ void CWifiServer::CloseAllClient()
 
 	TIndex nbre=GetNumberClient(); // because CloseClient changes the value of GetNumberClient()
 	for (TIndex i = 0; i < nbre; i++)
-		if( InfoWifis[0].IsEnable() )
+		if( IsEnable(0) )
 			CloseClient(0); // we can Close the 0 because we use the shift
 }
 
 void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData)
 {
 //	CCoordinate coo=InfoWifis[index];
-	cout<<"Forward "<<sizeOfData<<" bytes with "<<power<<" powers"<<endl;
+//	cout<<"Forward "<<sizeOfData<<" bytes with "<<power<<" powers"<<endl;
 
 	for (TIndex i = 0; i < GetNumberClient(); i++)
 	{
 		if( i != index )
-			if( InfoWifis[i].IsEnable() )
+			if( IsEnable(i) )
 			{
-				Send(SocketClients[i], (const char*) &power, sizeof(power));
-				Send(SocketClients[i], data, sizeOfData);
+				Send(SocketClients[i].GetDescriptor(), (const char*) &power, sizeof(power));
+				Send(SocketClients[i].GetDescriptor(), data, sizeOfData);
 			}
 	}
 }

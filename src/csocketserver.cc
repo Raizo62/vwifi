@@ -6,7 +6,6 @@
 #include <arpa/inet.h> // INADDR_ANY
 #include <sys/socket.h>
 #include <linux/vm_sockets.h> // struct sockaddr_vm
-#include <unistd.h> // close
 
 #include "csocketserver.h"
 
@@ -27,8 +26,8 @@ void CSocketServer::Init(TPort port)
 
 CSocketServer::~CSocketServer()
 {
-	for (vector<TDescriptor>::iterator it = SocketClients.begin() ; it != SocketClients.end(); ++it)
-		close(*it);
+	for (vector<CInfoSocket>::iterator it = SocketClients.begin() ; it != SocketClients.end(); ++it)
+		it->Close();
 
 	CSocket::Close();
 }
@@ -123,7 +122,7 @@ TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 	}
 
 	//add new socket to array of sockets
-	SocketClients.push_back(new_socket);
+	SocketClients.push_back(CInfoSocket(new_socket));
 
 	return new_socket;
 }
@@ -132,7 +131,7 @@ TDescriptor CSocketServer::GetSocketClient(TIndex index)
 {
 	assert( index < SocketClients.size() );
 
-	return SocketClients[index];
+	return SocketClients[index].GetDescriptor();
 }
 
 TDescriptor CSocketServer::operator[] (TIndex index)
@@ -145,11 +144,25 @@ TIndex CSocketServer::GetNumberClient()
 	return SocketClients.size();
 }
 
+bool CSocketServer::IsEnable(TIndex index)
+{
+	assert( index < GetNumberClient() );
+
+	return SocketClients[index].IsEnable();
+}
+
+void CSocketServer::DisableClient(TIndex index)
+{
+	assert( index < SocketClients.size() );
+
+	SocketClients[index].DisableIt();
+}
+
 void CSocketServer::CloseClient(TIndex index)
 {
 	assert( index < SocketClients.size() );
 
-	close(SocketClients[index]);
+	SocketClients[index].Close();
 
 	SocketClients.erase (SocketClients.begin()+index);
 }

@@ -37,13 +37,15 @@ void CCTRLServer::SendList()
 
 	for(TIndex i=0; i<number;i++)
 	{
-		CInfoWifi* infoWifi=WifiServer->GetReferenceOnInfoWifiByIndex(i);
-		if ( infoWifi->IsEnable() )
+		if( WifiServer->IsEnable(i) )
+		{
+			CInfoWifi* infoWifi=WifiServer->GetReferenceOnInfoWifiByIndex(i);
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
 				cerr<<"Error : AskList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
 				return;
 			}
+		}
 	}
 }
 

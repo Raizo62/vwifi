@@ -23,8 +23,6 @@ class CWifiServer : public CSocketServer
 
 		TDescriptor Accept();
 
-		bool IsEnable(TIndex index);
-
 		void ShowInfoWifi(TIndex index);
 
 		void CloseClient(TIndex index);
