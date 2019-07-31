@@ -8,6 +8,7 @@
 #include <linux/vm_sockets.h> // struct sockaddr_vm
 
 #include "cwifiserver.h"
+#include "tpower.h"
 
 using namespace std;
 
@@ -125,7 +126,7 @@ void CWifiServer::CloseAllClient()
 
 void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData)
 {
-//	CCoordinate coo=InfoWifis[index];
+	CCoordinate coo=InfoWifis[index];
 //	cout<<"Forward "<<sizeOfData<<" bytes with "<<power<<" powers"<<endl;
 
 	for (TIndex i = 0; i < GetNumberClient(); i++)
@@ -133,7 +134,9 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 		if( i != index )
 			if( IsEnable(i) )
 			{
-				Send(SocketClients[i].GetDescriptor(), (const char*) &power, sizeof(power));
+				TPower powerdest=power-power::Attenuation(coo.DistanceWith(InfoWifis[i]));
+				//cout<<"distance : "<<coo.DistanceWith(InfoWifis[i])<<" / power : "<<power<<" / Attenuation "<<power::Attenuation(coo.DistanceWith(InfoWifis[i]))<<" / powerdest: "<<powerdest<<endl;
+				Send(SocketClients[i].GetDescriptor(), (const char*) &powerdest, sizeof(powerdest));
 				Send(SocketClients[i].GetDescriptor(), data, sizeOfData);
 			}
 	}
