@@ -7,6 +7,8 @@ const TIndex MAX_DECONNECTED_CLIENT_WIFI = 15;
 
 const TPort WIFI_PORT = 8211;
 
+//#define CAN_LOST_PACKET
+
 #ifndef _DEBUG
 	#define _USE_VSOCK_BY_DEFAULT_
 #endif

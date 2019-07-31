@@ -47,7 +47,7 @@ $(OBJ)/cwirelessdevice.o: cwirelessdevice.cc cwirelessdevice.h
 
 $(OBJ)/ccoordinate.o: ccoordinate.cc ccoordinate.h types.h
 
-$(OBJ)/tpower.o: tpower.cc tpower.h types.h
+$(OBJ)/tpower.o: tpower.cc tpower.h types.h config.h
 
 $(OBJ)/cinfosocket.o: cinfosocket.cc cinfosocket.h types.h
 

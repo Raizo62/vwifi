@@ -134,10 +134,14 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 		if( i != index )
 			if( IsEnable(i) )
 			{
-				TPower powerdest=power-power::Attenuation(coo.DistanceWith(InfoWifis[i]));
-				//cout<<"distance : "<<coo.DistanceWith(InfoWifis[i])<<" / power : "<<power<<" / Attenuation "<<power::Attenuation(coo.DistanceWith(InfoWifis[i]))<<" / powerdest: "<<powerdest<<endl;
-				Send(SocketClients[i].GetDescriptor(), (const char*) &powerdest, sizeof(powerdest));
-				Send(SocketClients[i].GetDescriptor(), data, sizeOfData);
+				TPower signalLevel=power-power::Attenuation(coo.DistanceWith(InfoWifis[i]));
+				if( ! power::PacketIsLost(signalLevel) )
+				{
+					//cout<<"distance : "<<coo.DistanceWith(InfoWifis[i])<<" / power : "<<power<<" / Attenuation "<<power::Attenuation(coo.DistanceWith(InfoWifis[i]))<<" / signalLevel: "<<signalLevel<<endl;
+					Send(SocketClients[i].GetDescriptor(), (const char*) &signalLevel, sizeof(signalLevel));
+					Send(SocketClients[i].GetDescriptor(), data, sizeOfData);
+				}
+				else cout<<"Lost : distance : "<<coo.DistanceWith(InfoWifis[i])<<" / power : "<<power<<" / Attenuation "<<power::Attenuation(coo.DistanceWith(InfoWifis[i]))<<" / signalLevel: "<<signalLevel<<endl;
 			}
 	}
 }
