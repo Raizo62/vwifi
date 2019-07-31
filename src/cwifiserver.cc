@@ -141,7 +141,7 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 					Send(SocketClients[i].GetDescriptor(), (const char*) &signalLevel, sizeof(signalLevel));
 					Send(SocketClients[i].GetDescriptor(), data, sizeOfData);
 				}
-				else cout<<"Lost : distance : "<<coo.DistanceWith(InfoWifis[i])<<" / power : "<<power<<" / Attenuation "<<power::Attenuation(coo.DistanceWith(InfoWifis[i]))<<" / signalLevel: "<<signalLevel<<endl;
+				//else cout<<"Lost : distance : "<<coo.DistanceWith(InfoWifis[i])<<" / power : "<<power<<" / Attenuation "<<power::Attenuation(coo.DistanceWith(InfoWifis[i]))<<" / signalLevel: "<<signalLevel<<endl;
 			}
 	}
 }
