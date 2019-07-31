@@ -1,5 +1,7 @@
 #include "ccoordinate.h"
 
+#include <math.h> // sqrt
+
 CCoordinate::CCoordinate(TValue x, TValue y, TValue z)
 {
 	Set(x, y);
@@ -61,7 +63,7 @@ void CCoordinate::Set(CCoordinate coo)
 
 float CCoordinate::DistanceWith(TValue x, TValue y, TValue z)
 {
-	return (X-x)*(X-x)+(Y-y)*(Y-y)+(Z-z)*(Z-z);
+	return sqrt( (X-x)*(X-x)+(Y-y)*(Y-y)+(Z-z)*(Z-z) );
 }
 
 float CCoordinate::DistanceWith(CCoordinate coo)
