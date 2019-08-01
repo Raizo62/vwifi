@@ -21,4 +21,6 @@ typedef unsigned int TPort;
 
 typedef int TPower;
 
+typedef float TFrequency;
+
 #endif

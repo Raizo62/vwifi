@@ -6,7 +6,7 @@ namespace power
 {
 
 const float ConstanteC=92.45;
-const float Frequency=2.4; // GHz
+const TFrequency Frequency=2.4; // GHz
 
 // distance : meter
 int Attenuation(float distance);
