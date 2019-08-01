@@ -39,6 +39,12 @@ int main(int argc , char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+#ifdef CAN_LOST_PACKET
+	cout<<"Packet loss : Enable"<<endl;
+#else
+	cout<<"Packet loss : disable"<<endl;
+#endif
+
 	//add master socket to set
 	scheduler.AddNode(wifiServer);
 	scheduler.AddNode(ctrlServer);
