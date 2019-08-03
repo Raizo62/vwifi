@@ -24,7 +24,7 @@ bool CWifiServer::Listen(TIndex maxClientDeconnected)
 
 bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& coo)
 {
-	for (vector<CInfoWifi>::iterator infoWifiDeconnected=InfoWifisDeconnected.begin(); infoWifiDeconnected != InfoWifisDeconnected.end(); ++infoWifiDeconnected)
+	for (auto infoWifiDeconnected = InfoWifisDeconnected.begin(); infoWifiDeconnected != InfoWifisDeconnected.end(); ++infoWifiDeconnected)
 	{
 		if ( infoWifiDeconnected->GetCid() == cid )
 		{
@@ -42,17 +42,18 @@ bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& 
 bool CWifiServer::RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo)
 {
 	int index=0;
-	for (vector<CInfoWifi>::iterator infoWifi = InfoWifis.begin() ; infoWifi != InfoWifis.end(); ++infoWifi, index++)
+	for (auto& infoWifi : InfoWifis)
 	{
 		if( IsEnable(index) )
-			if( infoWifi->GetCid() == cid )
+			if( infoWifi.GetCid() == cid )
 			{
-				coo=(*infoWifi);
+				coo=infoWifi;
 
 				DisableClient(index);
 
 				return true;
 			}
+		index++;
 	}
 
 	return false;
@@ -148,10 +149,10 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
 {
-	for (vector<CInfoWifi>::iterator infoWifi = InfoWifis.begin() ; infoWifi != InfoWifis.end(); ++infoWifi )
+	for (auto& infoWifi : InfoWifis)
 	{
-		if( infoWifi->GetCid() == cid )
-			return &(*infoWifi);
+		if( infoWifi.GetCid() == cid )
+			return &infoWifi;
 	}
 
 	return NULL;
@@ -159,10 +160,10 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoWifiDeconnectedByCID(TCID cid)
 {
-	for (vector<CInfoWifi>::iterator infoWifiDeconnected = InfoWifisDeconnected.begin() ; infoWifiDeconnected != InfoWifisDeconnected.end(); ++infoWifiDeconnected)
+	for (auto& infoWifiDeconnected : InfoWifisDeconnected)
 	{
-		if( infoWifiDeconnected->GetCid() == cid )
-			return &(*infoWifiDeconnected);
+		if( infoWifiDeconnected.GetCid() == cid )
+			return &infoWifiDeconnected;
 	}
 
 	return NULL;

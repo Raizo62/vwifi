@@ -45,7 +45,7 @@ bool CScheduler::AddNode(TDescriptor descriptor)
 void CScheduler::DelNode(TDescriptor descriptor)
 {
 	MaxDescriptor=-1;
-	for (vector<TDescriptor>::iterator node = ListNodes.begin() ; node != ListNodes.end(); ++node)
+	for (auto node = ListNodes.begin() ; node != ListNodes.end(); ++node)
 	{
 		if( *node == descriptor )
 		{
