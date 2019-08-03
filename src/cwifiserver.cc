@@ -121,8 +121,7 @@ void CWifiServer::CloseAllClient()
 
 	TIndex nbre=GetNumberClient(); // because CloseClient changes the value of GetNumberClient()
 	for (TIndex i = 0; i < nbre; i++)
-		if( IsEnable(0) )
-			CloseClient(0); // we can Close the 0 because we use the shift
+		CloseClient(0); // we can Close the 0 because we use the shift
 }
 
 void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData)
