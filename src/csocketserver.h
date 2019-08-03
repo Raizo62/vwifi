@@ -13,7 +13,7 @@ class CSocketServer : public CSocket
 
 		TPort Port;
 
-		std::vector<CInfoSocket> SocketClients;
+		std::vector<CInfoSocket> InfoSockets;
 
 		TDescriptor Accept(struct sockaddr_in& address);
 

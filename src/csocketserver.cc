@@ -26,8 +26,8 @@ void CSocketServer::Init(TPort port)
 
 CSocketServer::~CSocketServer()
 {
-	for (auto& socketClient : SocketClients)
-		socketClient.Close();
+	for (auto& infoSocket : InfoSockets)
+		infoSocket.Close();
 
 	CSocket::Close();
 }
@@ -122,16 +122,16 @@ TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 	}
 
 	//add new socket to array of sockets
-	SocketClients.push_back(CInfoSocket(new_socket));
+	InfoSockets.push_back(CInfoSocket(new_socket));
 
 	return new_socket;
 }
 
 TDescriptor CSocketServer::GetSocketClient(TIndex index)
 {
-	assert( index < SocketClients.size() );
+	assert( index < InfoSockets.size() );
 
-	return SocketClients[index].GetDescriptor();
+	return InfoSockets[index].GetDescriptor();
 }
 
 TDescriptor CSocketServer::operator[] (TIndex index)
@@ -141,30 +141,30 @@ TDescriptor CSocketServer::operator[] (TIndex index)
 
 TIndex CSocketServer::GetNumberClient()
 {
-	return SocketClients.size();
+	return InfoSockets.size();
 }
 
 bool CSocketServer::IsEnable(TIndex index)
 {
 	assert( index < GetNumberClient() );
 
-	return SocketClients[index].IsEnable();
+	return InfoSockets[index].IsEnable();
 }
 
 void CSocketServer::DisableClient(TIndex index)
 {
-	assert( index < SocketClients.size() );
+	assert( index < InfoSockets.size() );
 
-	SocketClients[index].DisableIt();
+	InfoSockets[index].DisableIt();
 }
 
 void CSocketServer::CloseClient(TIndex index)
 {
-	assert( index < SocketClients.size() );
+	assert( index < InfoSockets.size() );
 
-	SocketClients[index].Close();
+	InfoSockets[index].Close();
 
-	SocketClients.erase (SocketClients.begin()+index);
+	InfoSockets.erase (InfoSockets.begin()+index);
 }
 
 ssize_t CSocketServer::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)
