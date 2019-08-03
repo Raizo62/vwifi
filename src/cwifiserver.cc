@@ -24,13 +24,13 @@ bool CWifiServer::Listen(TIndex maxClientDeconnected)
 
 bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& coo)
 {
-	for (vector<CInfoWifi>::iterator it=InfoWifisDeconnected.begin(); it != InfoWifisDeconnected.end(); ++it)
+	for (vector<CInfoWifi>::iterator infoWifiDeconnected=InfoWifisDeconnected.begin(); infoWifiDeconnected != InfoWifisDeconnected.end(); ++infoWifiDeconnected)
 	{
-		if ( it->GetCid() == cid )
+		if ( infoWifiDeconnected->GetCid() == cid )
 		{
-			coo=*it;
+			coo=*infoWifiDeconnected;
 
-			InfoWifisDeconnected.erase(it);
+			InfoWifisDeconnected.erase(infoWifiDeconnected);
 
 			return true;
 		}
@@ -42,12 +42,12 @@ bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& 
 bool CWifiServer::RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo)
 {
 	int index=0;
-	for (vector<CInfoWifi>::iterator it = InfoWifis.begin() ; it != InfoWifis.end(); ++it, index++)
+	for (vector<CInfoWifi>::iterator infoWifi = InfoWifis.begin() ; infoWifi != InfoWifis.end(); ++infoWifi, index++)
 	{
 		if( IsEnable(index) )
-			if( it->GetCid() == cid )
+			if( infoWifi->GetCid() == cid )
 			{
-				coo=(*it);
+				coo=(*infoWifi);
 
 				DisableClient(index);
 
@@ -148,10 +148,10 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
 {
-	for (vector<CInfoWifi>::iterator it = InfoWifis.begin() ; it != InfoWifis.end(); ++it)
+	for (vector<CInfoWifi>::iterator infoWifi = InfoWifis.begin() ; infoWifi != InfoWifis.end(); ++infoWifi )
 	{
-		if( it->GetCid() == cid )
-			return &(*it);
+		if( infoWifi->GetCid() == cid )
+			return &(*infoWifi);
 	}
 
 	return NULL;
@@ -159,10 +159,10 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoWifiDeconnectedByCID(TCID cid)
 {
-	for (vector<CInfoWifi>::iterator it = InfoWifisDeconnected.begin() ; it != InfoWifisDeconnected.end(); ++it)
+	for (vector<CInfoWifi>::iterator infoWifiDeconnected = InfoWifisDeconnected.begin() ; infoWifiDeconnected != InfoWifisDeconnected.end(); ++infoWifiDeconnected)
 	{
-		if( it->GetCid() == cid )
-			return &(*it);
+		if( infoWifiDeconnected->GetCid() == cid )
+			return &(*infoWifiDeconnected);
 	}
 
 	return NULL;

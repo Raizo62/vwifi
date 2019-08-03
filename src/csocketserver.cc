@@ -26,8 +26,8 @@ void CSocketServer::Init(TPort port)
 
 CSocketServer::~CSocketServer()
 {
-	for (vector<CInfoSocket>::iterator it = SocketClients.begin() ; it != SocketClients.end(); ++it)
-		it->Close();
+	for (vector<CInfoSocket>::iterator socketClient = SocketClients.begin() ; socketClient != SocketClients.end(); ++socketClient)
+		socketClient->Close();
 
 	CSocket::Close();
 }

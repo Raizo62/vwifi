@@ -45,20 +45,20 @@ bool CScheduler::AddNode(TDescriptor descriptor)
 void CScheduler::DelNode(TDescriptor descriptor)
 {
 	MaxDescriptor=-1;
-	for (vector<TDescriptor>::iterator it = ListNodes.begin() ; it != ListNodes.end(); ++it)
+	for (vector<TDescriptor>::iterator node = ListNodes.begin() ; node != ListNodes.end(); ++node)
 	{
-		if( *it == descriptor )
+		if( *node == descriptor )
 		{
 			FD_CLR(descriptor , &Master);
 
-			ListNodes.erase(it);
+			ListNodes.erase(node);
 
-			for (; it != ListNodes.end(); ++it)
-				UpdateMaxDescriptor(*it);
+			for (; node != ListNodes.end(); ++node)
+				UpdateMaxDescriptor(*node);
 
 			return;
 		}
-		UpdateMaxDescriptor(*it);
+		UpdateMaxDescriptor(*node);
 	}
 }
 
