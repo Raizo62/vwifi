@@ -25,7 +25,7 @@ bool power::PacketIsLost(TPower signalLevel)
 
 	//don't forget : signalLevel is negative
 
-	int alea = rand() % 61 + 40; // between 40 and 100
+	int alea = rand() % 54 + 40; // between 40 and 93
 	if( alea > -signalLevel )
 		return false;
 
