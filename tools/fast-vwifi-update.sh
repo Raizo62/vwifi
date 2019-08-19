@@ -42,7 +42,7 @@ NbValue=0
 VMWithWifi=false
 
 IFS=$'\n'
-for line in $(jq -M '.[] | select (.node_type=="qemu" and .status=="started") | {x: .x, y: .y, z: .z , option: .command_line} ' "${ConfigProjectGNS3}")
+for line in $(jq -M '.[] | select (.node_type=="qemu") | {x: .x, y: .y, z: .z , option: .command_line} ' "${ConfigProjectGNS3}")
 do
 	if [[ "${line}" =~ ^[[:space:]]+\"x\":.* ]]
 	then
