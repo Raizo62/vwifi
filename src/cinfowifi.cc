@@ -1,3 +1,5 @@
+#include <assert.h> // assert
+
 #include "cinfowifi.h"
 
 CInfoWifi::CInfoWifi(): CCoordinate()
@@ -12,6 +14,8 @@ CInfoWifi::CInfoWifi(TCID cid, CCoordinate coo) : CCoordinate(coo)
 
 void CInfoWifi::SetCid(TCID cid)
 {
+	// with the empty constructor : cid=0
+	assert( cid==0 || cid >=TCID_GUEST_MIN );
 	Cid=cid;
 }
 
