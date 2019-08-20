@@ -39,6 +39,8 @@ int main(int argc , char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	cout<<"Size of disconnected : "<<MAX_DECONNECTED_CLIENT_WIFI<<endl;
+
 #ifdef CAN_LOST_PACKET
 	cout<<"Packet loss : Enable"<<endl;
 #else
