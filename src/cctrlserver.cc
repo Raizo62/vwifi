@@ -68,7 +68,11 @@ void CCTRLServer::ChangeCoordinate()
 	{
 		infoWifi=WifiServer->GetReferenceOnInfoWifiDeconnectedByCID(cid);
 		if( infoWifi == NULL )
+		{
+			CInfoWifi infoWifi(cid,coo);
+			WifiServer->AddInfoWifiDeconnected(infoWifi);
 			return;
+		}
 	}
 
 	infoWifi->Set(coo);
