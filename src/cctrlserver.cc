@@ -61,6 +61,9 @@ void CCTRLServer::ChangeCoordinate()
 	if( Read((char*)&coo, sizeof(coo)) == SOCKET_ERROR )
 		return;
 
+	if( cid < TCID_GUEST_MIN )
+		return;
+
 	CInfoWifi* infoWifi;
 
 	infoWifi=WifiServer->GetReferenceOnInfoWifiByCID(cid);

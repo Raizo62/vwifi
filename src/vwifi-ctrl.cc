@@ -77,6 +77,13 @@ int ChangeCoordinate(int argc, char *argv[])
 	}
 
 	TCID cid=atoi(argv[2]);
+
+	if( cid < TCID_GUEST_MIN )
+	{
+			cerr<<"Error : ChangeCoordinate : the CID must be greater than or equal to "<<TCID_GUEST_MIN<<endl;
+			return 1;
+	}
+
 	TValue x=atoi(argv[3]);
 	TValue y=atoi(argv[4]);
 	TValue z=atoi(argv[5]);

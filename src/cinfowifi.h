@@ -6,6 +6,8 @@
 #include "ccoordinate.h"
 #include "types.h" // TCID
 
+const TCID TCID_GUEST_MIN=3;
+
 using namespace std;
 
 class CInfoWifi : public CCoordinate
