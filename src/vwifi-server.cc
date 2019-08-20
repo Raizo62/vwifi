@@ -24,7 +24,7 @@ int main(int argc , char *argv[])
 
 	CWifiServer wifiServer;
 	wifiServer.Init(WIFI_PORT);
-	if( ! wifiServer.Listen(MAX_DECONNECTED_CLIENT_WIFI) )
+	if( ! wifiServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
 	{
 		cerr<<"Error : wifiServer.Listen"<<endl;
 		exit(EXIT_FAILURE);
@@ -39,7 +39,7 @@ int main(int argc , char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	cout<<"Size of disconnected : "<<MAX_DECONNECTED_CLIENT_WIFI<<endl;
+	cout<<"Size of disconnected : "<<WIFI_MAX_DECONNECTED_CLIENT<<endl;
 
 #ifdef CAN_LOST_PACKET
 	cout<<"Packet loss : Enable"<<endl;
