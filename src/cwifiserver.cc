@@ -108,9 +108,7 @@ void CWifiServer::CloseClient(TIndex index)
 	CSocketServer::CloseClient(index);
 
 	// save the InfoWifi (the coordinate of the cid)
-	if( InfoWifisDeconnected.size() >= MaxClientDeconnected )
-		InfoWifisDeconnected.erase(InfoWifisDeconnected.begin());
-	InfoWifisDeconnected.push_back(InfoWifis[index]);
+	AddInfoWifiDeconnected( InfoWifis[index] );
 
 	InfoWifis.erase(InfoWifis.begin()+index);
 }
@@ -175,4 +173,12 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByIndex(TIndex index)
 	assert( index < GetNumberClient() );
 
 	return &(InfoWifis[index]);
+}
+
+void CWifiServer::AddInfoWifiDeconnected(CInfoWifi infoWifi)
+{
+	if( InfoWifisDeconnected.size() >= MaxClientDeconnected )
+		InfoWifisDeconnected.erase(InfoWifisDeconnected.begin());
+
+	InfoWifisDeconnected.push_back(infoWifi);
 }

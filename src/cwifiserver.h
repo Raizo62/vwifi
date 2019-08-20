@@ -37,6 +37,8 @@ class CWifiServer : public CSocketServer
 
 		CInfoWifi* GetReferenceOnInfoWifiByIndex(TIndex index);
 
+		void AddInfoWifiDeconnected(CInfoWifi infoWifi);
+
 };
 
 #endif
