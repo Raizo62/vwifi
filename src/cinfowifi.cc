@@ -1,5 +1,15 @@
 #include "cinfowifi.h"
 
+CInfoWifi::CInfoWifi(): CCoordinate()
+{
+	SetCid(0);
+}
+
+CInfoWifi::CInfoWifi(TCID cid, CCoordinate coo) : CCoordinate(coo)
+{
+	SetCid(cid);
+}
+
 void CInfoWifi::SetCid(TCID cid)
 {
 	Cid=cid;

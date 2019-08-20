@@ -14,8 +14,11 @@ class CInfoWifi : public CCoordinate
 
 	public :
 
+		CInfoWifi();
+		CInfoWifi(TCID cid, CCoordinate coo);
+
 		void SetCid(TCID cid);
-		
+
 		TCID GetCid();
 
 		void Display(ostream& os) const;
