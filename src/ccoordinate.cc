@@ -15,6 +15,11 @@ CCoordinate::CCoordinate()
 	Z=0;
 }
 
+CCoordinate::CCoordinate(const CCoordinate& coo)
+{
+	*this=coo;
+}
+
 void CCoordinate::SetX(TValue x)
 {
 	X=x;

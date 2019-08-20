@@ -16,6 +16,7 @@ class CCoordinate
 	public :
 		CCoordinate();
 		CCoordinate(TValue x, TValue y, TValue z);
+		CCoordinate(const CCoordinate& coo);
 
 		void SetX(TValue x);
 		void SetY(TValue y);
