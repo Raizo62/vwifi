@@ -1,13 +1,9 @@
-#include <cstdio> //perror
-
-#include <iostream> // cout
 #include <math.h>   // log10
 
 #include "config.h"
 
 #include "tpower.h"
 
-using namespace std;
 using namespace power;
 
 // distance : meter
