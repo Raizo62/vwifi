@@ -34,7 +34,7 @@ EUID	:= $(shell id -u -r)
 vpath %.cc $(SRC)
 vpath %.h $(SRC)
 
-.PHONY: all clean build install man directories
+.PHONY: all clean build install man directories update
 
 build : directories $(EXEC) # man
 
@@ -71,7 +71,7 @@ $(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h $(OBJ)/cwifiserver.o $(OBJ)/c
 $(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -c $<
 
-$(OBJ)/cvwifiguest.o: cvwifiguest.cc cvwifiguest.h hwsim.h ieee80211.h config.h
+$(OBJ)/cvwifiguest.o: cvwifiguest.cc cvwifiguest.h hwsim.h mac80211_hwsim.h ieee80211.h config.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) -c $<
 
 
@@ -101,6 +101,9 @@ $(OBJ)/.:
 	mkdir -p $(OBJ)
 
 all : clean build # install
+
+update :
+	wget -q -N https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/wireless/mac80211_hwsim.h -P $(SRC)
 
 clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
