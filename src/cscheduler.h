@@ -22,11 +22,11 @@ class CScheduler
 
 		void UpdateMaxDescriptor(TDescriptor descriptor);
 
+		void Init();
+
 	public :
 
 		CScheduler();
-
-		void Init();
 
 		bool AddNode(TDescriptor descriptor);
 
