@@ -1,4 +1,7 @@
 vwifi-server
 vwifi-guest
 vwifi-ctrl
+.project
+.cproject
+.settings
 obj/
