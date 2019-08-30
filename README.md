@@ -17,17 +17,6 @@ sudo apt-get install libnl-3-dev libnl-genl-3-dev
 make
 ```
 
-* Old method :
-
-```bash
-sudo apt-get install pkg-config
-
-gcc $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0)
-gcc vwifi.c nodes.c $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0) -o vwifi
-g++ vwifi-guest.cc cvwifiguest.cc $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0) -o vwifi -lpthread -DDEBUG
-```
-
-
 ## Configuration
 
 ### Host
@@ -112,7 +101,6 @@ hostapd tests/hostapd_open.conf
 * Guest Wifi 2 :
 ```bash
 ip link set up wlan0
-iw wlan0 scan
 iw dev wlan0 connect mac80211_open
 
 ip a a 10.0.0.2/8 dev wlan0
@@ -174,11 +162,8 @@ ping 10.0.0.1
 ./vwifi-ctrl 10 11 12 13
 ```
 
-## Others Tools
+## Tools
 
-* nc-vsock : https://github.com/stefanha/nc-vsock
-```bash
-wget https://github.com/stefanha/nc-vsock/archive/master.zip
-cd nc-vsock-master
-make
-```
+* start-vwifi-guest.sh : do all the commands necessary to start `vwifi-guest` on a Guest
+* fast-vwifi-update.sh : set with `vwifi-ctrl` the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
+* client.sh : configure the client wifi with Open or WPA
