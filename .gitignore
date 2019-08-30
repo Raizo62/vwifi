@@ -1,7 +1,8 @@
 vwifi-server
 vwifi-guest
 vwifi-ctrl
+obj/
+# For eclipse :
 .project
 .cproject
 .settings
-obj/
