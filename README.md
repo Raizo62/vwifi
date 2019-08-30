@@ -14,6 +14,7 @@ sudo apt-get install libnl-3-dev libnl-genl-3-dev
 ## Building
 
 ```bash
+make update # Not necessary. To download and update the file mac80211_hwsim.h
 make
 ```
 
