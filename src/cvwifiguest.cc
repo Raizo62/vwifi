@@ -1022,7 +1022,7 @@ void VWifiGuest::mac_address_to_string(char *address, struct ether_addr *mac)
 void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
 
 
-	std::cout << "Change in wireless configuration of : " <<  wirelessdevice << std::endl ;
+	//std::cout << "Change in wireless configuration of : " <<  wirelessdevice << std::endl ;
 
 	/* it is necessary to do this in the case of reloading hwsim driver and not just adding wirelessdevice to _list_winterfaces */
 	struct ether_addr paddr ;
