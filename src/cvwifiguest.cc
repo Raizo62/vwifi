@@ -441,7 +441,7 @@ void VWifiGuest::recv_from_server(){
 	char *data;
 	int rate_idx;
 	int signal;
-	char addr[18];
+	//char addr[18];
 	struct ether_addr framedst;
 
 	signal = -10;
@@ -1036,7 +1036,7 @@ void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
 	}
 
 
-	std::cout << __func__ << _list_winterfaces << std::endl ; 
+	//std::cout << __func__ << _list_winterfaces << std::endl ;
 
 
 }
@@ -1064,7 +1064,7 @@ void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 	}
 
 
-	std::cout << __func__ << _list_winterfaces << std::endl ; 
+	//std::cout << __func__ << _list_winterfaces << std::endl ;
 }
 
 /* get the permanent mac address, this function with nl_recvmsgs(wifi.nls, wifi.cb) permit change mac address before or after launching the application */ 
