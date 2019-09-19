@@ -84,7 +84,7 @@ vwifi-ctrl : vwifi-ctrl.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OB
 vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o  $(OBJ)/cvwifiguest.o  $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tpower.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) $^
 
-vwifi-inet-monitor :  vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o $(OBJ)/cmonwirelessdevice.o  
+vwifi-inet-monitor :  vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o $(OBJ)/cmonwirelessdevice.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) $(LIBS) -o $@ $(NETLINK_FLAGS) $(NETLINK_LIBS) $(THREAD_LIBS) $^
 
 $(OBJ)/%.o: %.cc
@@ -100,7 +100,7 @@ directories: $(OBJ)/.
 $(OBJ)/.:
 	mkdir -p $(OBJ)
 
-all : clean build # install
+all : clean build install
 
 update :
 	wget -q -N https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/wireless/mac80211_hwsim.h -P $(SRC)
@@ -109,13 +109,5 @@ clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
 	-rm -f $(EXEC) $(OBJ)/* $(MAN)/$(NAME).1.gz
 
-install : $(EXEC) man
-ifneq ($(EUID),0)
-	@echo "Please run 'make install' as root user"
-	@exit 1
-endif
-	chmod +x $(EXEC)
-	# Install binaire :
-	mkdir -p $(BINDIR) && cp -p $(EXEC) $(BINDIR)
-	# Install mapage :
-	mkdir -p $(MANDIR) && cp $(MAN)/$(NAME).1.gz $(MANDIR)/$(NAME).1.gz
+install :
+	chmod u+x tools/*
