@@ -20,6 +20,8 @@ class CCTRLServer : public CSocketServer
 
 		void ChangeCoordinate();
 
+		void ChangePacketLoss();
+
 		void CloseAllClient();
 
 	public :

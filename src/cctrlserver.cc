@@ -81,6 +81,29 @@ void CCTRLServer::ChangeCoordinate()
 	infoWifi->Set(coo);
 }
 
+void CCTRLServer::ChangePacketLoss()
+{
+	int value;
+
+	if( Read((char*)&value, sizeof(value)) == SOCKET_ERROR )
+		return;
+
+	if ( value )
+	{
+		#ifdef _DEBUG
+			cout<<"Packet loss : Enable"<<endl;
+		#endif
+		WifiServer->SetPacketLoss(true);
+	}
+	else
+	{
+		#ifdef _DEBUG
+			cout<<"Packet loss : Disable"<<endl;
+		#endif
+		WifiServer->SetPacketLoss(false);
+	}
+}
+
 void CCTRLServer::CloseAllClient()
 {
 	// be careful : In the Scheduler, i must delete only the nodes of Wifi Guest, not the node of the CTRLServer
@@ -107,6 +130,10 @@ void CCTRLServer::ReceiveOrder()
 
 			case TORDER_CHANGE_COORDINATE :
 				ChangeCoordinate();
+				break;
+
+			case TORDER_PACKET_LOSS :
+				ChangePacketLoss();
 				break;
 
 			case TORDER_CLOSE_ALL_CLIENT :

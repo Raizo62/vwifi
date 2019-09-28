@@ -164,6 +164,16 @@ ping 10.0.0.1
 ./vwifi-ctrl 10 11 12 13
 ```
 
+* Enable the lost of packets
+```bash
+./vwifi-ctrl loss yes
+```
+
+* Disable the lost of packets
+```bash
+./vwifi-ctrl loss no
+```
+
 ## Tools
 
 * start-vwifi-guest.sh : do all the commands necessary to start `vwifi-guest` on a Guest

@@ -18,6 +18,9 @@ void Help(char* nameOfProg)
 	cout<<"		- List the VMs"<<endl;
 	cout<<"	set cid x y z"<<endl;
 	cout<<"		- Change the coordinate of the VM with cid"<<endl;
+	cout<<"	loss yes/no"<<endl;
+	cout<<"		- loss yes : packets can be lost"<<endl;
+	cout<<"		- loss no : no packets can be lost"<<endl;
 	cout<<"	close"<<endl;
 	cout<<"		- Close all the connections with Wifi VMs"<<endl;
 }
@@ -126,6 +129,59 @@ int ChangeCoordinate(int argc, char *argv[])
 	return 0;
 }
 
+int ChangePacketLoss(int argc, char *argv[])
+{
+	if( argc != 3 )
+	{
+			cerr<<"Error : loss : the number of parameter is uncorrect"<<endl;
+			Help(argv[0]);
+			return 1;
+	}
+
+	int value;
+	if ( ! strcmp(argv[2],"yes") )
+		value=1;
+	else if ( ! strcmp(argv[2],"no") )
+		value=0;
+	else
+	{
+			cerr<<"Error : loss : the value can only be \"yes\" or \"no\""<<endl;
+			return 1;
+	}
+
+	CSocketClient socket(AF_INET);
+
+	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	{
+		cerr<<"Error : loss : socket.Connect error"<<endl;
+		return 1;
+	}
+
+	int err;
+
+	TOrder order=TORDER_PACKET_LOSS;
+	err=socket.Send((char*)&order,sizeof(order));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : loss : socket.Send : order"<<endl;
+		return 1;
+	}
+	err=socket.Send((char*)&value,sizeof(value));
+	if( err == SOCKET_ERROR )
+	{
+		if ( value  )
+			cerr<<"Error : loss : socket.Send : yes"<<endl;
+		else
+			cerr<<"Error : loss : socket.Send : no"<<endl;
+
+		return 1;
+	}
+
+	socket.Close();
+
+	return 0;
+}
+
 int CloseAllClient()
 {
 	CSocketClient socket(AF_INET);
@@ -164,6 +220,9 @@ int main(int argc , char *argv[])
 
 	if( ! strcmp(argv[1],"set") )
 		return ChangeCoordinate(argc, argv);
+
+	if( ! strcmp(argv[1],"loss") )
+		return ChangePacketLoss(argc, argv);
 
 	if( ! strcmp(argv[1],"close") )
 		return CloseAllClient();
