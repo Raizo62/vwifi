@@ -91,7 +91,7 @@ bool CSocketServer::Listen()
 			}
 	}
 
-	cout<<"Listener on port "<<Port<<endl;
+	cout<<"Listener on port : "<<Port<<endl;
 	//try to specify maximum of 3 pending connections for the master socket
 	if( listen(Master, 3) < 0 )
 	{
