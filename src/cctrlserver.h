@@ -22,6 +22,8 @@ class CCTRLServer : public CSocketServer
 
 		void ChangePacketLoss();
 
+		void SendStatus();
+
 		void CloseAllClient();
 
 	public :

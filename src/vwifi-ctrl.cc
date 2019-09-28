@@ -21,6 +21,8 @@ void Help(char* nameOfProg)
 	cout<<"	loss yes/no"<<endl;
 	cout<<"		- loss yes : packets can be lost"<<endl;
 	cout<<"		- loss no : no packets can be lost"<<endl;
+	cout<<"	status"<<endl;
+	cout<<"		- Display the status of the configuration of vwifi-server"<<endl;
 	cout<<"	close"<<endl;
 	cout<<"		- Close all the connections with Wifi VMs"<<endl;
 }
@@ -182,6 +184,88 @@ int ChangePacketLoss(int argc, char *argv[])
 	return 0;
 }
 
+int AskStatus()
+{
+	CSocketClient socket(AF_INET);
+
+	cout<<"CTRL : IP : "<<ADDRESS_IP<<endl;
+	cout<<"CTRL : Port : "<<CTRL_PORT<<endl;
+
+	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	{
+		cerr<<"Error : AskStatus : socket.Connect error"<<endl;
+		return 1;
+	}
+
+	int err;
+
+	TOrder order=TORDER_STATUS;
+	err=socket.Send((char*)&order,sizeof(order));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Send : order"<<endl;
+		return 1;
+	}
+
+	TSocket type;
+	err=socket.Read((char*)&type,sizeof(type));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Read : Type"<<endl;
+		return 1;
+	}
+	switch ( type )
+	{
+		case AF_VSOCK :
+		{
+			cout<<"SRV : Type : AF_VSOCK"<<endl;
+
+			break ;
+		}
+
+		case AF_INET :
+		{
+			cout<<"SRV : Type : AF_INET"<<endl;
+
+			break ;
+		}
+	}
+
+	TPort port;
+	err=socket.Read((char*)&port,sizeof(port));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Read : Type"<<endl;
+		return 1;
+	}
+	cout<<"SRV : Port : "<<port<<endl;
+
+	TIndex size;
+	err=socket.Read((char*)&size,sizeof(size));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Read : Type"<<endl;
+		return 1;
+	}
+	cout<<"SRV : Size of disconnected : "<<size<<endl; // 15
+
+	bool loss;
+	err=socket.Read((char*)&loss,sizeof(loss));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Read : Type"<<endl;
+		return 1;
+	}
+	if ( loss )
+		cout<<"SRV : Packet loss : Enable"<<endl;
+	else
+		cout<<"SRV : Packet loss : Disable"<<endl;
+
+	socket.Close();
+
+	return 0;
+}
+
 int CloseAllClient()
 {
 	CSocketClient socket(AF_INET);
@@ -223,6 +307,9 @@ int main(int argc , char *argv[])
 
 	if( ! strcmp(argv[1],"loss") )
 		return ChangePacketLoss(argc, argv);
+
+	if( ! strcmp(argv[1],"status") )
+		return AskStatus();
 
 	if( ! strcmp(argv[1],"close") )
 		return CloseAllClient();

@@ -104,6 +104,33 @@ void CCTRLServer::ChangePacketLoss()
 	}
 }
 
+void CCTRLServer::SendStatus()
+{
+	if( Send((char*)&(WifiServer->Type),sizeof(WifiServer->Type)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendStatus : socket.SendList : Type"<<endl;
+		return;
+	}
+
+	if( Send((char*)&(WifiServer->Port),sizeof(WifiServer->Port)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendStatus : socket.SendList : Port"<<endl;
+		return;
+	}
+
+	if( Send((char*)&(WifiServer->MaxClientDeconnected),sizeof(WifiServer->MaxClientDeconnected)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendStatus : socket.SendList : Size"<<endl;
+		return;
+	}
+
+	if( Send((char*)&(WifiServer->PacketLoss),sizeof(WifiServer->PacketLoss)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendStatus : socket.SendList : PacketLoss"<<endl;
+		return;
+	}
+}
+
 void CCTRLServer::CloseAllClient()
 {
 	// be careful : In the Scheduler, i must delete only the nodes of Wifi Guest, not the node of the CTRLServer
@@ -134,6 +161,10 @@ void CCTRLServer::ReceiveOrder()
 
 			case TORDER_PACKET_LOSS :
 				ChangePacketLoss();
+				break;
+
+			case TORDER_STATUS :
+				SendStatus();
 				break;
 
 			case TORDER_CLOSE_ALL_CLIENT :

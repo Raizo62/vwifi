@@ -174,6 +174,11 @@ ping 10.0.0.1
 ./vwifi-ctrl loss no
 ```
 
+* Display the config of vwifi-server
+```bash
+./vwifi-ctrl status
+```
+
 ## Tools
 
 * start-vwifi-guest.sh : do all the commands necessary to start `vwifi-guest` on a Guest

@@ -8,6 +8,8 @@
 
 class CWifiServer : public CSocketServer
 {
+		friend class CCTRLServer;
+
 		TIndex MaxClientDeconnected;
 		bool PacketLoss;
 
