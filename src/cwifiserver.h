@@ -9,6 +9,7 @@
 class CWifiServer : public CSocketServer
 {
 		TIndex MaxClientDeconnected;
+		bool PacketLoss;
 
 		std::vector<CInfoWifi> InfoWifis;
 		std::vector<CInfoWifi> InfoWifisDeconnected;
@@ -38,6 +39,10 @@ class CWifiServer : public CSocketServer
 		CInfoWifi* GetReferenceOnInfoWifiByIndex(TIndex index);
 
 		void AddInfoWifiDeconnected(CInfoWifi infoWifi);
+
+		void SetPacketLoss(bool enable);
+
+		bool CanLostPackets();
 
 };
 

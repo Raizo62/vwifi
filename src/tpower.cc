@@ -1,4 +1,5 @@
-#include <math.h>   // log10
+#include <math.h>    // log10
+#include <stdlib.h>  // rand
 
 #include "config.h"
 
@@ -17,8 +18,6 @@ int power::Attenuation(float distance)
 
 bool power::PacketIsLost(TPower signalLevel)
 {
-#ifdef CAN_LOST_PACKET
-
 	//don't forget : signalLevel is negative
 
 	int alea = rand() % 53 + 40; // between 40 and 92
@@ -26,12 +25,5 @@ bool power::PacketIsLost(TPower signalLevel)
 		return false;
 
 	return true;
-
-#else
-
-	return false;
-
-#endif
-
 }
 

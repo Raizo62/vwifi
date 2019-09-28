@@ -41,11 +41,10 @@ int main(int argc , char *argv[])
 
 	cout<<"Size of disconnected : "<<WIFI_MAX_DECONNECTED_CLIENT<<endl;
 
-#ifdef CAN_LOST_PACKET
-	cout<<"Packet loss : Enable"<<endl;
-#else
-	cout<<"Packet loss : disable"<<endl;
-#endif
+	if( wifiServer.CanLostPackets() )
+		cout<<"Packet loss : Enable"<<endl;
+	else
+		cout<<"Packet loss : disable"<<endl;
 
 	//add master socket to set
 	scheduler.AddNode(wifiServer);

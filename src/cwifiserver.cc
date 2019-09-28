@@ -15,6 +15,7 @@ using namespace std;
 bool CWifiServer::Listen(TIndex maxClientDeconnected)
 {
 	MaxClientDeconnected=maxClientDeconnected;
+	SetPacketLoss(true);
 
 	if( ! CSocketServer::Listen() )
 		return false;
@@ -133,7 +134,7 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 			if( IsEnable(i) )
 			{
 				TPower signalLevel=power-power::Attenuation(coo.DistanceWith(InfoWifis[i]));
-				if( ! power::PacketIsLost(signalLevel) )
+				if( ! CanLostPackets() || ! power::PacketIsLost(signalLevel) )
 				{
 					//cout<<"distance : "<<coo.DistanceWith(InfoWifis[i])<<" / power : "<<power<<" / Attenuation "<<power::Attenuation(coo.DistanceWith(InfoWifis[i]))<<" / signalLevel: "<<signalLevel<<endl;
 					if( Send(InfoSockets[i].GetDescriptor(), (const char*) &signalLevel, sizeof(signalLevel)) < 0 )
@@ -181,4 +182,14 @@ void CWifiServer::AddInfoWifiDeconnected(CInfoWifi infoWifi)
 		InfoWifisDeconnected.erase(InfoWifisDeconnected.begin());
 
 	InfoWifisDeconnected.push_back(infoWifi);
+}
+
+void CWifiServer::SetPacketLoss(bool enable)
+{
+	PacketLoss=enable;
+}
+
+bool CWifiServer::CanLostPackets()
+{
+	return PacketLoss;
 }
