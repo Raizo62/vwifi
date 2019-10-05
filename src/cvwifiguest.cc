@@ -441,7 +441,6 @@ void VWifiGuest::recv_from_server(){
 	char *data;
 	int rate_idx;
 	int signal;
-	//char addr[18];
 	struct ether_addr framedst;
 
 	signal = -10;
@@ -529,6 +528,7 @@ void VWifiGuest::recv_from_server(){
 
 	struct ether_addr *src = nullptr;
 	struct ether_addr framesrc;
+	char addr[18];
 	
 	/* copy hwsim id src */
 	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
