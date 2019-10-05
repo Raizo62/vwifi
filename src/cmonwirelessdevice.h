@@ -5,6 +5,7 @@
 #include "cwirelessdevice.h"
 #include <list>
 #include <mutex>
+#include <functional>
 
 namespace monitorinet {
 	class CallFromStaticFunc;
