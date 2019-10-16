@@ -161,7 +161,7 @@ ping 10.0.0.1
 
 * Set the new coordinate (11, 12, 13) of the guest with the cid 10
 ```bash
-./vwifi-ctrl 10 11 12 13
+./vwifi-ctrl set 10 11 12 13
 ```
 
 * Enable the lost of packets
