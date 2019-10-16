@@ -21,6 +21,8 @@ void Help(char* nameOfProg)
 	cout<<"	loss yes/no"<<endl;
 	cout<<"		- loss yes : packets can be lost"<<endl;
 	cout<<"		- loss no : no packets can be lost"<<endl;
+	cout<<"	show"<<endl;
+	cout<<"		- Display the status of loss and list of VMs"<<endl;
 	cout<<"	status"<<endl;
 	cout<<"		- Display the status of the configuration of vwifi-server"<<endl;
 	cout<<"	close"<<endl;
@@ -266,6 +268,45 @@ int AskStatus()
 	return 0;
 }
 
+int AskShow()
+{
+	CSocketClient socket(AF_INET);
+
+	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	{
+		cerr<<"Error : AskStatus : socket.Connect error"<<endl;
+		return 1;
+	}
+
+	int err;
+
+	TOrder order=TORDER_SHOW;
+	err=socket.Send((char*)&order,sizeof(order));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Send : order"<<endl;
+		return 1;
+	}
+
+	bool loss;
+	err=socket.Read((char*)&loss,sizeof(loss));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskShow : socket.Read : Type"<<endl;
+		return 1;
+	}
+	if ( loss )
+		cout<<"Packet loss : Enable"<<endl;
+	else
+		cout<<"Packet loss : Disable"<<endl;
+
+	socket.Close();
+
+	cout<<"----------------"<<endl;
+
+	return AskList();
+}
+
 int CloseAllClient()
 {
 	CSocketClient socket(AF_INET);
@@ -307,6 +348,9 @@ int main(int argc , char *argv[])
 
 	if( ! strcmp(argv[1],"loss") )
 		return ChangePacketLoss(argc, argv);
+
+	if( ! strcmp(argv[1],"show") )
+		return AskShow();
 
 	if( ! strcmp(argv[1],"status") )
 		return AskStatus();

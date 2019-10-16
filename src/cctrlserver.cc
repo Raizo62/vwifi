@@ -131,6 +131,15 @@ void CCTRLServer::SendStatus()
 	}
 }
 
+void CCTRLServer::SendShow()
+{
+	if( Send((char*)&(WifiServer->PacketLoss),sizeof(WifiServer->PacketLoss)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendStatus : socket.SendList : PacketLoss"<<endl;
+		return;
+	}
+}
+
 void CCTRLServer::CloseAllClient()
 {
 	// be careful : In the Scheduler, i must delete only the nodes of Wifi Guest, not the node of the CTRLServer
@@ -165,6 +174,10 @@ void CCTRLServer::ReceiveOrder()
 
 			case TORDER_STATUS :
 				SendStatus();
+				break;
+
+			case TORDER_SHOW :
+				SendShow();
 				break;
 
 			case TORDER_CLOSE_ALL_CLIENT :

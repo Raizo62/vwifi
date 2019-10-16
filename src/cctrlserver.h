@@ -24,6 +24,8 @@ class CCTRLServer : public CSocketServer
 
 		void SendStatus();
 
+		void SendShow();
+
 		void CloseAllClient();
 
 	public :
