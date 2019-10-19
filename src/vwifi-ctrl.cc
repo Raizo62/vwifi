@@ -358,6 +358,8 @@ int main(int argc , char *argv[])
 	if( ! strcmp(argv[1],"close") )
 		return CloseAllClient();
 
-	return 0;
+	cerr<<argv[0]<<" : Error : unknown order : "<<argv[1]<<endl;
+
+	return 1;
 }
 
