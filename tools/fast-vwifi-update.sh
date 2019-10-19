@@ -14,13 +14,13 @@ SansCouleur='\e[0;m'
 
 OptionVWifiQEmu=vwifi0
 
-if [ -z "$(pgrep -xf '/usr/bin/python3 /usr/bin/gns3.*')" ]
+if [ -z "$(pgrep -xf '/bin/python3 /usr/bin/gns3.*')" ]
 then
 	>&2 echo -e "${CERROR}Error: Your GNS3 project must be open !!!${SansCouleur}"
 	exit 2
 fi
 
-if [ -z "$(pgrep -xf './vwifi-server')" ]
+if [ -z "$(pgrep 'vwifi-server')" ]
 then
 	>&2 echo -e "${CERROR}Error: vwifi-server is not started !!!${SansCouleur}"
 	exit 2
@@ -74,7 +74,7 @@ do
 		NbValue=0
 		if ${VMWithWifi}
 		then
-			./vwifi-ctrl set "${CID}" "${X}" "${Y}" "${Z}"
+			vwifi-ctrl set "${CID}" "${X}" "${Y}" "${Z}"
 			VMWithWifi=false
 		fi
 	fi
