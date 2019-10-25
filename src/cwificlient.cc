@@ -12,7 +12,7 @@
 #include <linux/sockios.h>
 
 #include "ieee80211.h"
-#include "cvwifiguest.h"
+#include "cwificlient.h"
 
 #include <iostream>
 #include <thread>

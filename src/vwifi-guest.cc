@@ -1,4 +1,4 @@
-#include "cvwifiguest.h"
+#include "cwificlient.h"
 
 #include <signal.h>
 #include <unistd.h>
