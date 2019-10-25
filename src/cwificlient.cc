@@ -23,11 +23,11 @@
 
 
 /* allow calling non static function from static function */
-vwifiguest::CallFromStaticFunc * VWifiGuest::forward = nullptr ;
+cwificlient::CallFromStaticFunc * CWifiClient::forward = nullptr ;
 
 
 
-void VWifiGuest::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
+void CWifiClient::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
 {
 	/* Set up all unused rates to be -1 */
 	for (int i = 0; i < IEEE80211_MAX_RATES_PER_TX; i++) {
@@ -37,7 +37,7 @@ void VWifiGuest::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
 }
 
 
-int VWifiGuest::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
+int CWifiClient::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
 {
 	struct nl_msg *msg = nullptr;
 	int rc;
@@ -91,7 +91,7 @@ int VWifiGuest::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags
 }
 
 
-int VWifiGuest::process_messages_cb(struct nl_msg *msg, void *arg){
+int CWifiClient::process_messages_cb(struct nl_msg *msg, void *arg){
 
 	forward->process_messages(msg,arg);
 	return 0 ;	
@@ -99,7 +99,7 @@ int VWifiGuest::process_messages_cb(struct nl_msg *msg, void *arg){
 }
 
 
-int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
+int CWifiClient::process_messages(struct nl_msg *msg, void *arg)
 {
 
 	int msg_len;
@@ -271,7 +271,7 @@ int VWifiGuest::process_messages(struct nl_msg *msg, void *arg)
 }
 
 
-int VWifiGuest::send_register_msg()
+int CWifiClient::send_register_msg()
 {
 	struct nl_msg *msg;
 
@@ -300,7 +300,7 @@ int VWifiGuest::send_register_msg()
 
 // free better _cb and _netlink_socket
 // improve the stoping process
-int VWifiGuest::init_netlink(void)
+int CWifiClient::init_netlink(void)
 {
 
 	int nlsockfd;
@@ -373,7 +373,7 @@ int VWifiGuest::init_netlink(void)
 
 
 
-int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, uint32_t freq)
+int CWifiClient::send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, uint32_t freq)
 {
 	int rc;
 	struct nl_msg *msg;
@@ -427,7 +427,7 @@ int VWifiGuest::send_cloned_frame_msg(struct ether_addr *dst, char *data, int da
 
 
 
-void VWifiGuest::recv_from_server(){
+void CWifiClient::recv_from_server(){
 
 
 	char buf[1024];
@@ -567,7 +567,7 @@ void VWifiGuest::recv_from_server(){
 }
 
 
-void  VWifiGuest::monitor_hwsim_loop()
+void  CWifiClient::monitor_hwsim_loop()
 {
 	struct nl_sock *sock;
 	int family_id ;
@@ -613,7 +613,7 @@ void  VWifiGuest::monitor_hwsim_loop()
 
 
 
-void VWifiGuest::recv_msg_from_hwsim_loop_start(){
+void CWifiClient::recv_msg_from_hwsim_loop_start(){
 
 
 
@@ -641,7 +641,7 @@ void VWifiGuest::recv_msg_from_hwsim_loop_start(){
 }
 
 
-void VWifiGuest::recv_msg_from_server_loop_start(){
+void CWifiClient::recv_msg_from_server_loop_start(){
 
 	thread_start();
 
@@ -666,7 +666,7 @@ void VWifiGuest::recv_msg_from_server_loop_start(){
 	thread_dead();
 }
 
-void VWifiGuest::winet_update_loop(){
+void CWifiClient::winet_update_loop(){
 
 
 	thread_start();
@@ -703,7 +703,7 @@ void VWifiGuest::winet_update_loop(){
 
 
 
-int VWifiGuest::init(){
+int CWifiClient::init(){
 
 	/* init netlink will loop until driver is loaded */
 	if ( ! init_netlink()){
@@ -739,7 +739,7 @@ int VWifiGuest::init(){
 
 
 
-int VWifiGuest::start(){
+int CWifiClient::start(){
 
 
 	if( started())
@@ -817,16 +817,16 @@ int VWifiGuest::start(){
 
 	
 	/* start thread that handle incoming msg from hwsim driver */
-	std::thread hwsimloop(&VWifiGuest::recv_msg_from_hwsim_loop_start,this);
+	std::thread hwsimloop(&CWifiClient::recv_msg_from_hwsim_loop_start,this);
 
 	/* start thread that handle incoming msg from tcp or vsock connection to server */
-	std::thread serverloop(&VWifiGuest::recv_msg_from_server_loop_start,this);
+	std::thread serverloop(&CWifiClient::recv_msg_from_server_loop_start,this);
 
 	/* start thread monitoring  the starting of hwsim driver*/
-	std::thread monitorloop(&VWifiGuest::monitor_hwsim_loop,this);
+	std::thread monitorloop(&CWifiClient::monitor_hwsim_loop,this);
 
 	/* start thread updating wireless inet interfaces*/
-	std::thread winterface_update_loop(&VWifiGuest::winet_update_loop,this);
+	std::thread winterface_update_loop(&CWifiClient::winet_update_loop,this);
 
 
 	_mutex_stopped.lock();
@@ -845,7 +845,7 @@ int VWifiGuest::start(){
 }
 
 
-int VWifiGuest::stop(){
+int CWifiClient::stop(){
 
 	m_mutex_ctrl_run.lock();
 	m_started = false ;
@@ -872,14 +872,14 @@ int VWifiGuest::stop(){
 }
 
 
-void VWifiGuest::clean_all(){
+void CWifiClient::clean_all(){
 
 	nl_close(_netlink_socket);
 	nl_socket_free(_netlink_socket);
 	nl_cb_put(_cb);
 }
 
-void VWifiGuest::manage_server_crash(){
+void CWifiClient::manage_server_crash(){
 
 	std::cout << "vsock/tcp connection with  server is lost" << std::endl ;
 	_vsocket.Close();
@@ -901,15 +901,15 @@ void VWifiGuest::manage_server_crash(){
 
 }
 
-VWifiGuest::VWifiGuest()  {
+CWifiClient::CWifiClient()  {
 
 	/* allows calls from  static callback to non static member function */ 
-	forward = new vwifiguest::CallFromStaticFunc(this);
+	forward = new cwificlient::CallFromStaticFunc(this);
 }
 
 
 
-VWifiGuest::~VWifiGuest(){
+CWifiClient::~CWifiClient(){
 
 	std::cout << __func__ << std::endl ;
 
@@ -923,7 +923,7 @@ VWifiGuest::~VWifiGuest(){
 }
 
 
-bool VWifiGuest::all_thread_dead(){
+bool CWifiClient::all_thread_dead(){
 
 	_mutex_all_thread_dead.lock();
 
@@ -940,14 +940,14 @@ bool VWifiGuest::all_thread_dead(){
 
 
 
-void VWifiGuest::thread_dead(){
+void CWifiClient::thread_dead(){
 
 	_mutex_all_thread_dead.lock();
 	_all_thread_dead -= 1;
 	_mutex_all_thread_dead.unlock();
 }
 
-void VWifiGuest::thread_start(){
+void CWifiClient::thread_start(){
 
 	_mutex_all_thread_dead.lock();
 	_all_thread_dead += 1;
@@ -955,7 +955,7 @@ void VWifiGuest::thread_start(){
 }
 
 
-bool VWifiGuest::started(){
+bool CWifiClient::started(){
 
 	m_mutex_ctrl_run.lock();
 		
@@ -971,7 +971,7 @@ bool VWifiGuest::started(){
 
 }
 
-bool VWifiGuest::stopped(){
+bool CWifiClient::stopped(){
 
 	_mutex_stopped.lock();
 		
@@ -989,7 +989,7 @@ bool VWifiGuest::stopped(){
 
 
 
-bool VWifiGuest::initialized(){
+bool CWifiClient::initialized(){
 
 	_mutex_initialized.lock();
 		
@@ -1007,7 +1007,7 @@ bool VWifiGuest::initialized(){
 
 
 
-void VWifiGuest::mac_address_to_string(char *address, struct ether_addr *mac)
+void CWifiClient::mac_address_to_string(char *address, struct ether_addr *mac)
 {
 	sprintf(address, "%02X:%02X:%02X:%02X:%02X:%02X",
 		mac->ether_addr_octet[0], mac->ether_addr_octet[1], mac->ether_addr_octet[2],
@@ -1016,7 +1016,7 @@ void VWifiGuest::mac_address_to_string(char *address, struct ether_addr *mac)
 
 
 
-void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
+void CWifiClient::handle_new_winet_notification(WirelessDevice wirelessdevice){
 
 
 	//std::cout << "Change in wireless configuration of : " <<  wirelessdevice << std::endl ;
@@ -1038,7 +1038,7 @@ void VWifiGuest::handle_new_winet_notification(WirelessDevice wirelessdevice){
 
 }
 
-void VWifiGuest::handle_del_winet_notification(WirelessDevice wirelessdevice){
+void CWifiClient::handle_del_winet_notification(WirelessDevice wirelessdevice){
 
 
 	std::cout << "Delete wireless intarface : " << wirelessdevice << std::endl ;
@@ -1047,7 +1047,7 @@ void VWifiGuest::handle_del_winet_notification(WirelessDevice wirelessdevice){
 }
 
 /* called the first time we detect the interface */
-void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
+void CWifiClient::handle_init_winet_notification(WirelessDevice wirelessdevice){
 
 
         struct ether_addr paddr ;
@@ -1065,7 +1065,7 @@ void VWifiGuest::handle_init_winet_notification(WirelessDevice wirelessdevice){
 }
 
 /* get the permanent mac address, this function with nl_recvmsgs(wifi.nls, wifi.cb) permit change mac address before or after launching the application */ 
-bool VWifiGuest::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
+bool CWifiClient::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
 
 {
     int sock;

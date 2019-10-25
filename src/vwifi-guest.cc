@@ -13,7 +13,7 @@ enum STATE {
 	SUSPENDED 
 };
 
-VWifiGuest  vwifi_guest ;
+CWifiClient  wifiClient ;
 
 enum STATE  _state = STOPPED ;
 
@@ -29,14 +29,14 @@ void  signal_handler(int signal_num)
 		case SIGQUIT :
 			
 			std::cout << signal_num << std::endl ;
-			vwifi_guest.stop() ;
+			wifiClient.stop() ;
 			_state = STOPPED ;
 			break ;
 		
 		case  SIGTSTP :
 			
 			std::cout << signal_num << std::endl ;
-			vwifi_guest.stop();
+			wifiClient.stop();
 			_state = SUSPENDED ;
 			break ;
 
@@ -45,7 +45,7 @@ void  signal_handler(int signal_num)
 			std::cout << signal_num << std::endl ;
 			pstate = _state ;
 			_state = STARTED ;
-			if(!vwifi_guest.start()){
+			if(!wifiClient.start()){
 			
 				std::cout << "Starting process aborted" << std::endl ;
 				_state = pstate ;
@@ -75,7 +75,7 @@ int main (int argc , char ** argv){
 
 
 
-	if(!vwifi_guest.start())
+	if(!wifiClient.start())
 		std::cout << "Starting process aborted" << std::endl ;
 
 

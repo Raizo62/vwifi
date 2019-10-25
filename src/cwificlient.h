@@ -1,5 +1,5 @@
-#ifndef _CVWIFIGUEST_H_
-#define _CVWIFIGUEST_H_
+#ifndef _CWIFICLIENT_H_
+#define _CWIFICLIENT_H_
 
 #include "hwsim.h"
 
@@ -12,11 +12,11 @@
 #include "cmonwirelessdevice.h"
 
 
-namespace vwifiguest{
+namespace cwificlient{
 
 	class CallFromStaticFunc ;
 }
-class VWifiGuest {
+class CWifiClient {
 
 
 /** list of available interfaces */
@@ -62,18 +62,18 @@ void mac_address_to_string(char *address, struct ether_addr *mac);
 public :
 
 
-	static vwifiguest::CallFromStaticFunc * forward ;
+	static cwificlient::CallFromStaticFunc * forward ;
 	
 	/**
  	* 	\brief Default Constructor
  	*/	
-	VWifiGuest();
+	CWifiClient();
 
 	
 	/**
  	* \brief Default Destructor
  	*/	
-	~VWifiGuest();
+	~CWifiClient();
 
 	/**
 	 * \brief start the all activity
@@ -246,11 +246,11 @@ private:
 
 
 /**
- * \namespace vwifiguest
+ * \namespace cwificlient
  *
  * A namespace is used here, since a class CallFromStaticFunc is defined in other files
  */
-namespace vwifiguest {
+namespace cwificlient {
 
 	/**
 	 * \class CallFromStaticFunc
@@ -258,11 +258,11 @@ namespace vwifiguest {
 	*/
 	class CallFromStaticFunc {
 
-	VWifiGuest * m_obj  ;
+	CWifiClient * m_obj  ;
 
 	public:
 	
-		CallFromStaticFunc(VWifiGuest *   obj){
+		CallFromStaticFunc(CWifiClient *   obj){
 			
 			m_obj = obj ;
 		};
@@ -277,6 +277,6 @@ namespace vwifiguest {
 }
 
 
-#endif /* _CVWIFIGUEST_H_ */
+#endif /* _CWIFICLIENT_H_ */
 
 
