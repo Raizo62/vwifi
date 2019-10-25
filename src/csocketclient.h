@@ -1,13 +1,22 @@
 #ifndef _CSOCKETCLIENT_H_
 #define _CSOCKETCLIENT_H_
 
+#include <netinet/ip.h> // struct sockaddr_in
+#include <linux/vm_sockets.h> // struct sockaddr_vm
+
 #include "csocket.h"
 
 class CSocketClient : public CSocket
 {
+		bool UseSocketVHOST;
+		struct sockaddr_in serverINET;
+		struct sockaddr_vm serverVHOST;
+
 		bool IsConnected;
 
 		bool StopTheReconnect;
+
+		void Init();
 
 		bool ConnectLoop(struct sockaddr* server, size_t size_of_server);
 
@@ -18,13 +27,13 @@ class CSocketClient : public CSocket
 
 		CSocketClient(TSocket type);
 
-		void Init();
-
 		// TSocket : AF_INET :
-		bool Connect(const char* IP, TPort port);
+		void Init(const char* IP, TPort port);
 
 		// TSocket : AF_VSOCK :
-		bool Connect(TPort port);
+		void Init(TPort port);
+
+		bool Connect();
 
 		ssize_t Send(const char* data, ssize_t sizeOfData);
 

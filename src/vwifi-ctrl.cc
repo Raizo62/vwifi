@@ -33,7 +33,9 @@ int AskList()
 {
 	CSocketClient socket(AF_INET);
 
-	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	socket.Init(ADDRESS_IP,CTRL_PORT);
+
+	if( ! socket.Connect() )
 	{
 		cerr<<"Error : AskList : socket.Connect error"<<endl;
 		return 1;
@@ -100,7 +102,9 @@ int ChangeCoordinate(int argc, char *argv[])
 
 	CSocketClient socket(AF_INET);
 
-	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	socket.Init(ADDRESS_IP,CTRL_PORT);
+
+	if( ! socket.Connect() )
 	{
 		cerr<<"Error : ChangeCoordinate : socket.Connect error"<<endl;
 		return 1;
@@ -155,7 +159,9 @@ int ChangePacketLoss(int argc, char *argv[])
 
 	CSocketClient socket(AF_INET);
 
-	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	socket.Init(ADDRESS_IP,CTRL_PORT);
+
+	if( ! socket.Connect() )
 	{
 		cerr<<"Error : loss : socket.Connect error"<<endl;
 		return 1;
@@ -193,7 +199,9 @@ int AskStatus()
 	cout<<"CTRL : IP : "<<ADDRESS_IP<<endl;
 	cout<<"CTRL : Port : "<<CTRL_PORT<<endl;
 
-	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	socket.Init(ADDRESS_IP,CTRL_PORT);
+
+	if( ! socket.Connect() )
 	{
 		cerr<<"Error : AskStatus : socket.Connect error"<<endl;
 		return 1;
@@ -272,7 +280,9 @@ int AskShow()
 {
 	CSocketClient socket(AF_INET);
 
-	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	socket.Init(ADDRESS_IP,CTRL_PORT);
+
+	if( ! socket.Connect() )
 	{
 		cerr<<"Error : AskStatus : socket.Connect error"<<endl;
 		return 1;
@@ -311,7 +321,9 @@ int CloseAllClient()
 {
 	CSocketClient socket(AF_INET);
 
-	if( ! socket.Connect(ADDRESS_IP,CTRL_PORT) )
+	socket.Init(ADDRESS_IP,CTRL_PORT);
+
+	if( ! socket.Connect() )
 	{
 		cerr<<"Error : CloseAllClient : socket.Connect error"<<endl;
 		return 1;

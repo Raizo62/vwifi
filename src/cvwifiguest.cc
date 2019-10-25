@@ -728,6 +728,12 @@ int VWifiGuest::init(){
 	
 	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
 
+#ifdef _USE_VSOCK_BY_DEFAULT_
+	_vsocket.Init(WIFI_PORT);
+#else
+	_vsocket.Init(ADDRESS_IP,WIFI_PORT);
+#endif
+
 	return 1 ;
 }
 
@@ -792,13 +798,8 @@ int VWifiGuest::start(){
 	
 	}
 
-
-		/*connect to vsock/tcp server */
-#ifdef _USE_VSOCK_BY_DEFAULT_
-	if( ! _vsocket.Connect(WIFI_PORT) )
-#else
-	if( ! _vsocket.Connect(ADDRESS_IP,WIFI_PORT) )
-#endif
+	/*connect to vsock/tcp server */
+	if( ! _vsocket.Connect() )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return 0;
@@ -886,11 +887,7 @@ void VWifiGuest::manage_server_crash(){
 	std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
 
 	/*connect to vsock/tcp server */
-#ifdef _USE_VSOCK_BY_DEFAULT_
-	if( ! _vsocket.Connect(WIFI_PORT) )
-#else
-	if( ! _vsocket.Connect(ADDRESS_IP,WIFI_PORT) )
-#endif
+	if( ! _vsocket.Connect() )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return ;

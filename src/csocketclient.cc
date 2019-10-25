@@ -2,8 +2,6 @@
 #include <cstdio> //perror
 
 #include <arpa/inet.h> // INADDR_ANY
-#include <sys/socket.h>
-#include <linux/vm_sockets.h> // struct sockaddr_vm
 #include <unistd.h> // close
 
 #include "csocketclient.h"
@@ -29,6 +27,28 @@ void CSocketClient::Init()
 {
 	IsConnected=false;
 	StopTheReconnect=false ;
+}
+
+void CSocketClient::Init(const char* IP, TPort port)
+{
+	UseSocketVHOST=false;
+
+	serverINET.sin_family = AF_INET;
+	serverINET.sin_addr.s_addr = inet_addr(IP);
+	serverINET.sin_port = htons(port);
+
+}
+
+void CSocketClient::Init(TPort port)
+{
+	UseSocketVHOST=true;
+
+	//type of socket created
+	serverVHOST.svm_family = AF_VSOCK;
+	serverVHOST.svm_reserved1 = 0;
+	serverVHOST.svm_port = port;
+	serverVHOST.svm_cid = 2;
+
 }
 
 bool CSocketClient::ConnectLoop(struct sockaddr* server, size_t size_of_server)
@@ -58,27 +78,11 @@ bool CSocketClient::ConnectLoop(struct sockaddr* server, size_t size_of_server)
 	return false;
 }
 
-bool CSocketClient::Connect(const char* IP, TPort port)
+bool CSocketClient::Connect()
 {
-	struct sockaddr_in server;
-	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = inet_addr(IP);
-	server.sin_port = htons(port);
-
-	return ConnectLoop((struct sockaddr*) &server, sizeof(server));
-}
-
-bool CSocketClient::Connect(TPort port)
-{
-	//type of socket created
-	struct sockaddr_vm server {
-		.svm_family = AF_VSOCK,
-		.svm_reserved1 = 0,
-		.svm_port = port,
-		.svm_cid = 2
-	};
-
-	return ConnectLoop((struct sockaddr*) &server, sizeof(server));
+	if( UseSocketVHOST )
+		return ConnectLoop((struct sockaddr*) &serverVHOST, sizeof(serverVHOST));
+	else return ConnectLoop((struct sockaddr*) &serverINET, sizeof(serverINET));
 }
 
 ssize_t CSocketClient::Send(const char* data, ssize_t sizeOfData)
