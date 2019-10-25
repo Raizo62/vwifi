@@ -700,9 +700,6 @@ void CWifiClient::winet_update_loop(){
 
 }
 
-
-
-
 int CWifiClient::init(){
 
 	/* init netlink will loop until driver is loaded */
@@ -725,19 +722,22 @@ int CWifiClient::init(){
 	_initialized = true ;
 	_mutex_initialized.unlock();
 
-	
 	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
-
-#ifdef _USE_VSOCK_BY_DEFAULT_
-	_vsocket.Init(WIFI_PORT);
-#else
-	_vsocket.Init(ADDRESS_IP,WIFI_PORT);
-#endif
 
 	return 1 ;
 }
 
+// TSocket : AF_INET :
+void CWifiClient::Init(const char* IP, TPort port)
+{
+	_vsocket.Init(ADDRESS_IP,WIFI_PORT);
+}
 
+// TSocket : AF_VSOCK :
+void CWifiClient::Init(TPort port)
+{
+	_vsocket.Init(WIFI_PORT);
+}
 
 int CWifiClient::start(){
 

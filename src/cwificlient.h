@@ -55,7 +55,7 @@ std::mutex _mutex_stopped ;
 MonitorWirelessDevice * monwireless = nullptr ;
 
 
-
+	int init();
 
 void mac_address_to_string(char *address, struct ether_addr *mac);
 
@@ -87,9 +87,15 @@ public :
 
 	int process_messages(struct nl_msg *msg, void *arg);
 
+	/**
+	 * \brief TSocket : AF_INET
+	 */
+	void Init(const char* IP, TPort port);
 
-	int init();
-
+	/**
+	 * \brief TSocket : AF_VSOCK
+	 */
+	void Init(TPort port);
 
 	/**
 	 * \brief free dynamicly allocated memory and socket descriptors
