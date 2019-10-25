@@ -8,9 +8,14 @@
 
 class CSocketClient : public CSocket
 {
+		union TypeSocketClient
+		{
+			struct sockaddr_in inet;
+			struct sockaddr_vm vhost;
+		};
+
 		bool UseSocketVHOST;
-		struct sockaddr_in serverINET;
-		struct sockaddr_vm serverVHOST;
+		TypeSocketClient Server;
 
 		bool IsConnected;
 
