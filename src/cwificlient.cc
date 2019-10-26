@@ -23,11 +23,11 @@
 
 
 /* allow calling non static function from static function */
-cwificlient::CallFromStaticFunc * CWifiClient::forward = nullptr ;
+cwificlient::CallFromStaticFunc * CBaseWifiClient::forward = nullptr ;
 
 
 
-void CWifiClient::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
+void CBaseWifiClient::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
 {
 	/* Set up all unused rates to be -1 */
 	for (int i = 0; i < IEEE80211_MAX_RATES_PER_TX; i++) {
@@ -37,7 +37,7 @@ void CWifiClient::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
 }
 
 
-int CWifiClient::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
+int CBaseWifiClient::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
 {
 	struct nl_msg *msg = nullptr;
 	int rc;
@@ -91,7 +91,7 @@ int CWifiClient::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flag
 }
 
 
-int CWifiClient::process_messages_cb(struct nl_msg *msg, void *arg){
+int CBaseWifiClient::process_messages_cb(struct nl_msg *msg, void *arg){
 
 	forward->process_messages(msg,arg);
 	return 0 ;	
@@ -99,7 +99,7 @@ int CWifiClient::process_messages_cb(struct nl_msg *msg, void *arg){
 }
 
 
-int CWifiClient::process_messages(struct nl_msg *msg, void *arg)
+int CBaseWifiClient::process_messages(struct nl_msg *msg, void *arg)
 {
 
 	int msg_len;
@@ -240,7 +240,7 @@ int CWifiClient::process_messages(struct nl_msg *msg, void *arg)
 	}
 	
 
-	int value=_vsocket.Send((char*)&power,sizeof(power));
+	int value=Send((char*)&power,sizeof(power));
 
 	if (value == SOCKET_DISCONNECT)
 		manage_server_crash();
@@ -253,7 +253,7 @@ int CWifiClient::process_messages(struct nl_msg *msg, void *arg)
 	}
 
 	/* send msg to a server */ 
-	value=_vsocket.Send((char*)nlh,msg_len);
+	value=Send((char*)nlh,msg_len);
 
 	if (value == SOCKET_DISCONNECT)
 		manage_server_crash();
@@ -271,7 +271,7 @@ int CWifiClient::process_messages(struct nl_msg *msg, void *arg)
 }
 
 
-int CWifiClient::send_register_msg()
+int CBaseWifiClient::send_register_msg()
 {
 	struct nl_msg *msg;
 
@@ -300,7 +300,7 @@ int CWifiClient::send_register_msg()
 
 // free better _cb and _netlink_socket
 // improve the stoping process
-int CWifiClient::init_netlink(void)
+int CBaseWifiClient::init_netlink(void)
 {
 
 	int nlsockfd;
@@ -373,7 +373,7 @@ int CWifiClient::init_netlink(void)
 
 
 
-int CWifiClient::send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, uint32_t freq)
+int CBaseWifiClient::send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, uint32_t freq)
 {
 	int rc;
 	struct nl_msg *msg;
@@ -427,7 +427,7 @@ int CWifiClient::send_cloned_frame_msg(struct ether_addr *dst, char *data, int d
 
 
 
-void CWifiClient::recv_from_server(){
+void CBaseWifiClient::recv_from_server(){
 
 
 	char buf[1024];
@@ -448,7 +448,7 @@ void CWifiClient::recv_from_server(){
 
 	/* receive power from server and store them in power */
 	TPower power;
-	bytes=_vsocket.Read((char*)&power,sizeof(power));
+	bytes=Read((char*)&power,sizeof(power));
 	
 	signal = power ;
 
@@ -462,7 +462,7 @@ void CWifiClient::recv_from_server(){
 	}
 
 	/* receive bytes packets from server and store them in buf */
-	bytes=_vsocket.Read(buf,sizeof(buf));
+	bytes=Read(buf,sizeof(buf));
 
 	if (bytes == SOCKET_DISCONNECT)
 		manage_server_crash();
@@ -567,7 +567,7 @@ void CWifiClient::recv_from_server(){
 }
 
 
-void  CWifiClient::monitor_hwsim_loop()
+void  CBaseWifiClient::monitor_hwsim_loop()
 {
 	struct nl_sock *sock;
 	int family_id ;
@@ -613,7 +613,7 @@ void  CWifiClient::monitor_hwsim_loop()
 
 
 
-void CWifiClient::recv_msg_from_hwsim_loop_start(){
+void CBaseWifiClient::recv_msg_from_hwsim_loop_start(){
 
 
 
@@ -641,7 +641,7 @@ void CWifiClient::recv_msg_from_hwsim_loop_start(){
 }
 
 
-void CWifiClient::recv_msg_from_server_loop_start(){
+void CBaseWifiClient::recv_msg_from_server_loop_start(){
 
 	thread_start();
 
@@ -666,7 +666,7 @@ void CWifiClient::recv_msg_from_server_loop_start(){
 	thread_dead();
 }
 
-void CWifiClient::winet_update_loop(){
+void CBaseWifiClient::winet_update_loop(){
 
 
 	thread_start();
@@ -700,7 +700,7 @@ void CWifiClient::winet_update_loop(){
 
 }
 
-int CWifiClient::init(){
+int CBaseWifiClient::init(){
 
 	/* init netlink will loop until driver is loaded */
 	if ( ! init_netlink()){
@@ -727,19 +727,7 @@ int CWifiClient::init(){
 	return 1 ;
 }
 
-// TSocket : AF_INET :
-void CWifiClient::Init(const char* IP, TPort port)
-{
-	_vsocket.Init(ADDRESS_IP,WIFI_PORT);
-}
-
-// TSocket : AF_VSOCK :
-void CWifiClient::Init(TPort port)
-{
-	_vsocket.Init(WIFI_PORT);
-}
-
-int CWifiClient::start(){
+int CBaseWifiClient::start(){
 
 
 	if( started())
@@ -799,14 +787,14 @@ int CWifiClient::start(){
 	}
 
 	/*connect to vsock/tcp server */
-	if( ! _vsocket.Connect() )
+	if( ! Connect() )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return 0;
 	}
 
 	/* we can also call this in constructor ? */
-	_vsocket.SetBlocking(0);
+	SetBlocking(0);
 
 	std::cout << "Connection to Server Ok" << std::endl;
 
@@ -817,16 +805,16 @@ int CWifiClient::start(){
 
 	
 	/* start thread that handle incoming msg from hwsim driver */
-	std::thread hwsimloop(&CWifiClient::recv_msg_from_hwsim_loop_start,this);
+	std::thread hwsimloop(&CBaseWifiClient::recv_msg_from_hwsim_loop_start,this);
 
 	/* start thread that handle incoming msg from tcp or vsock connection to server */
-	std::thread serverloop(&CWifiClient::recv_msg_from_server_loop_start,this);
+	std::thread serverloop(&CBaseWifiClient::recv_msg_from_server_loop_start,this);
 
 	/* start thread monitoring  the starting of hwsim driver*/
-	std::thread monitorloop(&CWifiClient::monitor_hwsim_loop,this);
+	std::thread monitorloop(&CBaseWifiClient::monitor_hwsim_loop,this);
 
 	/* start thread updating wireless inet interfaces*/
-	std::thread winterface_update_loop(&CWifiClient::winet_update_loop,this);
+	std::thread winterface_update_loop(&CBaseWifiClient::winet_update_loop,this);
 
 
 	_mutex_stopped.lock();
@@ -845,20 +833,20 @@ int CWifiClient::start(){
 }
 
 
-int CWifiClient::stop(){
+int CBaseWifiClient::stop(){
 
 	m_mutex_ctrl_run.lock();
 	m_started = false ;
 	m_mutex_ctrl_run.unlock();
 
 	/* stop the retrying connection to vsock server */
-	_vsocket.StopReconnect(true);
+	StopReconnect(true);
 
 	if( stopped())
 		return 0 ;
 
 
-	_vsocket.Close();
+	Close();
 
 	while(!all_thread_dead());
 
@@ -872,36 +860,36 @@ int CWifiClient::stop(){
 }
 
 
-void CWifiClient::clean_all(){
+void CBaseWifiClient::clean_all(){
 
 	nl_close(_netlink_socket);
 	nl_socket_free(_netlink_socket);
 	nl_cb_put(_cb);
 }
 
-void CWifiClient::manage_server_crash(){
+void CBaseWifiClient::manage_server_crash(){
 
 	std::cout << "vsock/tcp connection with  server is lost" << std::endl ;
-	_vsocket.Close();
+	Close();
 
 	std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
 
 	/*connect to vsock/tcp server */
-	if( ! _vsocket.Connect() )
+	if( ! Connect() )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return ;
 	}
 
 	/* we can also call this in constructor ? */
-	_vsocket.SetBlocking(0);
+	SetBlocking(0);
 
 	std::cout << "Reconnection to Server Ok" << std::endl;
 
 
 }
 
-CWifiClient::CWifiClient()  {
+CBaseWifiClient::CBaseWifiClient()  {
 
 	/* allows calls from  static callback to non static member function */ 
 	forward = new cwificlient::CallFromStaticFunc(this);
@@ -909,7 +897,7 @@ CWifiClient::CWifiClient()  {
 
 
 
-CWifiClient::~CWifiClient(){
+CBaseWifiClient::~CBaseWifiClient(){
 
 	std::cout << __func__ << std::endl ;
 
@@ -923,7 +911,7 @@ CWifiClient::~CWifiClient(){
 }
 
 
-bool CWifiClient::all_thread_dead(){
+bool CBaseWifiClient::all_thread_dead(){
 
 	_mutex_all_thread_dead.lock();
 
@@ -940,14 +928,14 @@ bool CWifiClient::all_thread_dead(){
 
 
 
-void CWifiClient::thread_dead(){
+void CBaseWifiClient::thread_dead(){
 
 	_mutex_all_thread_dead.lock();
 	_all_thread_dead -= 1;
 	_mutex_all_thread_dead.unlock();
 }
 
-void CWifiClient::thread_start(){
+void CBaseWifiClient::thread_start(){
 
 	_mutex_all_thread_dead.lock();
 	_all_thread_dead += 1;
@@ -955,7 +943,7 @@ void CWifiClient::thread_start(){
 }
 
 
-bool CWifiClient::started(){
+bool CBaseWifiClient::started(){
 
 	m_mutex_ctrl_run.lock();
 		
@@ -971,7 +959,7 @@ bool CWifiClient::started(){
 
 }
 
-bool CWifiClient::stopped(){
+bool CBaseWifiClient::stopped(){
 
 	_mutex_stopped.lock();
 		
@@ -989,7 +977,7 @@ bool CWifiClient::stopped(){
 
 
 
-bool CWifiClient::initialized(){
+bool CBaseWifiClient::initialized(){
 
 	_mutex_initialized.lock();
 		
@@ -1007,7 +995,7 @@ bool CWifiClient::initialized(){
 
 
 
-void CWifiClient::mac_address_to_string(char *address, struct ether_addr *mac)
+void CBaseWifiClient::mac_address_to_string(char *address, struct ether_addr *mac)
 {
 	sprintf(address, "%02X:%02X:%02X:%02X:%02X:%02X",
 		mac->ether_addr_octet[0], mac->ether_addr_octet[1], mac->ether_addr_octet[2],
@@ -1016,7 +1004,7 @@ void CWifiClient::mac_address_to_string(char *address, struct ether_addr *mac)
 
 
 
-void CWifiClient::handle_new_winet_notification(WirelessDevice wirelessdevice){
+void CBaseWifiClient::handle_new_winet_notification(WirelessDevice wirelessdevice){
 
 
 	//std::cout << "Change in wireless configuration of : " <<  wirelessdevice << std::endl ;
@@ -1038,7 +1026,7 @@ void CWifiClient::handle_new_winet_notification(WirelessDevice wirelessdevice){
 
 }
 
-void CWifiClient::handle_del_winet_notification(WirelessDevice wirelessdevice){
+void CBaseWifiClient::handle_del_winet_notification(WirelessDevice wirelessdevice){
 
 
 	std::cout << "Delete wireless intarface : " << wirelessdevice << std::endl ;
@@ -1047,7 +1035,7 @@ void CWifiClient::handle_del_winet_notification(WirelessDevice wirelessdevice){
 }
 
 /* called the first time we detect the interface */
-void CWifiClient::handle_init_winet_notification(WirelessDevice wirelessdevice){
+void CBaseWifiClient::handle_init_winet_notification(WirelessDevice wirelessdevice){
 
 
         struct ether_addr paddr ;
@@ -1065,7 +1053,7 @@ void CWifiClient::handle_init_winet_notification(WirelessDevice wirelessdevice){
 }
 
 /* get the permanent mac address, this function with nl_recvmsgs(wifi.nls, wifi.cb) permit change mac address before or after launching the application */ 
-bool CWifiClient::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
+bool CBaseWifiClient::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
 
 {
     int sock;
