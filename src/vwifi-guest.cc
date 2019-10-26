@@ -13,7 +13,7 @@ enum STATE {
 	SUSPENDED 
 };
 
-CWifiClient  wifiClient ;
+CWifiClient<CSocketClientVHOST>  wifiClient ;
 
 enum STATE  _state = STOPPED ;
 
