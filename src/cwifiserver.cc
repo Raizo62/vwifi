@@ -147,6 +147,18 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 	}
 }
 
+void CWifiServer::SendAllClientsWithoutLoss(TPower power, const char* data, ssize_t sizeOfData)
+{
+	for (TIndex i = 0; i < GetNumberClient(); i++)
+		if( IsEnable(i) )
+		{
+			if( Send(InfoSockets[i].GetDescriptor(), (const char*) &power, sizeof(power)) < 0 )
+				InfoSockets[i].DisableIt();
+			else if( Send(InfoSockets[i].GetDescriptor(), data, sizeOfData) < 0 )
+				InfoSockets[i].DisableIt();
+		}
+}
+
 CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
 {
 	for (auto& infoWifi : InfoWifis)

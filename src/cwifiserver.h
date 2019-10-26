@@ -22,6 +22,10 @@ class CWifiServer : public CSocketServer
 
 	public :
 
+		CWifiServer() : CSocketServer () {}
+
+		CWifiServer(TSocket type) : CSocketServer (type) {}
+
 		bool Listen(TIndex maxClientDeconnected);
 
 		TDescriptor Accept();
@@ -33,6 +37,8 @@ class CWifiServer : public CSocketServer
 		void CloseAllClient();
 
 		void SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData);
+
+		void SendAllClientsWithoutLoss(TPower power, const char* data, ssize_t sizeOfData);
 
 		CInfoWifi* GetReferenceOnInfoWifiByCID(TCID cid);
 
