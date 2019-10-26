@@ -11,11 +11,7 @@ const TPort WIFI_PORT = 8211;
 	#define _USE_VSOCK_BY_DEFAULT_
 #endif
 
-#ifdef _USE_VSOCK_BY_DEFAULT_
-	const TPort CTRL_PORT = WIFI_PORT;
-#else
-	const TPort CTRL_PORT = WIFI_PORT+1;
-#endif
+const TPort CTRL_PORT = WIFI_PORT+1;
 
 #ifndef _DEBUG
 	#define ADDRESS_IP "127.0.0.1"
