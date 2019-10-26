@@ -31,7 +31,7 @@ void Help(char* nameOfProg)
 
 int AskList()
 {
-	CSocketClient socket(AF_INET);
+	CSocketClientINET socket;
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
@@ -100,7 +100,7 @@ int ChangeCoordinate(int argc, char *argv[])
 
 	cout<<cid<<" "<<coo<<" "<<endl;
 
-	CSocketClient socket(AF_INET);
+	CSocketClientINET socket;
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
@@ -157,7 +157,7 @@ int ChangePacketLoss(int argc, char *argv[])
 			return 1;
 	}
 
-	CSocketClient socket(AF_INET);
+	CSocketClientINET socket;
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
@@ -194,7 +194,7 @@ int ChangePacketLoss(int argc, char *argv[])
 
 int AskStatus()
 {
-	CSocketClient socket(AF_INET);
+	CSocketClientINET socket;
 
 	cout<<"CTRL : IP : "<<ADDRESS_IP<<endl;
 	cout<<"CTRL : Port : "<<CTRL_PORT<<endl;
@@ -278,7 +278,7 @@ int AskStatus()
 
 int AskShow()
 {
-	CSocketClient socket(AF_INET);
+	CSocketClientINET socket;
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
@@ -319,7 +319,7 @@ int AskShow()
 
 int CloseAllClient()
 {
-	CSocketClient socket(AF_INET);
+	CSocketClientINET socket;
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
