@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// ----------------- CSocketClient
+
 CSocketClient::~CSocketClient() 
 {
 	CSocket::Close();
@@ -27,25 +29,6 @@ void CSocketClient::Init()
 {
 	IsConnected=false;
 	StopTheReconnect=false ;
-}
-
-void CSocketClient::Init(const char* IP, TPort port)
-{
-	UseSocketVHOST=false;
-
-	Server.inet.sin_family = AF_INET;
-	Server.inet.sin_addr.s_addr = inet_addr(IP);
-	Server.inet.sin_port = htons(port);
-}
-
-void CSocketClient::Init(TPort port)
-{
-	UseSocketVHOST=true;
-
-	Server.vhost.svm_family = AF_VSOCK;
-	Server.vhost.svm_reserved1 = 0;
-	Server.vhost.svm_port = port;
-	Server.vhost.svm_cid = 2;
 }
 
 bool CSocketClient::ConnectLoop(struct sockaddr* server, size_t size_of_server)
@@ -73,13 +56,6 @@ bool CSocketClient::ConnectLoop(struct sockaddr* server, size_t size_of_server)
 
 	// impossible to be here
 	return false;
-}
-
-bool CSocketClient::Connect()
-{
-	if( UseSocketVHOST )
-		return ConnectLoop((struct sockaddr*) &(Server.vhost), sizeof(Server.vhost));
-	else return ConnectLoop((struct sockaddr*) &(Server.inet), sizeof(Server.inet));
 }
 
 ssize_t CSocketClient::Send(const char* data, ssize_t sizeOfData)
@@ -128,3 +104,35 @@ void CSocketClient::StopReconnect(bool status){
 	StopTheReconnect = true ;
 }
 
+// ----------------- CSocketClientINET
+
+CSocketClientINET::CSocketClientINET() : CSocketClient(AF_INET) {};
+
+void CSocketClientINET::Init(const char* IP, TPort port)
+{
+	Server.sin_family = AF_INET;
+	Server.sin_addr.s_addr = inet_addr(IP);
+	Server.sin_port = htons(port);
+}
+
+bool CSocketClientINET::Connect()
+{
+	return ConnectLoop((struct sockaddr*) &Server, sizeof(Server));
+}
+
+// ----------------- CSocketClientINET
+
+CSocketClientVHOST::CSocketClientVHOST() : CSocketClient(AF_VSOCK) {};
+
+void CSocketClientVHOST::Init(TPort port)
+{
+	Server.svm_family = AF_VSOCK;
+	Server.svm_reserved1 = 0;
+	Server.svm_port = port;
+	Server.svm_cid = 2;
+}
+
+bool CSocketClientVHOST::Connect()
+{
+	return ConnectLoop((struct sockaddr*) &Server, sizeof(Server));
+}

@@ -8,20 +8,13 @@
 
 class CSocketClient : public CSocket
 {
-		union TypeSocketClient
-		{
-			struct sockaddr_in inet;
-			struct sockaddr_vm vhost;
-		};
-
-		bool UseSocketVHOST;
-		TypeSocketClient Server;
-
 		bool IsConnected;
 
 		bool StopTheReconnect;
 
 		void Init();
+
+	protected :
 
 		bool ConnectLoop(struct sockaddr* server, size_t size_of_server);
 
@@ -32,14 +25,6 @@ class CSocketClient : public CSocket
 
 		CSocketClient(TSocket type);
 
-		// TSocket : AF_INET :
-		void Init(const char* IP, TPort port);
-
-		// TSocket : AF_VSOCK :
-		void Init(TPort port);
-
-		bool Connect();
-
 		ssize_t Send(const char* data, ssize_t sizeOfData);
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
@@ -47,6 +32,39 @@ class CSocketClient : public CSocket
 		bool SetBlocking(bool blocking);
 
 		void StopReconnect(bool status);
+
+	// virtual :
+		virtual bool Connect()=0;
+};
+
+class CSocketClientINET : public CSocketClient
+{
+	private :
+
+		struct sockaddr_in Server;
+
+	public :
+
+		CSocketClientINET();
+
+		void Init(const char* IP, TPort port);
+
+		bool Connect();
+};
+
+class CSocketClientVHOST : public CSocketClient
+{
+	private :
+
+		struct sockaddr_vm Server;
+
+	public :
+
+		CSocketClientVHOST();
+
+		void Init(TPort port);
+
+		bool Connect();
 };
 
 #endif
