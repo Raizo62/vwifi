@@ -296,7 +296,7 @@ int AskShow()
 
 	if( ! socket.Connect() )
 	{
-		cerr<<"Error : AskStatus : socket.Connect error"<<endl;
+		cerr<<"Error : AskShow : socket.Connect error"<<endl;
 		return 1;
 	}
 
@@ -306,7 +306,7 @@ int AskShow()
 	err=socket.Send((char*)&order,sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Send : order"<<endl;
+		cerr<<"Error : AskShow : socket.Send : Order"<<endl;
 		return 1;
 	}
 
@@ -314,13 +314,14 @@ int AskShow()
 	err=socket.Read((char*)&loss,sizeof(loss));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskShow : socket.Read : Type"<<endl;
+		cerr<<"Error : AskShow : socket.Read : Loss"<<endl;
 		return 1;
 	}
 	if ( loss )
 		cout<<"Packet loss : Enable"<<endl;
 	else
 		cout<<"Packet loss : Disable"<<endl;
+
 
 	socket.Close();
 
