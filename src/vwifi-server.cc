@@ -23,6 +23,7 @@ int main(int argc , char *argv[])
 	CScheduler scheduler;
 
 	CWifiServer wifiGuestServer;
+	cout<<"GUEST : ";
 	wifiGuestServer.Init(WIFI_GUEST_PORT);
 	if( ! wifiGuestServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
 	{
