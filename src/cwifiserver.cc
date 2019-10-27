@@ -15,7 +15,7 @@ using namespace std;
 bool CWifiServer::Listen(TIndex maxClientDeconnected)
 {
 	MaxClientDeconnected=maxClientDeconnected;
-	SetPacketLoss(true);
+	SetPacketLoss(LOST_PACKET_BY_DEFAULT);
 
 	if( ! CSocketServer::Listen() )
 		return false;
