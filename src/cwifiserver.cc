@@ -104,8 +104,6 @@ void CWifiServer::CloseClient(TIndex index)
 {
 	assert( index < GetNumberClient() );
 
-	cout<<"Host disconnected : "; ShowInfoWifi(index) ; cout<<endl;
-
 	CSocketServer::CloseClient(index);
 
 	// save the InfoWifi (the coordinate of the cid)

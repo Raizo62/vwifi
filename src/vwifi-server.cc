@@ -112,10 +112,10 @@ int main(int argc , char *argv[])
 
 				if( ! wifiHostServer.IsEnable(0) )
 				{
-							//Somebody disconnected , get his details and print
-							cout<<"Host disable : "<<endl;
+							//Somebody disconnected
 
 							//Close the socket
+							cout<<"Host disconnected"<<endl;
 							wifiHostServer.CloseClient(0);
 
 							//del master socket to set
@@ -137,10 +137,10 @@ int main(int argc , char *argv[])
 
 				if( ! wifiGuestServer.IsEnable(i) )
 				{
-							//Somebody disconnected , get his details and print
-							cout<<"Guest disable : "; wifiGuestServer.ShowInfoWifi(i) ; cout<<endl;
+							//Somebody disconnected
 
 							//Close the socket
+							cout<<"Guest disconnected : "; wifiGuestServer.ShowInfoWifi(i) ; cout<<endl;
 							wifiGuestServer.CloseClient(i);
 
 							//del master socket to set
@@ -161,6 +161,7 @@ int main(int argc , char *argv[])
 						if ( valread == 0 )
 						{
 							//Close the socket
+							cout<<"Guest disconnected : "; wifiGuestServer.ShowInfoWifi(i) ; cout<<endl;
 							wifiGuestServer.CloseClient(i);
 
 							//del master socket to set
@@ -177,6 +178,7 @@ int main(int argc , char *argv[])
 						if ( valread == 0 )
 						{
 							//Close the socket
+							cout<<"Guest disconnected : "; wifiGuestServer.ShowInfoWifi(i) ; cout<<endl;
 							wifiGuestServer.CloseClient(i);
 
 							//del master socket to set
@@ -214,10 +216,10 @@ int main(int argc , char *argv[])
 
 				if( ! wifiHostServer.IsEnable(i) )
 				{
-							//Somebody disconnected , get his details and print
-							cout<<"Host disable : "; wifiHostServer.ShowInfoWifi(i) ; cout<<endl;
+							//Somebody disconnected
 
 							//Close the socket
+							cout<<"Host disconnected"<<endl;
 							wifiHostServer.CloseClient(i);
 
 							//del master socket to set
@@ -238,6 +240,7 @@ int main(int argc , char *argv[])
 						if ( valread == 0 )
 						{
 							//Close the socket
+							cout<<"Host disconnected"<<endl;
 							wifiHostServer.CloseClient(i);
 
 							//del master socket to set
@@ -254,6 +257,7 @@ int main(int argc , char *argv[])
 						if ( valread == 0 )
 						{
 							//Close the socket
+							cout<<"Host disconnected"<<endl;
 							wifiHostServer.CloseClient(i);
 
 							//del master socket to set
