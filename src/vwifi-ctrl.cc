@@ -213,7 +213,7 @@ int AskStatus()
 	err=socket.Send((char*)&order,sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Send : order"<<endl;
+		cerr<<"Error : AskStatus : socket.Send : Order"<<endl;
 		return 1;
 	}
 
@@ -245,7 +245,7 @@ int AskStatus()
 	err=socket.Read((char*)&port,sizeof(port));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : Type"<<endl;
+		cerr<<"Error : AskStatus : socket.Read : Port"<<endl;
 		return 1;
 	}
 	cout<<"SRV : Port : "<<port<<endl;
@@ -254,7 +254,7 @@ int AskStatus()
 	err=socket.Read((char*)&size,sizeof(size));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : Type"<<endl;
+		cerr<<"Error : AskStatus : socket.Read : Size"<<endl;
 		return 1;
 	}
 	cout<<"SRV : Size of disconnected : "<<size<<endl; // 15
@@ -263,7 +263,7 @@ int AskStatus()
 	err=socket.Read((char*)&loss,sizeof(loss));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : Type"<<endl;
+		cerr<<"Error : AskStatus : socket.Read : Loss"<<endl;
 		return 1;
 	}
 	if ( loss )
