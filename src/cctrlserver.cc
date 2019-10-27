@@ -143,7 +143,7 @@ void CCTRLServer::SendShow()
 {
 	if( Send((char*)&(WifiGuestServer->PacketLoss),sizeof(WifiGuestServer->PacketLoss)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : PacketLoss"<<endl;
+		cerr<<"Error : SendShow : socket.SendList : PacketLoss"<<endl;
 		return;
 	}
 }
