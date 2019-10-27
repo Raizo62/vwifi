@@ -106,25 +106,6 @@ int main(int argc , char *argv[])
 				cout<<"New connection from Host"<<endl;
 			}
 
-			if( scheduler.NodeHasAction(wifiHostServer) )
-			{
-				socket = wifiHostServer[0];
-
-				if( ! wifiHostServer.IsEnable(0) )
-				{
-							//Somebody disconnected
-
-							//Close the socket
-							cout<<"Host disconnected"<<endl;
-							wifiHostServer.CloseClient(0);
-
-							//del master socket to set
-							scheduler.DelNode(socket);
-
-							continue;
-				}
-			}
-
 			if( scheduler.NodeHasAction(ctrlServer) )
 			{
 				ctrlServer.ReceiveOrder();
