@@ -271,6 +271,18 @@ int AskStatus()
 	else
 		cout<<"SRV : Packet loss : Disable"<<endl;
 
+	bool hostIsConnected;
+	err=socket.Read((char*)&hostIsConnected,sizeof(hostIsConnected));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Read : HostIsConnected"<<endl;
+		return 1;
+	}
+	if ( hostIsConnected )
+		cout<<"HOST : connected"<<endl;
+	else
+		cout<<"HOST : disconnected"<<endl;
+
 	socket.Close();
 
 	return 0;

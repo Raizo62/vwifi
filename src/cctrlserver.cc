@@ -130,6 +130,13 @@ void CCTRLServer::SendStatus()
 		cerr<<"Error : SendStatus : socket.SendList : PacketLoss"<<endl;
 		return;
 	}
+
+	bool hostIsConnected=( WifiHostServer->GetNumberClient() > 0 );
+	if( Send((char*)&hostIsConnected,sizeof(hostIsConnected)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendStatus : socket.SendList : HostIsConnected"<<endl;
+		return;
+	}
 }
 
 void CCTRLServer::SendShow()
