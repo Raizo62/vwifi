@@ -5,7 +5,7 @@
 
 const TIndex WIFI_MAX_DECONNECTED_CLIENT = 15;
 
-const bool LOST_PACKET_BY_DEFAULT=true;
+const bool LOST_PACKET_BY_DEFAULT=false;
 
 const TPort WIFI_GUEST_PORT = 8211;
 
