@@ -8,6 +8,7 @@
 class CCTRLServer : public CSocketServer
 {
 		CWifiServer* WifiGuestServer;
+		CWifiServer* WifiHostServer;
 		CScheduler* Scheduler;
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
@@ -30,7 +31,7 @@ class CCTRLServer : public CSocketServer
 
 	public :
 
-		CCTRLServer(CWifiServer* socketWifi, CScheduler* scheduler);
+		CCTRLServer(CWifiServer* wifiGuestServer, CWifiServer* wifiHostServer, CScheduler* scheduler);
 
 		void ReceiveOrder();
 };

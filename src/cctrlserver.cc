@@ -1,8 +1,9 @@
 #include "cctrlserver.h"
 
-CCTRLServer::CCTRLServer(CWifiServer* wifiServer, CScheduler* scheduler) : CSocketServer(AF_INET)
+CCTRLServer::CCTRLServer(CWifiServer* wifiGuestServer, CWifiServer* wifiHostServer, CScheduler* scheduler) : CSocketServer(AF_INET)
 {
-	WifiGuestServer=wifiServer;
+	WifiGuestServer=wifiGuestServer;
+	WifiHostServer=wifiHostServer;
 	Scheduler=scheduler;
 }
 

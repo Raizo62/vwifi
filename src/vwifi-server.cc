@@ -41,7 +41,7 @@ int main(int argc , char *argv[])
 	}
 
 	cout<<"CTRL : ";
-	CCTRLServer ctrlServer(&wifiGuestServer,&scheduler);
+	CCTRLServer ctrlServer(&wifiGuestServer,&wifiHostServer,&scheduler);
 	ctrlServer.Init(CTRL_PORT);
 	if( ! ctrlServer.Listen() )
 	{
