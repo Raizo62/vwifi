@@ -224,18 +224,19 @@ int AskStatus()
 		cerr<<"Error : AskStatus : socket.Read : Type"<<endl;
 		return 1;
 	}
+	cout<<"SRV : Type : ";
 	switch ( type )
 	{
 		case AF_VSOCK :
 		{
-			cout<<"SRV : Type : AF_VSOCK"<<endl;
+			cout<<"AF_VSOCK"<<endl;
 
 			break ;
 		}
 
 		case AF_INET :
 		{
-			cout<<"SRV : Type : AF_INET"<<endl;
+			cout<<"AF_INET"<<endl;
 
 			break ;
 		}
@@ -257,7 +258,7 @@ int AskStatus()
 		cerr<<"Error : AskStatus : socket.Read : Size"<<endl;
 		return 1;
 	}
-	cout<<"SRV : Size of disconnected : "<<size<<endl; // 15
+	cout<<"SRV : SizeOfDisconnected : "<<size<<endl;
 
 	bool loss;
 	err=socket.Read((char*)&loss,sizeof(loss));
@@ -266,10 +267,11 @@ int AskStatus()
 		cerr<<"Error : AskStatus : socket.Read : Loss"<<endl;
 		return 1;
 	}
+	cout<<"SRV : PacketLoss : ";
 	if ( loss )
-		cout<<"SRV : Packet loss : Enable"<<endl;
+		cout<<"Enable"<<endl;
 	else
-		cout<<"SRV : Packet loss : Disable"<<endl;
+		cout<<"Disable"<<endl;
 
 	bool hostIsConnected;
 	err=socket.Read((char*)&hostIsConnected,sizeof(hostIsConnected));
@@ -278,10 +280,11 @@ int AskStatus()
 		cerr<<"Error : AskStatus : socket.Read : HostIsConnected"<<endl;
 		return 1;
 	}
+	cout<<"HOST : ";
 	if ( hostIsConnected )
-		cout<<"HOST : connected"<<endl;
+		cout<<"Connected"<<endl;
 	else
-		cout<<"HOST : disconnected"<<endl;
+		cout<<"Disconnected"<<endl;
 
 	socket.Close();
 
@@ -317,10 +320,11 @@ int AskShow()
 		cerr<<"Error : AskShow : socket.Read : Loss"<<endl;
 		return 1;
 	}
+	cout<<"PacketLoss : ";
 	if ( loss )
-		cout<<"Packet loss : Enable"<<endl;
+		cout<<"Enable"<<endl;
 	else
-		cout<<"Packet loss : Disable"<<endl;
+		cout<<"Disable"<<endl;
 
 	bool hostIsConnected;
 	err=socket.Read((char*)&hostIsConnected,sizeof(hostIsConnected));
@@ -329,10 +333,11 @@ int AskShow()
 		cerr<<"Error : AskStatus : socket.Read : HostIsConnected"<<endl;
 		return 1;
 	}
+	cout<<"Host : ";
 	if ( hostIsConnected )
-		cout<<"HOST : connected"<<endl;
+		cout<<"Connected"<<endl;
 	else
-		cout<<"HOST : disconnected"<<endl;
+		cout<<"Disconnected"<<endl;
 
 	socket.Close();
 
