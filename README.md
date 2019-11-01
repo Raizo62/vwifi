@@ -47,6 +47,38 @@ macchanger -a wlan0
 ./vwifi-guest
 ```
 
+## Capture packets from Host
+
+### Configure Host
+
+```bash
+sudo modprobe mac80211_hwsim radios=1
+sudo ./vwifi-host
+```
+
+### Capture
+
+#### With tcpdump
+
+* Capture from wlan0
+```bash
+sudo tcpdump -n -I -i wlan0
+```
+
+#### With wireshark
+
+* Configure wlan0 to monitor mode
+```bash
+sudo ip link set wlan0 down
+sudo iw wlan0 set monitor control
+sudo ip link set wlan0 up
+```
+
+* Start Wireshark and capture from wlan0
+```bash
+sudo wireshark
+```
+
 ## Test Wifi
 
 ### Test 1 : WPA
