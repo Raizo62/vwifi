@@ -120,7 +120,7 @@ bool CSocketClientINET::Connect()
 	return ConnectLoop((struct sockaddr*) &Server, sizeof(Server));
 }
 
-// ----------------- CSocketClientINET
+// ----------------- CSocketClientVHOST
 
 CSocketClientVHOST::CSocketClientVHOST() : CSocketClient(AF_VSOCK) {};
 
