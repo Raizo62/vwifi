@@ -10,7 +10,7 @@
 #include "cwirelessdevice.h"
 #include "cwirelessdevicelist.h"
 #include "cmonwirelessdevice.h"
-
+#include "cscheduler.h"
 
 namespace cwificlient{
 
@@ -19,6 +19,8 @@ namespace cwificlient{
 class CBaseWifiClient {
 
 	protected :
+
+		CScheduler	Scheduler;
 
 		/** list of available interfaces */
 
@@ -244,8 +246,6 @@ class CBaseWifiClient {
 
 		virtual ssize_t Read(char* data, ssize_t sizeOfData)=0;
 
-		virtual bool SetBlocking(bool blocking)=0;
-
 		virtual void StopReconnect(bool status)=0;
 
 		virtual void Close()=0;
@@ -255,13 +255,15 @@ class CBaseWifiClient {
 template <typename TypeCSocketClient>
 class CWifiClient : public CBaseWifiClient, public TypeCSocketClient
 {
-		bool Connect(){return TypeCSocketClient::Connect();};
+		bool Connect() {
+			if ( ! TypeCSocketClient::Connect() )
+				return false;
+			return Scheduler.AddNode(*this);
+		};
 
 		ssize_t Send(const char* data, ssize_t sizeOfData){ return TypeCSocketClient::Send(data, sizeOfData); };
 
-		ssize_t Read(char* data, ssize_t sizeOfData){return TypeCSocketClient::Read(data, sizeOfData); };
-
-		bool SetBlocking(bool blocking){ return TypeCSocketClient::SetBlocking(blocking);};
+		ssize_t Read(char* data, ssize_t sizeOfData){ return TypeCSocketClient::Read(data, sizeOfData); };
 
 		void StopReconnect(bool status){ TypeCSocketClient::StopReconnect(status); };
 

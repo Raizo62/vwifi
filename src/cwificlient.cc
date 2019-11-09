@@ -424,9 +424,6 @@ int CBaseWifiClient::send_cloned_frame_msg(struct ether_addr *dst, char *data, i
 	return 1;
 }
 
-
-
-
 void CBaseWifiClient::recv_from_server(){
 
 
@@ -446,6 +443,18 @@ void CBaseWifiClient::recv_from_server(){
 	signal = -10;
 	rate_idx = 7;
 
+	std::cout<<"Scheduler.Wait"<<std::endl;
+	if( Scheduler.Wait() == SCHEDULER_ERROR )
+	{
+		std::cout<<"Scheduler.Stop wait"<<std::endl;
+		return ;
+	}
+
+	std::cout<<"Scheduler.NodeHasAction"<<std::endl;
+	if( ! Scheduler.NodeHasAction(0) )
+		return ;
+
+	std::cout<<"Read power"<<std::endl;
 	/* receive power from server and store them in power */
 	TPower power;
 	bytes=Read((char*)&power,sizeof(power));
@@ -457,7 +466,7 @@ void CBaseWifiClient::recv_from_server(){
 
 	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
 	{
-	//	std::cerr<<"socket.Read error"<<std::endl;
+		//std::cerr<<"socket.Read error"<<std::endl;
 		return ;
 	}
 
@@ -469,12 +478,12 @@ void CBaseWifiClient::recv_from_server(){
 
 	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
 	{
-	//	std::cerr<<"socket.Read error"<<std::endl;
+		//std::cerr<<"socket.Read error"<<std::endl;
 		return ;
 	}
 
-	
-	
+
+
 	/* netlink header */
 	nlh = (struct nlmsghdr *)buf;
 
@@ -793,9 +802,6 @@ int CBaseWifiClient::start(){
 		return 0;
 	}
 
-	/* we can also call this in constructor ? */
-	SetBlocking(0);
-
 	std::cout << "Connection to Server Ok" << std::endl;
 
 
@@ -880,9 +886,6 @@ void CBaseWifiClient::manage_server_crash(){
 		std::cout<<"socket.Connect error"<<std::endl;
 		return ;
 	}
-
-	/* we can also call this in constructor ? */
-	SetBlocking(0);
 
 	std::cout << "Reconnection to Server Ok" << std::endl;
 
