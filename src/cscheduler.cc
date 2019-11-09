@@ -77,9 +77,7 @@ TDescriptor CScheduler::Wait()
 	return activity;
 }
 
-bool CScheduler::NodeHasAction(TDescriptor descriptor)
+bool CScheduler::DescriptorHasAction(TDescriptor descriptor)
 {
 	return FD_ISSET( descriptor , &Dup);
 }
-
-

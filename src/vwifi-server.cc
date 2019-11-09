@@ -75,7 +75,7 @@ int main(int argc , char *argv[])
 
 			//If something happened on the master socket ,
 			//then its an incoming connection
-			if( scheduler.NodeHasAction(wifiGuestServer) )
+			if( scheduler.DescriptorHasAction(wifiGuestServer) )
 			{
 				socket = wifiGuestServer.Accept();
 				if ( socket == SOCKET_ERROR )
@@ -91,7 +91,7 @@ int main(int argc , char *argv[])
 				cout<<"New connection from Guest : "; wifiGuestServer.ShowInfoWifi(wifiGuestServer.GetNumberClient()-1) ; cout<<endl;
 			}
 
-			if( scheduler.NodeHasAction(wifiHostServer) )
+			if( scheduler.DescriptorHasAction(wifiHostServer) )
 			{
 				socket = wifiHostServer.Accept();
 				if ( socket == SOCKET_ERROR )
@@ -107,7 +107,7 @@ int main(int argc , char *argv[])
 				cout<<"New connection from Host"<<endl;
 			}
 
-			if( scheduler.NodeHasAction(ctrlServer) )
+			if( scheduler.DescriptorHasAction(ctrlServer) )
 			{
 				ctrlServer.ReceiveOrder();
 			}
@@ -131,7 +131,7 @@ int main(int argc , char *argv[])
 							continue;
 				}
 
-				if( scheduler.NodeHasAction(socket) )
+				if( scheduler.DescriptorHasAction(socket) )
 				{
 					//Check if it was for closing , and also read the
 					//incoming message
@@ -210,7 +210,7 @@ int main(int argc , char *argv[])
 							continue;
 				}
 
-				if( scheduler.NodeHasAction(socket) )
+				if( scheduler.DescriptorHasAction(socket) )
 				{
 					//Check if it was for closing , and also read the
 					//incoming message

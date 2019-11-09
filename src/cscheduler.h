@@ -34,7 +34,7 @@ class CScheduler
 
 		TDescriptor Wait();
 
-		bool NodeHasAction(TDescriptor descriptor);
+		bool DescriptorHasAction(TDescriptor descriptor);
 };
 
 #endif
