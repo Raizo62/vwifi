@@ -1,6 +1,8 @@
 #include <errno.h> // errno
 #include <iostream> // cout & NULL
 
+#include <assert.h> // assert
+
 #include "cscheduler.h"
 
 using namespace std;
@@ -84,5 +86,7 @@ bool CScheduler::DescriptorHasAction(TDescriptor descriptor)
 
 bool CScheduler::NodeHasAction(TIndex index)
 {
+	assert( index < ListNodes.size() );
+
 	return FD_ISSET( ListNodes[index] , &Dup);
 }
