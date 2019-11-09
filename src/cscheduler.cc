@@ -81,3 +81,8 @@ bool CScheduler::DescriptorHasAction(TDescriptor descriptor)
 {
 	return FD_ISSET( descriptor , &Dup);
 }
+
+bool CScheduler::NodeHasAction(TIndex index)
+{
+	return FD_ISSET( ListNodes[index] , &Dup);
+}

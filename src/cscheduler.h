@@ -35,6 +35,8 @@ class CScheduler
 		TDescriptor Wait();
 
 		bool DescriptorHasAction(TDescriptor descriptor);
+
+		bool NodeHasAction(TIndex index);
 };
 
 #endif
