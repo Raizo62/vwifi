@@ -34,6 +34,8 @@ class CScheduler
 
 		TDescriptor Wait();
 
+		TDescriptor Wait(const sigset_t *sigmask);
+
 		bool DescriptorHasAction(TDescriptor descriptor);
 
 		bool NodeHasAction(TIndex index);

@@ -66,18 +66,24 @@ void CScheduler::DelNode(TDescriptor descriptor)
 
 TDescriptor CScheduler::Wait()
 {
+	return Wait(NULL);
+}
+
+TDescriptor CScheduler::Wait(const sigset_t *sigmask)
+{
 	/* back up master */
 	Dup = Master;
 
 	//wait for an activity on one of the sockets , timeout is NULL ,
 	//so wait indefinitely
-	int activity=select( MaxDescriptor + 1 , &Dup , NULL , NULL , NULL);
+	int activity=pselect( MaxDescriptor + 1 , &Dup , NULL , NULL , NULL, sigmask);
 
 	if ((activity < 0) && (errno!=EINTR))
 		return SCHEDULER_ERROR;
 
 	return activity;
 }
+
 
 bool CScheduler::DescriptorHasAction(TDescriptor descriptor)
 {
