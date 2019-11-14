@@ -21,6 +21,8 @@
 #include "config.h"
 #include <unistd.h>
 
+#include <csignal>
+
 
 /* allow calling non static function from static function */
 cwificlient::CallFromStaticFunc * CBaseWifiClient::forward = nullptr ;
@@ -649,8 +651,16 @@ void CBaseWifiClient::recv_msg_from_hwsim_loop_start(){
 
 }
 
+void CBaseWifiClient::recv_msg_from_server_signal_handle(int sig_num){
+
+
+
+}
 
 void CBaseWifiClient::recv_msg_from_server_loop_start(){
+
+
+	std::signal(SIGUSR1,recv_msg_from_server_signal_handle);
 
 	thread_start();
 
@@ -827,6 +837,10 @@ int CBaseWifiClient::start(){
 	_stopped = false ;
 	_mutex_stopped.unlock();
 
+	/*
+	 * save the c handle version of serverloop thread (pthread_t type)
+	 */
+	serverloop_id = serverloop.native_handle();
 
 	monitorloop.join();
 	hwsimloop.join();
@@ -853,6 +867,9 @@ int CBaseWifiClient::stop(){
 
 
 	Close();
+
+	pthread_kill(serverloop_id,SIGUSR1);
+
 
 	while(!all_thread_dead());
 

@@ -11,6 +11,7 @@
 #include "cwirelessdevicelist.h"
 #include "cmonwirelessdevice.h"
 #include "cscheduler.h"
+#include <pthread.h>
 
 namespace cwificlient{
 
@@ -19,6 +20,9 @@ namespace cwificlient{
 class CBaseWifiClient {
 
 	protected :
+
+		pthread_t serverloop_id ;
+
 
 		CScheduler	Scheduler;
 
@@ -127,6 +131,7 @@ class CBaseWifiClient {
 		 */
 		void recv_msg_from_hwsim_loop_start();
 
+
 		/**
 		*	\brief Set a tx_rate struct to not valid values
 		*	Taken from wmediumd.
@@ -159,6 +164,7 @@ class CBaseWifiClient {
 		 */
 		void recv_msg_from_server_loop_start();
 
+		static void recv_msg_from_server_signal_handle(int sig_num);
 
 
 		/**
