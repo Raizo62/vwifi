@@ -445,18 +445,12 @@ void CBaseWifiClient::recv_from_server(){
 	signal = -10;
 	rate_idx = 7;
 
-	std::cout<<"Scheduler.Wait"<<std::endl;
 	if( Scheduler.Wait() == SCHEDULER_ERROR )
-	{
-		std::cout<<"Scheduler.Stop wait"<<std::endl;
 		return ;
-	}
 
-	std::cout<<"Scheduler.NodeHasAction"<<std::endl;
 	if( ! Scheduler.NodeHasAction(0) )
 		return ;
 
-	std::cout<<"Read power"<<std::endl;
 	/* receive power from server and store them in power */
 	TPower power;
 	bytes=Read((char*)&power,sizeof(power));
