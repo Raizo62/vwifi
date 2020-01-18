@@ -1091,7 +1091,7 @@ bool CBaseWifiClient::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
          return 0;
     }
  
-    strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+    memcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
     epmaddr->cmd = ETHTOOL_GPERMADDR;
     epmaddr->size = MAX_ADDR_LEN;
     ifr.ifr_data = (char *) epmaddr;
