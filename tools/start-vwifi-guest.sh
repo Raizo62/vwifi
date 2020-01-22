@@ -2,7 +2,7 @@
 
 FOLDER_VWIFI='/hosthome/vwifi'
 
-DEFAULT_PREFIX_MAC_ADDRESS='74:F8:DB'
+DEFAULT_PREFIX_MAC_ADDRESS='74:F8:F6'
 
 # -------------------
 
