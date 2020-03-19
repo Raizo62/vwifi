@@ -251,6 +251,14 @@ int main(int argc , char *argv[])
 							continue;
 						}
 					}
+
+					if( wifiGuestServer.GetNumberClient() > 0 )
+					{
+#ifdef _DEBUG
+						cout<<"Forward "<<valread<<" bytes from Host to Guests"<<endl;
+#endif
+						wifiGuestServer.SendAllClientsWithoutLoss(power,buffer,valread);
+					}
 				}
 
 				i++;
