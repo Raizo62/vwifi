@@ -182,8 +182,11 @@ int main(int argc , char *argv[])
 							cout<<"Forward "<<valread<<" bytes from "; wifiGuestServer.ShowInfoWifi(i); cout<<" to "<< wifiGuestServer.GetNumberClient()-1 << " others clients" <<endl;
 #endif
 							wifiGuestServer.SendAllOtherClients(i,power,buffer,valread);
-							wifiHostServer.SendAllClientsWithoutLoss(power,buffer,valread);
 						}
+#ifdef _DEBUG
+						cout<<"Forward "<<valread<<" bytes from "; wifiGuestServer.ShowInfoWifi(i); cout<<" to Host"<<endl;
+#endif
+						wifiHostServer.SendAllClientsWithoutLoss(power,buffer,valread);
 
 					}
 				}
