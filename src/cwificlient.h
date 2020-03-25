@@ -249,8 +249,10 @@ class CBaseWifiClient {
 		virtual bool Connect()=0;
 
 		virtual ssize_t Send(const char* data, ssize_t sizeOfData)=0;
+		virtual ssize_t SendBigData(const char* data, ssize_t sizeOfData)=0;
 
 		virtual ssize_t Read(char* data, ssize_t sizeOfData)=0;
+		virtual ssize_t ReadBigData(char* data, ssize_t sizeOfData)=0;
 
 		virtual void StopReconnect(bool status)=0;
 
@@ -268,8 +270,10 @@ class CWifiClient : public CBaseWifiClient, public TypeCSocketClient
 		};
 
 		ssize_t Send(const char* data, ssize_t sizeOfData){ return TypeCSocketClient::Send(data, sizeOfData); };
+		ssize_t SendBigData(const char* data, ssize_t sizeOfData){ return TypeCSocketClient::SendBigData(data, sizeOfData); };
 
 		ssize_t Read(char* data, ssize_t sizeOfData){ return TypeCSocketClient::Read(data, sizeOfData); };
+		ssize_t ReadBigData(char* data, ssize_t sizeOfData){ return TypeCSocketClient::ReadBigData(data, sizeOfData); };
 
 		void StopReconnect(bool status){ TypeCSocketClient::StopReconnect(status); };
 
