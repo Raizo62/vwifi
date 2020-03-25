@@ -154,7 +154,7 @@ int main(int argc , char *argv[])
 					}
 
 					// read the data
-					valread = wifiGuestServer.Read( socket , buffer, sizeof(buffer));
+					valread = wifiGuestServer.ReadBigData( socket , buffer, sizeof(buffer));
 					if ( valread >= 0 )
 					{
 						if ( valread == 0 )
@@ -236,7 +236,7 @@ int main(int argc , char *argv[])
 					}
 
 					// read the data
-					valread = wifiHostServer.Read( socket , buffer, sizeof(buffer));
+					valread = wifiHostServer.ReadBigData( socket , buffer, sizeof(buffer));
 					if ( valread >= 0 )
 					{
 						if ( valread == 0 )

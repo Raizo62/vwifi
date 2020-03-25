@@ -236,7 +236,7 @@ int CBaseWifiClient::process_messages(struct nl_msg *msg, void *arg)
 	TPower power=10;
 
 	WirelessDevice  dev ;
-        if ( _list_winterfaces.get_device_by_mac(dev,framesrc))
+	if ( _list_winterfaces.get_device_by_mac(dev,framesrc))
 	{	
 		power = dev.getTxPower() / 100; // must add the remainder if not multiple of 2 
 	}
@@ -255,7 +255,7 @@ int CBaseWifiClient::process_messages(struct nl_msg *msg, void *arg)
 	}
 
 	/* send msg to a server */ 
-	value=Send((char*)nlh,msg_len);
+	value=SendBigData((char*)nlh,msg_len);
 
 	if (value == SOCKET_DISCONNECT)
 		manage_server_crash();
@@ -263,7 +263,7 @@ int CBaseWifiClient::process_messages(struct nl_msg *msg, void *arg)
 	if( value == SOCKET_ERROR )
 	
 	{
-		std::cout<<"socket.Send error"<<std::endl;
+		std::cout<<"socket.SendBigData error"<<std::endl;
 		return 1;
 	}
 
@@ -454,7 +454,7 @@ void CBaseWifiClient::recv_from_server(){
 	/* receive power from server and store them in power */
 	TPower power;
 	bytes=Read((char*)&power,sizeof(power));
-	
+
 	signal = power ;
 
 	if (bytes == SOCKET_DISCONNECT)
@@ -467,7 +467,7 @@ void CBaseWifiClient::recv_from_server(){
 	}
 
 	/* receive bytes packets from server and store them in buf */
-	bytes=Read(buf,sizeof(buf));
+	bytes=ReadBigData(buf,sizeof(buf));
 
 	if (bytes == SOCKET_DISCONNECT)
 		manage_server_crash();
