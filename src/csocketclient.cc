@@ -3,6 +3,7 @@
 
 #include <arpa/inet.h> // INADDR_ANY
 #include <unistd.h> // close
+#include <assert.h> // assert
 
 #include "csocketclient.h"
 
@@ -80,11 +81,15 @@ ssize_t CSocketClient::SendBigData(const char* data, ssize_t sizeOfData)
 {
 	if ( IsConnected ){
 
-		ssize_t ret = CSocketClient::Send((char*)&sizeOfData, (unsigned)sizeof(sizeOfData));
-		switch ( ret  )
+		ssize_t ret = CSocket::Send(Master, (char*)&sizeOfData, (unsigned)sizeof(sizeOfData));
+		if( ret == 0 )
+			return SOCKET_DISCONNECT ;
+		if ( ret < 0 )
 		{
-			case SOCKET_ERROR : return SOCKET_ERROR;
-			case SOCKET_DISCONNECT : return SOCKET_DISCONNECT;
+			if ( errno == EWOULDBLOCK )
+				return SOCKET_ERROR ;
+			// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
+			return SOCKET_DISCONNECT ;
 		}
 
 		ret = CSocket::Send(Master, data, sizeOfData);
@@ -122,20 +127,21 @@ ssize_t CSocketClient::Read(char* data, ssize_t sizeOfData)
 ssize_t CSocketClient::ReadBigData(char* data, ssize_t sizeOfData)
 {
 	if ( IsConnected ){
+
 		ssize_t size;
+		int ret_size = CSocket::Read(Master, (char*)&size, (unsigned)sizeof(size));
 
-		ssize_t ret_size = CSocketClient::Read((char*)&size, (unsigned)sizeof(size));
-		switch ( ret_size  )
+		if( ret_size == 0 )
+			return SOCKET_DISCONNECT ;
+		if ( ret_size < 0 )
 		{
-			case SOCKET_ERROR : return SOCKET_ERROR;
-			case SOCKET_DISCONNECT : return SOCKET_DISCONNECT;
+			if ( errno == EWOULDBLOCK )
+				return SOCKET_ERROR ;
+			// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
+			return SOCKET_DISCONNECT ;
 		}
 
-		if ( size > sizeOfData )
-		{
-			size=sizeOfData;
-			cerr<<"Error : CSocketClient::ReadBigData : "<<size<<" > "<<sizeOfData<<endl;
-		}
+		assert( size <= sizeOfData );
 
 		int ret_data = CSocket::Read(Master, data, size);
 		if( ret_data > 0 )
