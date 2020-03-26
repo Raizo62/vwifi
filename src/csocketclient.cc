@@ -112,13 +112,12 @@ ssize_t CSocketClient::Read(char* data, ssize_t sizeOfData)
 		int ret = CSocket::Read(Master, data, sizeOfData);
 		if( ret > 0 )
 			return ret ;
-		if(ret == 0 )
-			return SOCKET_DISCONNECT ;
 
 		if ( ret < 0 && errno == EWOULDBLOCK )
 			return SOCKET_ERROR ;
 
 		// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
+		// if ret == 0 --> SOCKET_DISCONNECT
 		return SOCKET_DISCONNECT ;
 	}
 	return SOCKET_ERROR;
@@ -146,8 +145,6 @@ ssize_t CSocketClient::ReadBigData(char* data, ssize_t sizeOfData)
 		int ret_data = CSocket::Read(Master, data, size);
 		if( ret_data > 0 )
 			return ret_data ;
-		if(ret_data == 0 )
-			return SOCKET_DISCONNECT ;
 
 		if ( ret_data < 0 && errno == EWOULDBLOCK )
 			return SOCKET_ERROR ;
