@@ -172,9 +172,10 @@ ssize_t CSocketServer::Send(TDescriptor descriptor, const char* data, ssize_t si
 	return CSocket::Send(descriptor, data, sizeOfData);
 }
 
-ssize_t CSocketServer::SendBigData(TDescriptor descriptor, const char* data, ssize_t sizeOfData)
+ssize_t CSocketServer::SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData)
 {
 	ssize_t ret;
+
 	ret=CSocket::Send(descriptor, (char*)&sizeOfData, sizeof(sizeOfData));
 	if( ret < 0 )
 		return ret;
@@ -187,11 +188,12 @@ ssize_t CSocketServer::Read(TDescriptor descriptor, char* data, ssize_t sizeOfDa
 	return CSocket::Read(descriptor , data, sizeOfData);
 }
 
-ssize_t CSocketServer::ReadBigData(TDescriptor descriptor, char* data, ssize_t sizeOfData)
+ssize_t CSocketServer::ReadBigData(TDescriptor descriptor, char* data, TMinimalSize sizeOfData)
 {
 	ssize_t ret;
 
-	ssize_t size;
+	TMinimalSize size;
+
 	ret=CSocket::Read(descriptor , (char*)&size, sizeof(size));
 	if( ret < 0 )
 		return ret;

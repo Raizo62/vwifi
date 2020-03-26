@@ -77,7 +77,7 @@ ssize_t CSocketClient::Send(const char* data, ssize_t sizeOfData)
 	return SOCKET_ERROR;
 }
 
-ssize_t CSocketClient::SendBigData(const char* data, ssize_t sizeOfData)
+ssize_t CSocketClient::SendBigData(const char* data, TMinimalSize sizeOfData)
 {
 	if ( IsConnected ){
 
@@ -123,11 +123,12 @@ ssize_t CSocketClient::Read(char* data, ssize_t sizeOfData)
 	return SOCKET_ERROR;
 }
 
-ssize_t CSocketClient::ReadBigData(char* data, ssize_t sizeOfData)
+ssize_t CSocketClient::ReadBigData(char* data, TMinimalSize sizeOfData)
 {
 	if ( IsConnected ){
 
-		ssize_t size;
+		TMinimalSize size;
+
 		int ret_size = CSocket::Read(Master, (char*)&size, (unsigned)sizeof(size));
 
 		if( ret_size == 0 )

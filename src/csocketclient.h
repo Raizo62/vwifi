@@ -26,10 +26,10 @@ class CSocketClient : public CSocket
 		CSocketClient(TSocket type);
 
 		ssize_t Send(const char* data, ssize_t sizeOfData);
-		ssize_t SendBigData(const char* data, ssize_t sizeOfData);
+		ssize_t SendBigData(const char* data, TMinimalSize sizeOfData);
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
-		ssize_t ReadBigData(char* data, ssize_t sizeOfData);
+		ssize_t ReadBigData(char* data, TMinimalSize sizeOfData);
 		
 		bool SetBlocking(bool blocking);
 

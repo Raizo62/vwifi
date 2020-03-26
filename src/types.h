@@ -23,4 +23,6 @@ typedef int TPower;
 
 typedef float TFrequency;
 
+typedef unsigned short TMinimalSize;
+
 #endif
