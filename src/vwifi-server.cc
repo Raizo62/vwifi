@@ -10,6 +10,104 @@
 
 using namespace std;
 
+void ForwardData(CWifiServer* serverMaster, CWifiServer* serverSecond, CWifiServer* host, CScheduler* scheduler)
+{
+	TDescriptor socket;
+
+	int valread;
+	TPower power;
+	char buffer[1024]; //data buffer
+
+	for ( TIndex i = 0 ; i < serverMaster->GetNumberClient() ; )
+	{
+		socket = (*serverMaster)[i];
+
+		if( ! serverMaster->IsEnable(i) )
+		{
+					//Somebody disconnected
+
+					//Close the socket
+					cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+					serverMaster->CloseClient(i);
+
+					//del master socket to set
+					scheduler->DelNode(socket);
+
+					continue;
+		}
+
+		if( scheduler->DescriptorHasAction(socket) )
+		{
+			//Check if it was for closing , and also read the
+			//incoming message
+
+			// read the power
+			valread = serverMaster->Read( socket , (char*)&power, sizeof(power));
+			if ( valread >= 0 )
+			{
+				if ( valread == 0 )
+				{
+					//Close the socket
+					cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+					serverMaster->CloseClient(i);
+
+					//del master socket to set
+					scheduler->DelNode(socket);
+
+					continue;
+				}
+			}
+
+			// read the data
+			valread = serverMaster->ReadBigData( socket , buffer, sizeof(buffer));
+			if ( valread >= 0 )
+			{
+				if ( valread == 0 )
+				{
+					//Close the socket
+					cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+					serverMaster->CloseClient(i);
+
+					//del master socket to set
+					scheduler->DelNode(socket);
+
+					continue;
+				}
+
+				//Echo back the message that came in
+
+				//set the string terminating NULL byte on the end
+				//of the data read
+				//buffer[valread] = '\0';
+				//wifiGuestVHostServer.Send(socket,buffer , strlen(buffer));
+				// send to all other clients
+				if( serverMaster->GetNumberClient() > 1 )
+				{
+#ifdef _DEBUG
+					cout<<"Forward Main "<<serverMaster->GetType() <<" : "<<valread<<" bytes from "; serverMaster->ShowInfoWifi(i); cout<<" to "<< serverMaster->GetNumberClient()-1 << " others clients" <<endl;
+#endif
+					serverMaster->SendAllOtherClients(i,power,buffer,valread);
+				}
+				if( serverSecond->GetNumberClient() > 0 )
+				{
+#ifdef _DEBUG
+					cout<<"Forward Second "<<serverMaster->GetType() <<" : "<<valread<<" bytes from "; serverSecond->ShowInfoWifi(i); cout<<" to "<< serverSecond->GetNumberClient() << " others clients" <<endl;
+#endif
+					CCoordinate coo=*(serverMaster->GetReferenceOnInfoWifiByIndex(i));
+					serverSecond->SendAllClients(coo,power,buffer,valread);
+				}
+#ifdef _DEBUG
+				cout<<"Forward "<<valread<<" bytes from "; wifiGuestVHostServer.ShowInfoWifi(i); cout<<" to Host"<<endl;
+#endif
+				host->SendAllClientsWithoutLoss(power,buffer,valread);
+
+			}
+		}
+
+		i++;
+	}
+}
+
 int main(int argc , char *argv[])
 {
 	TDescriptor socket;
@@ -22,12 +120,21 @@ int main(int argc , char *argv[])
 
 	CScheduler scheduler;
 
-	CWifiServer wifiGuestServer;
-	cout<<"GUEST : ";
-	wifiGuestServer.Init(WIFI_GUEST_PORT);
-	if( ! wifiGuestServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
+	CWifiServer wifiGuestVHostServer(AF_VSOCK);
+	cout<<"GUEST VHOST : ";
+	wifiGuestVHostServer.Init(WIFI_GUEST_PORT_VHOST);
+	if( ! wifiGuestVHostServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
 	{
-		cerr<<"Error : wifiGuestServer.Listen"<<endl;
+		cerr<<"Error : wifiGuestVHostServer.Listen"<<endl;
+		exit(EXIT_FAILURE);
+	}
+
+	CWifiServer wifiGuestINETServer(AF_INET);
+	cout<<"GUEST TCP : ";
+	wifiGuestINETServer.Init(WIFI_GUEST_PORT_INET);
+	if( ! wifiGuestINETServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
+	{
+		cerr<<"Error : wifiGuestINETServer.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -42,7 +149,7 @@ int main(int argc , char *argv[])
 	}
 
 	cout<<"CTRL : ";
-	CCTRLServer ctrlServer(&wifiGuestServer,&wifiHostServer,&scheduler);
+	CCTRLServer ctrlServer(&wifiGuestVHostServer, &wifiGuestINETServer, &wifiHostServer,&scheduler);
 	ctrlServer.Init(CTRL_PORT);
 	if( ! ctrlServer.Listen() )
 	{
@@ -52,13 +159,14 @@ int main(int argc , char *argv[])
 
 	cout<<"Size of disconnected : "<<WIFI_MAX_DECONNECTED_CLIENT<<endl;
 
-	if( wifiGuestServer.CanLostPackets() )
+	if( wifiGuestVHostServer.CanLostPackets() )
 		cout<<"Packet loss : Enable"<<endl;
 	else
 		cout<<"Packet loss : disable"<<endl;
 
 	//add master socket to set
-	scheduler.AddNode(wifiGuestServer);
+	scheduler.AddNode(wifiGuestVHostServer);
+	scheduler.AddNode(wifiGuestINETServer);
 	scheduler.AddNode(wifiHostServer);
 	scheduler.AddNode(ctrlServer);
 
@@ -75,12 +183,12 @@ int main(int argc , char *argv[])
 
 			//If something happened on the master socket ,
 			//then its an incoming connection
-			if( scheduler.DescriptorHasAction(wifiGuestServer) )
+			if( scheduler.DescriptorHasAction(wifiGuestVHostServer) )
 			{
-				socket = wifiGuestServer.Accept();
+				socket = wifiGuestVHostServer.Accept();
 				if ( socket == SOCKET_ERROR )
 				{
-					cerr<<"Error : wifiGuestServer.Accept"<<endl;
+					cerr<<"Error : wifiGuestVHostServer.Accept"<<endl;
 					exit(EXIT_FAILURE);
 				}
 
@@ -88,7 +196,23 @@ int main(int argc , char *argv[])
 				scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection from Guest : "; wifiGuestServer.ShowInfoWifi(wifiGuestServer.GetNumberClient()-1) ; cout<<endl;
+				cout<<"New connection from Guest VHost : "; wifiGuestVHostServer.ShowInfoWifi(wifiGuestVHostServer.GetNumberClient()-1) ; cout<<endl;
+			}
+
+			if( scheduler.DescriptorHasAction(wifiGuestINETServer) )
+			{
+				socket = wifiGuestINETServer.Accept();
+				if ( socket == SOCKET_ERROR )
+				{
+					cerr<<"Error : wifiGuestVHostServer.Accept"<<endl;
+					exit(EXIT_FAILURE);
+				}
+
+				//add child sockets to set
+				scheduler.AddNode(socket);
+
+				//inform user of socket number - used in send and receive commands
+				cout<<"New connection from Guest TCP : "; wifiGuestINETServer.ShowInfoWifi(wifiGuestINETServer.GetNumberClient()-1) ; cout<<endl;
 			}
 
 			if( scheduler.DescriptorHasAction(wifiHostServer) )
@@ -113,86 +237,8 @@ int main(int argc , char *argv[])
 			}
 
 			//else its some IO operation on some other socket
-			for ( i = 0 ; i < wifiGuestServer.GetNumberClient() ; )
-			{
-				socket = wifiGuestServer[i];
-
-				if( ! wifiGuestServer.IsEnable(i) )
-				{
-							//Somebody disconnected
-
-							//Close the socket
-							cout<<"Guest disconnected : "; wifiGuestServer.ShowInfoWifi(i) ; cout<<endl;
-							wifiGuestServer.CloseClient(i);
-
-							//del master socket to set
-							scheduler.DelNode(socket);
-
-							continue;
-				}
-
-				if( scheduler.DescriptorHasAction(socket) )
-				{
-					//Check if it was for closing , and also read the
-					//incoming message
-
-					// read the power
-					valread = wifiGuestServer.Read( socket , (char*)&power, sizeof(power));
-					if ( valread >= 0 )
-					{
-						if ( valread == 0 )
-						{
-							//Close the socket
-							cout<<"Guest disconnected : "; wifiGuestServer.ShowInfoWifi(i) ; cout<<endl;
-							wifiGuestServer.CloseClient(i);
-
-							//del master socket to set
-							scheduler.DelNode(socket);
-
-							continue;
-						}
-					}
-
-					// read the data
-					valread = wifiGuestServer.ReadBigData( socket , buffer, sizeof(buffer));
-					if ( valread >= 0 )
-					{
-						if ( valread == 0 )
-						{
-							//Close the socket
-							cout<<"Guest disconnected : "; wifiGuestServer.ShowInfoWifi(i) ; cout<<endl;
-							wifiGuestServer.CloseClient(i);
-
-							//del master socket to set
-							scheduler.DelNode(socket);
-
-							continue;
-						}
-
-						//Echo back the message that came in
-
-						//set the string terminating NULL byte on the end
-						//of the data read
-						//buffer[valread] = '\0';
-						//wifiGuestServer.Send(socket,buffer , strlen(buffer));
-						// send to all other clients
-						if( wifiGuestServer.GetNumberClient() > 1 )
-						{
-#ifdef _DEBUG
-							cout<<"Forward "<<valread<<" bytes from "; wifiGuestServer.ShowInfoWifi(i); cout<<" to "<< wifiGuestServer.GetNumberClient()-1 << " others clients" <<endl;
-#endif
-							wifiGuestServer.SendAllOtherClients(i,power,buffer,valread);
-						}
-#ifdef _DEBUG
-						cout<<"Forward "<<valread<<" bytes from "; wifiGuestServer.ShowInfoWifi(i); cout<<" to Host"<<endl;
-#endif
-						wifiHostServer.SendAllClientsWithoutLoss(power,buffer,valread);
-
-					}
-				}
-
-				i++;
-			}
+			ForwardData(&wifiGuestVHostServer, &wifiGuestINETServer, &wifiHostServer, &scheduler);
+			ForwardData(&wifiGuestINETServer, &wifiGuestVHostServer, &wifiHostServer, &scheduler);
 
 						//else its some IO operation on some other socket
 			for ( i = 0 ; i < wifiHostServer.GetNumberClient() ; )
@@ -252,12 +298,19 @@ int main(int argc , char *argv[])
 						}
 					}
 
-					if( wifiGuestServer.GetNumberClient() > 0 )
+					if( wifiGuestVHostServer.GetNumberClient() > 0 )
 					{
 #ifdef _DEBUG
 						cout<<"Forward "<<valread<<" bytes from Host to Guests"<<endl;
 #endif
-						wifiGuestServer.SendAllClientsWithoutLoss(power,buffer,valread);
+						wifiGuestVHostServer.SendAllClientsWithoutLoss(power,buffer,valread);
+					}
+					if( wifiGuestINETServer.GetNumberClient() > 0 )
+					{
+#ifdef _DEBUG
+						cout<<"Forward "<<valread<<" bytes from Host to Guests"<<endl;
+#endif
+						wifiGuestINETServer.SendAllClientsWithoutLoss(power,buffer,valread);
 					}
 				}
 

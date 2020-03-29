@@ -7,7 +7,8 @@
 
 class CCTRLServer : public CSocketServer
 {
-		CWifiServer* WifiGuestServer;
+		CWifiServer* WifiGuestVHostServer;
+		CWifiServer* WifiGuestInetServer;
 		CWifiServer* WifiHostServer;
 		CScheduler* Scheduler;
 
@@ -31,7 +32,7 @@ class CCTRLServer : public CSocketServer
 
 	public :
 
-		CCTRLServer(CWifiServer* wifiGuestServer, CWifiServer* wifiHostServer, CScheduler* scheduler);
+		CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiHostServer, CScheduler* scheduler);
 
 		void ReceiveOrder();
 };

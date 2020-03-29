@@ -217,49 +217,6 @@ int AskStatus()
 		return 1;
 	}
 
-	TSocket type;
-	err=socket.Read((char*)&type,sizeof(type));
-	if( err == SOCKET_ERROR )
-	{
-		cerr<<"Error : AskStatus : socket.Read : Type"<<endl;
-		return 1;
-	}
-	cout<<"SRV : Type : ";
-	switch ( type )
-	{
-		case AF_VSOCK :
-		{
-			cout<<"AF_VSOCK"<<endl;
-
-			break ;
-		}
-
-		case AF_INET :
-		{
-			cout<<"AF_INET"<<endl;
-
-			break ;
-		}
-	}
-
-	TPort port;
-	err=socket.Read((char*)&port,sizeof(port));
-	if( err == SOCKET_ERROR )
-	{
-		cerr<<"Error : AskStatus : socket.Read : Port"<<endl;
-		return 1;
-	}
-	cout<<"SRV : Port : "<<port<<endl;
-
-	TIndex size;
-	err=socket.Read((char*)&size,sizeof(size));
-	if( err == SOCKET_ERROR )
-	{
-		cerr<<"Error : AskStatus : socket.Read : Size"<<endl;
-		return 1;
-	}
-	cout<<"SRV : SizeOfDisconnected : "<<size<<endl;
-
 	bool loss;
 	err=socket.Read((char*)&loss,sizeof(loss));
 	if( err == SOCKET_ERROR )
@@ -272,6 +229,46 @@ int AskStatus()
 		cout<<"Enable"<<endl;
 	else
 		cout<<"Disable"<<endl;
+
+	// VHOST
+
+	TPort port;
+	err=socket.Read((char*)&port,sizeof(port));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Read : Port"<<endl;
+		return 1;
+	}
+	cout<<"SRV VHOST: Port : "<<port<<endl;
+
+	TIndex size;
+	err=socket.Read((char*)&size,sizeof(size));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Read : Size"<<endl;
+		return 1;
+	}
+	cout<<"SRV VHOST: SizeOfDisconnected : "<<size<<endl;
+
+	// VHOST
+
+	err=socket.Read((char*)&port,sizeof(port));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Read : Port"<<endl;
+		return 1;
+	}
+	cout<<"SRV INET: Port : "<<port<<endl;
+
+	err=socket.Read((char*)&size,sizeof(size));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : AskStatus : socket.Read : Size"<<endl;
+		return 1;
+	}
+	cout<<"SRV INET: SizeOfDisconnected : "<<size<<endl;
+
+	// HOST
 
 	bool hostIsConnected;
 	err=socket.Read((char*)&hostIsConnected,sizeof(hostIsConnected));

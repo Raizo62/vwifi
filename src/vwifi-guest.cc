@@ -13,7 +13,7 @@ enum STATE {
 	SUSPENDED 
 };
 
-CWifiClient<CSocketClientVHOST>  wifiClient ;
+CBaseWifiClient* wifiClient;
 
 enum STATE  _state = STOPPED ;
 
@@ -29,14 +29,14 @@ void  signal_handler(int signal_num)
 		case SIGQUIT :
 			
 			std::cout << signal_num << std::endl ;
-			wifiClient.stop() ;
+			wifiClient->stop() ;
 			_state = STOPPED ;
 			break ;
 		
 		case  SIGTSTP :
 			
 			std::cout << signal_num << std::endl ;
-			wifiClient.stop();
+			wifiClient->stop();
 			_state = SUSPENDED ;
 			break ;
 
@@ -45,7 +45,7 @@ void  signal_handler(int signal_num)
 			std::cout << signal_num << std::endl ;
 			pstate = _state ;
 			_state = STARTED ;
-			if(!wifiClient.start()){
+			if(!wifiClient->start()){
 			
 				std::cout << "Starting process aborted" << std::endl ;
 				_state = pstate ;
@@ -64,7 +64,6 @@ void  signal_handler(int signal_num)
 
 int main (int argc , char ** argv){
 
-
 	/* Handle signals */
 	signal(SIGINT, signal_handler);
 	signal(SIGTERM, signal_handler);
@@ -73,22 +72,31 @@ int main (int argc , char ** argv){
 	signal(SIGTSTP, signal_handler);
 	signal(SIGCONT, signal_handler);
 
-	wifiClient.Init(WIFI_GUEST_PORT);
+	if( argc == 2 )
+	{
+		wifiClient=new CWifiClient<CSocketClientINET>;
+		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(argv[1], WIFI_GUEST_PORT_INET);
+	}
+	else
+	{
+		wifiClient=new CWifiClient<CSocketClientVHOST>;
+		((CWifiClient<CSocketClientVHOST>*)wifiClient)->Init(WIFI_GUEST_PORT_VHOST);
+	}
 
-	if(!wifiClient.start())
+	if(!wifiClient->start())
 		std::cout << "Starting process aborted" << std::endl ;
 
 
 	while(true){
 	
 		if (_state == STOPPED ){
-		        
-		       		std::cout << "its time to live" << std::endl ;	
+
+				std::cout << "its time to live" << std::endl ;
 				break ;
 		}
-		
+
 		if ((_state == SUSPENDED )|| (_state == STARTED )){
-	
+
 				std::cout << "SUSPENDED or CONT" << std::endl ;	
 
 				pause();

@@ -73,7 +73,14 @@ int main (int argc , char ** argv){
 	signal(SIGTSTP, signal_handler);
 	signal(SIGCONT, signal_handler);
 
-	wifiClient.Init(ADDRESS_IP,WIFI_HOST_PORT);
+	if( argc == 2 )
+	{
+		wifiClient.Init(argv[1],WIFI_HOST_PORT);
+	}
+	else
+	{
+		wifiClient.Init(ADDRESS_IP,WIFI_HOST_PORT);
+	}
 
 	if(!wifiClient.start())
 		std::cout << "Starting process aborted" << std::endl ;

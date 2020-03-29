@@ -1,8 +1,9 @@
 #include "cctrlserver.h"
 
-CCTRLServer::CCTRLServer(CWifiServer* wifiGuestServer, CWifiServer* wifiHostServer, CScheduler* scheduler) : CSocketServer(AF_INET)
+CCTRLServer::CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiHostServer, CScheduler* scheduler) : CSocketServer(AF_INET)
 {
-	WifiGuestServer=wifiGuestServer;
+	WifiGuestVHostServer=wifiGuestVHostServer;
+	WifiGuestInetServer=wifiGuestInetServer;
 	WifiHostServer=wifiHostServer;
 	Scheduler=scheduler;
 }
@@ -32,15 +33,29 @@ TOrder CCTRLServer::GetOrder()
 
 void CCTRLServer::SendList()
 {
-	TIndex number=WifiGuestServer->GetNumberClient();
+	TIndex numberVHost=WifiGuestVHostServer->GetNumberClient();
+	TIndex numberInet=WifiGuestInetServer->GetNumberClient();
+	TIndex number=numberVHost+numberInet;
 	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
 		return;
 
-	for(TIndex i=0; i<number;i++)
+	for(TIndex i=0; i<numberVHost;i++)
 	{
-		if( WifiGuestServer->IsEnable(i) )
+		if( WifiGuestVHostServer->IsEnable(i) )
 		{
-			CInfoWifi* infoWifi=WifiGuestServer->GetReferenceOnInfoWifiByIndex(i);
+			CInfoWifi* infoWifi=WifiGuestVHostServer->GetReferenceOnInfoWifiByIndex(i);
+			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
+			{
+				cerr<<"Error : AskList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
+				return;
+			}
+		}
+	}
+	for(TIndex i=0; i<numberInet;i++)
+	{
+		if( WifiGuestInetServer->IsEnable(i) )
+		{
+			CInfoWifi* infoWifi=WifiGuestInetServer->GetReferenceOnInfoWifiByIndex(i);
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
 				cerr<<"Error : AskList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
@@ -67,19 +82,41 @@ void CCTRLServer::ChangeCoordinate()
 
 	CInfoWifi* infoWifi;
 
-	infoWifi=WifiGuestServer->GetReferenceOnInfoWifiByCID(cid);
-	if( infoWifi == NULL )
+	infoWifi=WifiGuestVHostServer->GetReferenceOnInfoWifiByCID(cid);
+	if( infoWifi != NULL )
 	{
-		infoWifi=WifiGuestServer->GetReferenceOnInfoWifiDeconnectedByCID(cid);
-		if( infoWifi == NULL )
-		{
-			CInfoWifi infoWifi(cid,coo);
-			WifiGuestServer->AddInfoWifiDeconnected(infoWifi);
-			return;
-		}
+		infoWifi->Set(coo);
+		return;
 	}
 
-	infoWifi->Set(coo);
+	infoWifi=WifiGuestVHostServer->GetReferenceOnInfoWifiDeconnectedByCID(cid);
+	if( infoWifi != NULL )
+	{
+		infoWifi->Set(coo);
+		return;
+	}
+
+	infoWifi=WifiGuestInetServer->GetReferenceOnInfoWifiByCID(cid);
+	if( infoWifi != NULL )
+	{
+		infoWifi->Set(coo);
+		return;
+	}
+
+	infoWifi=WifiGuestInetServer->GetReferenceOnInfoWifiDeconnectedByCID(cid);
+	if( infoWifi != NULL )
+	{
+		infoWifi->Set(coo);
+		return;
+	}
+
+	CInfoWifi infoNewWifi(cid,coo);
+#ifdef _USE_VSOCK_BY_DEFAULT_
+	WifiGuestVHostServer->AddInfoWifiDeconnected(infoNewWifi);
+#else
+	WifiGuestInetServer->AddInfoWifiDeconnected(infoNewWifi);
+#endif
+
 }
 
 void CCTRLServer::ChangePacketLoss()
@@ -94,42 +131,56 @@ void CCTRLServer::ChangePacketLoss()
 		#ifdef _DEBUG
 			cout<<"Packet loss : Enable"<<endl;
 		#endif
-		WifiGuestServer->SetPacketLoss(true);
+		WifiGuestVHostServer->SetPacketLoss(true);
+		WifiGuestInetServer->SetPacketLoss(true);
 	}
 	else
 	{
 		#ifdef _DEBUG
 			cout<<"Packet loss : Disable"<<endl;
 		#endif
-		WifiGuestServer->SetPacketLoss(false);
+		WifiGuestVHostServer->SetPacketLoss(false);
+		WifiGuestInetServer->SetPacketLoss(false);
 	}
 }
 
 void CCTRLServer::SendStatus()
 {
-	if( Send((char*)&(WifiGuestServer->Type),sizeof(WifiGuestServer->Type)) == SOCKET_ERROR )
+	if( Send((char*)&(WifiGuestVHostServer->PacketLoss),sizeof(WifiGuestVHostServer->PacketLoss)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : Type"<<endl;
+		cerr<<"Error : SendStatus : socket.SendList : PacketLoss"<<endl;
 		return;
 	}
 
-	if( Send((char*)&(WifiGuestServer->Port),sizeof(WifiGuestServer->Port)) == SOCKET_ERROR )
+	// VHOST
+
+	if( Send((char*)&(WifiGuestVHostServer->Port),sizeof(WifiGuestVHostServer->Port)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : socket.SendList : Port"<<endl;
 		return;
 	}
 
-	if( Send((char*)&(WifiGuestServer->MaxClientDeconnected),sizeof(WifiGuestServer->MaxClientDeconnected)) == SOCKET_ERROR )
+	if( Send((char*)&(WifiGuestVHostServer->MaxClientDeconnected),sizeof(WifiGuestVHostServer->MaxClientDeconnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : socket.SendList : Size"<<endl;
 		return;
 	}
 
-	if( Send((char*)&(WifiGuestServer->PacketLoss),sizeof(WifiGuestServer->PacketLoss)) == SOCKET_ERROR )
+	// INET
+
+	if( Send((char*)&(WifiGuestInetServer->Port),sizeof(WifiGuestInetServer->Port)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : PacketLoss"<<endl;
+		cerr<<"Error : SendStatus : socket.SendList : Port"<<endl;
 		return;
 	}
+
+	if( Send((char*)&(WifiGuestInetServer->MaxClientDeconnected),sizeof(WifiGuestInetServer->MaxClientDeconnected)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendStatus : socket.SendList : Size"<<endl;
+		return;
+	}
+
+	// HOST
 
 	bool hostIsConnected=( WifiHostServer->GetNumberClient() > 0 );
 	if( Send((char*)&hostIsConnected,sizeof(hostIsConnected)) == SOCKET_ERROR )
@@ -137,17 +188,18 @@ void CCTRLServer::SendStatus()
 		cerr<<"Error : SendStatus : socket.SendList : HostIsConnected"<<endl;
 		return;
 	}
+
 }
 
 void CCTRLServer::SendShow()
 {
-	if( Send((char*)&(WifiGuestServer->PacketLoss),sizeof(WifiGuestServer->PacketLoss)) == SOCKET_ERROR )
+	if( Send((char*)&(WifiGuestVHostServer->PacketLoss),sizeof(WifiGuestVHostServer->PacketLoss)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : socket.SendList : PacketLoss"<<endl;
 		return;
 	}
 
-	bool hostIsConnected=( WifiHostServer->GetNumberClient() > 0 );
+	bool hostIsConnected=( WifiGuestVHostServer->GetNumberClient() > 0 );
 	if( Send((char*)&hostIsConnected,sizeof(hostIsConnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : socket.SendList : HostIsConnected"<<endl;
@@ -158,10 +210,14 @@ void CCTRLServer::SendShow()
 void CCTRLServer::CloseAllClient()
 {
 	// be careful : In the Scheduler, i must delete only the nodes of Wifi Guest, not the node of the CTRLServer
-	for (TIndex i = 0; i < WifiGuestServer->GetNumberClient(); i++)
-		Scheduler->DelNode((*WifiGuestServer)[i]);
+	for (TIndex i = 0; i < WifiGuestVHostServer->GetNumberClient(); i++)
+		Scheduler->DelNode((*WifiGuestVHostServer)[i]);
 
-	WifiGuestServer->CloseAllClient();
+	for (TIndex i = 0; i < WifiGuestInetServer->GetNumberClient(); i++)
+		Scheduler->DelNode((*WifiGuestInetServer)[i]);
+
+	WifiGuestVHostServer->CloseAllClient();
+	WifiGuestInetServer->CloseAllClient();
 }
 
 void CCTRLServer::ReceiveOrder()

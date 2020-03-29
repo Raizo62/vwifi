@@ -7,24 +7,15 @@ const TIndex WIFI_MAX_DECONNECTED_CLIENT = 15;
 
 const bool LOST_PACKET_BY_DEFAULT=false;
 
-const TPort WIFI_GUEST_PORT = 8211;
+#define _USE_VSOCK_BY_DEFAULT_
 
-#ifndef _DEBUG
-	#define _USE_VSOCK_BY_DEFAULT_
-#endif
+const TPort WIFI_GUEST_PORT_VHOST = 8211;
+const TPort WIFI_GUEST_PORT_INET = WIFI_GUEST_PORT_VHOST+1;
 
-#ifdef _USE_VSOCK_BY_DEFAULT_
-	const TPort WIFI_HOST_PORT = WIFI_GUEST_PORT;
-#else
-	const TPort WIFI_HOST_PORT = WIFI_GUEST_PORT+1;
-#endif
+const TPort WIFI_HOST_PORT = WIFI_GUEST_PORT_VHOST+2;
 
-const TPort CTRL_PORT = WIFI_HOST_PORT+1;
+const TPort CTRL_PORT = WIFI_GUEST_PORT_VHOST+3;
 
-#ifndef _DEBUG
-	#define ADDRESS_IP "127.0.0.1"
-#else
-	#define ADDRESS_IP "192.168.56.101"
-#endif
+#define ADDRESS_IP "127.0.0.1"
 
 #endif
