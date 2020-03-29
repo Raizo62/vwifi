@@ -38,6 +38,8 @@ class CSocket
 		~CSocket();
 
 		operator int();
+
+		TSocket GetType();
 };
 
 #endif

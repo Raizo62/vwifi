@@ -88,6 +88,11 @@ CSocket::operator int()
 	return Master;
 }
 
+TSocket CSocket::GetType()
+{
+	return Type;
+}
+
 void CSocket::Close()
 {
 	close(Master);
