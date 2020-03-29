@@ -145,6 +145,28 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 	}
 }
 
+void CWifiServer::SendAllClients(CCoordinate cooSource, TPower power, const char* data, ssize_t sizeOfData)
+{
+//	cout<<"Forward "<<sizeOfData<<" bytes with "<<power<<" powers"<<endl;
+
+	for (TIndex i = 0; i < GetNumberClient(); i++)
+	{
+		if( IsEnable(i) )
+		{
+			TPower signalLevel=power-power::Attenuation(cooSource.DistanceWith(InfoWifis[i]));
+			if( ! CanLostPackets() || ! power::PacketIsLost(signalLevel) )
+			{
+				//cout<<"distance : "<<cooSource.DistanceWith(InfoWifis[i])<<" / power : "<<power<<" / Attenuation "<<power::Attenuation(cooSource.DistanceWith(InfoWifis[i]))<<" / signalLevel: "<<signalLevel<<endl;
+				if( Send(InfoSockets[i].GetDescriptor(), (const char*) &signalLevel, sizeof(signalLevel)) < 0 )
+					InfoSockets[i].DisableIt();
+				else if( SendBigData(InfoSockets[i].GetDescriptor(), data, sizeOfData) < 0 )
+					InfoSockets[i].DisableIt();
+			}
+			//else cout<<"Lost : distance : "<<cooSource.DistanceWith(InfoWifis[i])<<" / power : "<<power<<" / Attenuation "<<power::Attenuation(cooSource.DistanceWith(InfoWifis[i]))<<" / signalLevel: "<<signalLevel<<endl;
+		}
+	}
+}
+
 void CWifiServer::SendAllClientsWithoutLoss(TPower power, const char* data, ssize_t sizeOfData)
 {
 	for (TIndex i = 0; i < GetNumberClient(); i++)
