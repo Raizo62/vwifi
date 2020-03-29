@@ -198,7 +198,8 @@ ssize_t CSocketServer::ReadBigData(TDescriptor descriptor, char* data, TMinimalS
 	if( ret < 0 )
 		return ret;
 
-	assert( size <= sizeOfData );
+	if ( size > sizeOfData )
+		return SOCKET_ERROR;
 
 	return CSocket::Read(descriptor , data, size);
 }
