@@ -1,8 +1,8 @@
 # vwifi
 
-## What is this?
+## What is this ?
 
-Virtual Wifi between Virtual Machines
+Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 ## Dependencies
 
