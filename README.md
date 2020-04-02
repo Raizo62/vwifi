@@ -21,30 +21,65 @@ make install # To change the file mode bits of tools
 
 ## Configuration
 
-### Host
+### With VHOST
 
- - Linux :
+#### Host
+
+* Shell :
+    * Load the module VHOST
+   ```bash
+   # sudo rmmod vhost_vsock vmw_vsock_virtio_transport_common vsock # if necessary
+
+   sudo modprobe vhost_vsock
+   sudo chmod a+rw /dev/vhost-vsock
+   ```
+    * Start the vwifi-server
+   ```bash
+   ./vwifi-server
+   ```
+
+* Hypervisor
+  * QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=NUM` with NUM an identifier greater than  2
+  * GNS3 (>= 2.2) : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%guest-cid%`
+
+#### Each Guest
+
+* Create the wlan interfaces (on this example, 2 interfaces) :
+```bash
+modprobe mac80211_hwsim radios=2
+# macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
+```
+
+* Connect all these wlan interfaces to the vwifi-server
+```bash
+./vwifi-guest
+```
+
+### With TCP
+
+* The Host and the VMs must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
+
+#### Host
+
+* Start the vwifi-server
 
 ```bash
-sudo rmmod vhost_vsock vmw_vsock_virtio_transport_common vsock
-
-sudo modprobe vhost_vsock
-sudo chmod a+rw /dev/vhost-vsock
-
 ./vwifi-server
 ```
 
- - QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=NUM` with NUM an identifier greater than  2
- - GNS3 (>= 2.2) : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%guest-cid%`
+* We will suppose that the Host have the IP address : 172.16.0.1
 
-### Each Guest
+#### Each Guest
 
+* Create the wlan interfaces (on this example, 2 interfaces) :
 ```bash
-cd /hosthome/vwifi
-tmux
-modprobe mac80211_hwsim radios=3
-macchanger -a wlan0
-./vwifi-guest
+modprobe mac80211_hwsim radios=2
+# macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
+```
+
+* Connect all these wlan interfaces to the vwifi-server
+```bash
+./vwifi-guest 172.16.0.1
 ```
 
 ## Capture packets from Host
@@ -110,6 +145,7 @@ ping 10.0.0.1
 * Guest Wifi 3 :
 ```bash
 wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
+
 ip a a 10.0.0.3/8 dev wlan0
 ping 10.0.0.2
 ```
