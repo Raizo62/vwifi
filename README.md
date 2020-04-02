@@ -21,6 +21,11 @@ make install # To change the file mode bits of tools
 
 ## Configuration
 
+Explanations :
+* The VMs and the server can communicate either with the VHOST protocol, or with the TCP protocol
+* The **vwifi-server** configured for VHOST can also accept connection from **vwifi-guest** with TCP protocol
+* To use TCP protocol, the Host and the VMs must be connected to a different IP network than that of the wifi
+
 ### With VHOST
 
 #### Host
