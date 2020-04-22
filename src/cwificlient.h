@@ -267,7 +267,26 @@ class CWifiClient : public CBaseWifiClient, public TypeCSocketClient
 			if ( ! TypeCSocketClient::Connect() )
 				return false;
 			return Scheduler.AddNode(*this);
-		};
+		}
+
+		bool Connect(int* id)
+		{
+			if( ! Connect() )
+				return false;
+
+			*id=TypeCSocketClient::GetID();
+
+			if( TypeCSocketClient::GetType() == AF_INET )
+			{	// With TCP, send the ID
+				if( Send((char*)id, sizeof(*id)) < 0 )
+				{
+					Scheduler.DelNode(*this);
+					return false;
+				}
+			}
+
+			return true;
+		}
 
 		ssize_t Send(const char* data, ssize_t sizeOfData){ return TypeCSocketClient::Send(data, sizeOfData); };
 		ssize_t SendBigData(const char* data, ssize_t sizeOfData){ return TypeCSocketClient::SendBigData(data, sizeOfData); };
