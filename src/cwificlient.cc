@@ -800,14 +800,15 @@ int CBaseWifiClient::start(){
 	}
 
 	/*connect to vsock/tcp server */
-	if( ! Connect() )
+	int id;
+	if( ! Connect(&id) )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return 0;
 	}
 
 	std::cout << "Connection to Server Ok" << std::endl;
-
+	std::cout << "ID: " <<id<<std::endl;
 
 	_mutex_all_thread_dead.lock();
 	_all_thread_dead = 0;
@@ -892,15 +893,15 @@ void CBaseWifiClient::manage_server_crash(){
 	std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
 
 	/*connect to vsock/tcp server */
-	if( ! Connect() )
+	int id;
+	if( ! Connect(&id) )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return ;
 	}
 
 	std::cout << "Reconnection to Server Ok" << std::endl;
-
-
+	std::cout << "ID: " <<id<<std::endl;
 }
 
 CBaseWifiClient::CBaseWifiClient()  {

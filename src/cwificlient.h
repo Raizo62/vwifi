@@ -246,7 +246,7 @@ class CBaseWifiClient {
 
 	// virtual :
 
-		virtual bool Connect()=0;
+		virtual bool Connect(int* id)=0;
 
 		virtual ssize_t Send(const char* data, ssize_t sizeOfData)=0;
 		virtual ssize_t SendBigData(const char* data, ssize_t sizeOfData)=0;
