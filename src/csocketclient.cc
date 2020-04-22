@@ -6,6 +6,7 @@
 #include <assert.h> // assert
 
 #include "csocketclient.h"
+#include "tools.h"
 
 using namespace std;
 
@@ -182,6 +183,16 @@ bool CSocketClientINET::Connect()
 	return ConnectLoop((struct sockaddr*) &Server, sizeof(Server));
 }
 
+int CSocketClientINET::GetID()
+{
+	struct sockaddr_in my_addr;
+
+	socklen_t len = sizeof(my_addr);
+	getsockname(Master, (struct sockaddr *) &my_addr, &len);
+
+	return getpid()^hash_ipaddr(&my_addr) ;
+}
+
 // ----------------- CSocketClientVHOST
 
 CSocketClientVHOST::CSocketClientVHOST() : CSocketClient(AF_VSOCK) {};
@@ -197,4 +208,9 @@ void CSocketClientVHOST::Init(TPort port)
 bool CSocketClientVHOST::Connect()
 {
 	return ConnectLoop((struct sockaddr*) &Server, sizeof(Server));
+}
+
+int CSocketClientVHOST::GetID()
+{
+	return -1;
 }
