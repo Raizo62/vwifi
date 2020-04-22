@@ -78,7 +78,7 @@ TDescriptor CWifiServer::Accept()
 		// AF_VSOCK
 		cid=((struct sockaddr_vm*)&address)->svm_cid;
 	else // AF_INET
-		cid=ntohs(address.sin_port);
+		Read(new_socket,(char*)&cid,sizeof(cid));
 
 	CInfoWifi infoWifi;
 
