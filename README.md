@@ -4,6 +4,28 @@
 
 Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
+* It can be used in Hypervisors (GNS3, QEmu, Virtualbox, VMware, Hyper-V, ...)
+* The Wireless emulator is based on mac80211_hwsim linux driver
+* Implements the packet loss simulation based on distance
+* Emulates the node mobility in GNS3
+
+* Tested with `hostapd` and `wpa_supplicant` with these configurations:
+
+    * Open
+    * WEP
+    * WPA2
+    * WPA-EAP
+
+* Tested in the context of WPA2 attack with Kali
+
+* Remaining features to be implemented:
+
+    * Integrate to other OS (Windows...)
+    * Add obstacle models
+    * Etc.
+
+![Example](./screenshots/GNS3_Attack_with_KaliLinux.png)
+
 ## Dependencies
 
 ```bash
