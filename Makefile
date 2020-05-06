@@ -5,7 +5,8 @@ VERSION	=	1.1
 BINDIR	=	$(DESTDIR)/usr/local/bin
 MANDIR	=	$(DESTDIR)/usr/local/man/man1
 
-EXEC	=	vwifi-server vwifi-guest vwifi-host vwifi-ctrl vwifi-inet-monitor
+#EXEC	=	vwifi-server vwifi-guest vwifi-host vwifi-ctrl vwifi-inet-monitor
+EXEC	=	vwifi-server vwifi-guest vwifi-ctrl vwifi-inet-monitor
 
 SRC		=	src
 OBJ		=	obj
@@ -14,7 +15,7 @@ MAN		=	man
 CC		=	g++
 
 #MODE= -O4 -Wall -DNDEBUG -fomit-frame-pointer # //////////      RELEASE WITHOUT ASSERT
-MODE= -O4 -Wall -fomit-frame-pointer # //////////      RELEASE
+#MODE= -O4 -Wall -fomit-frame-pointer # //////////      RELEASE
 #MODE= -g -Wall -D_DEBUG # //////////      DEBUG
 #MODE= -pg # //////////      PROFILER --> view with : gprof $(NAME)
 
@@ -51,6 +52,8 @@ $(OBJ)/tpower.o: tpower.cc tpower.h types.h config.h
 
 $(OBJ)/cinfosocket.o: cinfosocket.cc cinfosocket.h types.h
 
+$(OBJ)/cthread.o: cthread.cc   cthread.h 
+
 
 $(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h $(OBJ)/csocket.o $(OBJ)/cinfosocket.o types.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
@@ -71,7 +74,7 @@ $(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h $(OBJ)/cwifiserver.o $(OBJ)/c
 $(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
-$(OBJ)/cwificlient.o: cwificlient.cc cwificlient.h $(OBJ)/csocketclient.o $(OBJ)/cscheduler.o hwsim.h mac80211_hwsim.h ieee80211.h config.h
+$(OBJ)/cwificlient.o: cwificlient.cc cwificlient.h $(OBJ)/csocketclient.o $(OBJ)/cscheduler.o $(OBJ)/cthread.o hwsim.h mac80211_hwsim.h ieee80211.h config.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 
@@ -81,7 +84,7 @@ vwifi-server : vwifi-server.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o 
 vwifi-ctrl : vwifi-ctrl.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/ccoordinate.o $(OBJ)/cinfowifi.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o  $(OBJ)/cwificlient.o $(OBJ)/cscheduler.o $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tpower.o
+vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o  $(OBJ)/cwificlient.o $(OBJ)/cthread.o $(OBJ)/cscheduler.o $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tpower.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
 vwifi-host : vwifi-host.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o  $(OBJ)/cwificlient.o $(OBJ)/cscheduler.o $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tpower.o

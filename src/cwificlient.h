@@ -13,20 +13,21 @@
 #include "cscheduler.h"
 #include <pthread.h>
 
+#include "cthread.h"
+#include <condition_variable>
+
 namespace cwificlient{
 
 	class CallFromStaticFunc ;
 }
-class CBaseWifiClient {
+class CBaseWifiClient : public intthread::AsyncTask {	
 
 	protected :
 
+		 
 		pthread_t serverloop_id ;
 
-
 		CScheduler	Scheduler;
-
-		/** list of available interfaces */
 
 		WirelessDeviceList _list_winterfaces ;
 
@@ -38,26 +39,17 @@ class CBaseWifiClient {
 
 		/** For the family ID used by hwsim */
 		int m_family_id { 1 };
+		
+		intthread::InterruptibleThread   hwsimloop_task ;
+		intthread::InterruptibleThread   serverloop_task ;
+ 		intthread::InterruptibleThread   monitorloop_task ;
+ 		intthread::InterruptibleThread   winterface_update_loop_task ;
 
-
-		bool m_started  { false } ;
-
-		std::mutex m_mutex_ctrl_run ;
-
-		int _all_thread_dead  { 0 } ;
-
-		std::mutex _mutex_all_thread_dead ;
 
 		bool _initialized { false } ;
-
 		std::mutex _mutex_initialized ;
-
-		bool _stopped { true } ;
-
-		std::mutex _mutex_stopped ;
-
+	
 		MonitorWirelessDevice * monwireless = nullptr ;
-
 
 		int init();
 
@@ -199,20 +191,6 @@ class CBaseWifiClient {
 		 */
 
 		void recv_from_server();
-
-
-		void thread_dead();
-
-		void thread_start();
-
-		bool all_thread_dead();
-
-		/**
-		 * \brief check the value  m_started member using m_mutex_ctr_run
-		 */
-		bool started();
-
-		bool stopped();
 
 
 		/**

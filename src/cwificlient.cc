@@ -341,9 +341,9 @@ int CBaseWifiClient::init_netlink(void)
 
 	while (m_family_id  < 0 ) {
 
-		if ( ! started()){
-			return 0 ;
-		}
+	//	if ( ! started()){
+	//		return 0 ;
+	//	}
 
 #ifdef _DEBUG
 		std::cout << "Family MAC80211_HWSIM not registered" << std::endl ;
@@ -581,13 +581,19 @@ void  CBaseWifiClient::monitor_hwsim_loop()
 	genl_connect(sock);
 
 
-	thread_start();
 	
 	/* loop for waiting  incoming msg from hwsim driver*/
 	while (true) {
 
-		if(!started())
-			break ;
+		try {
+			intthread::interruption_point();
+		}
+		
+		catch (const intthread::thread_interrupted& interrupt) {
+			dead();
+			break;
+		}
+
 
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(1s);
@@ -605,14 +611,12 @@ void  CBaseWifiClient::monitor_hwsim_loop()
 				break;
 			}
 		}
-
 		
 	}
 
 	nl_close(sock);
 	nl_socket_free(sock);
 
-	thread_dead();
 }
 
 
@@ -622,13 +626,20 @@ void CBaseWifiClient::recv_msg_from_hwsim_loop_start(){
 
 
 
-	thread_start();
 	
 	/* loop for waiting  incoming msg from hwsim driver*/
 	while (true) {
+
+		try {
+			intthread::interruption_point();
+		}
 		
-		if(!started())
-			break ;
+		catch (const intthread::thread_interrupted& interrupt) {
+			dead();	
+			break;
+		}
+
+		
 		/* added for monitor_hwsim_loop */	
 		if(!initialized()){
 		
@@ -639,9 +650,9 @@ void CBaseWifiClient::recv_msg_from_hwsim_loop_start(){
 		}
 
 		nl_recvmsgs_default(_netlink_socket);
-	}
 
-	thread_dead();
+		
+	}
 
 }
 
@@ -656,12 +667,18 @@ void CBaseWifiClient::recv_msg_from_server_loop_start(){
 
 	std::signal(SIGUSR1,recv_msg_from_server_signal_handle);
 
-	thread_start();
 
 	while(true){
 
-		if(!started())
-			break ;
+		try {
+			intthread::interruption_point();
+		}
+		
+		catch (const intthread::thread_interrupted& interrupt) {
+			dead();	
+			break;
+		}
+
 
 		/* added for monitor_hwsim_loop */
 		if(!initialized()){
@@ -676,18 +693,23 @@ void CBaseWifiClient::recv_msg_from_server_loop_start(){
 
 	}
 
-	thread_dead();
 }
 
 void CBaseWifiClient::winet_update_loop(){
 
 
-	thread_start();
 	
 	while (true) {
+
+		try {
+			intthread::interruption_point();
+		}
 		
-		if(!started())
-			break ;
+		catch (const intthread::thread_interrupted& interrupt) {
+			dead();	
+			break;
+		}
+		
 		/* added for monitor_hwsim_loop */	
 		if(!initialized()){
 		
@@ -709,7 +731,6 @@ void CBaseWifiClient::winet_update_loop(){
 
 	}
 
-	thread_dead();
 
 }
 
@@ -743,40 +764,17 @@ int CBaseWifiClient::init(){
 int CBaseWifiClient::start(){
 
 
-	if( started())
-	
-	{
-		std::cerr << "vwifi-guest is already started" <<  std::endl ;
-		return 0 ;
-	}
-
-	m_mutex_ctrl_run.lock();
-	m_started = true ;
-	m_mutex_ctrl_run.unlock();
 
 	// check if initialized here, if we forget calling init function before ??
 	if(! initialized()){
 	
 		if (!init()){
 	
-			m_mutex_ctrl_run.lock();
-			m_started = false ;
-			m_mutex_ctrl_run.unlock();
 		
 			return 0;
 		}
 	}
 
-	//  check that  all_thread_dead in before starting ?
-	if( ! stopped())
-	{
-
-		m_mutex_ctrl_run.lock();
-		m_started = false ;
-		m_mutex_ctrl_run.unlock();
-		std::cerr << "One or several threads are running" <<  std::endl ;
-		return 0 ;
-	}
 
 	try{
 
@@ -809,37 +807,30 @@ int CBaseWifiClient::start(){
 	std::cout << "Connection to Server Ok" << std::endl;
 
 
-	_mutex_all_thread_dead.lock();
-	_all_thread_dead = 0;
-	_mutex_all_thread_dead.unlock();
-
 	
 	/* start thread that handle incoming msg from hwsim driver */
-	std::thread hwsimloop(&CBaseWifiClient::recv_msg_from_hwsim_loop_start,this);
+	hwsimloop_task.start(this,&CBaseWifiClient::recv_msg_from_hwsim_loop_start);
 
 	/* start thread that handle incoming msg from tcp or vsock connection to server */
-	std::thread serverloop(&CBaseWifiClient::recv_msg_from_server_loop_start,this);
+	serverloop_task.start(this, &CBaseWifiClient::recv_msg_from_server_loop_start);
 
 	/* start thread monitoring  the starting of hwsim driver*/
-	std::thread monitorloop(&CBaseWifiClient::monitor_hwsim_loop,this);
+	monitorloop_task.start(this,&CBaseWifiClient::monitor_hwsim_loop);
 
 	/* start thread updating wireless inet interfaces*/
-	std::thread winterface_update_loop(&CBaseWifiClient::winet_update_loop,this);
+	winterface_update_loop_task.start(this,&CBaseWifiClient::winet_update_loop);
 
 
-	_mutex_stopped.lock();
-	_stopped = false ;
-	_mutex_stopped.unlock();
 
 	/*
 	 * save the c handle version of serverloop thread (pthread_t type)
 	 */
-	serverloop_id = serverloop.native_handle();
+	serverloop_id = serverloop_task.get_native_handle();
 
-	monitorloop.join();
-	hwsimloop.join();
-	serverloop.join();
-	winterface_update_loop.join();
+	monitorloop_task.join();
+	hwsimloop_task.join();
+	serverloop_task.join();
+	winterface_update_loop_task.join();
 
 	delete monwireless ;
 
@@ -849,29 +840,27 @@ int CBaseWifiClient::start(){
 
 int CBaseWifiClient::stop(){
 
-	m_mutex_ctrl_run.lock();
-	m_started = false ;
-	m_mutex_ctrl_run.unlock();
 
 	/* stop the retrying connection to vsock server */
 	StopReconnect(true);
-
-	if( stopped())
-		return 0 ;
 
 
 	Close();
 
 	pthread_kill(serverloop_id,SIGUSR1);
 
+	hwsimloop_task.interrupt() ;
+	serverloop_task.interrupt() ;
+	monitorloop_task.interrupt() ;
+	winterface_update_loop_task.interrupt() ;
 
-	while(!all_thread_dead());
+
+	std::unique_lock<std::mutex> lk(_mutex_condition);
+	_condition.wait(lk, []{return intthread::InterruptibleThread::all_thread_interrupted(); });
+
 
 	std::cout << "int stop after kill" << std::endl ;
 
-	_mutex_stopped.lock();
-	_stopped = true ;
-	_mutex_stopped.unlock();
 
 	return 0 ;	
 }
@@ -911,12 +900,14 @@ CBaseWifiClient::CBaseWifiClient()  {
 
 
 
+
+
 CBaseWifiClient::~CBaseWifiClient(){
 
 	std::cout << __func__ << std::endl ;
 
-	if (started())
-		stop();
+	//if (started())
+	//	stop();
 
 	clean_all();
 	
@@ -925,69 +916,9 @@ CBaseWifiClient::~CBaseWifiClient(){
 }
 
 
-bool CBaseWifiClient::all_thread_dead(){
-
-	_mutex_all_thread_dead.lock();
-
-	if(_all_thread_dead == 0){
-
-		_mutex_all_thread_dead.unlock();
-		return true ;
-	}
-		
-	_mutex_all_thread_dead.unlock();
-
-	return false ;
-}
 
 
 
-void CBaseWifiClient::thread_dead(){
-
-	_mutex_all_thread_dead.lock();
-	_all_thread_dead -= 1;
-	_mutex_all_thread_dead.unlock();
-}
-
-void CBaseWifiClient::thread_start(){
-
-	_mutex_all_thread_dead.lock();
-	_all_thread_dead += 1;
-	_mutex_all_thread_dead.unlock();
-}
-
-
-bool CBaseWifiClient::started(){
-
-	m_mutex_ctrl_run.lock();
-		
-		if(! m_started){
-			m_mutex_ctrl_run.unlock();
-			return false ;
-
-		}
-		
-	m_mutex_ctrl_run.unlock();
-
-	return true ;
-
-}
-
-bool CBaseWifiClient::stopped(){
-
-	_mutex_stopped.lock();
-		
-		if(! _stopped){
-			_mutex_stopped.unlock();
-			return false ;
-
-		}
-		
-	_mutex_stopped.unlock();
-
-	return true ;
-
-}
 
 
 
