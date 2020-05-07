@@ -1,12 +1,12 @@
-#!/usr/bin/make -f
+#/usr/bin/make -f
 #
 NAME	=	vwifi
 VERSION	=	1.1
 BINDIR	=	$(DESTDIR)/usr/local/bin
 MANDIR	=	$(DESTDIR)/usr/local/man/man1
 
-#EXEC	=	vwifi-server vwifi-guest vwifi-host vwifi-ctrl vwifi-inet-monitor
-EXEC	=	vwifi-server vwifi-guest vwifi-ctrl vwifi-inet-monitor
+EXEC	=	vwifi-server vwifi-guest vwifi-host vwifi-ctrl vwifi-inet-monitor
+#EXEC	=	vwifi-server vwifi-guest vwifi-ctrl vwifi-inet-monitor
 
 SRC		=	src
 OBJ		=	obj
@@ -87,7 +87,7 @@ vwifi-ctrl : vwifi-ctrl.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OB
 vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o  $(OBJ)/cwificlient.o $(OBJ)/cthread.o $(OBJ)/cscheduler.o $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tpower.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
-vwifi-host : vwifi-host.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o  $(OBJ)/cwificlient.o $(OBJ)/cscheduler.o $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tpower.o
+vwifi-host : vwifi-host.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o  $(OBJ)/cwificlient.o $(OBJ)/cthread.o $(OBJ)/cscheduler.o $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tpower.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
 vwifi-inet-monitor :  vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o $(OBJ)/cmonwirelessdevice.o
