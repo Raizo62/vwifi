@@ -37,6 +37,8 @@ class CSocketClient : public CSocket
 
 	// virtual :
 		virtual bool Connect()=0;
+
+		virtual int GetID()=0;
 };
 
 class CSocketClientINET : public CSocketClient
@@ -52,6 +54,8 @@ class CSocketClientINET : public CSocketClient
 		void Init(const char* IP, TPort port);
 
 		bool Connect();
+
+		int GetID();
 };
 
 class CSocketClientVHOST : public CSocketClient
@@ -67,6 +71,8 @@ class CSocketClientVHOST : public CSocketClient
 		void Init(TPort port);
 
 		bool Connect();
+
+		int GetID();
 };
 
 #endif

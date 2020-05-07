@@ -798,14 +798,15 @@ int CBaseWifiClient::start(){
 	}
 
 	/*connect to vsock/tcp server */
-	if( ! Connect() )
+	int id;
+	if( ! Connect(&id) )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return 0;
 	}
 
 	std::cout << "Connection to Server Ok" << std::endl;
-
+	std::cout << "ID: " <<id<<std::endl;
 
 	
 	/* start thread that handle incoming msg from hwsim driver */
@@ -881,15 +882,15 @@ void CBaseWifiClient::manage_server_crash(){
 	std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
 
 	/*connect to vsock/tcp server */
-	if( ! Connect() )
+	int id;
+	if( ! Connect(&id) )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return ;
 	}
 
 	std::cout << "Reconnection to Server Ok" << std::endl;
-
-
+	std::cout << "ID: " <<id<<std::endl;
 }
 
 CBaseWifiClient::CBaseWifiClient()  {
