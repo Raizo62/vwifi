@@ -254,15 +254,6 @@ class CWifiClient : public CBaseWifiClient, public TypeCSocketClient
 
 			*id=TypeCSocketClient::GetID();
 
-			if( TypeCSocketClient::GetType() == AF_INET )
-			{	// With TCP, send the ID
-				if( Send((char*)id, sizeof(*id)) < 0 )
-				{
-					Scheduler.DelNode(*this);
-					return false;
-				}
-			}
-
 			return true;
 		}
 

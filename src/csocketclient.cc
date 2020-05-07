@@ -190,7 +190,7 @@ int CSocketClientINET::GetID()
 	socklen_t len = sizeof(my_addr);
 	getsockname(Master, (struct sockaddr *) &my_addr, &len);
 
-	return getpid()^hash_ipaddr(&my_addr) ;
+	return hash_ipaddr(&my_addr) ;
 }
 
 // ----------------- CSocketClientVHOST

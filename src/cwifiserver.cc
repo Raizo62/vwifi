@@ -9,6 +9,7 @@
 
 #include "cwifiserver.h"
 #include "tpower.h"
+#include "tools.h"
 
 using namespace std;
 
@@ -78,7 +79,7 @@ TDescriptor CWifiServer::Accept()
 		// AF_VSOCK
 		cid=((struct sockaddr_vm*)&address)->svm_cid;
 	else // AF_INET
-		Read(new_socket,(char*)&cid,sizeof(cid));
+		cid=hash_ipaddr(&address);
 
 	CInfoWifi infoWifi;
 
