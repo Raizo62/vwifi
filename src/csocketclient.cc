@@ -142,7 +142,8 @@ ssize_t CSocketClient::ReadBigData(char* data, TMinimalSize sizeOfData)
 			return SOCKET_DISCONNECT ;
 		}
 
-		assert( size <= sizeOfData );
+		if( size > sizeOfData )
+			return SOCKET_ERROR ;
 
 		int ret_data = CSocket::Read(Master, data, size);
 		if( ret_data > 0 )
