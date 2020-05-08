@@ -1,3 +1,5 @@
+#include <condition_variable>
+#include <mutex>
 #include <netlink/netlink.h>
 #include <netlink/genl/genl.h>
 #include <netlink/genl/ctrl.h>
@@ -103,6 +105,8 @@ int CBaseWifiClient::process_messages_cb(struct nl_msg *msg, void *arg){
 
 int CBaseWifiClient::process_messages(struct nl_msg *msg, void *arg)
 {
+
+
 
 	int msg_len;
 	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
@@ -460,6 +464,7 @@ void CBaseWifiClient::recv_from_server(){
 	if (bytes == SOCKET_DISCONNECT)
 		manage_server_crash();
 
+
 	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
 	{
 		//std::cerr<<"socket.Read error"<<std::endl;
@@ -805,6 +810,8 @@ int CBaseWifiClient::start(){
 		return 0;
 	}
 
+	connected_to_server(true) ; 
+
 	std::cout << "Connection to Server Ok" << std::endl;
 	std::cout << "ID: " <<id<<std::endl;
 
@@ -843,11 +850,11 @@ int CBaseWifiClient::stop(){
 
 
 	/* stop the retrying connection to vsock server */
+	
 	StopReconnect(true);
-
-
+	
 	Close();
-
+	
 	pthread_kill(serverloop_id,SIGUSR1);
 
 	hwsimloop_task.interrupt() ;
@@ -874,8 +881,73 @@ void CBaseWifiClient::clean_all(){
 	nl_cb_put(_cb);
 }
 
+
+void CBaseWifiClient::connected_to_server(bool v){
+
+	std::lock_guard<std::mutex> lk(_mutex_connected_to_server);
+	_connected_to_server = v ;
+
+}
+
+
+bool CBaseWifiClient::is_connected_to_server(){
+
+	std::lock_guard<std::mutex> lk(_mutex_connected_to_server);
+	return _connected_to_server ;
+
+}
+
+//void CBaseWifiClient::manage_server_crash(){
+//
+//
+//	std::unique_lock<std::mutex> lk(_mutex_connected_to_server);
+//	
+//	_nb_thread_waiting++ ;
+//
+//	_cond_connected_to_server.wait(lk, [this]{return is_connected_to_server(); });
+//	
+//	if (_nb_thread_waiting == 1 ){
+//		
+//		connected_to_server(false) ;	
+//
+//	
+//		//std::cout << "vsock/tcp connection with  server is lost" << std::endl ;
+//		Close();
+//
+//		//std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
+//
+//		lk.unlock();	
+//	
+//		/*connect to vsock/tcp server */
+//		int id;
+//		if( ! Connect(&id) )
+//		{
+//			std::cout<<"socket.Connect error"<<std::endl;
+//			return ;
+//		}
+//
+//		connected_to_server(true) ;	
+//
+//		std::cout << "Reconnection to Server Ok" << std::endl;
+//		//std::cout << "ID: " <<id<<std::endl;
+//
+//		_cond_connected_to_server.notify_all();
+//	}
+//	
+//	lk.lock();	
+//	_nb_thread_waiting-- ;
+//	lk.unlock();	
+//
+//}
+//
+
 void CBaseWifiClient::manage_server_crash(){
 
+	if (!is_connected_to_server())
+	       return ;
+
+	connected_to_server(false) ;	
+	
 	std::cout << "vsock/tcp connection with  server is lost" << std::endl ;
 	Close();
 
@@ -888,6 +960,8 @@ void CBaseWifiClient::manage_server_crash(){
 		std::cout<<"socket.Connect error"<<std::endl;
 		return ;
 	}
+
+	connected_to_server(true) ;	
 
 	std::cout << "Reconnection to Server Ok" << std::endl;
 	std::cout << "ID: " <<id<<std::endl;

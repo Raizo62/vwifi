@@ -28,7 +28,11 @@ class CBaseWifiClient : public intthread::AsyncTask {
 		pthread_t serverloop_id ;
 
 		CScheduler	Scheduler;
-
+		bool 		_connected_to_server { false };
+		std::mutex 	_mutex_connected_to_server ;
+		std::condition_variable 	_cond_connected_to_server ;		
+		int _nb_thread_waiting {0} ;
+		
 		WirelessDeviceList _list_winterfaces ;
 
 		/** pointer for netlink socket */
@@ -89,6 +93,11 @@ class CBaseWifiClient : public intthread::AsyncTask {
 		void clean_all();
 
 		bool initialized();
+
+		void connected_to_server(bool v);
+
+		bool is_connected_to_server();
+
 
 	protected :
 
