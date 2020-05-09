@@ -107,6 +107,8 @@ int CBaseWifiClient::process_messages(struct nl_msg *msg, void *arg)
 {
 
 
+	if ( ! is_connected_to_server())
+		return 1 ;
 
 	int msg_len;
 	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
@@ -432,6 +434,9 @@ int CBaseWifiClient::send_cloned_frame_msg(struct ether_addr *dst, char *data, i
 
 void CBaseWifiClient::recv_from_server(){
 
+	if ( ! is_connected_to_server())
+		return  ;
+
 
 	char buf[1024];
 	int bytes;
@@ -616,7 +621,8 @@ void  CBaseWifiClient::monitor_hwsim_loop()
 				break;
 			}
 		}
-		
+
+			
 	}
 
 	nl_close(sock);
@@ -804,10 +810,10 @@ int CBaseWifiClient::start(){
 
 	/*connect to vsock/tcp server */
 	int id;
-	if( ! Connect(&id) )
+	while( ! Connect(&id) )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
-		return 0;
+		//return 0;
 	}
 
 	connected_to_server(true) ; 
@@ -828,7 +834,7 @@ int CBaseWifiClient::start(){
 	/* start thread updating wireless inet interfaces*/
 	winterface_update_loop_task.start(this,&CBaseWifiClient::winet_update_loop);
 
-
+	connection_to_server_loop_task.start(this,&CBaseWifiClient::manage_server_crash_loop); 
 
 	/*
 	 * save the c handle version of serverloop thread (pthread_t type)
@@ -839,7 +845,8 @@ int CBaseWifiClient::start(){
 	hwsimloop_task.join();
 	serverloop_task.join();
 	winterface_update_loop_task.join();
-
+	connection_to_server_loop_task.join();
+	
 	delete monwireless ;
 
 	return 1;
@@ -851,12 +858,12 @@ int CBaseWifiClient::stop(){
 
 	/* stop the retrying connection to vsock server */
 	
+	connection_to_server_loop_task.interrupt();
 	StopReconnect(true);
 	
 	Close();
 	
 	pthread_kill(serverloop_id,SIGUSR1);
-
 	hwsimloop_task.interrupt() ;
 	serverloop_task.interrupt() ;
 	monitorloop_task.interrupt() ;
@@ -894,6 +901,66 @@ bool CBaseWifiClient::is_connected_to_server(){
 
 	std::lock_guard<std::mutex> lk(_mutex_connected_to_server);
 	return _connected_to_server ;
+
+}
+
+void CBaseWifiClient::manage_server_crash(){
+
+	connected_to_server(false) ;
+	
+}
+
+void CBaseWifiClient::manage_server_crash_loop(){
+
+	while (true) {
+
+	
+		try {
+		
+			intthread::interruption_point();
+	
+		}
+		
+		catch (const intthread::thread_interrupted& interrupt) {
+			dead();
+			break;
+		}
+
+		
+		if (! is_connected_to_server()) {
+
+			std::cout << "manage disconnection with server" << std::endl ;
+
+	
+			if (reconnect_to_server()){
+
+				connected_to_server(true) ;
+			}
+
+		}
+		
+		using namespace  std::chrono_literals;
+		std::this_thread::sleep_for(1s);
+	}	
+}
+
+bool CBaseWifiClient::reconnect_to_server(){
+
+	Close();
+	std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
+
+	/*connect to vsock/tcp server */
+	int id;
+	if( ! Connect(&id) )
+	{
+		std::cout<<"socket.Connect error"<<std::endl;
+		return false ;
+	}
+
+
+	std::cout << "Reconnection to Server Ok" << std::endl;
+	std::cout << "ID: " <<id<<std::endl;
+	return true ;
 
 }
 
@@ -941,32 +1008,32 @@ bool CBaseWifiClient::is_connected_to_server(){
 //}
 //
 
-void CBaseWifiClient::manage_server_crash(){
-
-	if (!is_connected_to_server())
-	       return ;
-
-	connected_to_server(false) ;	
-	
-	std::cout << "vsock/tcp connection with  server is lost" << std::endl ;
-	Close();
-
-	std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
-
-	/*connect to vsock/tcp server */
-	int id;
-	if( ! Connect(&id) )
-	{
-		std::cout<<"socket.Connect error"<<std::endl;
-		return ;
-	}
-
-	connected_to_server(true) ;	
-
-	std::cout << "Reconnection to Server Ok" << std::endl;
-	std::cout << "ID: " <<id<<std::endl;
-}
-
+//void CBaseWifiClient::manage_server_crash(){
+//
+//	if (!is_connected_to_server())
+//	       return ;
+//
+//	connected_to_server(false) ;	
+//	
+//	std::cout << "vsock/tcp connection with  server is lost" << std::endl ;
+//	Close();
+//
+//	std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
+//
+//	/*connect to vsock/tcp server */
+//	int id;
+//	if( ! Connect(&id) )
+//	{
+//		std::cout<<"socket.Connect error"<<std::endl;
+//		return ;
+//	}
+//
+//	connected_to_server(true) ;	
+//
+//	std::cout << "Reconnection to Server Ok" << std::endl;
+//	std::cout << "ID: " <<id<<std::endl;
+//}
+//
 CBaseWifiClient::CBaseWifiClient()  {
 
 	/* allows calls from  static callback to non static member function */ 

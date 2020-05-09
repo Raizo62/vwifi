@@ -30,8 +30,8 @@ class CBaseWifiClient : public intthread::AsyncTask {
 		CScheduler	Scheduler;
 		bool 		_connected_to_server { false };
 		std::mutex 	_mutex_connected_to_server ;
-		std::condition_variable 	_cond_connected_to_server ;		
-		int _nb_thread_waiting {0} ;
+		std::condition_variable 	_cond_connected_to_server ;
+
 		
 		WirelessDeviceList _list_winterfaces ;
 
@@ -48,7 +48,7 @@ class CBaseWifiClient : public intthread::AsyncTask {
 		intthread::InterruptibleThread   serverloop_task ;
  		intthread::InterruptibleThread   monitorloop_task ;
  		intthread::InterruptibleThread   winterface_update_loop_task ;
-
+		intthread::InterruptibleThread   connection_to_server_loop_task ; 
 
 		bool _initialized { false } ;
 		std::mutex _mutex_initialized ;
@@ -97,6 +97,10 @@ class CBaseWifiClient : public intthread::AsyncTask {
 		void connected_to_server(bool v);
 
 		bool is_connected_to_server();
+
+		bool reconnect_to_server() ;
+
+		void manage_server_crash_loop() ;
 
 
 	protected :
