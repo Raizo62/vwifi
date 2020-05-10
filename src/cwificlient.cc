@@ -813,6 +813,10 @@ int CBaseWifiClient::start(){
 	while( ! Connect(&id) )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
+		using namespace  std::chrono_literals;
+		std::this_thread::sleep_for(2s);
+
+		
 		//return 0;
 	}
 
