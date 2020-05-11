@@ -55,7 +55,7 @@ class InterruptibleThread
 {
 	private:
 
-		InterruptFlag* _interrupt_flag ;
+		InterruptFlag* _interrupt_flag {nullptr} ;
 		std::thread _internal_thread ;
 		static int number_thread ;
 		static std::mutex _number_thread_mutex ;

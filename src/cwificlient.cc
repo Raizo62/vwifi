@@ -862,11 +862,12 @@ int CBaseWifiClient::stop(){
 
 	/* stop the retrying connection to vsock server */
 	
+	//StopReconnect(true);
+
+	if (is_connected_to_server())	
+		Close();
+	
 	connection_to_server_loop_task.interrupt();
-	StopReconnect(true);
-	
-	Close();
-	
 	pthread_kill(serverloop_id,SIGUSR1);
 	hwsimloop_task.interrupt() ;
 	serverloop_task.interrupt() ;
