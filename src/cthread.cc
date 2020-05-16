@@ -59,6 +59,11 @@ InterruptibleThread::InterruptibleThread(){
 }
 
 
+bool InterruptibleThread::started() 
+{
+
+	return _started ;
+}
 
 void InterruptibleThread::interrupt(){
 
@@ -66,6 +71,7 @@ void InterruptibleThread::interrupt(){
 		_interrupt_flag->set();
 
 	}
+	_started = false ;
 
 }
 

@@ -787,6 +787,7 @@ int CBaseWifiClient::start(){
 	}
 
 
+
 	try{
 
 		/** make it attribute member if you would use it elsewhere */	
@@ -808,14 +809,23 @@ int CBaseWifiClient::start(){
 	
 	}
 
+
+	_being_started = true ;
+
 	/*connect to vsock/tcp server */
 	int id;
-	if( ! Connect(&id) )
+	while( ! Connect(&id) )
 	{
+		if (! _being_started)
+			return 0 ;
 		std::cout<<"socket.Connect error"<<std::endl;
+		using namespace  std::chrono_literals;
+		std::this_thread::sleep_for(2s);
 
-		return 0;
+		
+		//return 0;
 	}
+
 
 	connected_to_server(true) ; 
 
@@ -842,6 +852,8 @@ int CBaseWifiClient::start(){
 	 */
 	serverloop_id = serverloop_task.get_native_handle();
 
+	_being_started = false ;
+
 	monitorloop_task.join();
 	hwsimloop_task.join();
 	serverloop_task.join();
@@ -859,16 +871,19 @@ int CBaseWifiClient::stop(){
 
 	/* stop the retrying connection to vsock server */
 	
-	//StopReconnect(true);
-
-	if (is_connected_to_server())
-	{
+	if (is_connected_to_server())	
 		Close();
-		connection_to_server_loop_task.interrupt();
-		pthread_kill(serverloop_id,SIGUSR1);
-		serverloop_task.interrupt() ;
+	
+	if (  _being_started ){
+		_being_started = false ;
+		return 0 ;
 	}
 
+	connection_to_server_loop_task.interrupt();
+	pthread_kill(serverloop_id,SIGUSR1);
+	
+	serverloop_task.interrupt() ;
+	
 	hwsimloop_task.interrupt() ;
 	monitorloop_task.interrupt() ;
 	winterface_update_loop_task.interrupt() ;

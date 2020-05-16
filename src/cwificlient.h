@@ -32,6 +32,7 @@ class CBaseWifiClient : public intthread::AsyncTask {
 		std::mutex 	_mutex_connected_to_server ;
 		std::condition_variable 	_cond_connected_to_server ;
 
+		bool _being_started { false } ;
 		
 		WirelessDeviceList _list_winterfaces ;
 

@@ -59,6 +59,7 @@ class InterruptibleThread
 		std::thread _internal_thread ;
 		static int number_thread ;
 		static std::mutex _number_thread_mutex ;
+		bool _started {false} ;
 
 	public:
 
@@ -82,6 +83,8 @@ class InterruptibleThread
 
 		}*/
 
+		bool started() ;
+
 		template <typename OBJECT, typename FUNC>
 		void start(OBJECT * obj , FUNC f  ){
 			
@@ -92,6 +95,7 @@ class InterruptibleThread
 				(obj->*f)();
 				});
 			_interrupt_flag = p.get_future().get();
+			_started = true ;
 
 		}
 
