@@ -810,14 +810,11 @@ int CBaseWifiClient::start(){
 
 	/*connect to vsock/tcp server */
 	int id;
-	while( ! Connect(&id) )
+	if( ! Connect(&id) )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
-		using namespace  std::chrono_literals;
-		std::this_thread::sleep_for(2s);
 
-		
-		//return 0;
+		return 0;
 	}
 
 	connected_to_server(true) ; 
