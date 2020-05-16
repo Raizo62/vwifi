@@ -56,7 +56,7 @@ bool CSocketClient::ConnectLoop(struct sockaddr* server, size_t size_of_server)
 		sleep(2);
 	//}
 
-	// here if StopTheReconnect is asked
+	// impossible to be here
 	return false;
 }
 
