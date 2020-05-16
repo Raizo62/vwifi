@@ -861,13 +861,15 @@ int CBaseWifiClient::stop(){
 	
 	//StopReconnect(true);
 
-	if (is_connected_to_server())	
+	if (is_connected_to_server())
+	{
 		Close();
-	
-	connection_to_server_loop_task.interrupt();
-	pthread_kill(serverloop_id,SIGUSR1);
+		connection_to_server_loop_task.interrupt();
+		pthread_kill(serverloop_id,SIGUSR1);
+		serverloop_task.interrupt() ;
+	}
+
 	hwsimloop_task.interrupt() ;
-	serverloop_task.interrupt() ;
 	monitorloop_task.interrupt() ;
 	winterface_update_loop_task.interrupt() ;
 
