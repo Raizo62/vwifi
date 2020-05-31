@@ -24,6 +24,11 @@ void CSocketServer::Init(TPort port)
 	Port=port;
 }
 
+TPort CSocketServer::GetPort()
+{
+	return Port;
+}
+
 CSocketServer::~CSocketServer()
 {
 	for (auto& infoSocket : InfoSockets)

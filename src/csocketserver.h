@@ -29,6 +29,8 @@ class CSocketServer : public CSocket
 
 		void Init(TPort port);
 
+		TPort GetPort();
+
 		virtual bool Listen();
 
 		virtual TDescriptor Accept();
