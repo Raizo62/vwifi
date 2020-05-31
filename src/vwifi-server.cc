@@ -77,7 +77,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 				if( masterSendToOwnClients )
 					if( serverMaster->GetNumberClient() > 1 )
 					{
-#ifdef _DEBUG
+#ifdef _VERBOSE2
 						cout<<"Server "<<serverMaster->GetPort()<<" forward "<<valread<<" bytes from own client "; serverMaster->ShowInfoWifi(i); cout<<" to "<< serverMaster->GetNumberClient()-1 << " others owns clients" <<endl;
 #endif
 						serverMaster->SendAllOtherClients(i,power,buffer,valread);
@@ -87,14 +87,14 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 				{
 					if( serverSecondForwardWithoutLoss )
 					{
-#ifdef _DEBUG
+#ifdef _VERBOSE2
 					cout<<"Server "<<serverSecond->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients without loss" <<endl;
 #endif
 						serverSecond->SendAllClientsWithoutLoss(power,buffer,valread);
 					}
 					else
 					{
-#ifdef _DEBUG
+#ifdef _VERBOSE2
 						cout<<"Server "<<serverSecond->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients" <<endl;
 #endif
 						CCoordinate coo=*(serverMaster->GetReferenceOnInfoWifiByIndex(i));
@@ -106,14 +106,14 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 				{
 					if( serverThirdIsWithoutCoordinate )
 					{
-#ifdef _DEBUG
+#ifdef _VERBOSE2
 						cout<<"Server "<<serverThird->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverThird->GetNumberClient() << " clients without loss" <<endl;
 #endif
 						serverThird->SendAllClientsWithoutLoss(power,buffer,valread);
 					}
 					else
 					{
-#ifdef _DEBUG
+#ifdef _VERBOSE2
 						cout<<"Server "<<serverThird->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients" <<endl;
 #endif
 						CCoordinate coo=*(serverMaster->GetReferenceOnInfoWifiByIndex(i));

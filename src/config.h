@@ -18,4 +18,9 @@ const TPort CTRL_PORT = WIFI_GUEST_PORT_VHOST+3;
 
 #define ADDRESS_IP "127.0.0.1"
 
+#ifdef _DEBUG
+	// #define _VERBOSE1
+	// #define _VERBOSE2
+#endif
+
 #endif
