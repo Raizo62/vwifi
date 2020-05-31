@@ -16,7 +16,7 @@ class CSocketClient : public CSocket
 
 	protected :
 
-		bool ConnectLoop(struct sockaddr* server, size_t size_of_server);
+		bool ConnectCore(struct sockaddr* server, size_t size_of_server);
 
 	public :
 
@@ -30,13 +30,16 @@ class CSocketClient : public CSocket
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
 		ssize_t ReadBigData(char* data, TMinimalSize sizeOfData);
-		
+
 		bool SetBlocking(bool blocking);
 
 		void StopReconnect(bool status);
 
+		bool ConnectLoop();
+
 	// virtual :
 		virtual bool Connect()=0;
+
 
 		virtual int GetID()=0;
 };

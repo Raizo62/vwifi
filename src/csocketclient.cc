@@ -12,7 +12,7 @@ using namespace std;
 
 // ----------------- CSocketClient
 
-CSocketClient::~CSocketClient() 
+CSocketClient::~CSocketClient()
 {
 	CSocket::Close();
 }
@@ -33,30 +33,37 @@ void CSocketClient::Init()
 	StopTheReconnect=false ;
 }
 
-bool CSocketClient::ConnectLoop(struct sockaddr* server, size_t size_of_server)
+bool CSocketClient::ConnectLoop()
 {
-	//while ( ! StopTheReconnect )
-	//{
-		//create a master socket
-		if( ! Configure() )
-		{
-			cerr<<"Error : CSocketClient::Connect : Configure"<<endl;
-			return false;
-		}
-
-		if( ! connect(Master,server,size_of_server) )
-		{
-			IsConnected=true;
-
+	while ( ! StopTheReconnect )
+	{
+		if( Connect() )
 			return true;
-		}
+	}
 
-		perror("CSocketClient::Connect : connect");
-		Close();
-		sleep(2);
-	//}
+	// The system asks to stop the reconnect
+	return false;
+}
 
-	// impossible to be here
+bool CSocketClient::ConnectCore(struct sockaddr* server, size_t size_of_server)
+{
+	if( ! Configure() )
+	{
+		cerr<<"Error : CSocketClient::Connect : Configure"<<endl;
+		return false;
+	}
+
+	if( ! connect(Master,server,size_of_server) )
+	{
+		IsConnected=true;
+
+		return true;
+	}
+
+	perror("CSocketClient::Connect : connect");
+	Close();
+	sleep(2);
+
 	return false;
 }
 
@@ -181,7 +188,7 @@ void CSocketClientINET::Init(const char* IP, TPort port)
 
 bool CSocketClientINET::Connect()
 {
-	return ConnectLoop((struct sockaddr*) &Server, sizeof(Server));
+	return ConnectCore((struct sockaddr*) &Server, sizeof(Server));
 }
 
 int CSocketClientINET::GetID()
@@ -208,7 +215,7 @@ void CSocketClientVHOST::Init(TPort port)
 
 bool CSocketClientVHOST::Connect()
 {
-	return ConnectLoop((struct sockaddr*) &Server, sizeof(Server));
+	return ConnectCore((struct sockaddr*) &Server, sizeof(Server));
 }
 
 int CSocketClientVHOST::GetID()
