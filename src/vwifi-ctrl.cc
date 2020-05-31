@@ -35,7 +35,7 @@ int AskList()
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
-	if( ! socket.Connect() )
+	if( ! socket.ConnectLoop() )
 	{
 		cerr<<"Error : AskList : socket.Connect error"<<endl;
 		return 1;
@@ -104,7 +104,7 @@ int ChangeCoordinate(int argc, char *argv[])
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
-	if( ! socket.Connect() )
+	if( ! socket.ConnectLoop() )
 	{
 		cerr<<"Error : ChangeCoordinate : socket.Connect error"<<endl;
 		return 1;
@@ -161,7 +161,7 @@ int ChangePacketLoss(int argc, char *argv[])
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
-	if( ! socket.Connect() )
+	if( ! socket.ConnectLoop() )
 	{
 		cerr<<"Error : loss : socket.Connect error"<<endl;
 		return 1;
@@ -201,7 +201,7 @@ int AskStatus()
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
-	if( ! socket.Connect() )
+	if( ! socket.ConnectLoop() )
 	{
 		cerr<<"Error : AskStatus : socket.Connect error"<<endl;
 		return 1;
@@ -294,7 +294,7 @@ int AskShow()
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
-	if( ! socket.Connect() )
+	if( ! socket.ConnectLoop() )
 	{
 		cerr<<"Error : AskShow : socket.Connect error"<<endl;
 		return 1;
@@ -349,7 +349,7 @@ int CloseAllClient()
 
 	socket.Init(ADDRESS_IP,CTRL_PORT);
 
-	if( ! socket.Connect() )
+	if( ! socket.ConnectLoop() )
 	{
 		cerr<<"Error : CloseAllClient : socket.Connect error"<<endl;
 		return 1;
