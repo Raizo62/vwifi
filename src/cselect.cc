@@ -3,16 +3,16 @@
 
 #include <assert.h> // assert
 
-#include "cscheduler.h"
+#include "cselect.h"
 
 using namespace std;
 
-CScheduler::CScheduler()
+CSelect::CSelect()
 {
 	Init();
 }
 
-void CScheduler::Init()
+void CSelect::Init()
 {
 	//clear the socket set
 	FD_ZERO(&Master);
@@ -23,14 +23,14 @@ void CScheduler::Init()
 	MaxDescriptor=-1;
 }
 
-void CScheduler::UpdateMaxDescriptor(TDescriptor descriptor)
+void CSelect::UpdateMaxDescriptor(TDescriptor descriptor)
 {
 	//highest file descriptor number, need it for the select function
 	if ( descriptor > MaxDescriptor )
 		MaxDescriptor=descriptor;
 }
 
-bool CScheduler::AddNode(TDescriptor descriptor)
+bool CSelect::AddNode(TDescriptor descriptor)
 {
 	//add new socket to array of sockets
 	ListNodes.push_back(descriptor);
@@ -44,7 +44,7 @@ bool CScheduler::AddNode(TDescriptor descriptor)
 	return true;
 }
 
-void CScheduler::DelNode(TDescriptor descriptor)
+void CSelect::DelNode(TDescriptor descriptor)
 {
 	MaxDescriptor=-1;
 	for (auto node = ListNodes.begin() ; node != ListNodes.end(); ++node)
@@ -64,12 +64,12 @@ void CScheduler::DelNode(TDescriptor descriptor)
 	}
 }
 
-TDescriptor CScheduler::Wait()
+TDescriptor CSelect::Wait()
 {
 	return Wait(NULL);
 }
 
-TDescriptor CScheduler::Wait(const sigset_t *sigmask)
+TDescriptor CSelect::Wait(const sigset_t *sigmask)
 {
 	/* back up master */
 	Dup = Master;
@@ -85,12 +85,12 @@ TDescriptor CScheduler::Wait(const sigset_t *sigmask)
 }
 
 
-bool CScheduler::DescriptorHasAction(TDescriptor descriptor)
+bool CSelect::DescriptorHasAction(TDescriptor descriptor)
 {
 	return FD_ISSET( descriptor , &Dup);
 }
 
-bool CScheduler::NodeHasAction(TIndex index)
+bool CSelect::NodeHasAction(TIndex index)
 {
 	assert( index < ListNodes.size() );
 

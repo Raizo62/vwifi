@@ -2,7 +2,7 @@
 #define _CCTRLSERVER_H_
 
 #include "cwifiserver.h" // CWifiServer CSocketServer
-#include "cscheduler.h" // CScheduler
+#include "cselect.h" // CSelect
 #include "types.h" // TOrder
 
 class CCTRLServer : public CSocketServer
@@ -10,7 +10,7 @@ class CCTRLServer : public CSocketServer
 		CWifiServer* WifiGuestVHostServer;
 		CWifiServer* WifiGuestInetServer;
 		CWifiServer* WifiHostServer;
-		CScheduler* Scheduler;
+		CSelect* Scheduler;
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
 
@@ -32,7 +32,7 @@ class CCTRLServer : public CSocketServer
 
 	public :
 
-		CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiHostServer, CScheduler* scheduler);
+		CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiHostServer, CSelect* scheduler);
 
 		void ReceiveOrder();
 };

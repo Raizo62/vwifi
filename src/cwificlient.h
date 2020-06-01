@@ -10,7 +10,7 @@
 #include "cwirelessdevice.h"
 #include "cwirelessdevicelist.h"
 #include "cmonwirelessdevice.h"
-#include "cscheduler.h"
+#include "cselect.h"
 #include <pthread.h>
 
 #include "cthread.h"
@@ -27,7 +27,7 @@ class CBaseWifiClient : public intthread::AsyncTask {
 		 
 		pthread_t serverloop_id ;
 
-		CScheduler	Scheduler;
+		CSelect	Scheduler;
 		bool 		_connected_to_server { false };
 		std::mutex 	_mutex_connected_to_server ;
 		std::condition_variable 	_cond_connected_to_server ;

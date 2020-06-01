@@ -6,11 +6,11 @@
 #include "config.h"
 #include "cwifiserver.h"
 #include "cctrlserver.h"
-#include "cscheduler.h"
+#include "cselect.h"
 
 using namespace std;
 
-void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiServer* serverSecond, bool serverSecondForwardWithoutLoss, CWifiServer* serverThird, bool serverThirdIsWithoutCoordinate, CScheduler* scheduler)
+void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiServer* serverSecond, bool serverSecondForwardWithoutLoss, CWifiServer* serverThird, bool serverThirdIsWithoutCoordinate, CSelect* scheduler)
 {
 	TDescriptor socket;
 
@@ -131,7 +131,7 @@ int main(int argc , char *argv[])
 {
 	TDescriptor socket;
 
-	CScheduler scheduler;
+	CSelect scheduler;
 
 	CWifiServer wifiGuestVHostServer(AF_VSOCK);
 	cout<<"GUEST VHOST : ";

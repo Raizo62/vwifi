@@ -1,6 +1,6 @@
 #include "cctrlserver.h"
 
-CCTRLServer::CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiHostServer, CScheduler* scheduler) : CSocketServer(AF_INET)
+CCTRLServer::CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiHostServer, CSelect* scheduler) : CSocketServer(AF_INET)
 {
 	WifiGuestVHostServer=wifiGuestVHostServer;
 	WifiGuestInetServer=wifiGuestInetServer;

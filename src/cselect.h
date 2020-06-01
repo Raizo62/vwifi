@@ -1,5 +1,5 @@
-#ifndef _CSCHEDULER_H_
-#define _CSCHEDULER_H_
+#ifndef _CSELECT_H_
+#define _CSELECT_H_
 
 #include <sys/socket.h>
 #include <vector> // vector
@@ -8,7 +8,7 @@
 
 const int SCHEDULER_ERROR=-1;
 
-class CScheduler
+class CSelect
 {
 	private :
 
@@ -26,7 +26,7 @@ class CScheduler
 
 	public :
 
-		CScheduler();
+		CSelect();
 
 		bool AddNode(TDescriptor descriptor);
 
