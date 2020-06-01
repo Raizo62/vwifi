@@ -13,7 +13,7 @@ enum STATE {
 	SUSPENDED 
 };
 
-CBaseWifiClient* wifiClient;
+CKernelWifi* wifiClient;
 
 enum STATE  _state = STOPPED ;
 
