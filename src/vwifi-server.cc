@@ -24,16 +24,16 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 
 		if( ! serverMaster->IsEnable(i) )
 		{
-					//Somebody disconnected
+			//Somebody disconnected
 
-					//Close the socket
-					cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
-					serverMaster->CloseClient(i);
+			//Close the socket
+			cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+			serverMaster->CloseClient(i);
 
-					//del master socket to set
-					scheduler->DelNode(socket);
+			//del master socket to set
+			scheduler->DelNode(socket);
 
-					continue;
+			continue;
 		}
 
 		if( scheduler->DescriptorHasAction(socket) )
@@ -43,82 +43,76 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 
 			// read the power
 			valread = serverMaster->Read( socket , (char*)&power, sizeof(power));
-			if ( valread >= 0 )
+			if ( valread <= 0 )
 			{
-				if ( valread == 0 )
-				{
-					//Close the socket
-					cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
-					serverMaster->CloseClient(i);
+				//Close the socket
+				cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+				serverMaster->CloseClient(i);
 
-					//del master socket to set
-					scheduler->DelNode(socket);
+				//del master socket to set
+				scheduler->DelNode(socket);
 
-					continue;
-				}
+				continue;
 			}
 
 			// read the data
 			valread = serverMaster->ReadBigData( socket , buffer, sizeof(buffer));
-			if ( valread >= 0 )
+			if ( valread <= 0 )
 			{
-				if ( valread == 0 )
+				//Close the socket
+				cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+				serverMaster->CloseClient(i);
+
+				//del master socket to set
+				scheduler->DelNode(socket);
+
+				continue;
+			}
+
+			if( masterSendToOwnClients )
+				if( serverMaster->GetNumberClient() > 1 )
 				{
-					//Close the socket
-					cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
-					serverMaster->CloseClient(i);
-
-					//del master socket to set
-					scheduler->DelNode(socket);
-
-					continue;
+#ifdef _VERBOSE2
+					cout<<"Server "<<serverMaster->GetPort()<<" forward "<<valread<<" bytes from own client "; serverMaster->ShowInfoWifi(i); cout<<" to "<< serverMaster->GetNumberClient()-1 << " others owns clients" <<endl;
+#endif
+					serverMaster->SendAllOtherClients(i,power,buffer,valread);
 				}
 
-				if( masterSendToOwnClients )
-					if( serverMaster->GetNumberClient() > 1 )
-					{
-#ifdef _VERBOSE2
-						cout<<"Server "<<serverMaster->GetPort()<<" forward "<<valread<<" bytes from own client "; serverMaster->ShowInfoWifi(i); cout<<" to "<< serverMaster->GetNumberClient()-1 << " others owns clients" <<endl;
-#endif
-						serverMaster->SendAllOtherClients(i,power,buffer,valread);
-					}
-
-				if( serverSecond->GetNumberClient() > 0 )
+			if( serverSecond->GetNumberClient() > 0 )
+			{
+				if( serverSecondForwardWithoutLoss )
 				{
-					if( serverSecondForwardWithoutLoss )
-					{
 #ifdef _VERBOSE2
 					cout<<"Server "<<serverSecond->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients without loss" <<endl;
 #endif
-						serverSecond->SendAllClientsWithoutLoss(power,buffer,valread);
-					}
-					else
-					{
-#ifdef _VERBOSE2
-						cout<<"Server "<<serverSecond->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients" <<endl;
-#endif
-						CCoordinate coo=*(serverMaster->GetReferenceOnInfoWifiByIndex(i));
-						serverSecond->SendAllClients(coo,power,buffer,valread);
-					}
+					serverSecond->SendAllClientsWithoutLoss(power,buffer,valread);
 				}
-
-				if( serverThird->GetNumberClient() > 0 )
+				else
 				{
-					if( serverThirdIsWithoutCoordinate )
-					{
 #ifdef _VERBOSE2
-						cout<<"Server "<<serverThird->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverThird->GetNumberClient() << " clients without loss" <<endl;
+					cout<<"Server "<<serverSecond->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients" <<endl;
 #endif
-						serverThird->SendAllClientsWithoutLoss(power,buffer,valread);
-					}
-					else
-					{
+					CCoordinate coo=*(serverMaster->GetReferenceOnInfoWifiByIndex(i));
+					serverSecond->SendAllClients(coo,power,buffer,valread);
+				}
+			}
+
+			if( serverThird->GetNumberClient() > 0 )
+			{
+				if( serverThirdIsWithoutCoordinate )
+				{
 #ifdef _VERBOSE2
-						cout<<"Server "<<serverThird->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients" <<endl;
+					cout<<"Server "<<serverThird->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverThird->GetNumberClient() << " clients without loss" <<endl;
 #endif
-						CCoordinate coo=*(serverMaster->GetReferenceOnInfoWifiByIndex(i));
-						serverThird->SendAllClients(coo,power,buffer,valread);
-					}
+					serverThird->SendAllClientsWithoutLoss(power,buffer,valread);
+				}
+				else
+				{
+#ifdef _VERBOSE2
+					cout<<"Server "<<serverThird->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients" <<endl;
+#endif
+					CCoordinate coo=*(serverMaster->GetReferenceOnInfoWifiByIndex(i));
+					serverThird->SendAllClients(coo,power,buffer,valread);
 				}
 			}
 		}
