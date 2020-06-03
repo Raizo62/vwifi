@@ -88,28 +88,7 @@ ssize_t CSocketClient::Send(const char* data, ssize_t sizeOfData)
 ssize_t CSocketClient::SendBigData(const char* data, TMinimalSize sizeOfData)
 {
 	if ( IsConnected ){
-
-		ssize_t ret = CSocket::Send(Master, (char*)&sizeOfData, (unsigned)sizeof(sizeOfData));
-		if( ret == 0 )
-			return SOCKET_DISCONNECT ;
-		if ( ret < 0 )
-		{
-			if ( errno == EWOULDBLOCK )
-				return SOCKET_ERROR ;
-			// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
-			return SOCKET_DISCONNECT ;
-		}
-
-		ret = CSocket::Send(Master, data, sizeOfData);
-
-		if( ret > 0 )
-			return ret ;
-		if(ret < 0 && errno == EWOULDBLOCK )
-			return SOCKET_ERROR ;
-
-		// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as connection-losing
-		return SOCKET_DISCONNECT ;
-
+		return CSocket::SendBigData(Master, data, sizeOfData);
 	}
 	return SOCKET_ERROR;
 }
@@ -134,33 +113,7 @@ ssize_t CSocketClient::Read(char* data, ssize_t sizeOfData)
 ssize_t CSocketClient::ReadBigData(char* data, TMinimalSize sizeOfData)
 {
 	if ( IsConnected ){
-
-		TMinimalSize size;
-
-		int ret_size = CSocket::Read(Master, (char*)&size, (unsigned)sizeof(size));
-
-		if( ret_size == 0 )
-			return SOCKET_DISCONNECT ;
-		if ( ret_size < 0 )
-		{
-			if ( errno == EWOULDBLOCK )
-				return SOCKET_ERROR ;
-			// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
-			return SOCKET_DISCONNECT ;
-		}
-
-		if( size > sizeOfData )
-			return SOCKET_ERROR ;
-
-		int ret_data = CSocket::Read(Master, data, size);
-		if( ret_data > 0 )
-			return ret_data ;
-
-		if ( ret_data < 0 && errno == EWOULDBLOCK )
-			return SOCKET_ERROR ;
-
-		// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
-		return SOCKET_DISCONNECT ;
+		return CSocket::ReadBigData(Master, data, sizeOfData);
 	}
 	return SOCKET_ERROR;
 }

@@ -26,8 +26,10 @@ class CSocket
 		bool Configure();
 
 		virtual ssize_t Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData);
+		virtual ssize_t SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData);
 
 		virtual ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
+		virtual ssize_t ReadBigData(TDescriptor descriptor, char* data, TMinimalSize sizeOfData);
 
 		virtual bool SetBlocking(TDescriptor descriptor, bool blocking);
 
