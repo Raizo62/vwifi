@@ -5,8 +5,9 @@
 
 #include "csocketserver.h"
 #include "cinfowifi.h"
+#include "cwifi.h"
 
-class CWifiServer : public CSocketServer
+class CWifiServer : public CSocketServer, public CWifi
 {
 		friend class CCTRLServer;
 

@@ -14,6 +14,8 @@ const int SOCKET_OK=0;
 
 class CSocket
 {
+	friend class CWifi;
+
 	protected :
 
 		TDescriptor Master;
@@ -24,6 +26,7 @@ class CSocket
 		CSocket(TSocket type);
 
 		TDescriptor GetDescriptor();
+
 		bool Configure();
 
 		virtual ssize_t Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData);
