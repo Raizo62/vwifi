@@ -3,9 +3,10 @@
 
 #include "ckernelwifi.h"
 #include "csocketclient.h"
+#include "cwifi.h"
 
 template <typename TypeCSocketClient>
-class CWifiClient : public CKernelWifi, public TypeCSocketClient
+class CWifiClient : public CKernelWifi, public CWifi, public TypeCSocketClient
 {
 		bool Connect() {
 			if ( ! TypeCSocketClient::Connect() )
@@ -23,11 +24,11 @@ class CWifiClient : public CKernelWifi, public TypeCSocketClient
 			return true;
 		}
 
-		ssize_t Send(const char* data, ssize_t sizeOfData){ return TypeCSocketClient::Send(data, sizeOfData); };
-		ssize_t SendBigData(const char* data, ssize_t sizeOfData){ return TypeCSocketClient::SendBigData(data, sizeOfData); };
+		ssize_t SendSignal(TPower* power, const char* buffer, int sizeOfBuffer)
+			{	return SendSignalWithSocket(this, this->GetDescriptor(), power, buffer, sizeOfBuffer); }
 
-		ssize_t Read(char* data, ssize_t sizeOfData){ return TypeCSocketClient::Read(data, sizeOfData); };
-		ssize_t ReadBigData(char* data, ssize_t sizeOfData){ return TypeCSocketClient::ReadBigData(data, sizeOfData); };
+		ssize_t RecvSignal(TPower* power, char* buffer, int sizeOfBuffer)
+			{	return RecvSignalWithSocket(this, this->GetDescriptor(), power, buffer, sizeOfBuffer); }
 
 		void StopReconnect(bool status){ TypeCSocketClient::StopReconnect(status); };
 
