@@ -250,26 +250,11 @@ int CKernelWifi::process_messages(struct nl_msg *msg, void *arg)
 	}
 	
 
-	int value=Send((char*)&power,sizeof(power));
-
+	int value=SendSignal(&power, (char*)nlh, msg_len);
 	if (value == SOCKET_DISCONNECT)
 		manage_server_crash();
 
 	if( value == SOCKET_ERROR )
-	
-	{
-		std::cout<<"socket.Send error"<<std::endl;
-		return 1;
-	}
-
-	/* send msg to a server */ 
-	value=SendBigData((char*)nlh,msg_len);
-
-	if (value == SOCKET_DISCONNECT)
-		manage_server_crash();
-
-	if( value == SOCKET_ERROR )
-	
 	{
 		std::cout<<"socket.SendBigData error"<<std::endl;
 		return 1;
@@ -462,35 +447,19 @@ void CKernelWifi::recv_from_server(){
 	if( ! Scheduler.NodeHasAction(0) )
 		return ;
 
-	/* receive power from server and store them in power */
 	TPower power;
-	bytes=Read((char*)&power,sizeof(power));
+	bytes=RecvSignal(&power, buf, sizeof(buf));
+
+	if (bytes == SOCKET_DISCONNECT)
+		manage_server_crash();
+
+	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
+	{
+		//std::cerr<<"socket.Read error"<<std::endl;
+		return ;
+	}
 
 	signal = power ;
-
-	if (bytes == SOCKET_DISCONNECT)
-		manage_server_crash();
-
-
-	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
-	{
-		//std::cerr<<"socket.Read error"<<std::endl;
-		return ;
-	}
-
-	/* receive bytes packets from server and store them in buf */
-	bytes=ReadBigData(buf,sizeof(buf));
-
-	if (bytes == SOCKET_DISCONNECT)
-		manage_server_crash();
-
-	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
-	{
-		//std::cerr<<"socket.Read error"<<std::endl;
-		return ;
-	}
-
-
 
 	/* netlink header */
 	nlh = (struct nlmsghdr *)buf;

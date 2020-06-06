@@ -239,11 +239,8 @@ class CKernelWifi : public intthread::AsyncTask {
 
 		virtual bool Connect(int* id)=0;
 
-		virtual ssize_t Send(const char* data, ssize_t sizeOfData)=0;
-		virtual ssize_t SendBigData(const char* data, ssize_t sizeOfData)=0;
-
-		virtual ssize_t Read(char* data, ssize_t sizeOfData)=0;
-		virtual ssize_t ReadBigData(char* data, ssize_t sizeOfData)=0;
+		virtual ssize_t SendSignal(TPower* power, const char* buffer, int sizeOfBuffer)=0;
+		virtual ssize_t RecvSignal(TPower* power, char* buffer, int sizeOfBuffer)=0;
 
 		virtual void StopReconnect(bool status)=0;
 
