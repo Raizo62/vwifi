@@ -35,6 +35,11 @@ CSocket::~CSocket()
 	Close();
 }
 
+TDescriptor CSocket::GetDescriptor()
+{
+	return Master;
+}
+
 bool CSocket::Configure()
 {
 	//create a master socket

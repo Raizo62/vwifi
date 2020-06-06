@@ -23,6 +23,7 @@ class CSocket
 
 		CSocket(TSocket type);
 
+		TDescriptor GetDescriptor();
 		bool Configure();
 
 		virtual ssize_t Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData);
