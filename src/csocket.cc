@@ -80,12 +80,7 @@ bool CSocket::SetBlocking(TDescriptor descriptor, bool blocking)
 
 ssize_t CSocket::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)
 {
-	return send(descriptor, data, sizeOfData, 0);
-}
-
-ssize_t CSocket::SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData)
-{
-	ssize_t ret = Send(descriptor, (char*)&sizeOfData, (unsigned)sizeof(sizeOfData));
+	ssize_t ret = send(descriptor, data, sizeOfData, 0);
 	if( ret == 0 )
 		return SOCKET_DISCONNECT ;
 	if ( ret < 0 )
@@ -95,38 +90,40 @@ ssize_t CSocket::SendBigData(TDescriptor descriptor, const char* data, TMinimalS
 		// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
 		return SOCKET_DISCONNECT ;
 	}
+	return ret;
+}
 
-	ret = Send(descriptor, data, sizeOfData);
+ssize_t CSocket::SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData)
+{
+	ssize_t ret = Send(descriptor, (char*)&sizeOfData, (unsigned)sizeof(sizeOfData));
+	if( ret < 0 )
+		return ret;
 
-	if( ret > 0 )
-		return ret ;
-	if(ret < 0 && errno == EWOULDBLOCK )
-		return SOCKET_ERROR ;
-
-	// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as connection-losing
-	return SOCKET_DISCONNECT ;
+	return Send(descriptor, data, sizeOfData);
 }
 
 ssize_t CSocket::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 {
-	return recv(descriptor , data, sizeOfData, 0);
-}
-
-ssize_t CSocket::ReadBigData(TDescriptor descriptor, char* data, TMinimalSize sizeOfData)
-{
-	TMinimalSize size;
-
-	int ret_size = Read(descriptor, (char*)&size, (unsigned)sizeof(size));
-
-	if( ret_size == 0 )
+	ssize_t ret = recv(descriptor , data, sizeOfData, 0);
+	if( ret == 0 )
 		return SOCKET_DISCONNECT ;
-	if ( ret_size < 0 )
+	if ( ret < 0 )
 	{
 		if ( errno == EWOULDBLOCK )
 			return SOCKET_ERROR ;
 		// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
 		return SOCKET_DISCONNECT ;
 	}
+	return ret;
+}
+
+ssize_t CSocket::ReadBigData(TDescriptor descriptor, char* data, TMinimalSize sizeOfData)
+{
+	TMinimalSize size;
+
+	int ret = Read(descriptor, (char*)&size, (unsigned)sizeof(size));
+	if( ret < 0 )
+		return ret;
 
 	if( size > sizeOfData )
 	{
@@ -136,15 +133,7 @@ ssize_t CSocket::ReadBigData(TDescriptor descriptor, char* data, TMinimalSize si
 		return SOCKET_ERROR ;
 	}
 
-	int ret_data = Read(descriptor, data, size);
-	if( ret_data > 0 )
-		return ret_data ;
-
-	if ( ret_data < 0 && errno == EWOULDBLOCK )
-		return SOCKET_ERROR ;
-
-	// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
-	return SOCKET_DISCONNECT ;
+	return Read(descriptor, data, size);
 }
 
 CSocket::operator int()
