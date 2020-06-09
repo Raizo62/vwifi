@@ -27,7 +27,14 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 			//Somebody disconnected
 
 			//Close the socket
-			cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+			if( masterSendToOwnClients )
+			{
+				cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+			}
+			else
+			{	// if masterSendToOwnClients is false, it is surely Host
+				cout<<"Host disconnected"<<endl;
+			}
 			serverMaster->CloseClient(i);
 
 			//del master socket to set
@@ -46,7 +53,14 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 			if ( valread <= 0 )
 			{
 				//Close the socket
-				cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+				if( masterSendToOwnClients )
+				{
+					cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+				}
+				else
+				{	// if masterSendToOwnClients is false, it is surely Host
+					cout<<"Host disconnected"<<endl;
+				}
 				serverMaster->CloseClient(i);
 
 				//del master socket to set
