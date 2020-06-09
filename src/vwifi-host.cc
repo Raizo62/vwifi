@@ -17,7 +17,6 @@ CWifiClient<CSocketClientINET>  wifiClient ;
 
 enum STATE  _state = STOPPED ;
 
-enum STATE pstate = _state ;
 
 void  signal_handler(int signal_num)
 {
@@ -33,25 +32,11 @@ void  signal_handler(int signal_num)
 			_state = STOPPED ;
 			break ;
 
-		case  SIGTSTP :
+		case SIGTSTP:
 
-			std::cout << signal_num << std::endl ;
-			wifiClient.stop();
-			_state = SUSPENDED ;
+			std::cout << "This signal is ignored" << std::endl ;
 			break ;
 
-		case SIGCONT :
-
-			std::cout << signal_num << std::endl ;
-			pstate = _state ;
-			_state = STARTED ;
-			if(!wifiClient.start()){
-
-				std::cout << "Starting process aborted" << std::endl ;
-				_state = pstate ;
-				break ;
-			}
-			break;
 
 		default :
 			std::cerr << "Signal not handled" << std::endl ;
@@ -64,14 +49,13 @@ void  signal_handler(int signal_num)
 
 int main (int argc , char ** argv){
 
-
 	/* Handle signals */
 	signal(SIGINT, signal_handler);
 	signal(SIGTERM, signal_handler);
 	signal(SIGQUIT, signal_handler);
 	signal(SIGHUP, SIG_IGN);
 	signal(SIGTSTP, signal_handler);
-	signal(SIGCONT, signal_handler);
+	//signal(SIGCONT, signal_handler);
 
 	if( argc == 2 )
 	{
@@ -86,23 +70,6 @@ int main (int argc , char ** argv){
 		std::cout << "Starting process aborted" << std::endl ;
 
 
-	while(true){
-
-		if (_state == STOPPED ){
-
-				std::cout << "its time to live" << std::endl ;
-				break ;
-		}
-
-		if ((_state == SUSPENDED )|| (_state == STARTED )){
-
-				std::cout << "SUSPENDED or CONT" << std::endl ;
-
-				pause();
-				continue;
-		}
-
-	}
 
 	std::cout << "Good Bye (:-)" << std::endl ;
 
