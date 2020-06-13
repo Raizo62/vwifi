@@ -251,16 +251,8 @@ int CKernelWifi::process_messages(struct nl_msg *msg, void *arg)
 	
 
 	int value=SendSignal(&power, (char*)nlh, msg_len);
-	if (value == SOCKET_DISCONNECT)
-		manage_server_crash();
-
 	if( value == SOCKET_ERROR )
-	{
-		std::cout<<"socket.SendBigData error"<<std::endl;
-		return 1;
-	}
-
-
+		manage_server_crash();
 
 	return 0 ;
 }
@@ -450,14 +442,8 @@ void CKernelWifi::recv_from_server(){
 	TPower power;
 	bytes=RecvSignal(&power, buf, sizeof(buf));
 
-	if (bytes == SOCKET_DISCONNECT)
+	if( bytes == SOCKET_ERROR )
 		manage_server_crash();
-
-	if( bytes == SOCKET_ERROR )  // bytes == 0 if non blocking socket
-	{
-		//std::cerr<<"socket.Read error"<<std::endl;
-		return ;
-	}
 
 	signal = power ;
 

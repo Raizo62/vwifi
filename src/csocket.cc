@@ -58,9 +58,7 @@ bool CSocket::Configure()
 ssize_t CSocket::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)
 {
 	ssize_t ret = send(descriptor, data, sizeOfData, 0);
-	if( ret == 0 )
-		return SOCKET_DISCONNECT ;
-	if ( ret < 0 )
+	if ( ret != sizeOfData )
 		return SOCKET_ERROR ;
 
 	return ret;
@@ -69,8 +67,8 @@ ssize_t CSocket::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfDa
 ssize_t CSocket::SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData)
 {
 	ssize_t ret = Send(descriptor, (char*)&sizeOfData, (unsigned)sizeof(sizeOfData));
-	if( ret <= 0 )
-		return ret;
+	if( ret == SOCKET_ERROR )
+		return SOCKET_ERROR;
 
 	return Send(descriptor, data, sizeOfData);
 }
@@ -78,9 +76,7 @@ ssize_t CSocket::SendBigData(TDescriptor descriptor, const char* data, TMinimalS
 ssize_t CSocket::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 {
 	ssize_t ret = recv(descriptor , data, sizeOfData, 0);
-	if( ret == 0 )
-		return SOCKET_DISCONNECT ;
-	if ( ret < 0 )
+	if ( ret <= 0 )
 		return SOCKET_ERROR ;
 
 	return ret;
@@ -91,8 +87,8 @@ ssize_t CSocket::ReadBigData(TDescriptor descriptor, char* data, TMinimalSize si
 	TMinimalSize size;
 
 	int ret = Read(descriptor, (char*)&size, (unsigned)sizeof(size));
-	if( ret <= 0 )
-		return ret;
+	if( ret == SOCKET_ERROR )
+		return SOCKET_ERROR;
 
 	if( size > sizeOfData )
 	{
