@@ -8,15 +8,12 @@
 template <typename TypeCSocketClient>
 class CWifiClient : public CKernelWifi, public CWifi, public TypeCSocketClient
 {
-		bool Connect() {
-			if ( ! TypeCSocketClient::Connect() )
-				return false;
-			return Scheduler.AddNode(*this);
-		}
-
 		bool Connect(int* id)
 		{
-			if( ! Connect() )
+			if( ! TypeCSocketClient::Connect() )
+				return false;
+
+			if( ! Scheduler.AddNode(*this) )
 				return false;
 
 			*id=TypeCSocketClient::GetID();
