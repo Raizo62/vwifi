@@ -71,15 +71,7 @@ ssize_t CSocketClient::Send(const char* data, ssize_t sizeOfData)
 {
 	if ( IsConnected ){
 
-		int ret = CSocket::Send(Master, data, sizeOfData);
-
-		if( ret > 0 )
-			return ret ;
-		if(ret < 0 && errno == EWOULDBLOCK )
-			return SOCKET_ERROR ;
-
-		// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as connection-losing
-		return SOCKET_DISCONNECT ;
+		return CSocket::Send(Master, data, sizeOfData);
 
 	}
 	return SOCKET_ERROR;
@@ -96,16 +88,9 @@ ssize_t CSocketClient::SendBigData(const char* data, TMinimalSize sizeOfData)
 ssize_t CSocketClient::Read(char* data, ssize_t sizeOfData)
 {
 	if ( IsConnected ){
-		int ret = CSocket::Read(Master, data, sizeOfData);
-		if( ret > 0 )
-			return ret ;
 
-		if ( ret < 0 && errno == EWOULDBLOCK )
-			return SOCKET_ERROR ;
+		return CSocket::Read(Master, data, sizeOfData);
 
-		// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
-		// if ret == 0 --> SOCKET_DISCONNECT
-		return SOCKET_DISCONNECT ;
 	}
 	return SOCKET_ERROR;
 }
@@ -116,11 +101,6 @@ ssize_t CSocketClient::ReadBigData(char* data, TMinimalSize sizeOfData)
 		return CSocket::ReadBigData(Master, data, sizeOfData);
 	}
 	return SOCKET_ERROR;
-}
-
-bool CSocketClient::SetBlocking(bool blocking)
-{
-	return CSocket::SetBlocking(Master,blocking);
 }
 
 void CSocketClient::StopReconnect(bool status){

@@ -55,48 +55,21 @@ bool CSocket::Configure()
 	return true;
 }
 
-/**
- * \fn int SetBlocking(int blocking)
- * \biref Set a file descriptor to blocking or non-blocking mode.
- *
- * \param blocking false:non-blocking mode, true:blocking mode
- *
- * \return true:success, false:failure.
- **/
-bool CSocket::SetBlocking(TDescriptor descriptor, bool blocking)
-{
-	/* Save the current flags */
-	int flags = fcntl(descriptor, F_GETFL, 0);
-	if (flags == -1)
-		return 0;
-
-	if( blocking )
-		flags &= ~O_NONBLOCK;
-	else
-		flags |= O_NONBLOCK;
-
-	return fcntl(descriptor, F_SETFL, flags) != -1;
-}
-
 ssize_t CSocket::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)
 {
 	ssize_t ret = send(descriptor, data, sizeOfData, 0);
 	if( ret == 0 )
 		return SOCKET_DISCONNECT ;
 	if ( ret < 0 )
-	{
-		if ( errno == EWOULDBLOCK )
-			return SOCKET_ERROR ;
-		// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
-		return SOCKET_DISCONNECT ;
-	}
+		return SOCKET_ERROR ;
+
 	return ret;
 }
 
 ssize_t CSocket::SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData)
 {
 	ssize_t ret = Send(descriptor, (char*)&sizeOfData, (unsigned)sizeof(sizeOfData));
-	if( ret < 0 )
+	if( ret <= 0 )
 		return ret;
 
 	return Send(descriptor, data, sizeOfData);
@@ -108,12 +81,8 @@ ssize_t CSocket::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 	if( ret == 0 )
 		return SOCKET_DISCONNECT ;
 	if ( ret < 0 )
-	{
-		if ( errno == EWOULDBLOCK )
-			return SOCKET_ERROR ;
-		// if recv returns<0 and errno!=EWOULDBLOCK -->  then it is something that can be considered as EOF
-		return SOCKET_DISCONNECT ;
-	}
+		return SOCKET_ERROR ;
+
 	return ret;
 }
 
@@ -122,7 +91,7 @@ ssize_t CSocket::ReadBigData(TDescriptor descriptor, char* data, TMinimalSize si
 	TMinimalSize size;
 
 	int ret = Read(descriptor, (char*)&size, (unsigned)sizeof(size));
-	if( ret < 0 )
+	if( ret <= 0 )
 		return ret;
 
 	if( size > sizeOfData )

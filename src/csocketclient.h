@@ -31,8 +31,6 @@ class CSocketClient : public CSocket
 		ssize_t Read(char* data, ssize_t sizeOfData);
 		ssize_t ReadBigData(char* data, TMinimalSize sizeOfData);
 
-		bool SetBlocking(bool blocking);
-
 		void StopReconnect(bool status);
 
 		bool ConnectLoop();

@@ -35,8 +35,6 @@ class CSocket
 		virtual ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
 		virtual ssize_t ReadBigData(TDescriptor descriptor, char* data, TMinimalSize sizeOfData);
 
-		virtual bool SetBlocking(TDescriptor descriptor, bool blocking);
-
 	public :
 
 		void Close();
