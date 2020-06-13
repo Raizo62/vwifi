@@ -242,8 +242,6 @@ class CKernelWifi : public intthread::AsyncTask {
 		virtual ssize_t SendSignal(TPower* power, const char* buffer, int sizeOfBuffer)=0;
 		virtual ssize_t RecvSignal(TPower* power, char* buffer, int sizeOfBuffer)=0;
 
-		virtual void StopReconnect(bool status)=0;
-
 		virtual void Close()=0;
 
 };

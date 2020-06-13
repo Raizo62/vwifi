@@ -27,8 +27,6 @@ class CWifiClient : public CKernelWifi, public CWifi, public TypeCSocketClient
 		ssize_t RecvSignal(TPower* power, char* buffer, int sizeOfBuffer)
 			{	return RecvSignalWithSocket(this, this->GetDescriptor(), power, buffer, sizeOfBuffer); }
 
-		void StopReconnect(bool status){ TypeCSocketClient::StopReconnect(status); };
-
 		void Close(){ TypeCSocketClient::Close(); };
 };
 
