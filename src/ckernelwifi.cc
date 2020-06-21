@@ -289,7 +289,6 @@ int CKernelWifi::send_register_msg()
 // improve the stoping process
 int CKernelWifi::init_netlink(void)
 {
-
 	int nlsockfd;
 	struct timeval tv;
 
@@ -321,10 +320,22 @@ int CKernelWifi::init_netlink(void)
 		return 0 ;
 	}
 
+
 	m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
 
 
 	while (m_family_id  < 0 ) {
+
+		try {
+			intthread::interruption_point();
+		}
+		
+		catch (const intthread::thread_interrupted& interrupt) {
+			dead();
+			break;
+		}
+
+
 
 	//	if ( ! started()){
 	//		return 0 ;
@@ -733,7 +744,6 @@ int CKernelWifi::start(){
 
 
 
-	being_started(true);
 	
 	// check if initialized here, if we forget calling init function before ??
 	if(! initialized()){
@@ -769,6 +779,7 @@ int CKernelWifi::start(){
 	}
 
 
+	being_started(true);
 
 	/*connect to vsock/tcp server */
 	int id;
