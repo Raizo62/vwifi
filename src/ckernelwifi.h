@@ -32,6 +32,7 @@ class CKernelWifi : public intthread::AsyncTask {
 		std::condition_variable 	_cond_connected_to_server ;
 
 		bool _being_started { false } ;
+		std::mutex _being_started_mutex ; 	
 		
 		WirelessDeviceList _list_winterfaces ;
 
@@ -101,6 +102,10 @@ class CKernelWifi : public intthread::AsyncTask {
 		bool reconnect_to_server() ;
 
 		void manage_server_crash_loop() ;
+
+		void being_started(bool v);
+
+		bool is_being_started();
 
 
 	protected :

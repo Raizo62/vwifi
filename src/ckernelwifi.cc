@@ -733,6 +733,8 @@ int CKernelWifi::start(){
 
 
 
+	being_started(true);
+	
 	// check if initialized here, if we forget calling init function before ??
 	if(! initialized()){
 	
@@ -767,13 +769,12 @@ int CKernelWifi::start(){
 	}
 
 
-	_being_started = true ;
 
 	/*connect to vsock/tcp server */
 	int id;
 	while( ! Connect(&id) )
 	{
-		if (! _being_started)
+		if (! is_being_started())
 			return 0 ;
 		std::cout<<"socket.Connect error"<<std::endl;
 		using namespace  std::chrono_literals;
@@ -809,7 +810,7 @@ int CKernelWifi::start(){
 	 */
 	serverloop_id = serverloop_task.get_native_handle();
 
-	_being_started = false ;
+	being_started(false);
 
 	monitorloop_task.join();
 	hwsimloop_task.join();
@@ -831,10 +832,15 @@ int CKernelWifi::stop(){
 	if (is_connected_to_server())	
 		Close();
 	
-	if (  _being_started ){
-		_being_started = false ;
+	if (  is_being_started() ){
+		being_started(false) ;
+
+		std::cout << "int stop without kill" << std::endl ;
+
 		return 0 ;
 	}
+
+
 
 	connection_to_server_loop_task.interrupt();
 	pthread_kill(serverloop_id,SIGUSR1);
@@ -855,6 +861,23 @@ int CKernelWifi::stop(){
 
 	return 0 ;	
 }
+
+
+void CKernelWifi::being_started(bool v){
+
+	std::lock_guard<std::mutex> lk(_being_started_mutex);
+	_being_started = v ;
+
+}
+
+
+bool CKernelWifi::is_being_started(){
+
+	std::lock_guard<std::mutex> lk(_being_started_mutex);
+	return _being_started;
+
+}
+
 
 
 void CKernelWifi::clean_all(){
