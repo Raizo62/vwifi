@@ -31,6 +31,8 @@ class CKernelWifi : public intthread::AsyncTask {
 		std::mutex 	_mutex_connected_to_server ;
 		std::condition_variable 	_cond_connected_to_server ;
 
+		bool _being_initialized { false } ;
+
 		bool _being_started { false } ;
 		std::mutex _being_started_mutex ; 	
 		
@@ -57,6 +59,8 @@ class CKernelWifi : public intthread::AsyncTask {
 		MonitorWirelessDevice * monwireless = nullptr ;
 
 		int init();
+		int init_first();
+
 
 		void mac_address_to_string(char *address, struct ether_addr *mac);
 
@@ -135,6 +139,8 @@ class CKernelWifi : public intthread::AsyncTask {
 		*	\return void
 		*/
 		int init_netlink();
+		int init_netlink_first();
+
 
 		/**
 		 * \brief start receiving hwsim netlink frame from hwsim driver

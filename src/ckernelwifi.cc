@@ -284,6 +284,82 @@ int CKernelWifi::send_register_msg()
 	return 1;
 }
 
+int CKernelWifi::init_netlink_first(void)
+{
+	int nlsockfd;
+	struct timeval tv;
+
+
+//	_cb = nl_cb_alloc(NL_CB_DEBUG);
+	_cb = nl_cb_alloc(NL_CB_CUSTOM);
+	
+	if (!_cb) {
+		std::cerr << "Error allocating netlink callbacks" << std::endl ;
+		return 0;
+	}
+
+	_netlink_socket = nl_socket_alloc_cb(_cb);
+	if (!_netlink_socket) {
+		std::cerr << "Error allocationg netlink socket" << std::endl;
+		nl_cb_put(_cb);
+		return 0;
+	}
+
+	/* disable auto-ack from kernel to reduce load */
+	nl_socket_disable_auto_ack(_netlink_socket);
+	
+	if(genl_connect(_netlink_socket) < 0){
+
+		nl_close(_netlink_socket);
+		nl_socket_free(_netlink_socket);
+		nl_cb_put(_cb);
+
+		return 0 ;
+	}
+
+
+	m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
+
+
+	while (m_family_id  < 0 ) {
+
+		if ( ! _being_initialized)
+			return 0 ;
+
+		
+
+	//	if ( ! started()){
+	//		return 0 ;
+	//	}
+
+#ifdef _DEBUG
+		std::cout << "Family MAC80211_HWSIM not registered" << std::endl ;
+#endif
+
+		using namespace  std::chrono_literals;
+		std::this_thread::sleep_for(1s);
+
+		m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
+	}
+
+
+	nl_cb_set(_cb, NL_CB_MSG_IN, NL_CB_CUSTOM, &process_messages_cb, NULL);
+	nlsockfd = nl_socket_get_fd(_netlink_socket);
+
+	tv.tv_sec = 1;
+	tv.tv_usec = 0;
+
+	if (setsockopt(nlsockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
+
+		nl_close(_netlink_socket);
+		nl_socket_free(_netlink_socket);
+		nl_cb_put(_cb);
+		perror("setsockopt");
+	}
+
+	return 1;
+}
+
 
 // free better _cb and _netlink_socket
 // improve the stoping process
@@ -325,6 +401,9 @@ int CKernelWifi::init_netlink(void)
 
 
 	while (m_family_id  < 0 ) {
+
+		if ( ! _being_initialized)
+			break ;
 
 		try {
 			intthread::interruption_point();
@@ -740,22 +819,52 @@ int CKernelWifi::init(){
 	return 1 ;
 }
 
+int CKernelWifi::init_first(){
+
+	/* init netlink will loop until driver is loaded */
+	if ( ! init_netlink_first()){
+		
+		std::cout << "ERROR: could not initialize netlink" << std::endl;
+		return 0 ;
+	} 
+
+	/* Send a register msg to the kernel */
+	if (!send_register_msg()){
+	
+		nl_close(_netlink_socket);
+		nl_socket_free(_netlink_socket);
+		nl_cb_put(_cb);
+		return 0 ;
+	}
+
+	_mutex_initialized.lock();
+	_initialized = true ;
+	_mutex_initialized.unlock();
+
+	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
+
+	return 1 ;
+}
+
+
+
 int CKernelWifi::start(){
 
 
-
+	_being_initialized = true ;
 	
 	// check if initialized here, if we forget calling init function before ??
 	if(! initialized()){
 	
-		if (!init()){
+		if (!init_first()){
 	
 		
 			return 0;
 		}
 	}
 
-
+	_being_initialized = false ;
+	
 
 	try{
 
@@ -840,8 +949,10 @@ int CKernelWifi::stop(){
 
 	/* stop the retrying connection to vsock server */
 	
-	if (is_connected_to_server())	
-		Close();
+	if ( _being_initialized ){
+		_being_initialized = false ;
+		return 0;	
+	}
 	
 	if (  is_being_started() ){
 		being_started(false) ;
@@ -852,7 +963,9 @@ int CKernelWifi::stop(){
 	}
 
 
-
+	if (is_connected_to_server())	
+		Close();
+	
 	connection_to_server_loop_task.interrupt();
 	pthread_kill(serverloop_id,SIGUSR1);
 	
