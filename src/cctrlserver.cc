@@ -199,7 +199,7 @@ void CCTRLServer::SendShow()
 		return;
 	}
 
-	bool hostIsConnected=( WifiGuestVHostServer->GetNumberClient() > 0 );
+	bool hostIsConnected=( WifiHostServer->GetNumberClient() > 0 );
 	if( Send((char*)&hostIsConnected,sizeof(hostIsConnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : socket.SendList : HostIsConnected"<<endl;
