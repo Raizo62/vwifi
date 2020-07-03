@@ -69,7 +69,7 @@ Explanations :
 
 * Hypervisor
   * QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=NUM` with NUM an identifier greater than  2
-  * GNS3 (>= 2.2) : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%guest-cid%`
+  * GNS3 (>= 2.2) : QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%guest-cid%`
 
 #### Each Guest
 
