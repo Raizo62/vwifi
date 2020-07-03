@@ -75,13 +75,13 @@ Explanations :
 
 * Create the wlan interfaces (on this example, 2 interfaces) :
 ```bash
-modprobe mac80211_hwsim radios=2
-# macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
+sudo modprobe mac80211_hwsim radios=2
+# sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
 * Connect all these wlan interfaces to the **vwifi-server**
 ```bash
-vwifi-guest
+sudo vwifi-guest
 ```
 
 * **vwifi-guest** displays "ID=-1". **vwifi-server** uses the cid to identify this guest.
@@ -104,13 +104,13 @@ vwifi-server
 
 * Create the wlan interfaces (on this example, 2 interfaces) :
 ```bash
-modprobe mac80211_hwsim radios=2
-# macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
+sudo modprobe mac80211_hwsim radios=2
+# sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
 * Connect all these wlan interfaces to the **vwifi-server**
 ```bash
-vwifi-guest 172.16.0.1
+sudo vwifi-guest 172.16.0.1
 ```
 
 * **vwifi-guest** displays an ID which is an hashsum of the IP. It is used by **vwifi-server** to identify this guest.
@@ -162,24 +162,24 @@ sudo apt install hostapd wpasupplicant
 * Guest Wifi 1 :
 
 ```bash
-ip a a 10.0.0.1/8 dev wlan0
+sudo ip a a 10.0.0.1/8 dev wlan0
 
-hostapd tests/hostapd_wpa.conf
+sudo hostapd tests/hostapd_wpa.conf
 ```
 
 * Guest Wifi 2 :
 ```bash
-wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
+sudo wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
 
-ip a a 10.0.0.2/8 dev wlan0
+sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
 * Guest Wifi 3 :
 ```bash
-wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
+sudo wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
 
-ip a a 10.0.0.3/8 dev wlan0
+sudo ip a a 10.0.0.3/8 dev wlan0
 ping 10.0.0.2
 ```
 
@@ -196,24 +196,24 @@ sudo apt install hostapd iw tcpdump
 * Guest Wifi 1 :
 
 ```bash
-ip a a 10.0.0.1/8 dev wlan0
+sudo ip a a 10.0.0.1/8 dev wlan0
 
-hostapd tests/hostapd_open.conf
+sudo hostapd tests/hostapd_open.conf
 ```
 
 * Guest Wifi 2 :
 ```bash
-ip link set up wlan0
-iw dev wlan0 connect mac80211_open
+sudo ip link set up wlan0
+sudo iw dev wlan0 connect mac80211_open
 
-ip a a 10.0.0.2/8 dev wlan0
+sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
 * Guest Wifi 3 :
 ```bash
-ip link set up wlan0
-tcpdump -n -e -I -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
+sudo ip link set up wlan0
+sudo tcpdump -n -e -I -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
 ```
 
 #### Host
@@ -234,20 +234,20 @@ sudo apt install iw
 
 * Guest Wifi 1 :
 ```bash
-ip link set up wlan0
-iw wlan0 set type ibss
-iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
+sudo ip link set up wlan0
+sudo iw wlan0 set type ibss
+sudo iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
 
-ip a a 10.0.0.1/8 dev wlan0
+sudo ip a a 10.0.0.1/8 dev wlan0
 ```
 
 * Guest Wifi 2 :
 ```bash
-ip link set up wlan0
-iw wlan0 set type ibss
-iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
+sudo ip link set up wlan0
+sudo iw wlan0 set type ibss
+sudo iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
 
-ip a a 10.0.0.2/8 dev wlan0
+sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
