@@ -5,8 +5,8 @@ VERSION	=	1.1
 BINDIR	=	$(DESTDIR)/usr/local/bin
 MANDIR	=	$(DESTDIR)/usr/local/man/man1
 
-EXEC	=	vwifi-server vwifi-guest vwifi-host vwifi-ctrl vwifi-inet-monitor
-#EXEC	=	vwifi-server vwifi-guest vwifi-ctrl vwifi-inet-monitor
+EXEC	=	vwifi-server vwifi-guest vwifi-host vwifi-ctrl
+#EXEC	=	vwifi-server vwifi-guest vwifi-host vwifi-ctrl vwifi-inet-monitor
 
 SRC		=	src
 OBJ		=	obj
