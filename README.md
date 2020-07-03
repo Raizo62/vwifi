@@ -82,6 +82,8 @@ modprobe mac80211_hwsim radios=2
 ./vwifi-guest
 ```
 
+* **vwifi-guest** displays "ID=-1". **vwifi-server** uses the cid to identify this guest.
+
 ### With TCP
 
 * The Host and the VMs must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
@@ -108,6 +110,8 @@ modprobe mac80211_hwsim radios=2
 ```bash
 ./vwifi-guest 172.16.0.1
 ```
+
+* **vwifi-guest** displays an ID which is an hashsum of the IP. It is used by **vwifi-server** to identify this guest.
 
 ## Capture packets from Host
 
