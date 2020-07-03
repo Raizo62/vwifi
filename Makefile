@@ -35,7 +35,7 @@ EUID	:= $(shell id -u -r)
 vpath %.cc $(SRC)
 vpath %.h $(SRC)
 
-.PHONY: all clean build install man directories update
+.PHONY: all clean build install man tools directories update
 
 build : directories $(EXEC) # man
 
@@ -103,12 +103,15 @@ $(MAN)/$(NAME).1.gz : $(MAN)/$(NAME).1
 
 man : $(MAN)/$(NAME).1.gz
 
+tools :
+	chmod u+x tools/*
+
 directories: $(OBJ)/.
 
 $(OBJ)/.:
 	mkdir -p $(OBJ)
 
-all : clean build install
+all : clean build tools install
 
 update :
 	wget -q -N https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/wireless/mac80211_hwsim.h -P $(SRC)
@@ -117,5 +120,3 @@ clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
 	-rm -f $(EXEC) $(OBJ)/* $(MAN)/$(NAME).1.gz
 
-install :
-	chmod u+x tools/*
