@@ -120,3 +120,11 @@ clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
 	-rm -f $(EXEC) $(OBJ)/* $(MAN)/$(NAME).1.gz
 
+install : build
+ifneq ($(EUID),0)
+	@echo "Please run 'make install' as root user"
+	@exit 1
+endif
+	chmod +x $(EXEC)
+	# Install binaire :
+	mkdir -p $(BINDIR) && cp -p $(EXEC) $(BINDIR)

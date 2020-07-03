@@ -39,6 +39,8 @@ sudo apt-get install libnl-3-dev libnl-genl-3-dev
 make update # Not necessary. To download and update the file mac80211_hwsim.h
 make
 make tools # To change the file mode bits of tools
+
+sudo make install
 ```
 
 ## Configuration
@@ -62,7 +64,7 @@ Explanations :
    ```
     * Start the **vwifi-server**
    ```bash
-   ./vwifi-server
+   vwifi-server
    ```
 
 * Hypervisor
@@ -79,7 +81,7 @@ modprobe mac80211_hwsim radios=2
 
 * Connect all these wlan interfaces to the **vwifi-server**
 ```bash
-./vwifi-guest
+vwifi-guest
 ```
 
 * **vwifi-guest** displays "ID=-1". **vwifi-server** uses the cid to identify this guest.
@@ -93,7 +95,7 @@ modprobe mac80211_hwsim radios=2
 * Start the **vwifi-server**
 
 ```bash
-./vwifi-server
+vwifi-server
 ```
 
 * We will suppose that the Host have the IP address : 172.16.0.1
@@ -108,7 +110,7 @@ modprobe mac80211_hwsim radios=2
 
 * Connect all these wlan interfaces to the **vwifi-server**
 ```bash
-./vwifi-guest 172.16.0.1
+vwifi-guest 172.16.0.1
 ```
 
 * **vwifi-guest** displays an ID which is an hashsum of the IP. It is used by **vwifi-server** to identify this guest.
@@ -119,7 +121,7 @@ modprobe mac80211_hwsim radios=2
 
 ```bash
 sudo modprobe mac80211_hwsim radios=1
-sudo ./vwifi-host
+sudo vwifi-host
 ```
 
 ### Capture
@@ -255,27 +257,27 @@ ping 10.0.0.1
 
 * Show the list of connected guest (display : cid and coordinate x, y z)
 ```bash
-./vwifi-ctrl ls
+vwifi-ctrl ls
 ```
 
 * Set the new coordinate (11, 12, 13) of the guest with the cid 10
 ```bash
-./vwifi-ctrl set 10 11 12 13
+vwifi-ctrl set 10 11 12 13
 ```
 
 * Enable the lost of packets
 ```bash
-./vwifi-ctrl loss yes
+vwifi-ctrl loss yes
 ```
 
 * Disable the lost of packets
 ```bash
-./vwifi-ctrl loss no
+vwifi-ctrl loss no
 ```
 
 * Display the config of **vwifi-server**
 ```bash
-./vwifi-ctrl status
+vwifi-ctrl status
 ```
 
 ## Tools
