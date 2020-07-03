@@ -47,7 +47,7 @@ sudo make install
 
 Explanations :
 * The VMs and the server can communicate either with the VHOST protocol, or with the TCP protocol
-* The **vwifi-server** accepts connection from **vwifi-guest** with TCP or VHOST protocols
+* The ***vwifi-server*** accepts connection from ***vwifi-guest*** with TCP or VHOST protocols
 * To use TCP protocol, the Host and the VMs must be connected to a different IP network than that of the wifi
 
 ### With VHOST
@@ -62,7 +62,7 @@ Explanations :
    sudo modprobe vhost_vsock
    sudo chmod a+rw /dev/vhost-vsock
    ```
-    * Start the **vwifi-server**
+    * Start the ***vwifi-server***
    ```bash
    vwifi-server
    ```
@@ -79,12 +79,12 @@ sudo modprobe mac80211_hwsim radios=2
 # sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the **vwifi-server**
+* Connect all these wlan interfaces to the ***vwifi-server***
 ```bash
 sudo vwifi-guest
 ```
 
-* **vwifi-guest** displays "ID=-1". **vwifi-server** uses the cid to identify this guest.
+* ***vwifi-guest*** displays "ID=-1". ***vwifi-server*** uses the cid to identify this guest.
 
 ### With TCP
 
@@ -92,7 +92,7 @@ sudo vwifi-guest
 
 #### Host
 
-* Start the **vwifi-server**
+* Start the ***vwifi-server***
 
 ```bash
 vwifi-server
@@ -108,12 +108,12 @@ sudo modprobe mac80211_hwsim radios=2
 # sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the **vwifi-server**
+* Connect all these wlan interfaces to the ***vwifi-server***
 ```bash
 sudo vwifi-guest 172.16.0.1
 ```
 
-* **vwifi-guest** displays an ID which is an hashsum of the IP. It is used by **vwifi-server** to identify this guest.
+* ***vwifi-guest*** displays an ID which is an hashsum of the IP. It is used by ***vwifi-server*** to identify this guest.
 
 ## Capture packets from Host
 
@@ -275,13 +275,13 @@ vwifi-ctrl loss yes
 vwifi-ctrl loss no
 ```
 
-* Display the config of **vwifi-server**
+* Display the config of ***vwifi-server***
 ```bash
 vwifi-ctrl status
 ```
 
 ## Tools
 
-* start-vwifi-guest.sh : do all the commands necessary to start **vwifi-guest** on a Guest
-* fast-vwifi-update.sh : set with **vwifi-ctrl** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
+* start-vwifi-guest.sh : do all the commands necessary to start ***vwifi-guest*** on a Guest
+* fast-vwifi-update.sh : set with ***vwifi-ctrl*** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
 * client.sh : configure the client wifi with Open or WPA
