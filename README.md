@@ -60,7 +60,7 @@ Explanations :
    sudo modprobe vhost_vsock
    sudo chmod a+rw /dev/vhost-vsock
    ```
-    * Start the vwifi-server
+    * Start the **vwifi-server**
    ```bash
    ./vwifi-server
    ```
@@ -77,7 +77,7 @@ modprobe mac80211_hwsim radios=2
 # macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the vwifi-server
+* Connect all these wlan interfaces to the **vwifi-server**
 ```bash
 ./vwifi-guest
 ```
@@ -90,7 +90,7 @@ modprobe mac80211_hwsim radios=2
 
 #### Host
 
-* Start the vwifi-server
+* Start the **vwifi-server**
 
 ```bash
 ./vwifi-server
@@ -106,7 +106,7 @@ modprobe mac80211_hwsim radios=2
 # macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the vwifi-server
+* Connect all these wlan interfaces to the **vwifi-server**
 ```bash
 ./vwifi-guest 172.16.0.1
 ```
@@ -273,13 +273,13 @@ ping 10.0.0.1
 ./vwifi-ctrl loss no
 ```
 
-* Display the config of vwifi-server
+* Display the config of **vwifi-server**
 ```bash
 ./vwifi-ctrl status
 ```
 
 ## Tools
 
-* start-vwifi-guest.sh : do all the commands necessary to start `vwifi-guest` on a Guest
-* fast-vwifi-update.sh : set with `vwifi-ctrl` the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
+* start-vwifi-guest.sh : do all the commands necessary to start **vwifi-guest** on a Guest
+* fast-vwifi-update.sh : set with **vwifi-ctrl** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
 * client.sh : configure the client wifi with Open or WPA
