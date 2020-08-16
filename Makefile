@@ -14,8 +14,8 @@ MAN		=	man
 
 CC		=	g++
 
-#MODE= -O4 -Wall -DNDEBUG -fomit-frame-pointer # //////////      RELEASE WITHOUT ASSERT
-MODE= -O4 -Wall -fomit-frame-pointer # //////////      RELEASE
+#MODE= -O3 -Wall -DNDEBUG -fomit-frame-pointer # //////////      RELEASE WITHOUT ASSERT
+MODE= -O3 -Wall -fomit-frame-pointer # //////////      RELEASE
 #MODE= -g -Wall -D_DEBUG # //////////      DEBUG
 #MODE= -pg # //////////      PROFILER --> view with : gprof $(NAME)
 
