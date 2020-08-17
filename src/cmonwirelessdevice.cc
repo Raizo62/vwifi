@@ -627,13 +627,13 @@ int MonitorWirelessDevice::get_winterface_extra_infos(int ifindex)
 
 int MonitorWirelessDevice::recv_winterface_extra_infos_cb(struct nl_msg *msg, void *arg){
 
-	forward->recv_winterface_extra_infos(msg,arg);
+	forward->recv_winterface_extra_infos(msg);
 	return 0 ;
 }
 
 
 
-int MonitorWirelessDevice::recv_winterface_extra_infos(struct nl_msg *msg, void *arg){
+int MonitorWirelessDevice::recv_winterface_extra_infos(struct nl_msg *msg){
 
 
 

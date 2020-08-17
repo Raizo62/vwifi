@@ -139,7 +139,7 @@ public:
 	int get_winterface_extra_infos(int ifindex);
 
 	int recv_winterface_infos(struct nl_msg *msg);
-	int recv_winterface_extra_infos(struct nl_msg *msg, void *arg);
+	int recv_winterface_extra_infos(struct nl_msg *msg);
 
 	int handle_iee80211_com_finish(struct nl_msg *msg, void *arg);
 
@@ -179,10 +179,10 @@ namespace monitorinet {
 				return 0 ;
 		};
 
-		int recv_winterface_extra_infos(struct nl_msg *msg, void *arg) {
+		int recv_winterface_extra_infos(struct nl_msg *msg) {
 		
 				// add exception to check null ptr
-				m_obj->recv_winterface_extra_infos(msg , arg);
+				m_obj->recv_winterface_extra_infos(msg);
 				return 0 ;
 		};
 
