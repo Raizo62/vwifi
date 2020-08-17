@@ -690,7 +690,7 @@ int MonitorWirelessDevice::recv_winterface_extra_infos(struct nl_msg *msg){
 
 
 
-int MonitorWirelessDevice::handle_iee80211_com_finish_cb(struct nl_msg *msg, void *arg){
+int MonitorWirelessDevice::handle_iee80211_com_finish_cb( [[maybe_unused]] struct nl_msg *msg, void *arg){
 
 	forward->handle_iee80211_com_finish(arg);
 	return 0 ;
