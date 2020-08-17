@@ -90,7 +90,7 @@ class CKernelWifi : public intthread::AsyncTask {
 		 */
 		int stop();
 
-		int process_messages(struct nl_msg *msg, void *arg);
+		int process_messages(struct nl_msg *msg);
 
 		/**
 		 * \brief free dynamicly allocated memory and socket descriptors
@@ -279,10 +279,10 @@ namespace ckernelwifi {
 			m_obj = obj ;
 		};
 
-		int process_messages(struct nl_msg *msg, void *arg) {
+		int process_messages(struct nl_msg *msg) {
 
 				// add exception to check null ptr
-				m_obj->process_messages(msg , arg);
+				m_obj->process_messages(msg);
 				return 0 ;
 		};
 	};

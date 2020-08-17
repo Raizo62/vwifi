@@ -99,13 +99,13 @@ int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flag
 
 int CKernelWifi::process_messages_cb(struct nl_msg *msg, void *arg){
 
-	forward->process_messages(msg,arg);
+	forward->process_messages(msg);
 	return 0 ;	
 
 }
 
 
-int CKernelWifi::process_messages(struct nl_msg *msg, void *arg)
+int CKernelWifi::process_messages(struct nl_msg *msg)
 {
 
 
