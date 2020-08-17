@@ -64,7 +64,8 @@ bool CSocketServer::Listen()
 					.svm_family = AF_VSOCK,
 					.svm_reserved1 = 0,
 					.svm_port = Port,
-					.svm_cid = VMADDR_CID_ANY
+					.svm_cid = VMADDR_CID_ANY,
+					.svm_zero = {0}
 				};
 
 				//bind the socket
