@@ -18,7 +18,7 @@ void  signal_handler(int signal_num)
 
 
 
-int main (int agc, char ** argv){
+int main (){
 
 
 	/* Handle signals */
