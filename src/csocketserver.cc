@@ -60,13 +60,12 @@ bool CSocketServer::Listen()
 		case AF_VSOCK :
 			{
 				//type of socket created
-				struct sockaddr_vm address {
-					.svm_family = AF_VSOCK,
-					.svm_reserved1 = 0,
-					.svm_port = Port,
-					.svm_cid = VMADDR_CID_ANY,
-					.svm_zero = {0}
-				};
+				struct sockaddr_vm address;
+				address.svm_family = AF_VSOCK;
+				address.svm_reserved1 = 0;
+				address.svm_port = Port;
+				address.svm_cid = VMADDR_CID_ANY;
+				memset(address.svm_zero, 0, sizeof(address.svm_zero));
 
 				//bind the socket
 				if (bind(Master, (struct sockaddr*)&address, sizeof(address)) != 0)
