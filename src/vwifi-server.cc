@@ -135,7 +135,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 	}
 }
 
-int main(int argc , char *argv[])
+int main()
 {
 	TDescriptor socket;
 
