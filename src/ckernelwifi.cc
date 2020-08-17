@@ -714,7 +714,7 @@ void CKernelWifi::recv_msg_from_hwsim_loop_start(){
 
 }
 
-void CKernelWifi::recv_msg_from_server_signal_handle(int sig_num){
+void CKernelWifi::recv_msg_from_server_signal_handle([[maybe_unused]] int sig_num){
 
 
 
