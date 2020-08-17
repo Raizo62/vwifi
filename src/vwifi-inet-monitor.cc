@@ -10,7 +10,7 @@
 MonitorWirelessDevice monitor ;
 
 
-void  signal_handler(int signal_num)
+void  signal_handler([[maybe_unused]] int signal_num)
 {
 	std::cout << __func__ << std::endl ;
 	monitor.stop();
