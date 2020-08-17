@@ -110,7 +110,7 @@ void CSocketClient::StopReconnect(){
 
 // ----------------- CSocketClientINET
 
-CSocketClientINET::CSocketClientINET() : CSocketClient(AF_INET) {};
+CSocketClientINET::CSocketClientINET() : CSocketClient(AF_INET) {}
 
 void CSocketClientINET::Init(const char* IP, TPort port)
 {
@@ -136,7 +136,7 @@ int CSocketClientINET::GetID()
 
 // ----------------- CSocketClientVHOST
 
-CSocketClientVHOST::CSocketClientVHOST() : CSocketClient(AF_VSOCK) {};
+CSocketClientVHOST::CSocketClientVHOST() : CSocketClient(AF_VSOCK) {}
 
 void CSocketClientVHOST::Init(TPort port)
 {
