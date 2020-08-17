@@ -13,11 +13,11 @@ using namespace std;
 
 CSocketServer::CSocketServer() : CSocket()
 {
-};
+}
 
 CSocketServer::CSocketServer(TSocket type) : CSocket(type)
 {
-};
+}
 
 void CSocketServer::Init(TPort port)
 {
