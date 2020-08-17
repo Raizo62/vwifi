@@ -14,9 +14,9 @@ MAN		=	man
 
 CC		=	g++
 
-#MODE= -O3 -s -Wall -DNDEBUG # //////////      RELEASE WITHOUT ASSERT
-MODE= -O3 -s -Wall # //////////      RELEASE
-#MODE= -g -Wall -D_DEBUG # //////////      DEBUG
+#MODE= -O3 -s -Wall -Wextra -DNDEBUG # //////////      RELEASE WITHOUT ASSERT
+MODE= -O3 -s -Wall -Wextra # //////////      RELEASE
+#MODE= -g -Wall -Wextra -D_DEBUG # //////////      DEBUG
 #MODE= -pg # //////////      PROFILER --> view with : gprof $(NAME)
 
 CFLAGS  +=  $(MODE)
