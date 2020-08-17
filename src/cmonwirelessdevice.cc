@@ -518,12 +518,12 @@ int MonitorWirelessDevice::get_winterface_infos(int ifindex)
 
 int MonitorWirelessDevice::recv_winterface_infos_cb(struct nl_msg *msg, void *arg){
 
-	forward->recv_winterface_infos(msg,arg);
+	forward->recv_winterface_infos(msg);
 	return 0 ;
 }
 
 
-int MonitorWirelessDevice::recv_winterface_infos(struct nl_msg *msg, void *arg){
+int MonitorWirelessDevice::recv_winterface_infos(struct nl_msg *msg){
 
 
 	struct nlattr *tb_msg[NL80211_ATTR_MAX + 1];
