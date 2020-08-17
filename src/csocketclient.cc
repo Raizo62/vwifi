@@ -103,7 +103,7 @@ ssize_t CSocketClient::ReadBigData(char* data, TMinimalSize sizeOfData)
 	return SOCKET_ERROR;
 }
 
-void CSocketClient::StopReconnect(bool status){
+void CSocketClient::StopReconnect(){
 
 	StopTheReconnect = true ;
 }
