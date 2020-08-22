@@ -280,7 +280,7 @@ sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
-## Tools
+## Others Tools
 
 * start-vwifi-guest.sh : do all the commands necessary to start ***vwifi-guest*** on a Guest
 * fast-vwifi-update.sh : set with ***vwifi-ctrl*** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
