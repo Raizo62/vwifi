@@ -52,7 +52,7 @@ $(OBJ)/tools.o: tools.cc tools.h
 
 $(OBJ)/cinfosocket.o: cinfosocket.cc cinfosocket.h types.h
 
-$(OBJ)/cthread.o: cthread.cc   cthread.h 
+$(OBJ)/cthread.o: cthread.cc cthread.h
 
 
 $(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h $(OBJ)/csocket.o $(OBJ)/cinfosocket.o types.h
