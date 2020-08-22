@@ -38,14 +38,16 @@ sudo apt-get install libnl-3-dev libnl-genl-3-dev
 ```bash
 make update # Not necessary. To download and update the file mac80211_hwsim.h
 make
-make install # To change the file mode bits of tools
+make tools # To change the file mode bits of tools
+
+sudo make install
 ```
 
 ## Configuration
 
 Explanations :
 * The VMs and the server can communicate either with the VHOST protocol, or with the TCP protocol
-* The **vwifi-server** configured for VHOST can also accept connection from **vwifi-guest** with TCP protocol
+* The ***vwifi-server*** accepts connection from ***vwifi-guest*** with TCP or VHOST protocols
 * To use TCP protocol, the Host and the VMs must be connected to a different IP network than that of the wifi
 
 ### With VHOST
@@ -60,27 +62,29 @@ Explanations :
    sudo modprobe vhost_vsock
    sudo chmod a+rw /dev/vhost-vsock
    ```
-    * Start the vwifi-server
+    * Start the ***vwifi-server***
    ```bash
-   ./vwifi-server
+   vwifi-server
    ```
 
 * Hypervisor
   * QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=NUM` with NUM an identifier greater than  2
-  * GNS3 (>= 2.2) : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%guest-cid%`
+  * GNS3 (>= 2.2) : QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%guest-cid%`
 
 #### Each Guest
 
 * Create the wlan interfaces (on this example, 2 interfaces) :
 ```bash
-modprobe mac80211_hwsim radios=2
-# macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
+sudo modprobe mac80211_hwsim radios=2
+# sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the vwifi-server
+* Connect all these wlan interfaces to the ***vwifi-server***
 ```bash
-./vwifi-guest
+sudo vwifi-guest
 ```
+
+* ***vwifi-guest*** displays "ID=-1". ***vwifi-server*** uses the cid to identify this guest.
 
 ### With TCP
 
@@ -88,10 +92,10 @@ modprobe mac80211_hwsim radios=2
 
 #### Host
 
-* Start the vwifi-server
+* Start the ***vwifi-server***
 
 ```bash
-./vwifi-server
+vwifi-server
 ```
 
 * We will suppose that the Host have the IP address : 172.16.0.1
@@ -100,14 +104,16 @@ modprobe mac80211_hwsim radios=2
 
 * Create the wlan interfaces (on this example, 2 interfaces) :
 ```bash
-modprobe mac80211_hwsim radios=2
-# macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
+sudo modprobe mac80211_hwsim radios=2
+# sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the vwifi-server
+* Connect all these wlan interfaces to the ***vwifi-server***
 ```bash
-./vwifi-guest 172.16.0.1
+sudo vwifi-guest 172.16.0.1
 ```
+
+* ***vwifi-guest*** displays an ID which is an hashsum of the IP. It is used by ***vwifi-server*** to identify this guest.
 
 ## Capture packets from Host
 
@@ -115,7 +121,7 @@ modprobe mac80211_hwsim radios=2
 
 ```bash
 sudo modprobe mac80211_hwsim radios=1
-sudo ./vwifi-host
+sudo vwifi-host
 ```
 
 ### Capture
@@ -141,6 +147,35 @@ sudo ip link set wlan0 up
 sudo wireshark
 ```
 
+## Control
+
+### Host
+
+* Show the list of connected guest (display : cid and coordinate x, y z)
+```bash
+vwifi-ctrl ls
+```
+
+* Set the new coordinate (11, 12, 13) of the guest with the cid 10
+```bash
+vwifi-ctrl set 10 11 12 13
+```
+
+* Enable the lost of packets
+```bash
+vwifi-ctrl loss yes
+```
+
+* Disable the lost of packets
+```bash
+vwifi-ctrl loss no
+```
+
+* Display the config of ***vwifi-server***
+```bash
+vwifi-ctrl status
+```
+
 ## Test Wifi
 
 ### Test 1 : WPA
@@ -156,24 +191,24 @@ sudo apt install hostapd wpasupplicant
 * Guest Wifi 1 :
 
 ```bash
-ip a a 10.0.0.1/8 dev wlan0
+sudo ip a a 10.0.0.1/8 dev wlan0
 
-hostapd tests/hostapd_wpa.conf
+sudo hostapd tests/hostapd_wpa.conf
 ```
 
 * Guest Wifi 2 :
 ```bash
-wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
+sudo wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
 
-ip a a 10.0.0.2/8 dev wlan0
+sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
 * Guest Wifi 3 :
 ```bash
-wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
+sudo wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
 
-ip a a 10.0.0.3/8 dev wlan0
+sudo ip a a 10.0.0.3/8 dev wlan0
 ping 10.0.0.2
 ```
 
@@ -190,24 +225,24 @@ sudo apt install hostapd iw tcpdump
 * Guest Wifi 1 :
 
 ```bash
-ip a a 10.0.0.1/8 dev wlan0
+sudo ip a a 10.0.0.1/8 dev wlan0
 
-hostapd tests/hostapd_open.conf
+sudo hostapd tests/hostapd_open.conf
 ```
 
 * Guest Wifi 2 :
 ```bash
-ip link set up wlan0
-iw dev wlan0 connect mac80211_open
+sudo ip link set up wlan0
+sudo iw dev wlan0 connect mac80211_open
 
-ip a a 10.0.0.2/8 dev wlan0
+sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
 * Guest Wifi 3 :
 ```bash
-ip link set up wlan0
-tcpdump -n -e -I -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
+sudo ip link set up wlan0
+sudo tcpdump -n -e -I -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
 ```
 
 #### Host
@@ -228,54 +263,25 @@ sudo apt install iw
 
 * Guest Wifi 1 :
 ```bash
-ip link set up wlan0
-iw wlan0 set type ibss
-iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
+sudo ip link set up wlan0
+sudo iw wlan0 set type ibss
+sudo iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
 
-ip a a 10.0.0.1/8 dev wlan0
+sudo ip a a 10.0.0.1/8 dev wlan0
 ```
 
 * Guest Wifi 2 :
 ```bash
-ip link set up wlan0
-iw wlan0 set type ibss
-iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
+sudo ip link set up wlan0
+sudo iw wlan0 set type ibss
+sudo iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
 
-ip a a 10.0.0.2/8 dev wlan0
+sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
-## Control
+## Others Tools
 
-### Host
-
-* Show the list of connected guest (display : cid and coordinate x, y z)
-```bash
-./vwifi-ctrl ls
-```
-
-* Set the new coordinate (11, 12, 13) of the guest with the cid 10
-```bash
-./vwifi-ctrl set 10 11 12 13
-```
-
-* Enable the lost of packets
-```bash
-./vwifi-ctrl loss yes
-```
-
-* Disable the lost of packets
-```bash
-./vwifi-ctrl loss no
-```
-
-* Display the config of vwifi-server
-```bash
-./vwifi-ctrl status
-```
-
-## Tools
-
-* start-vwifi-guest.sh : do all the commands necessary to start `vwifi-guest` on a Guest
-* fast-vwifi-update.sh : set with `vwifi-ctrl` the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
+* start-vwifi-guest.sh : do all the commands necessary to start ***vwifi-guest*** on a Guest
+* fast-vwifi-update.sh : set with ***vwifi-ctrl*** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
 * client.sh : configure the client wifi with Open or WPA
