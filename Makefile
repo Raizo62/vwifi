@@ -80,7 +80,7 @@ $(OBJ)/ckernelwifi.o: ckernelwifi.cc ckernelwifi.h $(OBJ)/csocket.o $(OBJ)/csele
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 
-vwifi-server : vwifi-server.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cinfosocket.o $(OBJ)/cwifi.o $(OBJ)/cwifiserver.o $(OBJ)/cselect.o $(OBJ)/cinfowifi.o $(OBJ)/ccoordinate.o $(OBJ)/cctrlserver.o $(OBJ)/cwifi.o  $(OBJ)/tools.o
+vwifi-server : vwifi-server.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cinfosocket.o $(OBJ)/cwifi.o $(OBJ)/cwifiserver.o $(OBJ)/cselect.o $(OBJ)/cinfowifi.o $(OBJ)/ccoordinate.o $(OBJ)/cctrlserver.o $(OBJ)/tools.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 vwifi-ctrl : vwifi-ctrl.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/ccoordinate.o $(OBJ)/cinfowifi.o $(OBJ)/tools.o
