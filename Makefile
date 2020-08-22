@@ -55,10 +55,12 @@ $(OBJ)/cinfosocket.o: cinfosocket.cc cinfosocket.h types.h
 $(OBJ)/cthread.o: cthread.cc cthread.h
 
 
+$(OBJ)/cwifi.o: cwifi.cc cwifi.h $(OBJ)/csocket.o types.h
+
 $(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h $(OBJ)/csocket.o $(OBJ)/cinfosocket.o types.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
-$(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h $(OBJ)/csocketserver.o $(OBJ)/cinfowifi.o
+$(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h $(OBJ)/csocketserver.o $(OBJ)/cinfowifi.o $(OBJ)/cwifi.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h $(OBJ)/csocket.o $(OBJ)/tools.o
@@ -73,7 +75,7 @@ $(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h $(OBJ)/cwifiserver.o $(OBJ)/c
 $(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
-$(OBJ)/cwificlient.o: cwificlient.cc cwificlient.h $(OBJ)/csocketclient.o $(OBJ)/ckernelwifi.o
+$(OBJ)/cwificlient.o: cwificlient.cc cwificlient.h $(OBJ)/csocketclient.o $(OBJ)/ckernelwifi.o $(OBJ)/cwifi.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(OBJ)/ckernelwifi.o: ckernelwifi.cc ckernelwifi.h $(OBJ)/csocket.o $(OBJ)/cselect.o $(OBJ)/cthread.o hwsim.h mac80211_hwsim.h ieee80211.h config.h
