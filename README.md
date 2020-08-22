@@ -147,6 +147,35 @@ sudo ip link set wlan0 up
 sudo wireshark
 ```
 
+## Control
+
+### Host
+
+* Show the list of connected guest (display : cid and coordinate x, y z)
+```bash
+vwifi-ctrl ls
+```
+
+* Set the new coordinate (11, 12, 13) of the guest with the cid 10
+```bash
+vwifi-ctrl set 10 11 12 13
+```
+
+* Enable the lost of packets
+```bash
+vwifi-ctrl loss yes
+```
+
+* Disable the lost of packets
+```bash
+vwifi-ctrl loss no
+```
+
+* Display the config of ***vwifi-server***
+```bash
+vwifi-ctrl status
+```
+
 ## Test Wifi
 
 ### Test 1 : WPA
@@ -249,35 +278,6 @@ sudo iw wlan0 ibss join MYNETWORK 2412 # frequency 2412 is channel 1
 
 sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
-```
-
-## Control
-
-### Host
-
-* Show the list of connected guest (display : cid and coordinate x, y z)
-```bash
-vwifi-ctrl ls
-```
-
-* Set the new coordinate (11, 12, 13) of the guest with the cid 10
-```bash
-vwifi-ctrl set 10 11 12 13
-```
-
-* Enable the lost of packets
-```bash
-vwifi-ctrl loss yes
-```
-
-* Disable the lost of packets
-```bash
-vwifi-ctrl loss no
-```
-
-* Display the config of ***vwifi-server***
-```bash
-vwifi-ctrl status
 ```
 
 ## Tools
