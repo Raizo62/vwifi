@@ -176,6 +176,11 @@ vwifi-ctrl loss no
 vwifi-ctrl status
 ```
 
+* Display the distance in meters between the guest with the cid 10 and the guest with the cid 20
+```bash
+vwifi-ctrl distance 10 20
+```
+
 ## Test Wifi
 
 ### Test 1 : WPA

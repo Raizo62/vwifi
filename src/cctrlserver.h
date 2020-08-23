@@ -28,6 +28,8 @@ class CCTRLServer : public CSocketServer
 
 		void SendShow();
 
+		void SendDistance();
+
 		void CloseAllClient();
 
 	public :

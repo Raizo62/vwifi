@@ -25,6 +25,8 @@ void Help(char* nameOfProg)
 	cout<<"		- Display the status of loss and list of VMs"<<endl;
 	cout<<"	status"<<endl;
 	cout<<"		- Display the status of the configuration of vwifi-server"<<endl;
+	cout<<"	distance cid1 cid2"<<endl;
+	cout<<"		- Distance in meters between the VM with cid1 and the VM with cid2"<<endl;
 	cout<<"	close"<<endl;
 	cout<<"		- Close all the connections with Wifi VMs"<<endl;
 }
@@ -343,6 +345,97 @@ int AskShow()
 	return AskList();
 }
 
+int DistanceBetweenCID(int argc, char *argv[])
+{
+	if( argc != 4 )
+	{
+			cerr<<"Error : distance : the number of parameter is uncorrect"<<endl;
+			Help(argv[0]);
+			return 1;
+	}
+
+	TCID cid1=atoi(argv[2]);
+
+	if( cid1 < TCID_GUEST_MIN )
+	{
+			cerr<<"Error : distance : the CID 1 must be greater than or equal to "<<TCID_GUEST_MIN<<endl;
+			return 1;
+	}
+
+	TCID cid2=atoi(argv[3]);
+
+	if( cid2 < TCID_GUEST_MIN )
+	{
+			cerr<<"Error : distance : the CID2 must be greater than or equal to "<<TCID_GUEST_MIN<<endl;
+			return 1;
+	}
+
+	CSocketClientINET socket;
+
+	socket.Init(ADDRESS_IP,CTRL_PORT);
+
+	if( ! socket.ConnectLoop() )
+	{
+		cerr<<"Error : distance : socket.Connect error"<<endl;
+		return 1;
+	}
+
+	int err;
+
+	TOrder order=TORDER_DISTANCE_BETWEEN_CID;
+	err=socket.Send((char*)&order,sizeof(order));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : distance : socket.Send : order"<<endl;
+		return 1;
+	}
+	err=socket.Send((char*)&cid1,sizeof(cid1));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : distance : socket.Send : cid 1"<<endl;
+		return 1;
+	}
+	err=socket.Send((char*)&cid2,sizeof(cid2));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : distance : socket.Send : cid 2"<<endl;
+		return 1;
+	}
+
+	int codeError;
+	err=socket.Read((char*)&codeError,sizeof(codeError));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : distance : socket.Read : codeError"<<endl;
+		return 1;
+	}
+
+	if ( codeError == -1 )
+	{
+		cerr<<"Error : distance : unknown cid 1 : "<<cid1<<endl;
+		return 1;
+	}
+	if ( codeError == -2 )
+	{
+		cerr<<"Error : distance : unknown cid 2 : "<<cid2<<endl;
+		return 1;
+	}
+
+	float distance;
+	err=socket.Read((char*)&distance,sizeof(distance));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : distance : socket.Read : distance"<<endl;
+		return 1;
+	}
+
+	cout<<"Distance : "<<distance<<endl;
+
+	socket.Close();
+
+	return 0;
+}
+
 int CloseAllClient()
 {
 	CSocketClientINET socket;
@@ -392,6 +485,9 @@ int main(int argc , char *argv[])
 
 	if( ! strcmp(argv[1],"status") )
 		return AskStatus();
+
+	if( ! strcmp(argv[1],"distance") )
+		return DistanceBetweenCID(argc, argv);
 
 	if( ! strcmp(argv[1],"close") )
 		return CloseAllClient();

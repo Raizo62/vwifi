@@ -207,6 +207,80 @@ void CCTRLServer::SendShow()
 	}
 }
 
+void CCTRLServer::SendDistance()
+{
+	TCID cid1, cid2;
+
+	if( Read((char*)&cid1, sizeof(TCID)) == SOCKET_ERROR )
+		return;
+
+	if( Read((char*)&cid2, sizeof(TCID)) == SOCKET_ERROR )
+		return;
+
+	int codeError;
+
+	CCoordinate* coo1;
+
+	coo1=WifiGuestVHostServer->GetReferenceOnInfoWifiByCID(cid1);
+	if( coo1 == NULL )
+	{
+		coo1=WifiGuestVHostServer->GetReferenceOnInfoWifiDeconnectedByCID(cid1);
+		if( coo1 == NULL )
+		{
+			coo1=WifiGuestInetServer->GetReferenceOnInfoWifiByCID(cid1);
+			if( coo1 == NULL )
+			{
+				coo1=WifiGuestInetServer->GetReferenceOnInfoWifiDeconnectedByCID(cid1);
+				if( coo1 == NULL )
+				{
+					codeError=-1;
+					if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
+						cerr<<"Error : SendDistance : socket.SendList : unknown cid1"<<endl;
+					return ;
+				}
+			}
+		}
+	}
+
+	CCoordinate* coo2;
+
+	coo2=WifiGuestVHostServer->GetReferenceOnInfoWifiByCID(cid2);
+	if( coo2 == NULL )
+	{
+		coo2=WifiGuestVHostServer->GetReferenceOnInfoWifiDeconnectedByCID(cid2);
+		if( coo2 == NULL )
+		{
+			coo2=WifiGuestInetServer->GetReferenceOnInfoWifiByCID(cid2);
+			if( coo2 == NULL )
+			{
+				coo2=WifiGuestInetServer->GetReferenceOnInfoWifiDeconnectedByCID(cid2);
+				if( coo2 == NULL )
+				{
+					codeError=-2;
+					if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
+						cerr<<"Error : SendDistance : socket.SendList : unknown cid2"<<endl;
+					return ;
+				}
+			}
+		}
+	}
+
+	codeError=0;
+	if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendDistance : socket.SendList : no error"<<endl;
+		return ;
+	}
+
+	float distance=coo1->DistanceWith(*coo2);
+
+	if( Send((char*)&distance,sizeof(distance)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendDistance : socket.SendList : distance"<<endl;
+		return;
+	}
+}
+
 void CCTRLServer::CloseAllClient()
 {
 	// be careful : In the Scheduler, i must delete only the nodes of Wifi Guest, not the node of the CTRLServer
@@ -249,6 +323,10 @@ void CCTRLServer::ReceiveOrder()
 
 			case TORDER_SHOW :
 				SendShow();
+				break;
+
+			case TORDER_DISTANCE_BETWEEN_CID :
+				SendDistance();
 				break;
 
 			case TORDER_CLOSE_ALL_CLIENT :
