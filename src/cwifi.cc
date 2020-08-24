@@ -9,7 +9,7 @@ const float ConstanteC=92.45;
 const TFrequency Frequency=2.4; // GHz
 
 // distance : meter
-int CWifi::Attenuation(float distance)
+int CWifi::Attenuation(TDistance distance)
 {
 	if( distance == 0 )
 		return 0;

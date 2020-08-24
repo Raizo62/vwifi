@@ -421,7 +421,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 		return 1;
 	}
 
-	float distance;
+	TDistance distance;
 	err=socket.Read((char*)&distance,sizeof(distance));
 	if( err == SOCKET_ERROR )
 	{

@@ -66,12 +66,12 @@ void CCoordinate::Set(CCoordinate coo)
 	*this=coo;
 }
 
-float CCoordinate::DistanceWith(TValue x, TValue y, TValue z)
+TDistance CCoordinate::DistanceWith(TValue x, TValue y, TValue z)
 {
 	return sqrt( (X-x)*(X-x)+(Y-y)*(Y-y)+(Z-z)*(Z-z) );
 }
 
-float CCoordinate::DistanceWith(CCoordinate coo)
+TDistance CCoordinate::DistanceWith(CCoordinate coo)
 {
 	return DistanceWith(coo.X, coo.Y, coo.Z);
 }

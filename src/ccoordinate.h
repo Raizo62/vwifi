@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "types.h" // TValue
+#include "types.h" // TValue, TDistance
 
 using namespace std;
 
@@ -31,8 +31,8 @@ class CCoordinate
 		TValue GetY();
 		TValue GetZ();
 
-		float DistanceWith(TValue x, TValue y, TValue z);
-		float DistanceWith(CCoordinate coo);
+		TDistance DistanceWith(TValue x, TValue y, TValue z);
+		TDistance DistanceWith(CCoordinate coo);
 
 		void Display(ostream& os) const;
 		friend ostream& operator<<(ostream& os, const CCoordinate& coo);

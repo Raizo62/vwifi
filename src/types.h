@@ -21,6 +21,8 @@ typedef unsigned int TPort;
 
 typedef int TPower;
 
+typedef float TDistance; // in meters
+
 typedef float TFrequency;
 
 typedef unsigned short TMinimalSize;

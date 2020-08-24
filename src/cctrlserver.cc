@@ -272,7 +272,7 @@ void CCTRLServer::SendDistance()
 		return ;
 	}
 
-	float distance=coo1->DistanceWith(*coo2);
+	TDistance distance=coo1->DistanceWith(*coo2);
 
 	if( Send((char*)&distance,sizeof(distance)) == SOCKET_ERROR )
 	{

@@ -9,7 +9,7 @@ class CWifi
 	protected :
 
 		// distance : meter
-		int Attenuation(float distance);
+		int Attenuation(TDistance distance);
 
 		bool PacketIsLost(TPower signalLevel);
 
