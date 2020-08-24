@@ -11,6 +11,9 @@ class CWifi
 		// distance : meter
 		int Attenuation(TDistance distance);
 
+		// return power value between [TPower_MIN,TPower_MAX]
+		TPower BoundedPower(int power);
+
 		bool PacketIsLost(TPower signalLevel);
 
 		ssize_t SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, const char* buffer, int sizeOfBuffer);

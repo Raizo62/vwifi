@@ -11,6 +11,7 @@ const TFrequency Frequency=2.4; // GHz
 
 const TPower TPower_MAX=SCHAR_MAX;
 const TPower TPower_MIN=SCHAR_MIN;
+
 // distance : meter
 int CWifi::Attenuation(TDistance distance)
 {
@@ -18,6 +19,15 @@ int CWifi::Attenuation(TDistance distance)
 		return 0;
 
 	return ConstanteC+20*log10(Frequency)+20*log10(distance/1000);
+}
+
+TPower CWifi::BoundedPower(int power)
+{
+	if( power < TPower_MIN )
+		return TPower_MIN;
+	if( power > TPower_MAX )
+		return TPower_MAX;
+	return power;
 }
 
 bool CWifi::PacketIsLost(TPower signalLevel)
