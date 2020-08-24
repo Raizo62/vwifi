@@ -46,7 +46,7 @@ void CCTRLServer::SendList()
 			CInfoWifi* infoWifi=WifiGuestVHostServer->GetReferenceOnInfoWifiByIndex(i);
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
-				cerr<<"Error : AskList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
+				cerr<<"Error : SendList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
 				return;
 			}
 		}
@@ -58,7 +58,7 @@ void CCTRLServer::SendList()
 			CInfoWifi* infoWifi=WifiGuestInetServer->GetReferenceOnInfoWifiByIndex(i);
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
-				cerr<<"Error : AskList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
+				cerr<<"Error : SendList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
 				return;
 			}
 		}
