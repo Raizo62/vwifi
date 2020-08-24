@@ -131,7 +131,7 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 		if( i != index )
 			if( IsEnable(i) )
 			{
-				TPower signalLevel=power-Attenuation(coo.DistanceWith(InfoWifis[i]));
+				TPower signalLevel=BoundedPower(power-Attenuation(coo.DistanceWith(InfoWifis[i])));
 				if( ! CanLostPackets() || ! PacketIsLost(signalLevel) )
 					if( SendSignalWithSocket(this, InfoSockets[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
 						InfoSockets[i].DisableIt();
@@ -147,7 +147,7 @@ void CWifiServer::SendAllClients(CCoordinate cooSource, TPower power, const char
 	{
 		if( IsEnable(i) )
 		{
-			TPower signalLevel=power-Attenuation(cooSource.DistanceWith(InfoWifis[i]));
+			TPower signalLevel=BoundedPower(power-Attenuation(cooSource.DistanceWith(InfoWifis[i])));
 			if( ! CanLostPackets() || ! PacketIsLost(signalLevel) )
 				if( SendSignalWithSocket(this, InfoSockets[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
 					InfoSockets[i].DisableIt();
