@@ -39,7 +39,7 @@ int AskList()
 
 	if( ! socket.ConnectLoop() )
 	{
-		cerr<<"Error : AskList : socket.Connect error"<<endl;
+		cerr<<"Error : ls : socket.Connect error"<<endl;
 		return 1;
 	}
 
@@ -49,7 +49,7 @@ int AskList()
 	err=socket.Send((char*)&order,sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskList : socket.Send : order"<<endl;
+		cerr<<"Error : ls : socket.Send : order"<<endl;
 		return 1;
 	}
 
@@ -57,7 +57,7 @@ int AskList()
 	err=socket.Read((char*)&number,sizeof(number));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskList : socket.Read : number"<<endl;
+		cerr<<"Error : ls : socket.Read : number"<<endl;
 		return 1;
 	}
 
@@ -67,7 +67,7 @@ int AskList()
 		err=socket.Read((char*)&info,sizeof(info));
 		if( err == SOCKET_ERROR )
 		{
-			cerr<<"Error : AskList : socket.Read : CInfoWifi"<<endl;
+			cerr<<"Error : ls : socket.Read : CInfoWifi"<<endl;
 			return 1;
 		}
 		cout<<info<<endl;
@@ -82,7 +82,7 @@ int ChangeCoordinate(int argc, char *argv[])
 {
 	if( argc != 6 )
 	{
-			cerr<<"Error : ChangeCoordinate : the number of parameter is uncorrect"<<endl;
+			cerr<<"Error : set : the number of parameter is uncorrect"<<endl;
 			Help(argv[0]);
 			return 1;
 	}
@@ -91,7 +91,7 @@ int ChangeCoordinate(int argc, char *argv[])
 
 	if( cid < TCID_GUEST_MIN )
 	{
-			cerr<<"Error : ChangeCoordinate : the CID must be greater than or equal to "<<TCID_GUEST_MIN<<endl;
+			cerr<<"Error : set : the CID must be greater than or equal to "<<TCID_GUEST_MIN<<endl;
 			return 1;
 	}
 
@@ -108,7 +108,7 @@ int ChangeCoordinate(int argc, char *argv[])
 
 	if( ! socket.ConnectLoop() )
 	{
-		cerr<<"Error : ChangeCoordinate : socket.Connect error"<<endl;
+		cerr<<"Error : set : socket.Connect error"<<endl;
 		return 1;
 	}
 
@@ -118,19 +118,19 @@ int ChangeCoordinate(int argc, char *argv[])
 	err=socket.Send((char*)&order,sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : ChangeCoordinate : socket.Send : order"<<endl;
+		cerr<<"Error : set : socket.Send : order"<<endl;
 		return 1;
 	}
 	err=socket.Send((char*)&cid,sizeof(cid));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : ChangeCoordinate : socket.Send : cid"<<endl;
+		cerr<<"Error : set : socket.Send : cid"<<endl;
 		return 1;
 	}
 	err=socket.Send((char*)&coo,sizeof(coo));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : ChangeCoordinate : socket.Send : "<<coo<<endl;
+		cerr<<"Error : set : socket.Send : "<<coo<<endl;
 		return 1;
 	}
 
@@ -205,7 +205,7 @@ int AskStatus()
 
 	if( ! socket.ConnectLoop() )
 	{
-		cerr<<"Error : AskStatus : socket.Connect error"<<endl;
+		cerr<<"Error : status : socket.Connect error"<<endl;
 		return 1;
 	}
 
@@ -215,7 +215,7 @@ int AskStatus()
 	err=socket.Send((char*)&order,sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Send : Order"<<endl;
+		cerr<<"Error : status : socket.Send : Order"<<endl;
 		return 1;
 	}
 
@@ -223,7 +223,7 @@ int AskStatus()
 	err=socket.Read((char*)&loss,sizeof(loss));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : Loss"<<endl;
+		cerr<<"Error : status : socket.Read : Loss"<<endl;
 		return 1;
 	}
 	cout<<"SRV : PacketLoss : ";
@@ -238,7 +238,7 @@ int AskStatus()
 	err=socket.Read((char*)&port,sizeof(port));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : Port"<<endl;
+		cerr<<"Error : status : socket.Read : Port"<<endl;
 		return 1;
 	}
 	cout<<"SRV VHOST: Port : "<<port<<endl;
@@ -247,7 +247,7 @@ int AskStatus()
 	err=socket.Read((char*)&size,sizeof(size));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : Size"<<endl;
+		cerr<<"Error : status : socket.Read : Size"<<endl;
 		return 1;
 	}
 	cout<<"SRV VHOST: SizeOfDisconnected : "<<size<<endl;
@@ -257,7 +257,7 @@ int AskStatus()
 	err=socket.Read((char*)&port,sizeof(port));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : Port"<<endl;
+		cerr<<"Error : status : socket.Read : Port"<<endl;
 		return 1;
 	}
 	cout<<"SRV INET: Port : "<<port<<endl;
@@ -265,7 +265,7 @@ int AskStatus()
 	err=socket.Read((char*)&size,sizeof(size));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : Size"<<endl;
+		cerr<<"Error : status : socket.Read : Size"<<endl;
 		return 1;
 	}
 	cout<<"SRV INET: SizeOfDisconnected : "<<size<<endl;
@@ -276,7 +276,7 @@ int AskStatus()
 	err=socket.Read((char*)&hostIsConnected,sizeof(hostIsConnected));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : HostIsConnected"<<endl;
+		cerr<<"Error : status : socket.Read : HostIsConnected"<<endl;
 		return 1;
 	}
 	cout<<"HOST : ";
@@ -298,7 +298,7 @@ int AskShow()
 
 	if( ! socket.ConnectLoop() )
 	{
-		cerr<<"Error : AskShow : socket.Connect error"<<endl;
+		cerr<<"Error : show : socket.Connect error"<<endl;
 		return 1;
 	}
 
@@ -308,7 +308,7 @@ int AskShow()
 	err=socket.Send((char*)&order,sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskShow : socket.Send : Order"<<endl;
+		cerr<<"Error : show : socket.Send : Order"<<endl;
 		return 1;
 	}
 
@@ -316,7 +316,7 @@ int AskShow()
 	err=socket.Read((char*)&loss,sizeof(loss));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskShow : socket.Read : Loss"<<endl;
+		cerr<<"Error : show : socket.Read : Loss"<<endl;
 		return 1;
 	}
 	cout<<"PacketLoss : ";
@@ -329,7 +329,7 @@ int AskShow()
 	err=socket.Read((char*)&hostIsConnected,sizeof(hostIsConnected));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : AskStatus : socket.Read : HostIsConnected"<<endl;
+		cerr<<"Error : show : socket.Read : HostIsConnected"<<endl;
 		return 1;
 	}
 	cout<<"Host : ";
@@ -444,7 +444,7 @@ int CloseAllClient()
 
 	if( ! socket.ConnectLoop() )
 	{
-		cerr<<"Error : CloseAllClient : socket.Connect error"<<endl;
+		cerr<<"Error : close : socket.Connect error"<<endl;
 		return 1;
 	}
 
@@ -454,7 +454,7 @@ int CloseAllClient()
 	err=socket.Send((char*)&order,sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : CloseAllClient : socket.Send : order"<<endl;
+		cerr<<"Error : close : socket.Send : order"<<endl;
 		return 1;
 	}
 
