@@ -19,7 +19,8 @@ typedef int TSocket;
 
 typedef unsigned int TPort;
 
-typedef int TPower;
+typedef char TPower; // empirical observed values with int : [-123,20]
+	// be careful to constants TPower_MAX and TPower_MIN in cwifi.cc
 
 typedef float TDistance; // in meters
 
