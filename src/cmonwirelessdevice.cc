@@ -270,7 +270,7 @@ void MonitorWirelessDevice::new_net_interface(struct nlmsghdr *h)
 #ifdef _DEBUG
 	if (ifi->ifi_flags & IFF_UP) { // get UP flag of the network interface
         
-		std::cout << "intarface UP" << std::endl;
+		std::cout << "interface UP" << std::endl;
                 
 	} else {
    
