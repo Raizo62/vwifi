@@ -13,6 +13,8 @@
 #include <sys/ioctl.h>
 #include <linux/sockios.h>
 
+#include <net/if.h> // struct ifreq
+
 #include "ieee80211.h"
 #include "ckernelwifi.h"
 
