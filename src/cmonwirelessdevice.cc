@@ -10,7 +10,7 @@
 #include <cstring>
 #include <iostream>
 
-#include <linux/if_arp.h>
+#include <net/if_arp.h>
 
 #include <stdexcept>
 

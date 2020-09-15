@@ -6,7 +6,7 @@
 #include <netlink/genl/family.h>
 #include <netlink/route/link.h>
 
-#include <linux/if_arp.h>
+#include <net/if_arp.h>
 #include <linux/nl80211.h>
 
 #include <linux/ethtool.h>
