@@ -1,6 +1,7 @@
 #ifndef _CSELECT_H_
 #define _CSELECT_H_
 
+#include <sys/select.h> // fd_set
 #include <sys/socket.h>
 #include <vector> // vector
 
