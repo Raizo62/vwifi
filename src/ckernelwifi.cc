@@ -1,5 +1,6 @@
 #include <condition_variable>
 #include <mutex>
+
 #include <netlink/netlink.h>
 #include <netlink/genl/genl.h>
 #include <netlink/genl/ctrl.h>
@@ -9,6 +10,8 @@
 #include <net/if_arp.h>
 #include <linux/nl80211.h>
 
+#include "ckernelwifi.h" // before #include <linux/ethtool.h>
+
 #include <linux/ethtool.h>
 #include <sys/ioctl.h>
 #include <linux/sockios.h>
@@ -16,7 +19,6 @@
 #include <net/if.h> // struct ifreq
 
 #include "ieee80211.h"
-#include "ckernelwifi.h"
 
 #include <iostream>
 #include <thread>
