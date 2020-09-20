@@ -24,6 +24,10 @@
 
 #include <linux/nl80211.h>
 
+#ifdef _DEBUG
+#include <net/if.h> // IFF_UP
+#endif
+
 /* allow calling a non static function from static function */
 monitorinet::CallFromStaticFunc * MonitorWirelessDevice::forward = nullptr ;
 
