@@ -31,6 +31,7 @@
 
 #include "csocket.h"
 
+char Buffer[2048];
 
 /* allow calling non static function from static function */
 ckernelwifi::CallFromStaticFunc * CKernelWifi::forward = nullptr ;
@@ -511,9 +512,8 @@ void CKernelWifi::recv_from_server(){
 		return  ;
 
 
-	char buf[1024];
 	int bytes;
-	
+
 	struct nlmsghdr *nlh;
 	struct genlmsghdr *gnlh;
 	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
@@ -534,7 +534,7 @@ void CKernelWifi::recv_from_server(){
 		return ;
 
 	TPower power;
-	bytes=RecvSignal(&power, buf, sizeof(buf));
+	bytes=RecvSignal(&power, Buffer, sizeof(Buffer));
 
 	if( bytes == SOCKET_ERROR )
 		manage_server_crash();
@@ -542,7 +542,7 @@ void CKernelWifi::recv_from_server(){
 	signal = power ;
 
 	/* netlink header */
-	nlh = (struct nlmsghdr *)buf;
+	nlh = (struct nlmsghdr *)Buffer;
 
 	/* generic netlink header */
 	gnlh = (struct genlmsghdr*)nlmsg_data(nlh);
