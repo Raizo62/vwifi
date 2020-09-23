@@ -7,10 +7,11 @@
 #include "cwifiserver.h"
 #include "cctrlserver.h"
 #include "cselect.h"
+#include "cdynbuffer.h"
 
 using namespace std;
 
-char Buffer[2048]; // Buffer to stock received values
+CDynBuffer Buffer; // Buffer to stock received values
 
 void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiServer* serverSecond, bool serverSecondForwardWithoutLoss, CWifiServer* serverThird, bool serverThirdIsWithoutCoordinate, CSelect* scheduler)
 {
@@ -71,7 +72,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 			}
 
 			// read the data
-			valread = serverMaster->ReadBigData( socket , Buffer, sizeof(Buffer));
+			valread = serverMaster->ReadBigData( socket , &Buffer);
 			if ( valread <= 0 )
 			{
 				//Close the socket
@@ -90,7 +91,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 #ifdef _VERBOSE2
 					cout<<"Server "<<serverMaster->GetPort()<<" forward "<<valread<<" bytes from own client "; serverMaster->ShowInfoWifi(i); cout<<" to "<< serverMaster->GetNumberClient()-1 << " others owns clients" <<endl;
 #endif
-					serverMaster->SendAllOtherClients(i,power,Buffer,valread);
+					serverMaster->SendAllOtherClients(i,power,Buffer.GetBuffer(),valread);
 				}
 
 			if( serverSecond->GetNumberClient() > 0 )
@@ -100,7 +101,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 #ifdef _VERBOSE2
 					cout<<"Server "<<serverSecond->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients without loss" <<endl;
 #endif
-					serverSecond->SendAllClientsWithoutLoss(power,Buffer,valread);
+					serverSecond->SendAllClientsWithoutLoss(power,Buffer.GetBuffer(),valread);
 				}
 				else
 				{
@@ -108,7 +109,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 					cout<<"Server "<<serverSecond->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients" <<endl;
 #endif
 					CCoordinate coo=*(serverMaster->GetReferenceOnInfoWifiByIndex(i));
-					serverSecond->SendAllClients(coo,power,Buffer,valread);
+					serverSecond->SendAllClients(coo,power,Buffer.GetBuffer(),valread);
 				}
 			}
 
@@ -119,7 +120,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 #ifdef _VERBOSE2
 					cout<<"Server "<<serverThird->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of "<< serverMaster->GetPort() << " to all "<< serverThird->GetNumberClient() << " clients without loss" <<endl;
 #endif
-					serverThird->SendAllClientsWithoutLoss(power,Buffer,valread);
+					serverThird->SendAllClientsWithoutLoss(power,Buffer.GetBuffer(),valread);
 				}
 				else
 				{
@@ -127,7 +128,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 					cout<<"Server "<<serverThird->GetPort()<<" forward "<<valread<<" bytes from client "; serverMaster->ShowInfoWifi(i); cout<<" of of "<< serverMaster->GetPort() << " to all "<< serverSecond->GetNumberClient() << " clients" <<endl;
 #endif
 					CCoordinate coo=*(serverMaster->GetReferenceOnInfoWifiByIndex(i));
-					serverThird->SendAllClients(coo,power,Buffer,valread);
+					serverThird->SendAllClients(coo,power,Buffer.GetBuffer(),valread);
 				}
 			}
 		}

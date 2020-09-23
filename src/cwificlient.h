@@ -24,8 +24,8 @@ class CWifiClient : public CKernelWifi, public CWifi, public TypeCSocketClient
 		ssize_t SendSignal(TPower* power, const char* buffer, int sizeOfBuffer)
 			{	return SendSignalWithSocket(this, this->GetDescriptor(), power, buffer, sizeOfBuffer); }
 
-		ssize_t RecvSignal(TPower* power, char* buffer, int sizeOfBuffer)
-			{	return RecvSignalWithSocket(this, this->GetDescriptor(), power, buffer, sizeOfBuffer); }
+		ssize_t RecvSignal(TPower* power, CDynBuffer* buffer)
+			{	return RecvSignalWithSocket(this, this->GetDescriptor(), power, buffer); }
 
 		void Close(){ TypeCSocketClient::Close(); };
 };

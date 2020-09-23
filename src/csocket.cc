@@ -82,7 +82,7 @@ ssize_t CSocket::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 	return ret;
 }
 
-ssize_t CSocket::ReadBigData(TDescriptor descriptor, char* data, TMinimalSize sizeOfData)
+ssize_t CSocket::ReadBigData(TDescriptor descriptor, CDynBuffer* data)
 {
 	TMinimalSize size;
 
@@ -90,15 +90,9 @@ ssize_t CSocket::ReadBigData(TDescriptor descriptor, char* data, TMinimalSize si
 	if( ret == SOCKET_ERROR )
 		return SOCKET_ERROR;
 
-	if( size > sizeOfData )
-	{
-#ifdef _DEBUG
-		cerr<<"Error : CSocket : ReadBigData : "<< size << " > "<<sizeOfData<<endl;
-#endif
-		return SOCKET_ERROR ;
-	}
+	data->NeededSize(size);
 
-	return Read(descriptor, data, size);
+	return Read(descriptor, data->GetBuffer(), size);
 }
 
 CSocket::operator int()

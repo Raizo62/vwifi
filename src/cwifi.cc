@@ -52,7 +52,7 @@ ssize_t CWifi::SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPo
 	return socket->SendBigData(descriptor, buffer, sizeOfBuffer);
 }
 
-ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, char* buffer, int sizeOfBuffer)
+ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, CDynBuffer* buffer)
 {
 	int valread;
 
@@ -62,5 +62,5 @@ ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPo
 		return valread;
 
 	// read the data
-	return socket->ReadBigData(descriptor, buffer, sizeOfBuffer);
+	return socket->ReadBigData(descriptor, buffer);
 }

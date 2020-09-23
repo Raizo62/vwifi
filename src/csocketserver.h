@@ -47,7 +47,7 @@ class CSocketServer : public CSocket
 		ssize_t SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData);
 
 		ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
-		ssize_t ReadBigData(TDescriptor descriptor, char* data, TMinimalSize sizeOfData);
+		ssize_t ReadBigData(TDescriptor descriptor, CDynBuffer* data);
 
 		TDescriptor operator[] (TIndex index);
 };

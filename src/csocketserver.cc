@@ -187,7 +187,7 @@ ssize_t CSocketServer::Read(TDescriptor descriptor, char* data, ssize_t sizeOfDa
 	return CSocket::Read(descriptor , data, sizeOfData);
 }
 
-ssize_t CSocketServer::ReadBigData(TDescriptor descriptor, char* data, TMinimalSize sizeOfData)
+ssize_t CSocketServer::ReadBigData(TDescriptor descriptor, CDynBuffer* data)
 {
-	return CSocket::ReadBigData(descriptor , data, sizeOfData);
+	return CSocket::ReadBigData(descriptor , data);
 }

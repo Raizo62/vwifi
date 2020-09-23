@@ -29,7 +29,7 @@ class CSocketClient : public CSocket
 		ssize_t SendBigData(const char* data, TMinimalSize sizeOfData);
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
-		ssize_t ReadBigData(char* data, TMinimalSize sizeOfData);
+		ssize_t ReadBigData(CDynBuffer* data);
 
 		void StopReconnect();
 

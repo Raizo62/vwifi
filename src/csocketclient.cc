@@ -95,10 +95,10 @@ ssize_t CSocketClient::Read(char* data, ssize_t sizeOfData)
 	return SOCKET_ERROR;
 }
 
-ssize_t CSocketClient::ReadBigData(char* data, TMinimalSize sizeOfData)
+ssize_t CSocketClient::ReadBigData(CDynBuffer* data)
 {
 	if ( IsConnected ){
-		return CSocket::ReadBigData(Master, data, sizeOfData);
+		return CSocket::ReadBigData(Master, data);
 	}
 	return SOCKET_ERROR;
 }

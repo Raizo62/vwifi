@@ -15,6 +15,8 @@
 #include "cthread.h"
 #include <condition_variable>
 
+#include "cdynbuffer.h"
+
 namespace ckernelwifi{
 
 	class CallFromStaticFunc ;
@@ -251,7 +253,7 @@ class CKernelWifi : public intthread::AsyncTask {
 		virtual bool Connect(int* id)=0;
 
 		virtual ssize_t SendSignal(TPower* power, const char* buffer, int sizeOfBuffer)=0;
-		virtual ssize_t RecvSignal(TPower* power, char* buffer, int sizeOfBuffer)=0;
+		virtual ssize_t RecvSignal(TPower* power, CDynBuffer* buffer)=0;
 
 		virtual void Close()=0;
 

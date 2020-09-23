@@ -8,6 +8,8 @@
 
 #include "types.h" // TDescriptor / TSocket
 
+#include "cdynbuffer.h" // CDynBuffer
+
 const int SOCKET_ERROR=-1;
 
 class CSocket
@@ -31,7 +33,7 @@ class CSocket
 		virtual ssize_t SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData);
 
 		virtual ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
-		virtual ssize_t ReadBigData(TDescriptor descriptor, char* data, TMinimalSize sizeOfData);
+		virtual ssize_t ReadBigData(TDescriptor descriptor, CDynBuffer* data);
 
 	public :
 
