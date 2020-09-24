@@ -23,7 +23,6 @@ void CDynBuffer::NeededSize(int size)
 
 	delete Buffer;
 
-	std::cout<<"Allocate from "<<Size<<" to "<<size<<std::endl;
 	Allocate(size);
 }
 
