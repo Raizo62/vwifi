@@ -115,9 +115,7 @@ ssize_t CSocket::ReadBigData(TDescriptor descriptor, CDynBuffer* data)
 	if( ret == SOCKET_ERROR )
 		return SOCKET_ERROR;
 
-	data->NeededSize(size);
-
-	return Read(descriptor, data->GetBuffer(), size);
+	return ReadEqualSize(descriptor, data, size);
 }
 
 CSocket::operator int()
