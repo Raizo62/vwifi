@@ -35,6 +35,9 @@ class CSocket
 		virtual ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
 		virtual ssize_t ReadBigData(TDescriptor descriptor, CDynBuffer* data);
 
+	private :
+		ssize_t ReadEqualSize(TDescriptor descriptor, CDynBuffer* data, ssize_t sizeToRead);
+
 	public :
 
 		void Close();

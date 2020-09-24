@@ -82,6 +82,31 @@ ssize_t CSocket::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 	return ret;
 }
 
+ssize_t CSocket::ReadEqualSize(TDescriptor descriptor, CDynBuffer* data, ssize_t sizeToRead)
+{
+	ssize_t sizeToRead_backup = sizeToRead;
+
+	data->NeededSize(sizeToRead);
+
+	char* buffer = data->GetBuffer();
+
+	ssize_t sizeRead;
+
+	while( sizeToRead > 0 )
+	{
+		sizeRead=Read(descriptor, buffer, sizeToRead);
+
+		if( sizeRead == SOCKET_ERROR )
+			return SOCKET_ERROR;
+
+		sizeToRead-=sizeRead;
+
+		buffer+=sizeRead;
+	}
+
+	return sizeToRead_backup;
+}
+
 ssize_t CSocket::ReadBigData(TDescriptor descriptor, CDynBuffer* data)
 {
 	TMinimalSize size;
