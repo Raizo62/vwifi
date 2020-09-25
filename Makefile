@@ -52,35 +52,25 @@ $(OBJ)/cinfosocket.o: cinfosocket.cc cinfosocket.h types.h
 
 $(OBJ)/cthread.o: cthread.cc cthread.h
 
-
 $(OBJ)/csocket.o: csocket.cc csocket.h types.h config.h $(OBJ)/cdynbuffer.o
 
 $(OBJ)/cwifi.o: cwifi.cc cwifi.h types.h $(OBJ)/csocket.o
 
-
 $(OBJ)/csocketserver.o: csocketserver.cc csocketserver.h $(OBJ)/csocket.o $(OBJ)/cinfosocket.o types.h
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(OBJ)/cwifiserver.o: cwifiserver.cc cwifiserver.h $(OBJ)/csocketserver.o $(OBJ)/cinfowifi.o $(OBJ)/cwifi.o
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(OBJ)/csocketclient.o: csocketclient.cc csocketclient.h $(OBJ)/csocket.o $(OBJ)/tools.o
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(OBJ)/cinfowifi.o: cinfowifi.cc cinfowifi.h $(OBJ)/ccoordinate.o types.h
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(OBJ)/cctrlserver.o: cctrlserver.cc cctrlserver.h $(OBJ)/cwifiserver.o $(OBJ)/cselect.o types.h
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(OBJ)/cwificlient.o: cwificlient.cc cwificlient.h $(OBJ)/csocketclient.o $(OBJ)/ckernelwifi.o $(OBJ)/cwifi.o
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(OBJ)/ckernelwifi.o: ckernelwifi.cc ckernelwifi.h $(OBJ)/csocket.o $(OBJ)/cselect.o $(OBJ)/cthread.o $(OBJ)/cdynbuffer.o hwsim.h mac80211_hwsim.h ieee80211.h config.h
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 
 vwifi-server : vwifi-server.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cinfosocket.o $(OBJ)/cwifi.o $(OBJ)/cwifiserver.o $(OBJ)/cselect.o $(OBJ)/cinfowifi.o $(OBJ)/ccoordinate.o $(OBJ)/cctrlserver.o $(OBJ)/tools.o $(OBJ)/cdynbuffer.o
@@ -98,8 +88,9 @@ vwifi-host : vwifi-host.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o
 vwifi-inet-monitor : vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o $(OBJ)/cmonwirelessdevice.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
+
 $(OBJ)/%.o: %.cc
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
 
 $(MAN)/$(NAME).1.gz : $(MAN)/$(NAME).1
 	gzip -c $(MAN)/$(NAME).1 > $(MAN)/$(NAME).1.gz
