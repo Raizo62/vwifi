@@ -28,6 +28,8 @@ THREAD_LIBS = -lpthread
 
 LIBS =
 
+DEFS = -DVERSION=\"$(VERSION)\"
+
 EUID	:= $(shell id -u -r)
 
 ##############################
