@@ -29,6 +29,9 @@ void Help(char* nameOfProg)
 	cout<<"		- Distance in meters between the VM with cid1 and the VM with cid2"<<endl;
 	cout<<"	close"<<endl;
 	cout<<"		- Close all the connections with Wifi VMs"<<endl;
+
+	cout<<" -v or --version"<<endl;
+	cout<<"	Display the version of "<<nameOfProg<<endl;
 }
 
 int AskList()
@@ -468,6 +471,12 @@ int main(int argc , char *argv[])
 	if( argc == 1 )
 	{
 		Help(argv[0]);
+		return 0;
+	}
+
+	if( ! strcmp(argv[1],"-v") || ! strcmp(argv[1],"--version") )
+	{
+		cout<<"Version : "<<VERSION<<endl;
 		return 0;
 	}
 
