@@ -54,7 +54,7 @@ sudo make install
 Explanations :
 * The VMs and the server can communicate either with the VHOST protocol, or with the TCP protocol
 * The ***vwifi-server*** accepts connection from ***vwifi-guest*** with TCP or VHOST protocols
-* ***vwifi-host*** receives always all communications, even if the lost of packets is enable. It works only with TCP.
+* The ***vwifi-host*** receives always all communications, even if the loss of packets is enable. It works only with TCP.
 * To use TCP protocol, the Host and the VMs must be connected to a different IP network than that of the wifi
 
 ## With VHOST
