@@ -137,7 +137,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 	}
 }
 
-int main()
+int vwifi_server()
 {
 	TDescriptor socket;
 
@@ -270,5 +270,10 @@ int main()
 	}
 
 	return 0;
+}
+
+int main()
+{
+	return vwifi_server();
 }
 
