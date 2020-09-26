@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <iostream>
+#include <string.h> // strcmp
 
 #include <memory>
 
@@ -57,8 +58,20 @@ int main (int argc , char ** argv){
 	signal(SIGTSTP, signal_handler);
 	//signal(SIGCONT, signal_handler);
 
+	if( argc > 2 )
+	{
+		std::cerr<<"Error : too many parameters"<<std::endl;
+		return 1;
+	}
+
 	if( argc == 2 )
 	{
+		if( ! strcmp("-v", argv[1]) || ! strcmp("--version", argv[1]) )
+		{
+			std::cout<<"Version : "<<VERSION<<std::endl;
+			return 0;
+		}
+
 		wifiClient=new CWifiClient<CSocketClientINET>;
 		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(argv[1], WIFI_GUEST_PORT_INET);
 	}
