@@ -1,7 +1,6 @@
-#include <string> //string
 #include <iostream> // cout
 
-#include <string.h> //strlen
+#include <string.h> // strcmp
 
 #include "config.h"
 #include "cwifiserver.h"
