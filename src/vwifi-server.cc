@@ -272,8 +272,20 @@ int vwifi_server()
 	return 0;
 }
 
-int main()
+int main(int argc, char** argv)
 {
+	if( argc > 1 )
+	{
+		if( ! strcmp("-v", argv[1]) || ! strcmp("--version", argv[1]) )
+		{
+			cout<<"Version : "<<VERSION<<endl;
+			return 0;
+		}
+
+		cerr<<"Error : unknown parameter"<<endl;
+		return 1;
+	}
+
 	return vwifi_server();
 }
 
