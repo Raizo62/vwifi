@@ -1,6 +1,4 @@
-# vwifi
-
-## What is this ?
+# What is this ?
 
 Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
@@ -26,10 +24,15 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 ![Example](./screenshots/GNS3_Attack_with_KaliLinux.png)
 
+# Build
+
+## On Debian-based Linux distributions
+
 ## Dependencies
 
 ```bash
-sudo apt-get install build-essential
+sudo apt-get install make g++
+
 sudo apt-get install libnl-3-dev libnl-genl-3-dev
 ```
 
@@ -43,16 +46,20 @@ make tools # To change the file mode bits of tools
 sudo make install
 ```
 
-## Configuration
+## On OpenWRT
+
+* See the wiki : [Install-on-OpenWRT-X86_64](https://github.com/Raizo62/vwifi/wiki/Install-on-OpenWRT-X86_64)
+
+# Configuration
 
 Explanations :
 * The VMs and the server can communicate either with the VHOST protocol, or with the TCP protocol
 * The ***vwifi-server*** accepts connection from ***vwifi-guest*** with TCP or VHOST protocols
 * To use TCP protocol, the Host and the VMs must be connected to a different IP network than that of the wifi
 
-### With VHOST
+## With VHOST
 
-#### Host
+### Host
 
 * Shell :
     * Load the module VHOST
@@ -71,7 +78,7 @@ Explanations :
   * QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=NUM` with NUM an identifier greater than  2
   * GNS3 (>= 2.2) : QEmu : add the option : `-device vhost-vsock-pci,id=vwifi0,guest-cid=%guest-cid%`
 
-#### Each Guest
+### Each Guest
 
 * Create the wlan interfaces (on this example, 2 interfaces) :
 ```bash
@@ -86,11 +93,11 @@ sudo vwifi-guest
 
 * ***vwifi-guest*** displays "ID=-1". ***vwifi-server*** uses the cid to identify this guest.
 
-### With TCP
+## With TCP
 
 * The Host and the VMs must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
 
-#### Host
+### Host
 
 * Start the ***vwifi-server***
 
@@ -100,7 +107,7 @@ vwifi-server
 
 * We will suppose that the Host have the IP address : 172.16.0.1
 
-#### Each Guest
+### Each Guest
 
 * Create the wlan interfaces (on this example, 2 interfaces) :
 ```bash
@@ -115,25 +122,25 @@ sudo vwifi-guest 172.16.0.1
 
 * ***vwifi-guest*** displays an ID which is an hashsum of the IP. It is used by ***vwifi-server*** to identify this guest.
 
-## Capture packets from Host
+# Capture packets from Host
 
-### Configure Host
+## Configure Host
 
 ```bash
 sudo modprobe mac80211_hwsim radios=1
 sudo vwifi-host
 ```
 
-### Capture
+## Capture
 
-#### With tcpdump
+### With tcpdump
 
 * Capture from wlan0
 ```bash
 sudo tcpdump -n -I -i wlan0
 ```
 
-#### With wireshark
+### With wireshark
 
 * Configure wlan0 to monitor mode
 ```bash
@@ -147,9 +154,9 @@ sudo ip link set wlan0 up
 sudo wireshark
 ```
 
-## Control
+# Control
 
-### Host
+## Host
 
 * Show the list of connected guest (display : cid and coordinate x, y z)
 ```bash
@@ -176,17 +183,22 @@ vwifi-ctrl loss no
 vwifi-ctrl status
 ```
 
-## Test Wifi
+* Display the distance in meters between the guest with the cid 10 and the guest with the cid 20
+```bash
+vwifi-ctrl distance 10 20
+```
 
-### Test 1 : WPA
+# Test Wifi
 
-#### Packages needed on the guests for this test
+## Test 1 : WPA
+
+### Packages needed on the guests for this test
 
 ```bash
 sudo apt install hostapd wpasupplicant
 ```
 
-#### Guests
+### Guests
 
 * Guest Wifi 1 :
 
@@ -212,15 +224,15 @@ sudo ip a a 10.0.0.3/8 dev wlan0
 ping 10.0.0.2
 ```
 
-### Test 2 : Open
+## Test 2 : Open
 
-#### Packages needed on the guests for this test
+### Packages needed on the guests for this test
 
 ```bash
 sudo apt install hostapd iw tcpdump
 ```
 
-#### Guests
+### Guests
 
 * Guest Wifi 1 :
 
@@ -245,21 +257,21 @@ sudo ip link set up wlan0
 sudo tcpdump -n -e -I -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
 ```
 
-#### Host
+### Host
 
 ```bash
 tail -f -c +0b /home/user/projects/vwifi_capture_wlan0.pcap | wireshark -k -i -
 ```
 
-### Test 3 : Ad-Hoc
+## Test 3 : Ad-Hoc
 
-#### Packages needed on the guests for this test
+### Packages needed on the guests for this test
 
 ```bash
 sudo apt install iw
 ```
 
-#### Guests
+### Guests
 
 * Guest Wifi 1 :
 ```bash
@@ -280,7 +292,7 @@ sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
-## Others Tools
+# Others Tools
 
 * start-vwifi-guest.sh : do all the commands necessary to start ***vwifi-guest*** on a Guest
 * fast-vwifi-update.sh : set with ***vwifi-ctrl*** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
