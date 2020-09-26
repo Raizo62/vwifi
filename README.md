@@ -7,13 +7,13 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 * Implements the packet loss simulation based on distance
 * Emulates the node mobility in GNS3
 
-* Tested
+* Tested:
     * with `hostapd` and `wpa_supplicant` with these configurations:
        * Open
        * WEP
        * WPA2
        * WPA-EAP
-    * in the context of WPA2 attack with Kali
+    * in the context of WPA2 attack with `Aircrack-NG` (Kali / Parrot-OS)
     * with OpenWRT as AP
 
 * Remaining features to be implemented:
