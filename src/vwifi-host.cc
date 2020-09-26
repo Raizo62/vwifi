@@ -14,7 +14,7 @@ enum STATE {
 	SUSPENDED
 };
 
-CWifiClient<CSocketClientINET>  wifiClient ;
+CKernelWifi* wifiClient;
 
 enum STATE  _state = STOPPED ;
 
@@ -29,7 +29,7 @@ void  signal_handler(int signal_num)
 		case SIGQUIT :
 
 			std::cout << signal_num << std::endl ;
-			wifiClient.stop() ;
+			wifiClient->stop() ;
 			_state = STOPPED ;
 			break ;
 
@@ -72,14 +72,16 @@ int main (int argc , char ** argv){
 			return 0;
 		}
 
-		wifiClient.Init(argv[1],WIFI_HOST_PORT);
+		wifiClient=new CWifiClient<CSocketClientINET>;
+		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(argv[1], WIFI_HOST_PORT);
 	}
 	else
 	{
-		wifiClient.Init(ADDRESS_IP,WIFI_HOST_PORT);
+		wifiClient=new CWifiClient<CSocketClientINET>;
+		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(ADDRESS_IP, WIFI_HOST_PORT);
 	}
 
-	if(!wifiClient.start())
+	if(!wifiClient->start())
 		std::cout << "Starting process aborted" << std::endl ;
 
 
