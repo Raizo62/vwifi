@@ -7,14 +7,14 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 * Implements the packet loss simulation based on distance
 * Emulates the node mobility in GNS3
 
-* Tested with `hostapd` and `wpa_supplicant` with these configurations:
-
-    * Open
-    * WEP
-    * WPA2
-    * WPA-EAP
-
-* Tested in the context of WPA2 attack with Kali
+* Tested
+    * with `hostapd` and `wpa_supplicant` with these configurations:
+       * Open
+       * WEP
+       * WPA2
+       * WPA-EAP
+    * in the context of WPA2 attack with Kali
+    * with OpenWRT as AP
 
 * Remaining features to be implemented:
 
@@ -24,14 +24,18 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 ![Example](./screenshots/GNS3_Attack_with_KaliLinux.png)
 
-# Dependencies
+# Build
+
+## On Debian-based Linux distributions
+
+## Dependencies
 
 ```bash
 sudo apt-get install make g++
 sudo apt-get install libnl-3-dev libnl-genl-3-dev
 ```
 
-# Building
+## Building
 
 ```bash
 make update # Not necessary. To download and update the file mac80211_hwsim.h
@@ -40,6 +44,10 @@ make tools # To change the file mode bits of tools
 
 sudo make install
 ```
+
+## On OpenWRT
+
+* See the wiki : [Install-on-OpenWRT-X86_64](https://github.com/Raizo62/vwifi/wiki/Install-on-OpenWRT-X86_64)
 
 # Configuration
 
