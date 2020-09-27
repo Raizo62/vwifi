@@ -71,14 +71,14 @@ Explanations :
 ### Host
 
 * Shell :
-    * Load the module VHOST
+    * Load the module VHOST :
    ```bash
    # sudo rmmod vhost_vsock vmw_vsock_virtio_transport_common vsock # if necessary
 
    sudo modprobe vhost_vsock
    sudo chmod a+rw /dev/vhost-vsock
    ```
-    * Start the ***vwifi-server***
+    * Start the ***vwifi-server*** :
    ```bash
    vwifi-server
    ```
@@ -95,7 +95,7 @@ sudo modprobe mac80211_hwsim radios=2
 # sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the ***vwifi-server***
+* Connect all these wlan interfaces to the ***vwifi-server*** :
 ```bash
 sudo vwifi-guest
 ```
@@ -108,7 +108,7 @@ sudo vwifi-guest
 
 ### Host
 
-* Start the ***vwifi-server***
+* Start the ***vwifi-server*** :
 
 ```bash
 vwifi-server
@@ -124,7 +124,7 @@ sudo modprobe mac80211_hwsim radios=2
 # sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the ***vwifi-server***
+* Connect all these wlan interfaces to the ***vwifi-server*** :
 ```bash
 sudo vwifi-guest 172.16.0.1
 ```
@@ -144,21 +144,21 @@ sudo vwifi-host
 
 ### With tcpdump
 
-* Capture from wlan0
+* Capture from wlan0 :
 ```bash
 sudo tcpdump -n -I -i wlan0
 ```
 
 ### With wireshark
 
-* Configure wlan0 to monitor mode
+* Configure wlan0 to monitor mode :
 ```bash
 sudo ip link set wlan0 down
 sudo iw wlan0 set monitor control
 sudo ip link set wlan0 up
 ```
 
-* Start Wireshark and capture from wlan0
+* Start Wireshark and capture from wlan0 :
 ```bash
 sudo wireshark
 ```
@@ -167,32 +167,32 @@ sudo wireshark
 
 ## Host
 
-* Show the list of connected guest (display : cid and coordinate x, y z)
+* Show the list of connected guest (display : cid and coordinate x, y z) :
 ```bash
 vwifi-ctrl ls
 ```
 
-* Set the new coordinate (11, 12, 13) of the guest with the cid 10
+* Set the new coordinate (11, 12, 13) of the guest with the cid 10 :
 ```bash
 vwifi-ctrl set 10 11 12 13
 ```
 
-* Enable the lost of packets
+* Enable the lost of packets :
 ```bash
 vwifi-ctrl loss yes
 ```
 
-* Disable the lost of packets
+* Disable the lost of packets :
 ```bash
 vwifi-ctrl loss no
 ```
 
-* Display the config of ***vwifi-server***
+* Display the config of ***vwifi-server*** :
 ```bash
 vwifi-ctrl status
 ```
 
-* Display the distance in meters between the guest with the cid 10 and the guest with the cid 20
+* Display the distance in meters between the guest with the cid 10 and the guest with the cid 20 :
 ```bash
 vwifi-ctrl distance 10 20
 ```
