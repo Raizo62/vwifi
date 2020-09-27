@@ -37,7 +37,7 @@ EUID	:= $(shell id -u -r)
 vpath %.cc $(SRC)
 vpath %.h $(SRC)
 
-.PHONY: all clean build install man tools directories update
+.PHONY: all clean build install man tools directories update gitversion
 
 build : directories $(EXEC) # man
 
@@ -115,6 +115,10 @@ update :
 clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
 	-rm -f $(EXEC) $(OBJ)/* $(MAN)/$(NAME).1.gz
+
+gitversion: .git
+	@sed -n "s/^\(VERSION.[^\-]*\)\(-.*\)\?/\1-$(shell git log --format="%H" -n 1)/gp" Makefile
+	@sed -i "s/^\(VERSION.[^\-]*\)\(-.*\)\?/\1-$(shell git log --format="%H" -n 1)/g" Makefile
 
 install : build
 ifneq ($(EUID),0)

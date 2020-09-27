@@ -37,8 +37,17 @@ sudo apt-get install libnl-3-dev libnl-genl-3-dev
 
 ## Building
 
+* Not necessary :
+
 ```bash
-make update # Not necessary. To download and update the file mac80211_hwsim.h
+make gitversion # To add the last commit id to the VERSION
+
+make update # To download and update the file mac80211_hwsim.h
+```
+
+* To building :
+
+```bash
 make
 make tools # To change the file mode bits of tools
 
