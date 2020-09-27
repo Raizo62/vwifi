@@ -58,15 +58,16 @@ sudo make install
 
 * See the wiki : [Install-on-OpenWRT-X86_64](https://github.com/Raizo62/vwifi/wiki/Install-on-OpenWRT-X86_64)
 
-# Configuration
+# Explanations
 
-Explanations :
 * The VMs and the server can communicate either with the VHOST protocol, or with the TCP protocol
 * The ***vwifi-server*** accepts connection from ***vwifi-guest*** with TCP or VHOST protocols
 * The ***vwifi-host*** is the same as ***vwifi-guest*** but :
     * it receives always all communications, even if the loss of packets is enable.
     * it works only with TCP.
 * To use TCP protocol, the Host and the VMs must be connected to a different IP network than that of the wifi
+
+# Configuration
 
 ## With VHOST
 
