@@ -45,16 +45,6 @@ void CKernelWifi::cout_mac_address(struct ether_addr *src)
 	std::cout << addr;
 }
 
-void CKernelWifi::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
-{
-	/* Set up all unused rates to be -1 */
-	for (int i = 0; i < IEEE80211_MAX_RATES_PER_TX; i++) {
-		tx_rate[i].idx = -1;
-		tx_rate[i].count = 0;
-	}
-}
-
-
 int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
 {
 	struct nl_msg *msg = nullptr;
@@ -189,8 +179,6 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	round = 0;
 	tx_ok = 0;
 
-	/* We prepare the tx_attempts struct */
-	set_all_rates_invalid(tx_attempts);
 
 	while (round < IEEE80211_MAX_RATES_PER_TX &&  tx_rates[round].idx != -1 && tx_ok != 1) {
 

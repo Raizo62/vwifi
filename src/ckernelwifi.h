@@ -151,16 +151,6 @@ class CKernelWifi : public intthread::AsyncTask {
 		 */
 		void recv_msg_from_hwsim_loop_start();
 
-
-		/**
-		*	\brief Set a tx_rate struct to not valid values
-		*	Taken from wmediumd.
-		*	TODO: modify if we ack more accurately.
-		*	\param tx_rate - struct to tract attempts and rates
-		*	\return void
-		*/
-		void set_all_rates_invalid(struct hwsim_tx_rate *tx_rate);
-
 		/**
 		 *	\brief Send a tx_info frame to the kernel space. This frame indicates
 		*	that the frame was transmitted/acked successfully. The ack is sent back
@@ -212,7 +202,6 @@ class CKernelWifi : public intthread::AsyncTask {
 		*	\return success or failure
 		*/
 		int send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, uint32_t freq);
-
 
 		/**
 		 * \brief hadle messages received from server
