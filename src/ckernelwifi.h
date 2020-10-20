@@ -116,6 +116,8 @@ class CKernelWifi : public intthread::AsyncTask {
 
 	protected :
 
+		void cout_mac_address(struct ether_addr *src);
+
 		/**
 		 *	\brief Callback function to process messages received from kernel
 		 *	It processes the frames received from hwsim via netlink messages.

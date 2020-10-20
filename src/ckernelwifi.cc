@@ -37,6 +37,13 @@ CDynBuffer Buffer;
 ckernelwifi::CallFromStaticFunc * CKernelWifi::forward = nullptr ;
 
 
+void CKernelWifi::cout_mac_address(struct ether_addr *src)
+{
+	char addr[18];
+
+	mac_address_to_string(addr, src);
+	std::cout << addr;
+}
 
 void CKernelWifi::set_all_rates_invalid(struct hwsim_tx_rate *tx_rate)
 {
@@ -230,9 +237,11 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	/* copy source address from frame */
 	/* if we rebuild the nl msg, this can change */
 	memcpy(&framesrc, data + 10, ETH_ALEN);
+	//cout_mac_address(&framesrc);
 
 	/* copy dst address from frame */
 	memcpy(&framedst, data + 4, ETH_ALEN);
+	//cout_mac_address(&framedst);
 
 	/* compare tx src to frame src, update TX src ATTR in msg if needed */
 	/* if we rebuild the nl msg, this can change */
@@ -590,29 +599,23 @@ void CKernelWifi::recv_from_server(){
 
 
 #ifdef _DEBUG
-
-
 	struct ether_addr *src = nullptr;
 	struct ether_addr framesrc;
-	char addr[18];
 	
 	/* copy hwsim id src */
 	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
-	mac_address_to_string(addr, src);
-	std::cout << "src hwsim: " << addr << std::endl ;
+	std::cout << "src hwsim: "; cout_mac_address(src);std::cout<<std::endl ;
 
 	/* copy mac src  address from frame */
 	memcpy(&framesrc, data + 10, ETH_ALEN);
-	mac_address_to_string(addr, &framesrc);
-	std::cout << "frame src:" << addr << std::endl;
+	std::cout << "frame src: "; cout_mac_address(&framesrc);std::cout<<std::endl ;
 #endif
 
 	/* copy mac dst address from frame */
 	memcpy(&framedst, data + 4, ETH_ALEN);
 
 #ifdef _DEBUG
-	mac_address_to_string(addr, &framedst);
-	std::cout << "frame dst:" << addr << std::endl;
+	std::cout << "frame dst: ";  cout_mac_address(&framedst);std::cout<<std::endl ;
 #endif
 
 	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
