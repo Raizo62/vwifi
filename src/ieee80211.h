@@ -7,7 +7,7 @@
 #define u8 uint8_t
 
 #define IEEE80211_AVAILABLE_RATES 12
-#define IEEE80211_MAX_RATES_PER_TX 5
+#define IEEE80211_MAX_RATES_PER_TX 4
 
 #define IEEE80211_FTYPE_MGMT            0x0000
 #define IEEE80211_FTYPE_CTL             0x0004
