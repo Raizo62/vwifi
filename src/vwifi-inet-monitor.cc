@@ -37,9 +37,9 @@ int main (){
 
 	WirelessDevice wdevice2 ;
 	wdevice2 = wdevice;
-	
+
 	wdevice.setMacaddr(mac3);
-	
+
 	std::cout << wdevice2 << std::endl ;
 	std::cout << wdevice << std::endl ;
 */

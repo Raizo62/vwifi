@@ -21,11 +21,11 @@ namespace ckernelwifi{
 
 	class CallFromStaticFunc ;
 }
-class CKernelWifi : public intthread::AsyncTask {	
+class CKernelWifi : public intthread::AsyncTask {
 
 	protected :
 
-		 
+
 		pthread_t serverloop_id ;
 
 		CSelect	Scheduler;
@@ -36,8 +36,8 @@ class CKernelWifi : public intthread::AsyncTask {
 		bool _being_initialized { false } ;
 
 		bool _being_started { false } ;
-		std::mutex _being_started_mutex ; 	
-		
+		std::mutex _being_started_mutex ;
+
 		WirelessDeviceList _list_winterfaces ;
 
 		/** pointer for netlink socket */
@@ -48,16 +48,16 @@ class CKernelWifi : public intthread::AsyncTask {
 
 		/** For the family ID used by hwsim */
 		int m_family_id { 1 };
-		
+
 		intthread::InterruptibleThread   hwsimloop_task ;
 		intthread::InterruptibleThread   serverloop_task ;
  		intthread::InterruptibleThread   monitorloop_task ;
  		intthread::InterruptibleThread   winterface_update_loop_task ;
-		intthread::InterruptibleThread   connection_to_server_loop_task ; 
+		intthread::InterruptibleThread   connection_to_server_loop_task ;
 
 		bool _initialized { false } ;
 		std::mutex _mutex_initialized ;
-	
+
 		MonitorWirelessDevice * monwireless = nullptr ;
 
 		int init();

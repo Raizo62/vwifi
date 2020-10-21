@@ -19,12 +19,11 @@ typedef std::function<void(WirelessDevice)> CallbackFunction ;
 
 
 typedef struct {
-    struct nl_sock *nls;
-    int nl80211_id;
-    int err,err1 ;
-    struct nl_cb* cb;
-    struct nl_cb* cb1;
-
+	struct nl_sock *nls;
+	int nl80211_id;
+	int err,err1 ;
+	struct nl_cb* cb;
+	struct nl_cb* cb1;
 } WIFI;
 
 
@@ -35,14 +34,14 @@ class MonitorWirelessDevice {
 
 	/* set to true when wireless interfaces are initialised */
 	bool init_interfaces = false ;
-	
+
 	/* for netlink communication with 80211 module */
 	WIFI wifi ;
 
 	bool _outsideloop { true } ;
 	bool _started { false } ;
 	int _inetsock ;
-	
+
 	std::mutex _startedmutex ;
 	std::mutex _outsideloopmutex ;
 
@@ -71,20 +70,20 @@ class MonitorWirelessDevice {
 
 	/**
 	 * \brief callback to be set through setCallback function by another object
-	 * this callback is called by new_net_interface function in order to send a created, deleted or changed wirelessdevice 
+	 * this callback is called by new_net_interface function in order to send a created, deleted or changed wirelessdevice
 	 */
 	CallbackFunction _newinet_cb ;
 
 	/**
 	 * \brief callback to be set through setCallback function by another object
-	 * this callback is called by new_net_interface function in order to send a created, deleted or changed wirelessdevice 
+	 * this callback is called by new_net_interface function in order to send a created, deleted or changed wirelessdevice
 	 */
 	CallbackFunction _delinet_cb ;
 
 
 	/**
 	 * \brief callback to be set through setCallback function by another object
-	 * this callback is called by recv_winterface_infos function in order to send infos of each existing wireless interface 
+	 * this callback is called by recv_winterface_infos function in order to send infos of each existing wireless interface
 	 */
 	CallbackFunction _initinet_cb ;
 
@@ -93,6 +92,7 @@ class MonitorWirelessDevice {
 	static int handle_iee80211_com_finish_cb(struct nl_msg *msg, void *arg);
 
 	static monitorinet::CallFromStaticFunc * forward ;
+
 public:
 
 
@@ -103,19 +103,19 @@ public:
 
 	void start();
 	void stop();
-	bool started(); 
+	bool started();
 
 
 	/**
 	 * \brief set new interface notification callback
-	 * \param CallbackFunction - defined earlier as  typedef std::function<void(WirelessDevice)> CallbackFunction 
+	 * \param CallbackFunction - defined earlier as  typedef std::function<void(WirelessDevice)> CallbackFunction
 	 * \return void
 	 */
 	void setNewInetCallback(CallbackFunction);
 
 	/**
 	 * \brief set delete interface notification callback
-	 * \param CallbackFunction - defined earlier as  typedef std::function<void(WirelessDevice)> CallbackFunction 
+	 * \param CallbackFunction - defined earlier as  typedef std::function<void(WirelessDevice)> CallbackFunction
 	 * \return void
 	 */
 	void setInitInetCallback(CallbackFunction);
@@ -124,12 +124,12 @@ public:
 
 	/**
 	 * \brief set interface initial list notification callback
-	 * \param CallbackFunction - defined earlier as  typedef std::function<void(WirelessDevice)> CallbackFunction 
+	 * \param CallbackFunction - defined earlier as  typedef std::function<void(WirelessDevice)> CallbackFunction
 	 * \return void
 	 */
 	void setDelInetCallback(CallbackFunction);
 
-	
+
 	/**
 	 *\fn 	int get_interface_infos()
 	 * \brief Uses nl80211 to initialize a list of wireless interfaces Processes multiple netlink messages containing interface data
@@ -143,7 +143,7 @@ public:
 
 	int handle_iee80211_com_finish(void *arg);
 
-       	int nl80211_init() ;
+	int nl80211_init() ;
 
 };
 
@@ -166,21 +166,21 @@ namespace monitorinet {
 	MonitorWirelessDevice * m_obj  ;
 
 	public:
-	
+
 		CallFromStaticFunc(MonitorWirelessDevice *   obj){
-			
+
 			m_obj = obj ;
 		};
 
 		int recv_winterface_infos(struct nl_msg *msg) {
-		
+
 				// add exception to check null ptr
 				m_obj->recv_winterface_infos(msg);
 				return 0 ;
 		};
 
 		int recv_winterface_extra_infos(struct nl_msg *msg) {
-		
+
 				// add exception to check null ptr
 				m_obj->recv_winterface_extra_infos(msg);
 				return 0 ;
@@ -188,7 +188,7 @@ namespace monitorinet {
 
 
 		int handle_iee80211_com_finish(void *arg) {
-		
+
 				// add exception to check null ptr
 				m_obj->handle_iee80211_com_finish(arg);
 				return 0 ;

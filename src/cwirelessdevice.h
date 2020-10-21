@@ -3,7 +3,7 @@
 
 #include <net/ethernet.h>
 
-#include <string> 
+#include <string>
 #include <iostream>
 
 
@@ -30,10 +30,10 @@ class WirelessDevice {
 	 * 	  i -  index
 	 * 	  t -  type
 	 * 	  m -  wireless net device mac address
-	 * 	  h -  wireless net device mac address in hwsim driver 
+	 * 	  h -  wireless net device mac address in hwsim driver
 	 */
 	WirelessDevice(std::string,int,int,const struct ether_addr &,const struct ether_addr &,int);
-	
+
 	/**
 	 * \fn WirelessDevice(std::string n,int i,int t,const struct ether_addr & m);
 	 * \biref Constructor
@@ -45,10 +45,10 @@ class WirelessDevice {
 	WirelessDevice(std::string,int,int,const struct ether_addr &,int);
 
 	friend std::ostream &   operator<< ( std::ostream & , WirelessDevice &);
-        
+
 	struct ether_addr getMacaddr() const  ;
-       	struct ether_addr getMachwsim() const  ;
-	
+	struct ether_addr getMachwsim() const  ;
+
 	void setMacaddr(const struct  ether_addr &);
 	void setMachwsim(const struct  ether_addr &);
 

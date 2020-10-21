@@ -39,8 +39,8 @@ class AsyncTask
 		std::mutex  _mutex_condition ;
 
 	public:
-	
-		AsyncTask();	
+
+		AsyncTask();
 		void dead() ;
 
 };
@@ -67,7 +67,7 @@ class InterruptibleThread
 
 		pthread_t get_native_handle();
 
-	
+
 		/* include <functional> with this version */
 		/*template<typename CLASS>
 		void start(CLASS * obj , void  (CLASS::* f)()  ){
@@ -87,7 +87,7 @@ class InterruptibleThread
 
 		template <typename OBJECT, typename FUNC>
 		void start(OBJECT * obj , FUNC f  ){
-			
+
 
 			std::promise<InterruptFlag*> p ;
 			_internal_thread = std::thread([obj,f,&p]{
@@ -104,15 +104,15 @@ class InterruptibleThread
 		void interrupt();
 		void join();
 		std::thread::id get_id();
-		
+
 
 		static bool all_thread_interrupted();
-			
+
 		static void count_thread();
-			
+
 
 		static void uncount_thread();
-			
+
 
 
 
@@ -121,4 +121,4 @@ class InterruptibleThread
 };
 
 } // intthread space
-#endif 
+#endif

@@ -52,14 +52,14 @@ int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flag
 	msg = nlmsg_alloc();
 
 	if (!msg) {
-		
+
 		std::cerr << "Error allocating new message MSG !" << std::endl ;
 		nlmsg_free(msg);
 		return 0;
 	}
-	
+
 	if (m_family_id < 0){
-		
+
 		std::cerr << __func__ <<  "m_family_id < 0" << std::endl ;
 		nlmsg_free(msg);
 		return 0;
@@ -82,7 +82,7 @@ int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flag
 	}
 
 	//nl_send_auto_complete(_netlink_socket, msg); //deprecated
-	
+
 	if (nl_send_auto(_netlink_socket, msg) < 0)
 	{
 		nlmsg_free(msg);
@@ -98,7 +98,7 @@ int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flag
 int CKernelWifi::process_messages_cb(struct nl_msg *msg,[[maybe_unused]] void *arg){
 
 	forward->process_messages(msg);
-	return 0 ;	
+	return 0 ;
 
 }
 
@@ -120,7 +120,7 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	int msg_len = nlh->nlmsg_len;
 
 
-	if (nlh->nlmsg_type != m_family_id) 
+	if (nlh->nlmsg_type != m_family_id)
 		return 1;
 
 	/* ignore if anything other than a frame
@@ -182,8 +182,8 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	/* if we rebuild the nl msg, this can change */
 	if (memcmp(&framesrc, src, ETH_ALEN) != 0) {
 
-#ifdef _DEBUG	
-		std::cout << "updating the TX src ATTR" << std::endl ; 
+#ifdef _DEBUG
+		std::cout << "updating the TX src ATTR" << std::endl ;
 #endif
 		/* copy dest address from frame to nlh */
 		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
@@ -194,10 +194,10 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 
 	WirelessDevice  dev ;
 	if ( _list_winterfaces.get_device_by_mac(dev,framesrc))
-	{	
-		power = dev.getTxPower() / 100; // must add the remainder if not multiple of 2 
+	{
+		power = dev.getTxPower() / 100; // must add the remainder if not multiple of 2
 	}
-	
+
 
 	int value=SendSignal(&power, (char*)nlh, msg_len);
 	if( value == SOCKET_ERROR )
@@ -241,7 +241,7 @@ int CKernelWifi::init_netlink_first(void)
 
 //	_cb = nl_cb_alloc(NL_CB_DEBUG);
 	_cb = nl_cb_alloc(NL_CB_CUSTOM);
-	
+
 	if (!_cb) {
 		std::cerr << "Error allocating netlink callbacks" << std::endl ;
 		return 0;
@@ -256,7 +256,7 @@ int CKernelWifi::init_netlink_first(void)
 
 	/* disable auto-ack from kernel to reduce load */
 	nl_socket_disable_auto_ack(_netlink_socket);
-	
+
 	if(genl_connect(_netlink_socket) < 0){
 
 		nl_close(_netlink_socket);
@@ -275,7 +275,7 @@ int CKernelWifi::init_netlink_first(void)
 		if ( ! _being_initialized)
 			return 0 ;
 
-		
+
 
 	//	if ( ! started()){
 	//		return 0 ;
@@ -320,7 +320,7 @@ int CKernelWifi::init_netlink(void)
 
 //	_cb = nl_cb_alloc(NL_CB_DEBUG);
 	_cb = nl_cb_alloc(NL_CB_CUSTOM);
-	
+
 	if (!_cb) {
 		std::cerr << "Error allocating netlink callbacks" << std::endl ;
 		return 0;
@@ -335,7 +335,7 @@ int CKernelWifi::init_netlink(void)
 
 	/* disable auto-ack from kernel to reduce load */
 	nl_socket_disable_auto_ack(_netlink_socket);
-	
+
 	if(genl_connect(_netlink_socket) < 0){
 
 		nl_close(_netlink_socket);
@@ -357,7 +357,7 @@ int CKernelWifi::init_netlink(void)
 		try {
 			intthread::interruption_point();
 		}
-		
+
 		catch (const intthread::thread_interrupted& interrupt) {
 			dead();
 			break;
@@ -447,7 +447,7 @@ int CKernelWifi::send_cloned_frame_msg(struct ether_addr *dst, char *data, int d
 	}
 
 	nlmsg_free(msg);
-	
+
 	return 1;
 }
 
@@ -481,7 +481,7 @@ void CKernelWifi::recv_from_server(){
 
 	/* exit if the message does not contain frame data */
 	if (gnlh->cmd != HWSIM_CMD_FRAME) {
-	
+
 		std::cerr << "Error - received no frame data in message" << std::endl;
 		return ;
 	}
@@ -507,7 +507,7 @@ void CKernelWifi::recv_from_server(){
 		std::cerr << "Error - message does not contain addr transmitter" << std::endl;
 		return;
 	}
-	
+
 	unsigned int data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
 	char* data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
 
@@ -517,7 +517,7 @@ void CKernelWifi::recv_from_server(){
 #ifdef _DEBUG
 	struct ether_addr *src = nullptr;
 	struct ether_addr framesrc;
-	
+
 	/* copy hwsim id src */
 	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
 	std::cout << "src hwsim: "; cout_mac_address(src);std::cout<<std::endl ;
@@ -550,19 +550,19 @@ void  CKernelWifi::monitor_hwsim_loop()
 {
 	struct nl_sock *sock;
 	int family_id ;
-	
+
 	sock = nl_socket_alloc();
 	genl_connect(sock);
 
 
-	
+
 	/* loop for waiting  incoming msg from hwsim driver*/
 	while (true) {
 
 		try {
 			intthread::interruption_point();
 		}
-		
+
 		catch (const intthread::thread_interrupted& interrupt) {
 			dead();
 			break;
@@ -575,18 +575,18 @@ void  CKernelWifi::monitor_hwsim_loop()
 		family_id = genl_ctrl_resolve(sock, "MAC80211_HWSIM");
 
 		if (family_id < 0) {
-		
+
 			std::cout << "Hwsim Driver unloaded" << std::endl ;
 			_mutex_initialized.lock();
 			_initialized = false ;
 			_mutex_initialized.unlock();
-		
+
 			if(!init()){
 				break;
 			}
 		}
 
-			
+
 	}
 
 	nl_close(sock);
@@ -601,24 +601,24 @@ void CKernelWifi::recv_msg_from_hwsim_loop_start(){
 
 
 
-	
+
 	/* loop for waiting  incoming msg from hwsim driver*/
 	while (true) {
 
 		try {
 			intthread::interruption_point();
 		}
-		
+
 		catch (const intthread::thread_interrupted& interrupt) {
-			dead();	
+			dead();
 			break;
 		}
 
-		
-		/* added for monitor_hwsim_loop */	
+
+		/* added for monitor_hwsim_loop */
 		if(!initialized()){
-		
-			std::cout << __func__ << "driver still unloaded" << std::endl ;	
+
+			std::cout << __func__ << "driver still unloaded" << std::endl ;
 			using namespace  std::chrono_literals;
 			std::this_thread::sleep_for(1s);
 			continue ;
@@ -626,7 +626,7 @@ void CKernelWifi::recv_msg_from_hwsim_loop_start(){
 
 		nl_recvmsgs_default(_netlink_socket);
 
-		
+
 	}
 
 }
@@ -648,22 +648,22 @@ void CKernelWifi::recv_msg_from_server_loop_start(){
 		try {
 			intthread::interruption_point();
 		}
-		
+
 		catch (const intthread::thread_interrupted& interrupt) {
-			dead();	
+			dead();
 			break;
 		}
 
 
 		/* added for monitor_hwsim_loop */
 		if(!initialized()){
-		
-			std::cout <<  __func__ << "driver still unloaded" << std::endl ;	
+
+			std::cout <<  __func__ << "driver still unloaded" << std::endl ;
 			using namespace  std::chrono_literals;
 			std::this_thread::sleep_for(1s);
 			continue ;
 		}
-	
+
 		recv_from_server();
 
 	}
@@ -673,22 +673,22 @@ void CKernelWifi::recv_msg_from_server_loop_start(){
 void CKernelWifi::winet_update_loop(){
 
 
-	
+
 	while (true) {
 
 		try {
 			intthread::interruption_point();
 		}
-		
+
 		catch (const intthread::thread_interrupted& interrupt) {
-			dead();	
+			dead();
 			break;
 		}
-		
-		/* added for monitor_hwsim_loop */	
+
+		/* added for monitor_hwsim_loop */
 		if(!initialized()){
-		
-			std::cout << __func__ << "driver still unloaded" << std::endl ;	
+
+			std::cout << __func__ << "driver still unloaded" << std::endl ;
 			using namespace  std::chrono_literals;
 			std::this_thread::sleep_for(1s);
 			continue ;
@@ -698,7 +698,7 @@ void CKernelWifi::winet_update_loop(){
 		/* update txpower of all interfaces. We can do it elsewhere */
 
 			//std::cout << "update interface :  " << inet.getIndex() << std::endl ;
-			monwireless->get_winterface_infos(0); 
+			monwireless->get_winterface_infos(0);
 
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(1s);
@@ -713,14 +713,14 @@ int CKernelWifi::init(){
 
 	/* init netlink will loop until driver is loaded */
 	if ( ! init_netlink()){
-		
+
 		std::cout << "ERROR: could not initialize netlink" << std::endl;
 		return 0 ;
-	} 
+	}
 
 	/* Send a register msg to the kernel */
 	if (!send_register_msg()){
-	
+
 		nl_close(_netlink_socket);
 		nl_socket_free(_netlink_socket);
 		nl_cb_put(_cb);
@@ -740,14 +740,14 @@ int CKernelWifi::init_first(){
 
 	/* init netlink will loop until driver is loaded */
 	if ( ! init_netlink_first()){
-		
+
 		std::cout << "ERROR: could not initialize netlink" << std::endl;
 		return 0 ;
-	} 
+	}
 
 	/* Send a register msg to the kernel */
 	if (!send_register_msg()){
-	
+
 		nl_close(_netlink_socket);
 		nl_socket_free(_netlink_socket);
 		nl_cb_put(_cb);
@@ -769,39 +769,39 @@ int CKernelWifi::start(){
 
 
 	_being_initialized = true ;
-	
+
 	// check if initialized here, if we forget calling init function before ??
 	if(! initialized()){
-	
+
 		if (!init_first()){
-	
-		
+
+
 			return 0;
 		}
 	}
 
 	_being_initialized = false ;
-	
+
 
 	try{
 
-		/** make it attribute member if you would use it elsewhere */	
+		/** make it attribute member if you would use it elsewhere */
 		monwireless = new MonitorWirelessDevice() ;
-	
+
 		monwireless->setNewInetCallback([this](WirelessDevice wd) { return handle_new_winet_notification(wd);});
 		monwireless->setDelInetCallback([this](WirelessDevice wd) { return handle_del_winet_notification(wd);});
 		monwireless->setInitInetCallback([this](WirelessDevice wd) { return handle_init_winet_notification(wd);});
-	
+
 		monwireless->start();
-		
+
 		/* get initial wireless network interfaces created when we called sudo modprobe mac80211_hwsim */
 		monwireless->get_winterface_infos(0);
 
 	}catch ( const std::exception & e){
-	
+
 		std::cerr << e.what() << std::endl ;
 		return 0 ;
-	
+
 	}
 
 
@@ -817,17 +817,17 @@ int CKernelWifi::start(){
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(2s);
 
-		
+
 		//return 0;
 	}
 
 
-	connected_to_server(true) ; 
+	connected_to_server(true) ;
 
 	std::cout << "Connection to Server Ok" << std::endl;
 	std::cout << "ID: " <<id<<std::endl;
 
-	
+
 	/* start thread that handle incoming msg from hwsim driver */
 	hwsimloop_task.start(this,&CKernelWifi::recv_msg_from_hwsim_loop_start);
 
@@ -840,7 +840,7 @@ int CKernelWifi::start(){
 	/* start thread updating wireless inet interfaces*/
 	winterface_update_loop_task.start(this,&CKernelWifi::winet_update_loop);
 
-	connection_to_server_loop_task.start(this,&CKernelWifi::manage_server_crash_loop); 
+	connection_to_server_loop_task.start(this,&CKernelWifi::manage_server_crash_loop);
 
 	/*
 	 * save the c handle version of serverloop thread (pthread_t type)
@@ -854,7 +854,7 @@ int CKernelWifi::start(){
 	serverloop_task.join();
 	winterface_update_loop_task.join();
 	connection_to_server_loop_task.join();
-	
+
 	delete monwireless ;
 
 	return 1;
@@ -865,12 +865,12 @@ int CKernelWifi::stop(){
 
 
 	/* stop the retrying connection to vsock server */
-	
+
 	if ( _being_initialized ){
 		_being_initialized = false ;
-		return 0;	
+		return 0;
 	}
-	
+
 	if (  is_being_started() ){
 		being_started(false) ;
 
@@ -880,14 +880,14 @@ int CKernelWifi::stop(){
 	}
 
 
-	if (is_connected_to_server())	
+	if (is_connected_to_server())
 		Close();
-	
+
 	connection_to_server_loop_task.interrupt();
 	pthread_kill(serverloop_id,SIGUSR1);
-	
+
 	serverloop_task.interrupt() ;
-	
+
 	hwsimloop_task.interrupt() ;
 	monitorloop_task.interrupt() ;
 	winterface_update_loop_task.interrupt() ;
@@ -900,7 +900,7 @@ int CKernelWifi::stop(){
 	std::cout << "int stop after kill" << std::endl ;
 
 
-	return 0 ;	
+	return 0 ;
 }
 
 
@@ -947,41 +947,41 @@ bool CKernelWifi::is_connected_to_server(){
 void CKernelWifi::manage_server_crash(){
 
 	connected_to_server(false) ;
-	
+
 }
 
 void CKernelWifi::manage_server_crash_loop(){
 
 	while (true) {
 
-	
+
 		try {
-		
+
 			intthread::interruption_point();
-	
+
 		}
-		
+
 		catch (const intthread::thread_interrupted& interrupt) {
 			dead();
 			break;
 		}
 
-		
+
 		if (! is_connected_to_server()) {
 
 			std::cout << "manage disconnection with server" << std::endl ;
 
-	
+
 			if (reconnect_to_server()){
 
 				connected_to_server(true) ;
 			}
 
 		}
-		
+
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(1s);
-	}	
+	}
 }
 
 bool CKernelWifi::reconnect_to_server(){
@@ -1006,7 +1006,7 @@ bool CKernelWifi::reconnect_to_server(){
 
 CKernelWifi::CKernelWifi()  {
 
-	/* allows calls from  static callback to non static member function */ 
+	/* allows calls from  static callback to non static member function */
 	forward = new ckernelwifi::CallFromStaticFunc(this);
 }
 
@@ -1022,7 +1022,7 @@ CKernelWifi::~CKernelWifi(){
 	//	stop();
 
 	clean_all();
-	
+
 	if (forward)
 		delete forward ;
 }
@@ -1037,13 +1037,13 @@ CKernelWifi::~CKernelWifi(){
 bool CKernelWifi::initialized(){
 
 	_mutex_initialized.lock();
-		
+
 		if(! _initialized){
 			_mutex_initialized.unlock();
 			return false ;
 
 		}
-		
+
 	_mutex_initialized.unlock();
 
 	return true ;
@@ -1071,9 +1071,9 @@ void CKernelWifi::handle_new_winet_notification(WirelessDevice wirelessdevice){
 	std::memset(&paddr, 0, sizeof(paddr));
 
 	if(get_pmaddr(paddr,wirelessdevice.getName().c_str())){
-      
-		paddr.ether_addr_octet[0] |= 0x40 ; 
-		wirelessdevice.setMachwsim(paddr); 
+
+		paddr.ether_addr_octet[0] |= 0x40 ;
+		wirelessdevice.setMachwsim(paddr);
 		_list_winterfaces.add_device(wirelessdevice);
 	}
 
@@ -1095,13 +1095,13 @@ void CKernelWifi::handle_del_winet_notification(WirelessDevice wirelessdevice){
 void CKernelWifi::handle_init_winet_notification(WirelessDevice wirelessdevice){
 
 
-        struct ether_addr paddr ;
+	struct ether_addr paddr ;
 	std::memset(&paddr, 0, sizeof(paddr));
 
 	if(get_pmaddr(paddr,wirelessdevice.getName().c_str())){
-      
-		paddr.ether_addr_octet[0] |= 0x40 ; 
-		wirelessdevice.setMachwsim(paddr); 
+
+		paddr.ether_addr_octet[0] |= 0x40 ;
+		wirelessdevice.setMachwsim(paddr);
 		_list_winterfaces.add_device(wirelessdevice);
 	}
 
@@ -1109,58 +1109,57 @@ void CKernelWifi::handle_init_winet_notification(WirelessDevice wirelessdevice){
 	//std::cout << __func__ << _list_winterfaces << std::endl ;
 }
 
-/* get the permanent mac address, this function with nl_recvmsgs(wifi.nls, wifi.cb) permit change mac address before or after launching the application */ 
+/* get the permanent mac address, this function with nl_recvmsgs(wifi.nls, wifi.cb) permit change mac address before or after launching the application */
 bool CKernelWifi::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
 
 {
-    int sock;
-    struct ifreq ifr;
-    struct ethtool_perm_addr *epmaddr;
+	int sock;
+	struct ifreq ifr;
+	struct ethtool_perm_addr *epmaddr;
 
- 
-    epmaddr = (ethtool_perm_addr *) malloc(sizeof(struct ethtool_perm_addr) + MAX_ADDR_LEN);
-    if (!epmaddr)
-    {
-         perror("malloc");
-         return 0;
-    }
- 
-    std::memset(&ifr, 0, sizeof(ifr));
- 
-    if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-    {
-         free(epmaddr);
-         perror("socket");
-         return 0;
-    }
- 
-    memcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
-    epmaddr->cmd = ETHTOOL_GPERMADDR;
-    epmaddr->size = MAX_ADDR_LEN;
-    ifr.ifr_data = (char *) epmaddr;
- 
-    if (ioctl(sock, SIOCETHTOOL, &ifr) == -1)
-    {
-         perror("ioctl");
-         return 0;    
-    }
-    else
-    {
-         if (epmaddr->size != ETH_ALEN)
-         {
-              return 0;
-         }
-         else
-         {
-		 for(int i=0 ; i < 6 ; i++)
-	 		 paddr.ether_addr_octet[i] = epmaddr->data[i] ;
-             
-	 }
-    }
- 
-    free(epmaddr);
-    close(sock);
- 
-    return 1;
+
+	epmaddr = (ethtool_perm_addr *) malloc(sizeof(struct ethtool_perm_addr) + MAX_ADDR_LEN);
+	if (!epmaddr)
+	{
+		perror("malloc");
+		return 0;
+	}
+
+	std::memset(&ifr, 0, sizeof(ifr));
+
+	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+	{
+		free(epmaddr);
+		perror("socket");
+		return 0;
+	}
+
+	memcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+	epmaddr->cmd = ETHTOOL_GPERMADDR;
+	epmaddr->size = MAX_ADDR_LEN;
+	ifr.ifr_data = (char *) epmaddr;
+
+	if (ioctl(sock, SIOCETHTOOL, &ifr) == -1)
+	{
+		perror("ioctl");
+		return 0;
+	}
+	else
+	{
+		if (epmaddr->size != ETH_ALEN)
+		{
+			return 0;
+		}
+		else
+		{
+			for(int i=0 ; i < 6 ; i++)
+				paddr.ether_addr_octet[i] = epmaddr->data[i] ;
+		}
+	}
+
+	free(epmaddr);
+	close(sock);
+
+	return 1;
 }
 

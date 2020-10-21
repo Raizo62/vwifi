@@ -11,7 +11,7 @@
 WirelessDevice::WirelessDevice(){
 
 }
- 
+
 
 
 WirelessDevice::~WirelessDevice(){
@@ -23,9 +23,9 @@ WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const str
 	_macaddr = macaddr ;
 	_machwsim = macaddr ;
 	_machwsim.ether_addr_octet[0] |= 0x40 ;
-	
 
-//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN); 
+
+//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN);
 
 }
 
@@ -64,14 +64,14 @@ struct ether_addr WirelessDevice::getMacaddr() const  {
 void  WirelessDevice::setMacaddr(const struct ether_addr & macaddr)  {
 
 	_macaddr = macaddr ;
-//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN); 
+//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN);
 
 }
 
 void  WirelessDevice::setMachwsim(const struct ether_addr & machwsim)  {
 
 	_machwsim = machwsim ;
-//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN); 
+//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN);
 }
 
 struct ether_addr WirelessDevice::getMachwsim() const  {
@@ -100,7 +100,7 @@ int WirelessDevice::getTxPower() const {
 
 
 	return _txpower ;
-}	
+}
 
 
 // friend functions
@@ -110,7 +110,7 @@ std::ostream &   operator<< ( std::ostream & os , WirelessDevice & wdevice ){
 
 	char macstring[18];
 	char machwsimstring[18];
-	
+
 	sprintf(macstring, "%02X:%02X:%02X:%02X:%02X:%02X",
 		wdevice._macaddr.ether_addr_octet[0], wdevice._macaddr.ether_addr_octet[1], wdevice._macaddr.ether_addr_octet[2],
 		wdevice._macaddr.ether_addr_octet[3], wdevice._macaddr.ether_addr_octet[4], wdevice._macaddr.ether_addr_octet[5]);
@@ -121,28 +121,22 @@ std::ostream &   operator<< ( std::ostream & os , WirelessDevice & wdevice ){
 		wdevice._machwsim.ether_addr_octet[3], wdevice._machwsim.ether_addr_octet[4], wdevice._machwsim.ether_addr_octet[5]);
 
 
-	
+
 	os << "name: " << wdevice._name << std::endl ;
 
 	os << "index: " << wdevice._index << std::endl ;
-	
-	
+
+
 	/* ARPHRD_ETHER normal, ARPHRD_IEEE80211_RADIOTAP as monitor */
 	if (wdevice._iftype == ARPHRD_ETHER)
-
 		os <<  "iftype: ARPHRD_ETHER" << std::endl ;
-
 	else if (wdevice._iftype == ARPHRD_IEEE80211_RADIOTAP)
-
 		os << "iftype: ARPHRD_IEEE80211_RADIOTAP" << std::endl;
-
 	else
-
 		os << "iftype: UNKNOWN" << std::endl;
 
+	os <<  "mac:" << macstring << std::endl   ;
 
-        os <<  "mac:" << macstring << std::endl   ;
-	
 	os <<  "mac hwsim:" << machwsimstring << std::endl   ;
 
 	os << "Tx-Power : " << wdevice._txpower / 100 << "." <<  wdevice._txpower % 100 << "dBm" << std::endl ;

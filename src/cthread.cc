@@ -59,7 +59,7 @@ InterruptibleThread::InterruptibleThread(){
 }
 
 
-bool InterruptibleThread::started() 
+bool InterruptibleThread::started()
 {
 
 	return _started ;
@@ -67,7 +67,7 @@ bool InterruptibleThread::started()
 
 void InterruptibleThread::interrupt(){
 
-	if (_interrupt_flag != nullptr){ 
+	if (_interrupt_flag != nullptr){
 		_interrupt_flag->set();
 
 	}
@@ -107,7 +107,7 @@ void InterruptibleThread::uncount_thread(){
 }
 
 bool InterruptibleThread::all_thread_interrupted(){
-			
+
 	std::unique_lock<std::mutex> lk(_number_thread_mutex);
 	return (number_thread == 0);
 }
@@ -127,7 +127,7 @@ AsyncTask::AsyncTask(){
 
 
 void AsyncTask::dead()  {
-	
+
 	std::unique_lock<std::mutex> lk(_mutex_condition);
 	InterruptibleThread::uncount_thread() ;
 	_condition.notify_all();

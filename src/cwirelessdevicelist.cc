@@ -1,7 +1,7 @@
 /**
  * \file cwirelessdevicelist.cc
  * \brief manage std::list of WirelessDevice objects
- * \author 
+ * \author
  * \version
  */
 
@@ -24,7 +24,7 @@ bool WirelessDeviceList::get_device_by_mac(WirelessDevice & wdev , struct ether_
 	_listaccess.lock();
 	for (auto & wd : _wdevices_list){
 
-		struct ether_addr mac  = wd.second.getMacaddr() ;	
+		struct ether_addr mac  = wd.second.getMacaddr() ;
 		if(std::memcmp(&mac,&macaddr,ETH_ALEN) == 0){
 			wdev = wd.second ;
 			_listaccess.unlock();
@@ -40,8 +40,8 @@ bool WirelessDeviceList::get_device_by_mac(WirelessDevice & wdev , struct ether_
 void WirelessDeviceList::add_device(const WirelessDevice & wdevice){
 
 	_listaccess.lock();
-	
-	_wdevices_list[wdevice.getIndex()] = wdevice ;	
+
+	_wdevices_list[wdevice.getIndex()] = wdevice ;
 
 	_listaccess.unlock();
 }
@@ -49,8 +49,8 @@ void WirelessDeviceList::add_device(const WirelessDevice & wdevice){
 void WirelessDeviceList::delete_device(const WirelessDevice & wdevice){
 
 	_listaccess.lock();
-	
-	_wdevices_list.erase(wdevice.getIndex()) ;	
+
+	_wdevices_list.erase(wdevice.getIndex()) ;
 
 	_listaccess.unlock();
 }
@@ -59,9 +59,9 @@ void WirelessDeviceList::delete_device(const WirelessDevice & wdevice){
 void WirelessDeviceList::delete_device(int index){
 
 	_listaccess.lock();
-	
+
 	_wdevices_list.erase(index);
-	
+
 	_listaccess.unlock();
 }
 
@@ -71,12 +71,12 @@ std::vector<WirelessDevice> & WirelessDeviceList::list_devices()  {
 
 	_listaccess.lock();
 	for (auto & wd : _wdevices_list){
-	
+
 		list_wd->push_back(wd.second);
 	}
 	_listaccess.unlock();
 
-	return *(list_wd) ;	
+	return *(list_wd) ;
 
 }
 
@@ -89,7 +89,7 @@ std::ostream &   operator<< ( std::ostream & os , WirelessDeviceList & wdlist ){
 	wdlist._listaccess.lock();
 
 	for (auto & wd : wdlist._wdevices_list){
-	
+
 		os << wd.second;
 		os << std::endl ;
 	}
