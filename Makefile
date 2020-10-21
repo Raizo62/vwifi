@@ -72,7 +72,7 @@ $(OBJ)/cmonwirelessdevice.o: cmonwirelessdevice.cc cmonwirelessdevice.h
 
 $(OBJ)/cwificlient.o: cwificlient.cc cwificlient.h $(OBJ)/csocketclient.o $(OBJ)/ckernelwifi.o $(OBJ)/cwifi.o
 
-$(OBJ)/ckernelwifi.o: ckernelwifi.cc ckernelwifi.h $(OBJ)/csocket.o $(OBJ)/cselect.o $(OBJ)/cthread.o $(OBJ)/cdynbuffer.o hwsim.h mac80211_hwsim.h ieee80211.h config.h
+$(OBJ)/ckernelwifi.o: ckernelwifi.cc ckernelwifi.h $(OBJ)/csocket.o $(OBJ)/cselect.o $(OBJ)/cthread.o $(OBJ)/cdynbuffer.o hwsim.h types.h mac80211_hwsim.h ieee80211.h config.h
 
 
 vwifi-server : vwifi-server.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cinfosocket.o $(OBJ)/cwifi.o $(OBJ)/cwifiserver.o $(OBJ)/cselect.o $(OBJ)/cinfowifi.o $(OBJ)/ccoordinate.o $(OBJ)/cctrlserver.o $(OBJ)/tools.o $(OBJ)/cdynbuffer.o
