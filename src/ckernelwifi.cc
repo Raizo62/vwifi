@@ -73,7 +73,7 @@ int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flag
 	if( nla_put(msg, HWSIM_ATTR_ADDR_TRANSMITTER, sizeof(struct ether_addr), src) ||
 		nla_put_u32(msg, HWSIM_ATTR_FLAGS, flags)	||
 		nla_put_u32(msg, HWSIM_ATTR_SIGNAL, signal)	||
-		nla_put(msg, HWSIM_ATTR_TX_INFO, IEEE80211_MAX_RATES_PER_TX * sizeof(struct hwsim_tx_rate), tx_attempts)	||
+		nla_put(msg, HWSIM_ATTR_TX_INFO, IEEE80211_TX_MAX_RATES * sizeof(struct hwsim_tx_rate), tx_attempts)	||
 		nla_put_u64(msg, HWSIM_ATTR_COOKIE, cookie) )
 	{
 		std::cerr << "Error filling payload" << std::endl;
@@ -457,8 +457,6 @@ void CKernelWifi::recv_from_server(){
 		return  ;
 
 	int rate_idx = 7;
-//	int rate_idx = IEEE80211_MAX_RATES_PER_TX;
-
 
 	if( Scheduler.Wait() == SCHEDULER_ERROR )
 		return ;
