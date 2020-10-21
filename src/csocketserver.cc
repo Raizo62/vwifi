@@ -51,9 +51,17 @@ bool CSocketServer::Listen()
 	int opt = 1 ; // TRUE
 	if( setsockopt(Master, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
 	{
-		perror("CSocketServer::Listen : setsockopt");
+		perror("CSocketServer::Listen : setsockopt : SO_REUSEADDR");
 		return false;
 	}
+
+	struct timeval timeout;
+	timeout.tv_sec = 3;
+	timeout.tv_usec = 0;
+	if (setsockopt (Master, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+		perror("CSocketServer::Listen : setsockopt : SO_RCVTIMEO\n");
+	if (setsockopt (Master, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+		perror("CSocketServer::Listen : setsockopt : SO_SNDTIMEO\n");
 
 	switch ( Type )
 	{
