@@ -33,8 +33,8 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 				cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
 			}
 			else
-			{	// if masterSendToOwnClients is false, it is surely Host
-				cout<<"Host disconnected"<<endl;
+			{	// if masterSendToOwnClients is false, it is surely Spy
+				cout<<"Spy disconnected"<<endl;
 			}
 			serverMaster->CloseClient(i);
 
@@ -59,8 +59,8 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 					cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
 				}
 				else
-				{	// if masterSendToOwnClients is false, it is surely Host
-					cout<<"Host disconnected"<<endl;
+				{	// if masterSendToOwnClients is false, it is surely Spy
+					cout<<"Spy disconnected"<<endl;
 				}
 				serverMaster->CloseClient(i);
 
@@ -250,7 +250,7 @@ int vwifi_server()
 				scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection from Host"<<endl;
+				cout<<"New connection from Spy"<<endl;
 			}
 
 			if( scheduler.DescriptorHasAction(ctrlServer) )
