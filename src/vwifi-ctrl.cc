@@ -255,7 +255,7 @@ int AskStatus()
 	}
 	cout<<"SRV VHOST: SizeOfDisconnected : "<<size<<endl;
 
-	// VHOST
+	// INET
 
 	err=socket.Read((char*)&port,sizeof(port));
 	if( err == SOCKET_ERROR )
