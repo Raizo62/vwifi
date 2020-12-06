@@ -1,10 +1,10 @@
 #include "cctrlserver.h"
 
-CCTRLServer::CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiHostServer, CSelect* scheduler) : CSocketServer(AF_INET)
+CCTRLServer::CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiSpyServer, CSelect* scheduler) : CSocketServer(AF_INET)
 {
 	WifiGuestVHostServer=wifiGuestVHostServer;
 	WifiGuestInetServer=wifiGuestInetServer;
-	WifiHostServer=wifiHostServer;
+	WifiSpyServer=wifiSpyServer;
 	Scheduler=scheduler;
 }
 
@@ -182,7 +182,7 @@ void CCTRLServer::SendStatus()
 
 	// HOST
 
-	bool hostIsConnected=( WifiHostServer->GetNumberClient() > 0 );
+	bool hostIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
 	if( Send((char*)&hostIsConnected,sizeof(hostIsConnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : socket.SendList : HostIsConnected"<<endl;
@@ -199,7 +199,7 @@ void CCTRLServer::SendShow()
 		return;
 	}
 
-	bool hostIsConnected=( WifiHostServer->GetNumberClient() > 0 );
+	bool hostIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
 	if( Send((char*)&hostIsConnected,sizeof(hostIsConnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : socket.SendList : HostIsConnected"<<endl;
