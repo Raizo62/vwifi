@@ -5,8 +5,8 @@ VERSION	=	1.5
 BINDIR	=	$(DESTDIR)/usr/local/bin
 MANDIR	=	$(DESTDIR)/usr/local/man/man1
 
-EXEC	=	vwifi-server vwifi-guest vwifi-host vwifi-ctrl
-#EXEC	=	vwifi-server vwifi-guest vwifi-host vwifi-ctrl vwifi-inet-monitor
+EXEC	=	vwifi-server vwifi-guest vwifi-spy vwifi-ctrl
+#EXEC	=	vwifi-server vwifi-guest vwifi-spy vwifi-ctrl vwifi-inet-monitor
 
 SRC		=	src
 OBJ		=	obj
@@ -84,7 +84,7 @@ vwifi-ctrl : vwifi-ctrl.cc config.h $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OB
 vwifi-guest : vwifi-guest.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o $(OBJ)/cwifi.o $(OBJ)/cwificlient.o $(OBJ)/ckernelwifi.o $(OBJ)/cthread.o $(OBJ)/cselect.o $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tools.o $(OBJ)/cdynbuffer.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
-vwifi-host : vwifi-host.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o $(OBJ)/cwifi.o $(OBJ)/cwificlient.o $(OBJ)/ckernelwifi.o $(OBJ)/cthread.o $(OBJ)/cselect.o $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tools.o $(OBJ)/cdynbuffer.o
+vwifi-spy : vwifi-spy.cc $(OBJ)/cwirelessdevice.o $(OBJ)/cwirelessdevicelist.o $(OBJ)/cwifi.o $(OBJ)/cwificlient.o $(OBJ)/ckernelwifi.o $(OBJ)/cthread.o $(OBJ)/cselect.o $(OBJ)/csocket.o $(OBJ)/csocketclient.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/tools.o $(OBJ)/cdynbuffer.o
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
 vwifi-inet-monitor : vwifi-inet-monitor.cc  $(OBJ)/cwirelessdevice.o $(OBJ)/cmonwirelessdevice.o
