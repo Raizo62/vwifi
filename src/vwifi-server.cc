@@ -163,7 +163,7 @@ int vwifi_server()
 	cout<<"HOST : ";
 	CWifiServer wifiHostServer(AF_INET);
 	wifiHostServer.SetPacketLoss(false);
-	wifiHostServer.Init(WIFI_HOST_PORT);
+	wifiHostServer.Init(WIFI_SPY_PORT);
 	if( ! wifiHostServer.Listen(1) )
 	{
 		cerr<<"Error : wifiHostServer.Listen"<<endl;

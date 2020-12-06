@@ -73,12 +73,12 @@ int main (int argc , char ** argv){
 		}
 
 		wifiClient=new CWifiClient<CSocketClientINET>;
-		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(argv[1], WIFI_HOST_PORT);
+		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(argv[1], WIFI_SPY_PORT);
 	}
 	else
 	{
 		wifiClient=new CWifiClient<CSocketClientINET>;
-		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(ADDRESS_IP, WIFI_HOST_PORT);
+		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(ADDRESS_IP, WIFI_SPY_PORT);
 	}
 
 	if(!wifiClient->start())
