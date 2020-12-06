@@ -273,17 +273,17 @@ int AskStatus()
 	}
 	cout<<"SRV INET: SizeOfDisconnected : "<<size<<endl;
 
-	// HOST
+	// SPY
 
-	bool hostIsConnected;
-	err=socket.Read((char*)&hostIsConnected,sizeof(hostIsConnected));
+	bool spyIsConnected;
+	err=socket.Read((char*)&spyIsConnected,sizeof(spyIsConnected));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : status : socket.Read : HostIsConnected"<<endl;
+		cerr<<"Error : status : socket.Read : spyIsConnected"<<endl;
 		return 1;
 	}
-	cout<<"HOST : ";
-	if ( hostIsConnected )
+	cout<<"SPY : ";
+	if ( spyIsConnected )
 		cout<<"Connected"<<endl;
 	else
 		cout<<"Disconnected"<<endl;
@@ -328,15 +328,15 @@ int AskShow()
 	else
 		cout<<"Disable"<<endl;
 
-	bool hostIsConnected;
-	err=socket.Read((char*)&hostIsConnected,sizeof(hostIsConnected));
+	bool spyIsConnected;
+	err=socket.Read((char*)&spyIsConnected,sizeof(spyIsConnected));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : show : socket.Read : HostIsConnected"<<endl;
+		cerr<<"Error : show : socket.Read : spyIsConnected"<<endl;
 		return 1;
 	}
-	cout<<"Host : ";
-	if ( hostIsConnected )
+	cout<<"Spy : ";
+	if ( spyIsConnected )
 		cout<<"Connected"<<endl;
 	else
 		cout<<"Disconnected"<<endl;
