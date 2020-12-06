@@ -180,12 +180,12 @@ void CCTRLServer::SendStatus()
 		return;
 	}
 
-	// HOST
+	// SPY
 
-	bool hostIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
-	if( Send((char*)&hostIsConnected,sizeof(hostIsConnected)) == SOCKET_ERROR )
+	bool spyIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
+	if( Send((char*)&spyIsConnected,sizeof(spyIsConnected)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : HostIsConnected"<<endl;
+		cerr<<"Error : SendStatus : socket.SendList : spyIsConnected"<<endl;
 		return;
 	}
 
@@ -199,10 +199,10 @@ void CCTRLServer::SendShow()
 		return;
 	}
 
-	bool hostIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
-	if( Send((char*)&hostIsConnected,sizeof(hostIsConnected)) == SOCKET_ERROR )
+	bool spyIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
+	if( Send((char*)&spyIsConnected,sizeof(spyIsConnected)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendShow : socket.SendList : HostIsConnected"<<endl;
+		cerr<<"Error : SendShow : socket.SendList : spyIsConnected"<<endl;
 		return;
 	}
 }
