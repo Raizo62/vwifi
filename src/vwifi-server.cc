@@ -160,18 +160,18 @@ int vwifi_server()
 		exit(EXIT_FAILURE);
 	}
 
-	cout<<"HOST : ";
-	CWifiServer wifiHostServer(AF_INET);
-	wifiHostServer.SetPacketLoss(false);
-	wifiHostServer.Init(WIFI_SPY_PORT);
-	if( ! wifiHostServer.Listen(1) )
+	cout<<"SPY : ";
+	CWifiServer wifiSpyServer(AF_INET);
+	wifiSpyServer.SetPacketLoss(false);
+	wifiSpyServer.Init(WIFI_SPY_PORT);
+	if( ! wifiSpyServer.Listen(1) )
 	{
-		cerr<<"Error : wifiHostServer.Listen"<<endl;
+		cerr<<"Error : wifiSpyServer.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
 	cout<<"CTRL : ";
-	CCTRLServer ctrlServer(&wifiGuestVHostServer, &wifiGuestINETServer, &wifiHostServer,&scheduler);
+	CCTRLServer ctrlServer(&wifiGuestVHostServer, &wifiGuestINETServer, &wifiSpyServer,&scheduler);
 	ctrlServer.Init(CTRL_PORT);
 	if( ! ctrlServer.Listen() )
 	{
@@ -189,7 +189,7 @@ int vwifi_server()
 	//add master socket to set
 	scheduler.AddNode(wifiGuestVHostServer);
 	scheduler.AddNode(wifiGuestINETServer);
-	scheduler.AddNode(wifiHostServer);
+	scheduler.AddNode(wifiSpyServer);
 	scheduler.AddNode(ctrlServer);
 
 	while( true )
@@ -237,12 +237,12 @@ int vwifi_server()
 				cout<<"New connection from Guest TCP : "; wifiGuestINETServer.ShowInfoWifi(wifiGuestINETServer.GetNumberClient()-1) ; cout<<endl;
 			}
 
-			if( scheduler.DescriptorHasAction(wifiHostServer) )
+			if( scheduler.DescriptorHasAction(wifiSpyServer) )
 			{
-				socket = wifiHostServer.Accept();
+				socket = wifiSpyServer.Accept();
 				if ( socket == SOCKET_ERROR )
 				{
-					cerr<<"Error : wifiHostServer.Accept"<<endl;
+					cerr<<"Error : wifiSpyServer.Accept"<<endl;
 					exit(EXIT_FAILURE);
 				}
 
@@ -260,10 +260,10 @@ int vwifi_server()
 
 			//else its some IO operation on some other socket
 
-			ForwardData(&wifiGuestVHostServer, true, &wifiGuestINETServer, false, &wifiHostServer, true, &scheduler);
-			ForwardData(&wifiGuestINETServer, true, &wifiGuestVHostServer, false, &wifiHostServer, true, &scheduler);
+			ForwardData(&wifiGuestVHostServer, true, &wifiGuestINETServer, false, &wifiSpyServer, true, &scheduler);
+			ForwardData(&wifiGuestINETServer, true, &wifiGuestVHostServer, false, &wifiSpyServer, true, &scheduler);
 
-			ForwardData(&wifiHostServer, false, &wifiGuestVHostServer, true, &wifiGuestINETServer, false, &scheduler);
+			ForwardData(&wifiSpyServer, false, &wifiGuestVHostServer, true, &wifiGuestINETServer, false, &scheduler);
 
 		}
 	}
