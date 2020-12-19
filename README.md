@@ -60,6 +60,7 @@ sudo make install
 
 # Explanations
 
+* ***vwifi-guest*** should be started on the VMs, and ***vwifi-server*** on the Host
 * ***vwifi-guest*** and ***vwifi-server*** can communicate either with the VHOST protocol, or with the TCP protocol
 * The ***vwifi-spy*** is the same as ***vwifi-guest*** but :
     * it receives always all communications, even if the loss of packets is enable.
