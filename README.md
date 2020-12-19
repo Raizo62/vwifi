@@ -60,13 +60,13 @@ sudo make install
 
 # Explanations
 
-* ***vwifi-guest*** should be started on the VMs, and ***vwifi-server*** on the Host
-* ***vwifi-guest*** and ***vwifi-server*** can communicate either with the VHOST protocol, or with the TCP protocol
-* The ***vwifi-spy*** is the same as ***vwifi-guest*** but :
+* ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host
+* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol, or with the TCP protocol
+* The ***vwifi-spy*** is the same as ***vwifi-client*** but :
     * it receives always all communications, even if the loss of packets is enable.
     * it works only with TCP.
     * by default, it connects to 127.0.0.1
-* To use TCP protocol, ***vwifi-server*** and ***vwifi-guest***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
+* To use TCP protocol, ***vwifi-server*** and ***vwifi-client***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
 
 # Configuration
 
@@ -101,14 +101,14 @@ sudo modprobe mac80211_hwsim radios=2
 
 * Connect all these wlan interfaces to the ***vwifi-server*** :
 ```bash
-sudo vwifi-guest
+sudo vwifi-client
 ```
 
-* ***vwifi-guest*** displays "ID=-1". ***vwifi-server*** uses the cid to identify this guest.
+* ***vwifi-client*** displays "ID=-1". ***vwifi-server*** uses the cid to identify this guest.
 
 ## With TCP
 
-* ***vwifi-server*** and ***vwifi-guest*** must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
+* ***vwifi-server*** and ***vwifi-client*** must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
 
 ### Host
 
@@ -130,10 +130,10 @@ sudo modprobe mac80211_hwsim radios=2
 
 * Connect all these wlan interfaces to the ***vwifi-server*** :
 ```bash
-sudo vwifi-guest 172.16.0.1
+sudo vwifi-client 172.16.0.1
 ```
 
-* ***vwifi-guest*** displays an ID which is an hashsum of the IP. It is used by ***vwifi-server*** to identify this guest.
+* ***vwifi-client*** displays an ID which is an hashsum of the IP. It is used by ***vwifi-server*** to identify this guest.
 
 # Capture packets from Host
 
@@ -307,6 +307,6 @@ ping 10.0.0.1
 
 # Others Tools
 
-* start-vwifi-guest.sh : do all the commands necessary to start ***vwifi-guest*** on a Guest
+* start-vwifi-client.sh : do all the commands necessary to start ***vwifi-client*** on a Guest
 * fast-vwifi-update.sh : set with ***vwifi-ctrl*** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
 * client.sh : configure the client wifi with Open or WPA
