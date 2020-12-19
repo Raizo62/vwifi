@@ -226,7 +226,7 @@ int vwifi_server()
 				socket = wifiGuestINETServer.Accept();
 				if ( socket == SOCKET_ERROR )
 				{
-					cerr<<"Error : wifiGuestVHostServer.Accept"<<endl;
+					cerr<<"Error : wifiGuestINETServer.Accept"<<endl;
 					exit(EXIT_FAILURE);
 				}
 
