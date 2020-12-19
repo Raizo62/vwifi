@@ -60,13 +60,12 @@ sudo make install
 
 # Explanations
 
-* The VMs and the server can communicate either with the VHOST protocol, or with the TCP protocol
-* The ***vwifi-server*** accepts connection from ***vwifi-guest*** with TCP or VHOST protocols
+* ***vwifi-guest*** and ***vwifi-server*** can communicate either with the VHOST protocol, or with the TCP protocol
 * The ***vwifi-spy*** is the same as ***vwifi-guest*** but :
     * it receives always all communications, even if the loss of packets is enable.
     * it works only with TCP.
     * by default, it connects to 127.0.0.1
-* To use TCP protocol, the Host and the VMs must be connected to a different IP network than that of the wifi
+* To use TCP protocol, ***vwifi-server*** and ***vwifi-guest***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
 
 # Configuration
 
@@ -108,7 +107,7 @@ sudo vwifi-guest
 
 ## With TCP
 
-* The Host and the VMs must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
+* ***vwifi-server*** and ***vwifi-guest*** must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
 
 ### Host
 
