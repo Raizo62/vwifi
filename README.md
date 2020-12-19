@@ -65,6 +65,7 @@ sudo make install
 * The ***vwifi-spy*** is the same as ***vwifi-guest*** but :
     * it receives always all communications, even if the loss of packets is enable.
     * it works only with TCP.
+    * by default, it connects to 127.0.0.1
 * To use TCP protocol, the Host and the VMs must be connected to a different IP network than that of the wifi
 
 # Configuration
