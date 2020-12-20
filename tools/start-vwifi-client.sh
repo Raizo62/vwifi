@@ -42,12 +42,12 @@ then
 	if [ -v TMUX ]
 	then
 		# Already in tmux
-		./vwifi-guest
+		./vwifi-client
 	else
-		tmux new-session -s vwifi "bash --rcfile <(echo '. ~/.bashrc; ./vwifi-guest')" ; detach &> /dev/null
+		tmux new-session -s vwifi "bash --rcfile <(echo '. ~/.bashrc; ./vwifi-client')" ; detach &> /dev/null
 
 		tmux attach -t vwifi
 	fi
 else
-	./vwifi-guest
+	./vwifi-client
 fi
