@@ -78,7 +78,7 @@ int main (int argc , char ** argv){
 	else
 	{
 		wifiClient=new CWifiClient<CSocketClientVHOST>;
-		((CWifiClient<CSocketClientVHOST>*)wifiClient)->Init(WIFI_GUEST_PORT_VHOST);
+		((CWifiClient<CSocketClientVHOST>*)wifiClient)->Init(WIFI_CLIENT_PORT_VHOST);
 	}
 
 	if(!wifiClient->start())

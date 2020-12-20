@@ -144,7 +144,7 @@ int vwifi_server()
 
 	CWifiServer wifiGuestVHostServer(AF_VSOCK);
 	cout<<"CLIENT VHOST : ";
-	wifiGuestVHostServer.Init(WIFI_GUEST_PORT_VHOST);
+	wifiGuestVHostServer.Init(WIFI_CLIENT_PORT_VHOST);
 	if( ! wifiGuestVHostServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
 	{
 		cerr<<"Error : wifiGuestVHostServer.Listen"<<endl;
