@@ -153,7 +153,7 @@ int vwifi_server()
 
 	CWifiServer wifiGuestINETServer(AF_INET);
 	cout<<"CLIENT TCP : ";
-	wifiGuestINETServer.Init(WIFI_GUEST_PORT_INET);
+	wifiGuestINETServer.Init(WIFI_CLIENT_PORT_INET);
 	if( ! wifiGuestINETServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
 	{
 		cerr<<"Error : wifiGuestINETServer.Listen"<<endl;
