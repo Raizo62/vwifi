@@ -30,7 +30,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 			//Close the socket
 			if( masterSendToOwnClients )
 			{
-				cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+				cout<<"Client disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
 			}
 			else
 			{	// if masterSendToOwnClients is false, it is surely Spy
@@ -56,7 +56,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 				//Close the socket
 				if( masterSendToOwnClients )
 				{
-					cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+					cout<<"Client disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
 				}
 				else
 				{	// if masterSendToOwnClients is false, it is surely Spy
@@ -75,7 +75,7 @@ void ForwardData(CWifiServer* serverMaster, bool masterSendToOwnClients, CWifiSe
 			if ( valread <= 0 )
 			{
 				//Close the socket
-				cout<<"Guest disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
+				cout<<"Client disconnected : "; serverMaster->ShowInfoWifi(i) ; cout<<endl;
 				serverMaster->CloseClient(i);
 
 				//del master socket to set
@@ -143,7 +143,7 @@ int vwifi_server()
 	CSelect scheduler;
 
 	CWifiServer wifiGuestVHostServer(AF_VSOCK);
-	cout<<"GUEST VHOST : ";
+	cout<<"CLIENT VHOST : ";
 	wifiGuestVHostServer.Init(WIFI_GUEST_PORT_VHOST);
 	if( ! wifiGuestVHostServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
 	{
@@ -152,7 +152,7 @@ int vwifi_server()
 	}
 
 	CWifiServer wifiGuestINETServer(AF_INET);
-	cout<<"GUEST TCP : ";
+	cout<<"CLIENT TCP : ";
 	wifiGuestINETServer.Init(WIFI_GUEST_PORT_INET);
 	if( ! wifiGuestINETServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
 	{
@@ -218,7 +218,7 @@ int vwifi_server()
 				scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection from Guest VHost : "; wifiGuestVHostServer.ShowInfoWifi(wifiGuestVHostServer.GetNumberClient()-1) ; cout<<endl;
+				cout<<"New connection from Client VHost : "; wifiGuestVHostServer.ShowInfoWifi(wifiGuestVHostServer.GetNumberClient()-1) ; cout<<endl;
 			}
 
 			if( scheduler.DescriptorHasAction(wifiGuestINETServer) )
@@ -234,7 +234,7 @@ int vwifi_server()
 				scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection from Guest TCP : "; wifiGuestINETServer.ShowInfoWifi(wifiGuestINETServer.GetNumberClient()-1) ; cout<<endl;
+				cout<<"New connection from Client TCP : "; wifiGuestINETServer.ShowInfoWifi(wifiGuestINETServer.GetNumberClient()-1) ; cout<<endl;
 			}
 
 			if( scheduler.DescriptorHasAction(wifiSpyServer) )
