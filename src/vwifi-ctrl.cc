@@ -15,20 +15,20 @@ void Help(char* nameOfProg)
 	cout<<nameOfProg<<" [order]"<<endl;
 	cout<<" with [order] :"<<endl;
 	cout<<"	ls"<<endl;
-	cout<<"		- List the VMs"<<endl;
+	cout<<"		- List the Clients"<<endl;
 	cout<<"	set cid x y z"<<endl;
-	cout<<"		- Change the coordinate of the VM with cid"<<endl;
+	cout<<"		- Change the coordinate of the Client with cid"<<endl;
 	cout<<"	loss yes/no"<<endl;
 	cout<<"		- loss yes : packets can be lost"<<endl;
 	cout<<"		- loss no : no packets can be lost"<<endl;
 	cout<<"	show"<<endl;
-	cout<<"		- Display the status of loss and list of VMs"<<endl;
+	cout<<"		- Display the status of loss and list of Clients"<<endl;
 	cout<<"	status"<<endl;
 	cout<<"		- Display the status of the configuration of vwifi-server"<<endl;
 	cout<<"	distance cid1 cid2"<<endl;
-	cout<<"		- Distance in meters between the VM with cid1 and the VM with cid2"<<endl;
+	cout<<"		- Distance in meters between the Client with cid1 and the Client with cid2"<<endl;
 	cout<<"	close"<<endl;
-	cout<<"		- Close all the connections with Wifi VMs"<<endl;
+	cout<<"		- Close all the connections with Wifi Clients"<<endl;
 
 	cout<<" -v or --version"<<endl;
 	cout<<"	Display the version of "<<nameOfProg<<endl;
