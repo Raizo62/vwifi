@@ -241,7 +241,7 @@ int AskStatus()
 	err=socket.Read((char*)&port,sizeof(port));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : status : socket.Read : Port"<<endl;
+		cerr<<"Error : status : socket.Read : Port VHOST"<<endl;
 		return 1;
 	}
 	cout<<"SRV VHOST : Port : "<<port<<endl;
@@ -250,7 +250,7 @@ int AskStatus()
 	err=socket.Read((char*)&size,sizeof(size));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : status : socket.Read : Size"<<endl;
+		cerr<<"Error : status : socket.Read : Size VHOST"<<endl;
 		return 1;
 	}
 	cout<<"SRV VHOST : SizeOfDisconnected : "<<size<<endl;
@@ -260,7 +260,7 @@ int AskStatus()
 	err=socket.Read((char*)&port,sizeof(port));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : status : socket.Read : Port"<<endl;
+		cerr<<"Error : status : socket.Read : Port INET"<<endl;
 		return 1;
 	}
 	cout<<"SRV INET : Port : "<<port<<endl;
@@ -268,7 +268,7 @@ int AskStatus()
 	err=socket.Read((char*)&size,sizeof(size));
 	if( err == SOCKET_ERROR )
 	{
-		cerr<<"Error : status : socket.Read : Size"<<endl;
+		cerr<<"Error : status : socket.Read : Size INET"<<endl;
 		return 1;
 	}
 	cout<<"SRV INET : SizeOfDisconnected : "<<size<<endl;

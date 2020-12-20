@@ -156,13 +156,13 @@ void CCTRLServer::SendStatus()
 
 	if( Send((char*)&(WifiGuestVHostServer->Port),sizeof(WifiGuestVHostServer->Port)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : Send : Port"<<endl;
+		cerr<<"Error : SendStatus : Send : Port VHOST"<<endl;
 		return;
 	}
 
 	if( Send((char*)&(WifiGuestVHostServer->MaxClientDeconnected),sizeof(WifiGuestVHostServer->MaxClientDeconnected)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : Send : Size"<<endl;
+		cerr<<"Error : SendStatus : Send : Size VHOST"<<endl;
 		return;
 	}
 
@@ -170,13 +170,13 @@ void CCTRLServer::SendStatus()
 
 	if( Send((char*)&(WifiGuestInetServer->Port),sizeof(WifiGuestInetServer->Port)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : Send : Port"<<endl;
+		cerr<<"Error : SendStatus : Send : Port INET"<<endl;
 		return;
 	}
 
 	if( Send((char*)&(WifiGuestInetServer->MaxClientDeconnected),sizeof(WifiGuestInetServer->MaxClientDeconnected)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : Send : Size"<<endl;
+		cerr<<"Error : SendStatus : Send : Size INET"<<endl;
 		return;
 	}
 
