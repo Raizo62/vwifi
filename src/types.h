@@ -31,8 +31,8 @@ typedef s32 TSocket;
 // AF_INET : use IP
 // AF_VSOCK : use vsock
 
-// unsigned int
-typedef u32 TPort;
+// unsigned short
+typedef u16 TPort;
 
 // char
 typedef s8 TPower; // empirical observed values with int : [-123,20]
