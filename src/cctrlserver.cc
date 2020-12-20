@@ -46,7 +46,7 @@ void CCTRLServer::SendList()
 			CInfoWifi* infoWifi=WifiGuestVHostServer->GetReferenceOnInfoWifiByIndex(i);
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
-				cerr<<"Error : SendList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
+				cerr<<"Error : SendList : Send : CInfoWifi : "<<*infoWifi<<endl;
 				return;
 			}
 		}
@@ -58,7 +58,7 @@ void CCTRLServer::SendList()
 			CInfoWifi* infoWifi=WifiGuestInetServer->GetReferenceOnInfoWifiByIndex(i);
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
-				cerr<<"Error : SendList : socket.SendList : CInfoWifi : "<<*infoWifi<<endl;
+				cerr<<"Error : SendList : Send : CInfoWifi : "<<*infoWifi<<endl;
 				return;
 			}
 		}
@@ -148,7 +148,7 @@ void CCTRLServer::SendStatus()
 {
 	if( Send((char*)&(WifiGuestVHostServer->PacketLoss),sizeof(WifiGuestVHostServer->PacketLoss)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : PacketLoss"<<endl;
+		cerr<<"Error : SendStatus : Send : PacketLoss"<<endl;
 		return;
 	}
 
@@ -156,13 +156,13 @@ void CCTRLServer::SendStatus()
 
 	if( Send((char*)&(WifiGuestVHostServer->Port),sizeof(WifiGuestVHostServer->Port)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : Port"<<endl;
+		cerr<<"Error : SendStatus : Send : Port"<<endl;
 		return;
 	}
 
 	if( Send((char*)&(WifiGuestVHostServer->MaxClientDeconnected),sizeof(WifiGuestVHostServer->MaxClientDeconnected)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : Size"<<endl;
+		cerr<<"Error : SendStatus : Send : Size"<<endl;
 		return;
 	}
 
@@ -170,13 +170,13 @@ void CCTRLServer::SendStatus()
 
 	if( Send((char*)&(WifiGuestInetServer->Port),sizeof(WifiGuestInetServer->Port)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : Port"<<endl;
+		cerr<<"Error : SendStatus : Send : Port"<<endl;
 		return;
 	}
 
 	if( Send((char*)&(WifiGuestInetServer->MaxClientDeconnected),sizeof(WifiGuestInetServer->MaxClientDeconnected)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : Size"<<endl;
+		cerr<<"Error : SendStatus : Send : Size"<<endl;
 		return;
 	}
 
@@ -185,7 +185,7 @@ void CCTRLServer::SendStatus()
 	bool spyIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
 	if( Send((char*)&spyIsConnected,sizeof(spyIsConnected)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : socket.SendList : spyIsConnected"<<endl;
+		cerr<<"Error : SendStatus : Send : spyIsConnected"<<endl;
 		return;
 	}
 
@@ -195,14 +195,14 @@ void CCTRLServer::SendShow()
 {
 	if( Send((char*)&(WifiGuestVHostServer->PacketLoss),sizeof(WifiGuestVHostServer->PacketLoss)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendShow : socket.SendList : PacketLoss"<<endl;
+		cerr<<"Error : SendShow : Send : PacketLoss"<<endl;
 		return;
 	}
 
 	bool spyIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
 	if( Send((char*)&spyIsConnected,sizeof(spyIsConnected)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendShow : socket.SendList : spyIsConnected"<<endl;
+		cerr<<"Error : SendShow : Send : spyIsConnected"<<endl;
 		return;
 	}
 }
@@ -235,7 +235,7 @@ void CCTRLServer::SendDistance()
 				{
 					codeError=-1;
 					if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
-						cerr<<"Error : SendDistance : socket.SendList : unknown cid1"<<endl;
+						cerr<<"Error : SendDistance : Send : unknown cid1"<<endl;
 					return ;
 				}
 			}
@@ -258,7 +258,7 @@ void CCTRLServer::SendDistance()
 				{
 					codeError=-2;
 					if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
-						cerr<<"Error : SendDistance : socket.SendList : unknown cid2"<<endl;
+						cerr<<"Error : SendDistance : Send : unknown cid2"<<endl;
 					return ;
 				}
 			}
@@ -268,7 +268,7 @@ void CCTRLServer::SendDistance()
 	codeError=0;
 	if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendDistance : socket.SendList : no error"<<endl;
+		cerr<<"Error : SendDistance : Send : no error"<<endl;
 		return ;
 	}
 
@@ -276,7 +276,7 @@ void CCTRLServer::SendDistance()
 
 	if( Send((char*)&distance,sizeof(distance)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendDistance : socket.SendList : distance"<<endl;
+		cerr<<"Error : SendDistance : Send : distance"<<endl;
 		return;
 	}
 }
