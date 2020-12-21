@@ -1,5 +1,6 @@
 vwifi-server
-vwifi-guest
+vwifi-client
+vwifi-spy
 vwifi-ctrl
 obj/
 # For eclipse :
