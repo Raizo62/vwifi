@@ -456,7 +456,7 @@ void CKernelWifi::recv_from_server(){
 	if ( ! is_connected_to_server())
 		return  ;
 
-	int rate_idx = 7;
+	int rate_idx = 7; // number of attempts
 
 	if( Scheduler.Wait() == SCHEDULER_ERROR )
 		return ;
