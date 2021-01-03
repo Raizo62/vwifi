@@ -14,7 +14,7 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
        * WPA2
        * WPA-EAP
     * in the context of WPA2 attack with `Aircrack-NG` (Kali / Parrot-OS)
-    * with OpenWRT as AP
+    * with OpenWRT
 
 * Remaining features to be implemented:
 
