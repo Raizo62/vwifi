@@ -14,7 +14,7 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
        * WPA2
        * WPA-EAP
     * in the context of WPA2 attack with `Aircrack-NG` (Kali / Parrot-OS)
-    * with OpenWRT as AP
+    * with OpenWRT
 
 * Remaining features to be implemented:
 
@@ -24,21 +24,40 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 ![Example](./screenshots/GNS3_Attack_with_KaliLinux.png)
 
+# Explanations
+
+* ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host
+* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol, or with the TCP protocol
+* The ***vwifi-spy*** is the same as ***vwifi-client*** but :
+    * it receives always all communications, even if the loss of packets is enable.
+    * it works only with TCP.
+    * by default, it connects to 127.0.0.1
+* To use TCP protocol, ***vwifi-server*** and ***vwifi-client***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
+
 # Build
 
 ## On Debian-based Linux distributions
 
-## Dependencies
+### Dependencies
 
 ```bash
 sudo apt-get install make g++
 sudo apt-get install libnl-3-dev libnl-genl-3-dev
 ```
 
-## Building
+### Building
+
+* Not necessary :
 
 ```bash
-make update # Not necessary. To download and update the file mac80211_hwsim.h
+make gitversion # To add the last commit id to the VERSION
+
+make update # To download and update the file mac80211_hwsim.h
+```
+
+* To building :
+
+```bash
 make
 make tools # To change the file mode bits of tools
 
@@ -51,25 +70,19 @@ sudo make install
 
 # Configuration
 
-Explanations :
-* The VMs and the server can communicate either with the VHOST protocol, or with the TCP protocol
-* The ***vwifi-server*** accepts connection from ***vwifi-guest*** with TCP or VHOST protocols
-* The ***vwifi-host*** receives always all communications, even if the loss of packets is enable. It works only with TCP.
-* To use TCP protocol, the Host and the VMs must be connected to a different IP network than that of the wifi
-
 ## With VHOST
 
 ### Host
 
 * Shell :
-    * Load the module VHOST
+    * Load the module VHOST :
    ```bash
    # sudo rmmod vhost_vsock vmw_vsock_virtio_transport_common vsock # if necessary
 
    sudo modprobe vhost_vsock
    sudo chmod a+rw /dev/vhost-vsock
    ```
-    * Start the ***vwifi-server***
+    * Start the ***vwifi-server*** :
    ```bash
    vwifi-server
    ```
@@ -86,20 +99,20 @@ sudo modprobe mac80211_hwsim radios=2
 # sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the ***vwifi-server***
+* Connect all these wlan interfaces to the ***vwifi-server*** :
 ```bash
-sudo vwifi-guest
+sudo vwifi-client
 ```
 
-* ***vwifi-guest*** displays "ID=-1". ***vwifi-server*** uses the cid to identify this guest.
+* ***vwifi-client*** displays "ID=-1". ***vwifi-server*** uses the cid to identify this guest.
 
 ## With TCP
 
-* The Host and the VMs must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
+* ***vwifi-server*** and ***vwifi-client*** must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
 
 ### Host
 
-* Start the ***vwifi-server***
+* Start the ***vwifi-server*** :
 
 ```bash
 vwifi-server
@@ -115,41 +128,41 @@ sudo modprobe mac80211_hwsim radios=2
 # sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
-* Connect all these wlan interfaces to the ***vwifi-server***
+* Connect all these wlan interfaces to the ***vwifi-server*** :
 ```bash
-sudo vwifi-guest 172.16.0.1
+sudo vwifi-client 172.16.0.1
 ```
 
-* ***vwifi-guest*** displays an ID which is an hashsum of the IP. It is used by ***vwifi-server*** to identify this guest.
+* ***vwifi-client*** displays an ID which is an hashsum of the IP. It is used by ***vwifi-server*** to identify this guest.
 
 # Capture packets from Host
 
-## Configure Host
+## Configure the Spy
 
 ```bash
 sudo modprobe mac80211_hwsim radios=1
-sudo vwifi-host
+sudo vwifi-spy
 ```
 
 ## Capture
 
 ### With tcpdump
 
-* Capture from wlan0
+* Capture from wlan0 :
 ```bash
 sudo tcpdump -n -I -i wlan0
 ```
 
 ### With wireshark
 
-* Configure wlan0 to monitor mode
+* Configure wlan0 to monitor mode :
 ```bash
 sudo ip link set wlan0 down
 sudo iw wlan0 set monitor control
 sudo ip link set wlan0 up
 ```
 
-* Start Wireshark and capture from wlan0
+* Start Wireshark and capture from wlan0 :
 ```bash
 sudo wireshark
 ```
@@ -158,32 +171,32 @@ sudo wireshark
 
 ## Host
 
-* Show the list of connected guest (display : cid and coordinate x, y z)
+* Show the list of connected guest (display : cid and coordinate x, y z) :
 ```bash
 vwifi-ctrl ls
 ```
 
-* Set the new coordinate (11, 12, 13) of the guest with the cid 10
+* Set the new coordinate (11, 12, 13) of the guest with the cid 10 :
 ```bash
 vwifi-ctrl set 10 11 12 13
 ```
 
-* Enable the lost of packets
+* Enable the lost of packets :
 ```bash
 vwifi-ctrl loss yes
 ```
 
-* Disable the lost of packets
+* Disable the lost of packets :
 ```bash
 vwifi-ctrl loss no
 ```
 
-* Display the config of ***vwifi-server***
+* Display the config of ***vwifi-server*** :
 ```bash
 vwifi-ctrl status
 ```
 
-* Display the distance in meters between the guest with the cid 10 and the guest with the cid 20
+* Display the distance in meters between the guest with the cid 10 and the guest with the cid 20 :
 ```bash
 vwifi-ctrl distance 10 20
 ```
@@ -294,6 +307,6 @@ ping 10.0.0.1
 
 # Others Tools
 
-* start-vwifi-guest.sh : do all the commands necessary to start ***vwifi-guest*** on a Guest
+* start-vwifi-client.sh : do all the commands necessary to start ***vwifi-client*** on a Guest
 * fast-vwifi-update.sh : set with ***vwifi-ctrl*** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
 * client.sh : configure the client wifi with Open or WPA
