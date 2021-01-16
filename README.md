@@ -28,14 +28,14 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 ## On Debian-based Linux distributions
 
-## Dependencies
+### Dependencies
 
 ```bash
 sudo apt-get install make g++
 sudo apt-get install libnl-3-dev libnl-genl-3-dev
 ```
 
-## Building
+### Building
 
 * Not necessary :
 
