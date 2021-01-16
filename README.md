@@ -24,6 +24,16 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 ![Example](./screenshots/GNS3_Attack_with_KaliLinux.png)
 
+# Explanations
+
+* ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host
+* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol, or with the TCP protocol
+* The ***vwifi-spy*** is the same as ***vwifi-client*** but :
+    * it receives always all communications, even if the loss of packets is enable.
+    * it works only with TCP.
+    * by default, it connects to 127.0.0.1
+* To use TCP protocol, ***vwifi-server*** and ***vwifi-client***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
+
 # Build
 
 ## On Debian-based Linux distributions
@@ -57,16 +67,6 @@ sudo make install
 ## On OpenWRT
 
 * See the wiki : [Install-on-OpenWRT-X86_64](https://github.com/Raizo62/vwifi/wiki/Install-on-OpenWRT-X86_64)
-
-# Explanations
-
-* ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host
-* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol, or with the TCP protocol
-* The ***vwifi-spy*** is the same as ***vwifi-client*** but :
-    * it receives always all communications, even if the loss of packets is enable.
-    * it works only with TCP.
-    * by default, it connects to 127.0.0.1
-* To use TCP protocol, ***vwifi-server*** and ***vwifi-client***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
 
 # Configuration
 
