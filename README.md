@@ -3,7 +3,7 @@
 Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 * It can be used in Hypervisors (GNS3, QEmu, Virtualbox, VMware, Hyper-V, ...)
-* The Wireless emulator is based on mac80211_hwsim linux driver
+* The Wireless emulator uses the `mac80211_hwsim` linux driver
 * Implements the packet loss simulation based on distance
 * Emulates the node mobility in GNS3
 
