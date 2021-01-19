@@ -34,6 +34,7 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
     * by default, it connects to 127.0.0.1
 * ***vwifi-client*** and ***vwifi-spy*** use the `mac80211_hwsim` kernel module to have the wifi interfaces
 * To use TCP protocol, ***vwifi-server*** and ***vwifi-client***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
+* ***vwifi-ctrl*** is used to interact with ***vwifi-server***
 
 # Build
 
