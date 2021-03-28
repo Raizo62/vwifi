@@ -106,7 +106,7 @@ sudo modprobe mac80211_hwsim radios=2
 sudo vwifi-client
 ```
 
-* ***vwifi-client*** displays "ID=-1". ***vwifi-server*** uses the cid to identify this guest.
+* ***vwifi-client*** displays the CID of the VM in the Hypervisor. It is used by ***vwifi-server*** to identify this guest.
 
 ## With TCP
 

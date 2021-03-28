@@ -1,6 +1,9 @@
 #include <iostream> // cout
 #include <cstdio> //perror
 
+#include <sys/ioctl.h> // ioctl
+#include <fcntl.h> // open
+
 #include <arpa/inet.h> // INADDR_ANY
 #include <unistd.h> // close
 #include <assert.h> // assert
@@ -153,5 +156,21 @@ bool CSocketClientVHOST::Connect()
 
 int CSocketClientVHOST::GetID()
 {
-	return -1;
+	int cid;
+
+	int ioctl_fd = open("/dev/vsock", 0);
+	if (ioctl_fd < 0)
+	{
+		perror("Error : CSocketClientVHOST::GetID : open /dev/vsock :");
+		return -1;
+	}
+	if( ioctl(ioctl_fd, IOCTL_VM_SOCKETS_GET_LOCAL_CID, &cid) < 0 )
+	{
+		perror("Error : CSocketClientVHOST::GetID : ioctl : Cannot get local CID :");
+		close(ioctl_fd);
+		return -1;
+	}
+
+	close(ioctl_fd);
+	return cid;
 }
