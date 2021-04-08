@@ -533,7 +533,7 @@ void CKernelWifi::recv_from_server(){
 	std::cout << "frame dst: ";  cout_mac_address(&framedst);std::cout<<std::endl ;
 #endif
 
-	std::vector<WirelessDevice> inets = _list_winterfaces.list_devices();
+	std::vector<WirelessDevice> &inets = _list_winterfaces.list_devices();
 
 	for (auto & inet : inets)
 	{
@@ -541,6 +541,7 @@ void CKernelWifi::recv_from_server(){
 
 		send_cloned_frame_msg(&macdsthwsim, data, data_len, rate_idx, signal, freq);
 	}
+	delete &inets;
 }
 
 
