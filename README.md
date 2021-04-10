@@ -57,6 +57,8 @@ make gitversion # To add the last commit id to the VERSION
 make update # To download and update the file mac80211_hwsim.h
 ```
 
+* To change the default ports and IP, edit : src/config.h
+
 * To building :
 
 ```bash
