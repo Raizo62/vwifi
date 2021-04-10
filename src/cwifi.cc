@@ -1,6 +1,5 @@
 #include <math.h>    // log10
 #include <stdlib.h>  // rand
-#include <climits> // SCHAR_MAX, SCHAR_MIN
 
 #include "cwifi.h"
 
@@ -8,9 +7,6 @@
 
 const float ConstanteC=92.45;
 const TFrequency Frequency=2.4; // GHz
-
-const TPower TPower_MAX=SCHAR_MAX;
-const TPower TPower_MIN=SCHAR_MIN;
 
 // distance : meter
 int CWifi::Attenuation(TDistance distance)

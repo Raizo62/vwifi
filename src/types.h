@@ -36,7 +36,8 @@ typedef u16 TPort;
 
 // char
 typedef s8 TPower; // empirical observed values with int : [-123,20]
-	// be careful to constants TPower_MAX and TPower_MIN in cwifi.cc
+const TPower TPower_MAX=INT8_MAX;
+const TPower TPower_MIN=INT8_MIN;
 
 // float
 typedef float TDistance; // in meters
