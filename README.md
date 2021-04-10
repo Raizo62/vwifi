@@ -314,3 +314,4 @@ ping 10.0.0.1
 * start-vwifi-client.sh : do all the commands necessary to start ***vwifi-client*** on a Guest
 * fast-vwifi-update.sh : set with ***vwifi-ctrl*** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
 * client.sh : configure the client wifi with Open or WPA
+* Makefile.dependency.sh : generate automatically the file "Makefile.in", include in "Makefile", which contains dependencies for "make"
