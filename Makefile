@@ -74,8 +74,8 @@ clean:
 	-rm -f $(EXEC) $(OBJ)/* $(MAN)/$(NAME).1.gz
 
 gitversion: .git
-	@sed -n "s/^\(VERSION.[^\-]*\)\(-.*\)\?/\1-$(shell git log --format="%H" -n 1)/gp" Makefile
-	@sed -i "s/^\(VERSION.[^\-]*\)\(-.*\)\?/\1-$(shell git log --format="%H" -n 1)/g" Makefile
+	@sed -n "s/^\(VERSION.[^\-]*\)\(-.*\)\?/\1-$(shell git log --pretty=format:"%h" -n 1)/gp" Makefile
+	@sed -i "s/^\(VERSION.[^\-]*\)\(-.*\)\?/\1-$(shell git log --pretty=format:"%h" -n 1)/g" Makefile
 
 install : build
 ifneq ($(EUID),0)
