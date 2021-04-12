@@ -26,7 +26,7 @@ NETLINK_LIBS = -lnl-genl-3 -lnl-3
 
 THREAD_LIBS = -lpthread
 
-LIBS =
+LDFLAGS = $(NETLINK_LIBS) $(THREAD_LIBS)
 
 DEFS = -DVERSION=\"$(VERSION)\"
 
@@ -45,11 +45,11 @@ include Makefile.in
 
 # To build obj :
 $(OBJ)/%.o:
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
+	$(CC) $(CFLAGS) $(DEFS) -o $@ $(NETLINK_FLAGS) -c $<
 
 # To build bin :
 %:
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 $(MAN)/$(NAME).1.gz : $(MAN)/$(NAME).1
 	gzip -c $(MAN)/$(NAME).1 > $(MAN)/$(NAME).1.gz
