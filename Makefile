@@ -19,13 +19,12 @@ MODE= -O3 -s -Wall -Wextra -pedantic # //////////      RELEASE
 #MODE= -g -Wall -Wextra -pedantic -D_DEBUG # //////////      DEBUG
 #MODE= -pg # //////////      PROFILER --> view with : gprof $(NAME)
 
-CFLAGS  +=  $(MODE)
-
 NETLINK_FLAGS = -I/usr/include/libnl3
 NETLINK_LIBS = -lnl-genl-3 -lnl-3
 
 THREAD_LIBS = -lpthread
 
+CFLAGS  +=  $(NETLINK_FLAGS)
 LDFLAGS = $(NETLINK_LIBS) $(THREAD_LIBS)
 
 DEFS = -DVERSION=\"$(VERSION)\"
@@ -45,11 +44,11 @@ include Makefile.in
 
 # To build obj :
 $(OBJ)/%.o:
-	$(CC) $(CFLAGS) $(DEFS) -o $@ $(NETLINK_FLAGS) -c $<
+	$(CC) -o $@ $(MODE) $(CFLAGS) $(DEFS) -c $<
 
 # To build bin :
 %:
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $(MODE) $(LDFLAGS) $^
 
 $(MAN)/$(NAME).1.gz : $(MAN)/$(NAME).1
 	gzip -c $(MAN)/$(NAME).1 > $(MAN)/$(NAME).1.gz
