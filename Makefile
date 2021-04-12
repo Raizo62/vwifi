@@ -43,8 +43,13 @@ build : directories $(EXEC) # man
 
 include Makefile.in
 
-$(OBJ)/%.o: %.cc
+# To build obj :
+$(OBJ)/%.o:
 	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) -c $<
+
+# To build bin :
+%:
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
 $(MAN)/$(NAME).1.gz : $(MAN)/$(NAME).1
 	gzip -c $(MAN)/$(NAME).1 > $(MAN)/$(NAME).1.gz

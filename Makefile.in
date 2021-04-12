@@ -45,17 +45,12 @@ $(OBJ)/csocket.o : csocket.cc cdynbuffer.h config.h csocket.h types.h Makefile M
 $(OBJ)/cwifiserver.o : cwifiserver.cc ccoordinate.h cdynbuffer.h cinfosocket.h cinfowifi.h config.h csocket.h csocketserver.h cwifi.h cwifiserver.h tools.h types.h Makefile Makefile.in
 
 vwifi-client : $(OBJ)/vwifi-client.o  $(OBJ)/cdynbuffer.o $(OBJ)/ckernelwifi.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/cselect.o $(OBJ)/csocketclient.o $(OBJ)/csocket.o $(OBJ)/cthread.o $(OBJ)/cwificlient.o $(OBJ)/cwifi.o $(OBJ)/cwirelessdevicelist.o $(OBJ)/cwirelessdevice.o $(OBJ)/tools.o
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
 vwifi-ctrl : $(OBJ)/vwifi-ctrl.o  $(OBJ)/ccoordinate.o $(OBJ)/cdynbuffer.o $(OBJ)/cinfowifi.o $(OBJ)/csocketclient.o $(OBJ)/csocket.o $(OBJ)/tools.o
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
 vwifi-inet-monitor : $(OBJ)/vwifi-inet-monitor.o  $(OBJ)/cmonwirelessdevice.o $(OBJ)/cwirelessdevice.o
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
 vwifi-server : $(OBJ)/vwifi-server.o  $(OBJ)/ccoordinate.o $(OBJ)/cctrlserver.o $(OBJ)/cdynbuffer.o $(OBJ)/cinfosocket.o $(OBJ)/cinfowifi.o $(OBJ)/cselect.o $(OBJ)/csocket.o $(OBJ)/csocketserver.o $(OBJ)/cwifi.o $(OBJ)/cwifiserver.o $(OBJ)/tools.o
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 
 vwifi-spy : $(OBJ)/vwifi-spy.o  $(OBJ)/cdynbuffer.o $(OBJ)/ckernelwifi.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/cselect.o $(OBJ)/csocketclient.o $(OBJ)/csocket.o $(OBJ)/cthread.o $(OBJ)/cwificlient.o $(OBJ)/cwifi.o $(OBJ)/cwirelessdevicelist.o $(OBJ)/cwirelessdevice.o $(OBJ)/tools.o
-	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)
 

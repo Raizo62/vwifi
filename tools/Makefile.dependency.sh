@@ -5,8 +5,6 @@ SRC="src"
 EXT_H='h'
 EXT_C='cc'
 
-CMD_TO_BUILD_BIN='$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -o $@ $(NETLINK_FLAGS) $^ $(LIBS) $(NETLINK_LIBS) $(THREAD_LIBS)'
-
 findAllH()
 {
 	local file
@@ -67,7 +65,6 @@ do_Bin_in_Makefile()
 	for target in $@
 	do
 		echo "${target%*.${EXT_C}} : \$(OBJ)/${target%*.${EXT_C}}.o  $( findAllDependancies ${target} | transform_h_to_o | formatDisplay )"
-		echo -e "\t${CMD_TO_BUILD_BIN}"
 		echo
 	done
 }
