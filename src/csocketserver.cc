@@ -11,14 +11,36 @@
 
 using namespace std;
 
-CSocketServer::CSocketServer() : CSocket()
+CSocketServer::CSocketServer(CListInfo<CInfoSocket>* infoSockets) : CSocket()
 {
-    InfoSockets = new CListInfo<CInfoSocket>;
+    if( infoSockets == NULL )
+    {
+        InfoSockets = new CListInfo<CInfoSocket>;
+
+        ListInfoSocketSelfManaged=true;
+    }
+    else
+    {
+        InfoSockets = infoSockets;
+
+        ListInfoSocketSelfManaged=false;
+    }
 }
 
-CSocketServer::CSocketServer(TSocket type) : CSocket(type)
+CSocketServer::CSocketServer(TSocket type, CListInfo<CInfoSocket>* infoSockets) : CSocket(type)
 {
-    InfoSockets = new CListInfo<CInfoSocket>;
+    if( infoSockets == NULL )
+    {
+        InfoSockets = new CListInfo<CInfoSocket>;
+
+        ListInfoSocketSelfManaged=true;
+    }
+    else
+    {
+        InfoSockets = infoSockets;
+
+        ListInfoSocketSelfManaged=false;
+    }
 }
 
 void CSocketServer::Init(TPort port)

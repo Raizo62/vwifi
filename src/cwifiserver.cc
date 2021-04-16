@@ -12,7 +12,7 @@
 
 using namespace std;
 
-CWifiServer::CWifiServer(CListInfo<CInfoWifi>* infoWifis /*=NULL*/ , CListInfo<CInfoWifi>* infoWifisDeconnected /*=NULL*/) : CSocketServer ()
+CWifiServer::CWifiServer(CListInfo<CInfoSocket>* infoSockets /*= NULL*/, CListInfo<CInfoWifi>* infoWifis /*=NULL*/ , CListInfo<CInfoWifi>* infoWifisDeconnected /*=NULL*/) : CSocketServer (infoSockets)
 {
     if( infoWifis == NULL )
     {
@@ -30,7 +30,7 @@ CWifiServer::CWifiServer(CListInfo<CInfoWifi>* infoWifis /*=NULL*/ , CListInfo<C
     }
 }
 
-CWifiServer::CWifiServer(TSocket type, CListInfo<CInfoWifi>* infoWifis /*=NULL*/ , CListInfo<CInfoWifi>* infoWifisDeconnected /*=NULL*/) : CSocketServer (type)
+CWifiServer::CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets /*= NULL*/, CListInfo<CInfoWifi>* infoWifis /*=NULL*/ , CListInfo<CInfoWifi>* infoWifisDeconnected /*=NULL*/) : CSocketServer (type, infoSockets)
 {
     if( infoWifis == NULL )
     {

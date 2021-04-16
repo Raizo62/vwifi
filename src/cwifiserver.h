@@ -22,9 +22,9 @@ class CWifiServer : public CSocketServer, public CWifi
 
 	public :
 
-		CWifiServer(CListInfo<CInfoWifi>* infoWifis = NULL, CListInfo<CInfoWifi>* infoWifisDeconnected=NULL);
+		CWifiServer(CListInfo<CInfoSocket>* infoSockets = NULL, CListInfo<CInfoWifi>* infoWifis = NULL, CListInfo<CInfoWifi>* infoWifisDeconnected=NULL);
 
-		CWifiServer(TSocket type, CListInfo<CInfoWifi>* infoWifis = NULL, CListInfo<CInfoWifi>* infoWifisDeconnected=NULL);
+		CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets = NULL, CListInfo<CInfoWifi>* infoWifis = NULL, CListInfo<CInfoWifi>* infoWifisDeconnected=NULL);
 
 		~CWifiServer();
 
