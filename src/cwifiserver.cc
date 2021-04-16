@@ -12,22 +12,49 @@
 
 using namespace std;
 
-CWifiServer::CWifiServer() : CSocketServer ()
+CWifiServer::CWifiServer(CListInfo<CInfoWifi>* infoWifis /*=NULL*/ , CListInfo<CInfoWifi>* infoWifisDeconnected /*=NULL*/) : CSocketServer ()
 {
-    InfoWifis = new CListInfo<CInfoWifi>;
-    InfoWifisDeconnected = new CListInfo<CInfoWifi>;
+    if( infoWifis == NULL )
+    {
+        InfoWifis = new CListInfo<CInfoWifi>;
+        InfoWifisDeconnected = new CListInfo<CInfoWifi>;
+
+        ListInfoWifiSelfManaged=true;
+    }
+    else
+    {
+        InfoWifis = infoWifis;
+        InfoWifisDeconnected = infoWifisDeconnected;
+
+        ListInfoWifiSelfManaged=false;
+    }
 }
 
-CWifiServer::CWifiServer(TSocket type) : CSocketServer (type)
+CWifiServer::CWifiServer(TSocket type, CListInfo<CInfoWifi>* infoWifis /*=NULL*/ , CListInfo<CInfoWifi>* infoWifisDeconnected /*=NULL*/) : CSocketServer (type)
 {
-    InfoWifis = new CListInfo<CInfoWifi>;
-    InfoWifisDeconnected = new CListInfo<CInfoWifi>;
+    if( infoWifis == NULL )
+    {
+        InfoWifis = new CListInfo<CInfoWifi>;
+        InfoWifisDeconnected = new CListInfo<CInfoWifi>;
+
+        ListInfoWifiSelfManaged=true;
+    }
+    else
+    {
+        InfoWifis = infoWifis;
+        InfoWifisDeconnected = infoWifisDeconnected;
+
+        ListInfoWifiSelfManaged=false;
+    }
 }
 
 CWifiServer::~CWifiServer()
 {
-    delete InfoWifis;
-    delete InfoWifisDeconnected;
+    if( ListInfoWifiSelfManaged )
+    {
+        delete InfoWifis;
+        delete InfoWifisDeconnected;
+    }
 }
 
 bool CWifiServer::Listen(TIndex maxClientDeconnected)

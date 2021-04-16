@@ -12,6 +12,7 @@ class CWifiServer : public CSocketServer, public CWifi
 		TIndex MaxClientDeconnected;
 		bool PacketLoss;
 
+		bool ListInfoWifiSelfManaged;
 		CListInfo<CInfoWifi>* InfoWifis;
 		CListInfo<CInfoWifi>* InfoWifisDeconnected;
 
@@ -21,9 +22,9 @@ class CWifiServer : public CSocketServer, public CWifi
 
 	public :
 
-		CWifiServer();
+		CWifiServer(CListInfo<CInfoWifi>* infoWifis = NULL, CListInfo<CInfoWifi>* infoWifisDeconnected=NULL);
 
-		CWifiServer(TSocket type);
+		CWifiServer(TSocket type, CListInfo<CInfoWifi>* infoWifis = NULL, CListInfo<CInfoWifi>* infoWifisDeconnected=NULL);
 
 		~CWifiServer();
 
