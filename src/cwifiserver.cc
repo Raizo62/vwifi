@@ -14,14 +14,14 @@ using namespace std;
 
 CWifiServer::CWifiServer() : CSocketServer ()
 {
-    InfoWifis = new std::vector<CInfoWifi>;
-    InfoWifisDeconnected = new std::vector<CInfoWifi>;
+    InfoWifis = new CListInfo<CInfoWifi>;
+    InfoWifisDeconnected = new CListInfo<CInfoWifi>;
 }
 
 CWifiServer::CWifiServer(TSocket type) : CSocketServer (type)
 {
-    InfoWifis = new std::vector<CInfoWifi>;
-    InfoWifisDeconnected = new std::vector<CInfoWifi>;
+    InfoWifis = new CListInfo<CInfoWifi>;
+    InfoWifisDeconnected = new CListInfo<CInfoWifi>;
 }
 
 CWifiServer::~CWifiServer()
