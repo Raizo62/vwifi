@@ -13,10 +13,12 @@ using namespace std;
 
 CSocketServer::CSocketServer() : CSocket()
 {
+    InfoSockets = new std::vector<CInfoSocket>;
 }
 
 CSocketServer::CSocketServer(TSocket type) : CSocket(type)
 {
+    InfoSockets = new std::vector<CInfoSocket>;
 }
 
 void CSocketServer::Init(TPort port)
@@ -31,8 +33,10 @@ TPort CSocketServer::GetPort()
 
 CSocketServer::~CSocketServer()
 {
-	for (auto& infoSocket : InfoSockets)
+	for (auto& infoSocket : *InfoSockets)
 		infoSocket.Close();
+
+    delete InfoSockets;
 
 	CSocket::Close();
 }
@@ -135,16 +139,16 @@ TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 	}
 
 	//add new socket to array of sockets
-	InfoSockets.push_back(CInfoSocket(new_socket));
+	InfoSockets->push_back(CInfoSocket(new_socket));
 
 	return new_socket;
 }
 
 TDescriptor CSocketServer::GetSocketClient(TIndex index)
 {
-	assert( index < InfoSockets.size() );
+	assert( index < InfoSockets->size() );
 
-	return InfoSockets[index].GetDescriptor();
+	return (*InfoSockets)[index].GetDescriptor();
 }
 
 TDescriptor CSocketServer::operator[] (TIndex index)
@@ -154,30 +158,30 @@ TDescriptor CSocketServer::operator[] (TIndex index)
 
 TIndex CSocketServer::GetNumberClient()
 {
-	return InfoSockets.size();
+	return InfoSockets->size();
 }
 
 bool CSocketServer::IsEnable(TIndex index)
 {
 	assert( index < GetNumberClient() );
 
-	return InfoSockets[index].IsEnable();
+	return (*InfoSockets)[index].IsEnable();
 }
 
 void CSocketServer::DisableClient(TIndex index)
 {
-	assert( index < InfoSockets.size() );
+	assert( index < InfoSockets->size() );
 
-	InfoSockets[index].DisableIt();
+	(*InfoSockets)[index].DisableIt();
 }
 
 void CSocketServer::CloseClient(TIndex index)
 {
-	assert( index < InfoSockets.size() );
+	assert( index < InfoSockets->size() );
 
-	InfoSockets[index].Close();
+	(*InfoSockets)[index].Close();
 
-	InfoSockets.erase (InfoSockets.begin()+index);
+	InfoSockets->erase (InfoSockets->begin()+index);
 }
 
 ssize_t CSocketServer::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)

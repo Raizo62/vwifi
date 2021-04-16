@@ -151,8 +151,8 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 			{
 				TPower signalLevel=BoundedPower(power-Attenuation(coo.DistanceWith((*InfoWifis)[i])));
 				if( ! CanLostPackets() || ! PacketIsLost(signalLevel) )
-					if( SendSignalWithSocket(this, InfoSockets[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
-						InfoSockets[i].DisableIt();
+					if( SendSignalWithSocket(this, (*InfoSockets)[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
+						(*InfoSockets)[i].DisableIt();
 			}
 	}
 }
@@ -167,8 +167,8 @@ void CWifiServer::SendAllClients(CCoordinate cooSource, TPower power, const char
 		{
 			TPower signalLevel=BoundedPower(power-Attenuation(cooSource.DistanceWith((*InfoWifis)[i])));
 			if( ! CanLostPackets() || ! PacketIsLost(signalLevel) )
-				if( SendSignalWithSocket(this, InfoSockets[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
-					InfoSockets[i].DisableIt();
+				if( SendSignalWithSocket(this, (*InfoSockets)[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
+					(*InfoSockets)[i].DisableIt();
 		}
 	}
 }
@@ -177,8 +177,8 @@ void CWifiServer::SendAllClientsWithoutLoss(TPower power, const char* data, ssiz
 {
 	for (TIndex i = 0; i < GetNumberClient(); i++)
 		if( IsEnable(i) )
-			if( SendSignalWithSocket(this, InfoSockets[i].GetDescriptor(), &power, data, sizeOfData) < 0 )
-				InfoSockets[i].DisableIt();
+			if( SendSignalWithSocket(this, (*InfoSockets)[i].GetDescriptor(), &power, data, sizeOfData) < 0 )
+				(*InfoSockets)[i].DisableIt();
 }
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
