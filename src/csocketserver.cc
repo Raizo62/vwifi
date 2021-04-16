@@ -13,12 +13,12 @@ using namespace std;
 
 CSocketServer::CSocketServer() : CSocket()
 {
-    InfoSockets = new std::vector<CInfoSocket>;
+    InfoSockets = new CListInfo<CInfoSocket>;
 }
 
 CSocketServer::CSocketServer(TSocket type) : CSocket(type)
 {
-    InfoSockets = new std::vector<CInfoSocket>;
+    InfoSockets = new CListInfo<CInfoSocket>;
 }
 
 void CSocketServer::Init(TPort port)

@@ -1,10 +1,9 @@
 #ifndef _CSOCKETSERVER_H_
 #define _CSOCKETSERVER_H_
 
-#include <vector> // vector
-
 #include "csocket.h"
 #include "cinfosocket.h"
+#include "clistinfo.h"
 #include "types.h" // TIndex
 
 class CSocketServer : public CSocket
@@ -13,7 +12,7 @@ class CSocketServer : public CSocket
 
 		TPort Port;
 
-		std::vector<CInfoSocket>* InfoSockets;
+		CListInfo<CInfoSocket>* InfoSockets;
 
 		TDescriptor Accept(struct sockaddr_in& address);
 
