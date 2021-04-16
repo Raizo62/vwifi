@@ -12,6 +12,24 @@
 
 using namespace std;
 
+CWifiServer::CWifiServer() : CSocketServer ()
+{
+    InfoWifis = new std::vector<CInfoWifi>;
+    InfoWifisDeconnected = new std::vector<CInfoWifi>;
+}
+
+CWifiServer::CWifiServer(TSocket type) : CSocketServer (type)
+{
+    InfoWifis = new std::vector<CInfoWifi>;
+    InfoWifisDeconnected = new std::vector<CInfoWifi>;
+}
+
+CWifiServer::~CWifiServer()
+{
+    delete InfoWifis;
+    delete InfoWifisDeconnected;
+}
+
 bool CWifiServer::Listen(TIndex maxClientDeconnected)
 {
 	MaxClientDeconnected=maxClientDeconnected;
@@ -25,13 +43,13 @@ bool CWifiServer::Listen(TIndex maxClientDeconnected)
 
 bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& coo)
 {
-	for (auto infoWifiDeconnected = InfoWifisDeconnected.begin(); infoWifiDeconnected != InfoWifisDeconnected.end(); ++infoWifiDeconnected)
+	for (auto infoWifiDeconnected = InfoWifisDeconnected->begin(); infoWifiDeconnected != InfoWifisDeconnected->end(); ++infoWifiDeconnected)
 	{
 		if ( infoWifiDeconnected->GetCid() == cid )
 		{
 			coo=*infoWifiDeconnected;
 
-			InfoWifisDeconnected.erase(infoWifiDeconnected);
+			InfoWifisDeconnected->erase(infoWifiDeconnected);
 
 			return true;
 		}
@@ -43,7 +61,7 @@ bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& 
 bool CWifiServer::RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo)
 {
 	int index=0;
-	for (auto& infoWifi : InfoWifis)
+	for (auto& infoWifi : *InfoWifis)
 	{
 		if( IsEnable(index) )
 			if( infoWifi.GetCid() == cid )
@@ -88,7 +106,7 @@ TDescriptor CWifiServer::Accept()
 
 	infoWifi.SetCid(cid);
 
-	InfoWifis.push_back(infoWifi);
+	InfoWifis->push_back(infoWifi);
 
 	return new_socket;
 }
@@ -97,7 +115,7 @@ void CWifiServer::ShowInfoWifi(TIndex index)
 {
 	assert( index < GetNumberClient() );
 
-	cout<<"{"<<InfoWifis[index]<<"}";
+	cout<<"{"<<(*InfoWifis)[index]<<"}";
 }
 
 void CWifiServer::CloseClient(TIndex index)
@@ -107,9 +125,9 @@ void CWifiServer::CloseClient(TIndex index)
 	CSocketServer::CloseClient(index);
 
 	// save the InfoWifi (the coordinate of the cid)
-	AddInfoWifiDeconnected( InfoWifis[index] );
+	AddInfoWifiDeconnected( (*InfoWifis)[index] );
 
-	InfoWifis.erase(InfoWifis.begin()+index);
+	InfoWifis->erase(InfoWifis->begin()+index);
 }
 
 void CWifiServer::CloseAllClient()
@@ -123,7 +141,7 @@ void CWifiServer::CloseAllClient()
 
 void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData)
 {
-	CCoordinate coo=InfoWifis[index];
+	CCoordinate coo=(*InfoWifis)[index];
 //	cout<<"Forward "<<sizeOfData<<" bytes with "<<power<<" powers"<<endl;
 
 	for (TIndex i = 0; i < GetNumberClient(); i++)
@@ -131,7 +149,7 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 		if( i != index )
 			if( IsEnable(i) )
 			{
-				TPower signalLevel=BoundedPower(power-Attenuation(coo.DistanceWith(InfoWifis[i])));
+				TPower signalLevel=BoundedPower(power-Attenuation(coo.DistanceWith((*InfoWifis)[i])));
 				if( ! CanLostPackets() || ! PacketIsLost(signalLevel) )
 					if( SendSignalWithSocket(this, InfoSockets[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
 						InfoSockets[i].DisableIt();
@@ -147,7 +165,7 @@ void CWifiServer::SendAllClients(CCoordinate cooSource, TPower power, const char
 	{
 		if( IsEnable(i) )
 		{
-			TPower signalLevel=BoundedPower(power-Attenuation(cooSource.DistanceWith(InfoWifis[i])));
+			TPower signalLevel=BoundedPower(power-Attenuation(cooSource.DistanceWith((*InfoWifis)[i])));
 			if( ! CanLostPackets() || ! PacketIsLost(signalLevel) )
 				if( SendSignalWithSocket(this, InfoSockets[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
 					InfoSockets[i].DisableIt();
@@ -165,7 +183,7 @@ void CWifiServer::SendAllClientsWithoutLoss(TPower power, const char* data, ssiz
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
 {
-	for (auto& infoWifi : InfoWifis)
+	for (auto& infoWifi : *InfoWifis)
 	{
 		if( infoWifi.GetCid() == cid )
 			return &infoWifi;
@@ -176,7 +194,7 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
 
 CInfoWifi* CWifiServer::GetReferenceOnInfoWifiDeconnectedByCID(TCID cid)
 {
-	for (auto& infoWifiDeconnected : InfoWifisDeconnected)
+	for (auto& infoWifiDeconnected : *InfoWifisDeconnected)
 	{
 		if( infoWifiDeconnected.GetCid() == cid )
 			return &infoWifiDeconnected;
@@ -189,15 +207,15 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByIndex(TIndex index)
 {
 	assert( index < GetNumberClient() );
 
-	return &(InfoWifis[index]);
+	return &((*InfoWifis)[index]);
 }
 
 void CWifiServer::AddInfoWifiDeconnected(CInfoWifi infoWifi)
 {
-	if( InfoWifisDeconnected.size() >= MaxClientDeconnected )
-		InfoWifisDeconnected.erase(InfoWifisDeconnected.begin());
+	if( InfoWifisDeconnected->size() >= MaxClientDeconnected )
+		InfoWifisDeconnected->erase(InfoWifisDeconnected->begin());
 
-	InfoWifisDeconnected.push_back(infoWifi);
+	InfoWifisDeconnected->push_back(infoWifi);
 }
 
 void CWifiServer::SetPacketLoss(bool enable)

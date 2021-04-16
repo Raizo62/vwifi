@@ -14,8 +14,8 @@ class CWifiServer : public CSocketServer, public CWifi
 		TIndex MaxClientDeconnected;
 		bool PacketLoss;
 
-		std::vector<CInfoWifi> InfoWifis;
-		std::vector<CInfoWifi> InfoWifisDeconnected;
+		std::vector<CInfoWifi>* InfoWifis;
+		std::vector<CInfoWifi>* InfoWifisDeconnected;
 
 		bool RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& coo);
 
@@ -23,9 +23,11 @@ class CWifiServer : public CSocketServer, public CWifi
 
 	public :
 
-		CWifiServer() : CSocketServer () {}
+		CWifiServer();
 
-		CWifiServer(TSocket type) : CSocketServer (type) {}
+		CWifiServer(TSocket type);
+
+		~CWifiServer();
 
 		bool Listen(TIndex maxClientDeconnected);
 
