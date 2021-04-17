@@ -12,6 +12,21 @@ using namespace std;
 
 CDynBuffer Buffer; // Buffer to stock received values
 
+void RemoveClient(CWifiServer* srv, bool srvIsSpy, TIndex i, TDescriptor socket, CSelect* scheduler)
+{
+	if( ! srvIsSpy )
+	{
+		cout<<"Client disconnected : "; srv->ShowInfoWifi(i) ; cout<<endl;
+	}
+	else
+		cout<<"Spy disconnected"<<endl;
+
+	srv->CloseClient(i);
+
+	//del master socket to set
+	scheduler->DelNode(socket);
+}
+
 void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst, CSelect* scheduler)
 {
 	TDescriptor socket;
@@ -25,17 +40,7 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst, CSelect
 
 		if( ! src->IsEnable(i) )
 		{
-			if( ! srcIsSpy )
-			{
-				cout<<"Client disconnected : "; src->ShowInfoWifi(i) ; cout<<endl;
-			}
-			else
-				cout<<"Spy disconnected"<<endl;
-
-			src->CloseClient(i);
-
-			//del master socket to set
-			scheduler->DelNode(socket);
+			RemoveClient(src, srcIsSpy , i, socket, scheduler);
 
 			continue;
 		}
@@ -49,17 +54,7 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst, CSelect
 			valread = src->Read( socket , (char*)&power, sizeof(power));
 			if ( valread <= 0 )
 			{
-				if( ! srcIsSpy )
-				{
-					cout<<"Client disconnected : "; src->ShowInfoWifi(i) ; cout<<endl;
-				}
-				else
-					cout<<"Spy disconnected"<<endl;
-
-				src->CloseClient(i);
-
-				//del master socket to set
-				scheduler->DelNode(socket);
+				RemoveClient(src, srcIsSpy , i, socket, scheduler);
 
 				continue;
 			}
@@ -68,18 +63,7 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst, CSelect
 			valread = src->ReadBigData( socket , &Buffer);
 			if ( valread <= 0 )
 			{
-				if( ! srcIsSpy )
-				{
-					cout<<"Client disconnected : "; src->ShowInfoWifi(i) ; cout<<endl;
-				}
-				else
-					cout<<"Spy disconnected"<<endl;
-
-				//Close the socket
-				src->CloseClient(i);
-
-				//del master socket to set
-				scheduler->DelNode(socket);
+				RemoveClient(src, srcIsSpy , i, socket, scheduler);
 
 				continue;
 			}
