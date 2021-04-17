@@ -47,7 +47,7 @@ $(OBJ)/%.o:
 	$(CC) -o $@ $(MODE) $(CFLAGS) $(DEFS) -c $<
 
 # To build bin :
-%:
+$(EXEC):
 	$(CC) -o $@ $(MODE) $(LDFLAGS) $^
 
 $(MAN)/$(NAME).1.gz : $(MAN)/$(NAME).1
