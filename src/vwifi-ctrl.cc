@@ -246,15 +246,6 @@ int AskStatus()
 	}
 	cout<<"SRV VHOST : Port : "<<port<<endl;
 
-	TIndex size;
-	err=socket.Read((char*)&size,sizeof(size));
-	if( err == SOCKET_ERROR )
-	{
-		cerr<<"Error : status : socket.Read : Size VHOST"<<endl;
-		return 1;
-	}
-	cout<<"SRV VHOST : SizeOfDisconnected : "<<size<<endl;
-
 	// INET
 
 	err=socket.Read((char*)&port,sizeof(port));
@@ -265,13 +256,17 @@ int AskStatus()
 	}
 	cout<<"SRV INET : Port : "<<port<<endl;
 
+	// SizeOfDisconnected
+	// becareful : the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
+
+	TIndex size;
 	err=socket.Read((char*)&size,sizeof(size));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : status : socket.Read : Size INET"<<endl;
 		return 1;
 	}
-	cout<<"SRV INET : SizeOfDisconnected : "<<size<<endl;
+	cout<<"SRV : SizeOfDisconnected : "<<size<<endl;
 
 	// SPY
 

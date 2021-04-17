@@ -33,29 +33,19 @@ TOrder CCTRLServer::GetOrder()
 
 void CCTRLServer::SendList()
 {
-	TIndex numberVHost=WifiGuestVHostServer->GetNumberClient();
-	TIndex numberInet=WifiGuestInetServer->GetNumberClient();
-	TIndex number=numberVHost+numberInet;
+	// because the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
+	CWifiServer* wifiServer=WifiGuestVHostServer;
+
+	TIndex number=wifiServer->GetNumberClient();
+
 	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
 		return;
 
-	for(TIndex i=0; i<numberVHost;i++)
+	for(TIndex i=0; i<number;i++)
 	{
-		if( WifiGuestVHostServer->IsEnable(i) )
+		if( wifiServer->IsEnable(i) )
 		{
-			CInfoWifi* infoWifi=WifiGuestVHostServer->GetReferenceOnInfoWifiByIndex(i);
-			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
-			{
-				cerr<<"Error : SendList : Send : CInfoWifi : "<<*infoWifi<<endl;
-				return;
-			}
-		}
-	}
-	for(TIndex i=0; i<numberInet;i++)
-	{
-		if( WifiGuestInetServer->IsEnable(i) )
-		{
-			CInfoWifi* infoWifi=WifiGuestInetServer->GetReferenceOnInfoWifiByIndex(i);
+			CInfoWifi* infoWifi=wifiServer->GetReferenceOnInfoWifiByIndex(i);
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
 				cerr<<"Error : SendList : Send : CInfoWifi : "<<*infoWifi<<endl;
@@ -80,30 +70,19 @@ void CCTRLServer::ChangeCoordinate()
 	if( cid < TCID_GUEST_MIN )
 		return;
 
+	// because the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
+	CWifiServer* wifiServer=WifiGuestVHostServer;
+
 	CInfoWifi* infoWifi;
 
-	infoWifi=WifiGuestVHostServer->GetReferenceOnInfoWifiByCID(cid);
+	infoWifi=wifiServer->GetReferenceOnInfoWifiByCID(cid);
 	if( infoWifi != NULL )
 	{
 		infoWifi->Set(coo);
 		return;
 	}
 
-	infoWifi=WifiGuestVHostServer->GetReferenceOnInfoWifiDeconnectedByCID(cid);
-	if( infoWifi != NULL )
-	{
-		infoWifi->Set(coo);
-		return;
-	}
-
-	infoWifi=WifiGuestInetServer->GetReferenceOnInfoWifiByCID(cid);
-	if( infoWifi != NULL )
-	{
-		infoWifi->Set(coo);
-		return;
-	}
-
-	infoWifi=WifiGuestInetServer->GetReferenceOnInfoWifiDeconnectedByCID(cid);
+	infoWifi=wifiServer->GetReferenceOnInfoWifiDeconnectedByCID(cid);
 	if( infoWifi != NULL )
 	{
 		infoWifi->Set(coo);
@@ -160,12 +139,6 @@ void CCTRLServer::SendStatus()
 		return;
 	}
 
-	if( Send((char*)&(WifiGuestVHostServer->MaxClientDeconnected),sizeof(WifiGuestVHostServer->MaxClientDeconnected)) == SOCKET_ERROR )
-	{
-		cerr<<"Error : SendStatus : Send : Size VHOST"<<endl;
-		return;
-	}
-
 	// INET
 
 	if( Send((char*)&(WifiGuestInetServer->Port),sizeof(WifiGuestInetServer->Port)) == SOCKET_ERROR )
@@ -174,9 +147,12 @@ void CCTRLServer::SendStatus()
 		return;
 	}
 
+	// SizeOfDisconnected
+	// becareful : the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
+
 	if( Send((char*)&(WifiGuestInetServer->MaxClientDeconnected),sizeof(WifiGuestInetServer->MaxClientDeconnected)) == SOCKET_ERROR )
 	{
-		cerr<<"Error : SendStatus : Send : Size INET"<<endl;
+		cerr<<"Error : SendStatus : Send : Size MaxClientDeconnected"<<endl;
 		return;
 	}
 
@@ -219,49 +195,36 @@ void CCTRLServer::SendDistance()
 
 	int codeError;
 
+	// because the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
+	CWifiServer* wifiServer=WifiGuestVHostServer;
+
 	CCoordinate* coo1;
 
-	coo1=WifiGuestVHostServer->GetReferenceOnInfoWifiByCID(cid1);
+	coo1=wifiServer->GetReferenceOnInfoWifiByCID(cid1);
 	if( coo1 == NULL )
 	{
-		coo1=WifiGuestVHostServer->GetReferenceOnInfoWifiDeconnectedByCID(cid1);
+		coo1=wifiServer->GetReferenceOnInfoWifiDeconnectedByCID(cid1);
 		if( coo1 == NULL )
 		{
-			coo1=WifiGuestInetServer->GetReferenceOnInfoWifiByCID(cid1);
-			if( coo1 == NULL )
-			{
-				coo1=WifiGuestInetServer->GetReferenceOnInfoWifiDeconnectedByCID(cid1);
-				if( coo1 == NULL )
-				{
-					codeError=-1;
-					if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
-						cerr<<"Error : SendDistance : Send : unknown cid1"<<endl;
-					return ;
-				}
-			}
+			codeError=-1;
+			if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
+				cerr<<"Error : SendDistance : Send : unknown cid1"<<endl;
+			return ;
 		}
 	}
 
 	CCoordinate* coo2;
 
-	coo2=WifiGuestVHostServer->GetReferenceOnInfoWifiByCID(cid2);
+	coo2=wifiServer->GetReferenceOnInfoWifiByCID(cid2);
 	if( coo2 == NULL )
 	{
-		coo2=WifiGuestVHostServer->GetReferenceOnInfoWifiDeconnectedByCID(cid2);
+		coo2=wifiServer->GetReferenceOnInfoWifiDeconnectedByCID(cid2);
 		if( coo2 == NULL )
 		{
-			coo2=WifiGuestInetServer->GetReferenceOnInfoWifiByCID(cid2);
-			if( coo2 == NULL )
-			{
-				coo2=WifiGuestInetServer->GetReferenceOnInfoWifiDeconnectedByCID(cid2);
-				if( coo2 == NULL )
-				{
-					codeError=-2;
-					if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
-						cerr<<"Error : SendDistance : Send : unknown cid2"<<endl;
-					return ;
-				}
-			}
+			codeError=-2;
+			if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
+				cerr<<"Error : SendDistance : Send : unknown cid2"<<endl;
+			return ;
 		}
 	}
 
@@ -283,15 +246,14 @@ void CCTRLServer::SendDistance()
 
 void CCTRLServer::CloseAllClient()
 {
+	// because the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
+	CWifiServer* wifiServer=WifiGuestVHostServer;
+
 	// be careful : In the Scheduler, i must delete only the nodes of Wifi Guest, not the node of the CTRLServer
-	for (TIndex i = 0; i < WifiGuestVHostServer->GetNumberClient(); i++)
-		Scheduler->DelNode((*WifiGuestVHostServer)[i]);
+	for (TIndex i = 0; i < wifiServer->GetNumberClient(); i++)
+		Scheduler->DelNode((*wifiServer)[i]);
 
-	for (TIndex i = 0; i < WifiGuestInetServer->GetNumberClient(); i++)
-		Scheduler->DelNode((*WifiGuestInetServer)[i]);
-
-	WifiGuestVHostServer->CloseAllClient();
-	WifiGuestInetServer->CloseAllClient();
+	wifiServer->CloseAllClient();
 }
 
 void CCTRLServer::ReceiveOrder()
