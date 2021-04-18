@@ -64,7 +64,7 @@ int main (int argc , char ** argv){
 	//signal(SIGCONT, signal_handler);
 
 	std::string ip_addr;
-	TPort port_number = -1;
+	TPort port_number = 0;
 
 	int arg_idx = 1;
 	while (arg_idx < argc)
@@ -101,7 +101,7 @@ int main (int argc , char ** argv){
 
 	if( ip_addr.empty() )
 	{ // IP not set -> mode VHOST
-		if( port_number  == -1 )
+		if( ! port_number )
 			port_number = WIFI_CLIENT_PORT_VHOST;
 
 		wifiClient=new CWifiClient<CSocketClientVHOST>;
@@ -109,7 +109,7 @@ int main (int argc , char ** argv){
 	}
 	else
 	{ // mode TCP
-		if( port_number == -1 )
+		if( ! port_number )
 			port_number = WIFI_CLIENT_PORT_INET;
 
 		wifiClient=new CWifiClient<CSocketClientINET>;
