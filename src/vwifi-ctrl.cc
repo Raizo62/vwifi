@@ -10,6 +10,9 @@
 
 using namespace std;
 
+std::string IP_Ctrl = std::string(ADDRESS_IP);
+TPort Port_Ctrl = CTRL_PORT;
+
 void Help(char* nameOfProg)
 {
 	cout<<nameOfProg<<" [order]"<<endl;
@@ -29,16 +32,18 @@ void Help(char* nameOfProg)
 	cout<<"		- Distance in meters between the Client with cid1 and the Client with cid2"<<endl;
 	cout<<"	close"<<endl;
 	cout<<"		- Close all the connections with Wifi Clients"<<endl;
-
-	cout<<" -v or --version"<<endl;
-	cout<<"	Display the version of "<<nameOfProg<<endl;
+	cout<<endl;
+	cout<<" [-p PORT] or [--port PORT] : Set the port of the vwifi-server"<<endl;
+	cout<<" [-i IP] or [--ip IP] : Set the IP of the vwifi-server"<<endl;
+	cout<<" [-v] or [--version] : Display the version of "<<nameOfProg<<endl;
+	cout<<" [-h] or [--help] : this help"<<endl;
 }
 
 int AskList()
 {
 	CSocketClientINET socket;
 
-	socket.Init(ADDRESS_IP,CTRL_PORT);
+	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
 	if( ! socket.ConnectLoop() )
 	{
@@ -107,7 +112,7 @@ int ChangeCoordinate(int argc, char *argv[])
 
 	CSocketClientINET socket;
 
-	socket.Init(ADDRESS_IP,CTRL_PORT);
+	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
 	if( ! socket.ConnectLoop() )
 	{
@@ -164,7 +169,7 @@ int ChangePacketLoss(int argc, char *argv[])
 
 	CSocketClientINET socket;
 
-	socket.Init(ADDRESS_IP,CTRL_PORT);
+	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
 	if( ! socket.ConnectLoop() )
 	{
@@ -204,7 +209,7 @@ int AskStatus()
 	cout<<"CTRL : IP : "<<ADDRESS_IP<<endl;
 	cout<<"CTRL : Port : "<<CTRL_PORT<<endl;
 
-	socket.Init(ADDRESS_IP,CTRL_PORT);
+	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
 	if( ! socket.ConnectLoop() )
 	{
@@ -292,7 +297,7 @@ int AskShow()
 {
 	CSocketClientINET socket;
 
-	socket.Init(ADDRESS_IP,CTRL_PORT);
+	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
 	if( ! socket.ConnectLoop() )
 	{
@@ -370,7 +375,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 
 	CSocketClientINET socket;
 
-	socket.Init(ADDRESS_IP,CTRL_PORT);
+	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
 	if( ! socket.ConnectLoop() )
 	{
@@ -438,7 +443,7 @@ int CloseAllClient()
 {
 	CSocketClientINET socket;
 
-	socket.Init(ADDRESS_IP,CTRL_PORT);
+	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
 	if( ! socket.ConnectLoop() )
 	{
@@ -463,40 +468,68 @@ int CloseAllClient()
 
 int main(int argc , char *argv[])
 {
-	if( argc == 1 )
+	char** param_cmd = new char*[argc];
+	int nbr_param_cmd=0;
+
+	int arg_idx = 0;
+	while (arg_idx < argc)
 	{
-		Help(argv[0]);
+		if( ! strcmp("-v", argv[arg_idx]) || ! strcmp("--version", argv[arg_idx]) )
+		{
+			std::cout<<"Version : "<<VERSION<<std::endl;
+			return 0;
+		}
+		if( ! strcmp("-h", argv[arg_idx]) || ! strcmp("--help", argv[arg_idx]) )
+		{
+			Help(argv[0]);
+			return 1;
+		}
+		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc)
+		{
+			Port_Ctrl = std::stoi(argv[arg_idx+1]);
+			arg_idx++;
+		}
+		else if( ( ! strcmp("-i", argv[arg_idx]) || ! strcmp("--ip", argv[arg_idx]) ) && (arg_idx + 1) < argc)
+		{
+			IP_Ctrl = std::string(argv[arg_idx+1]);
+			arg_idx++;
+		}
+		else
+		{
+			param_cmd[nbr_param_cmd++]=argv[arg_idx];
+		}
+
+		arg_idx++;
+	}
+
+	if( nbr_param_cmd == 1 )
+	{
+		Help(param_cmd[0]);
 		return 0;
 	}
 
-	if( ! strcmp(argv[1],"-v") || ! strcmp(argv[1],"--version") )
-	{
-		cout<<"Version : "<<VERSION<<endl;
-		return 0;
-	}
-
-	if( ! strcmp(argv[1],"ls") )
+	if( ! strcmp(param_cmd[1],"ls") )
 		return AskList();
 
-	if( ! strcmp(argv[1],"set") )
-		return ChangeCoordinate(argc, argv);
+	if( ! strcmp(param_cmd[1],"set") )
+		return ChangeCoordinate(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(argv[1],"loss") )
-		return ChangePacketLoss(argc, argv);
+	if( ! strcmp(param_cmd[1],"loss") )
+		return ChangePacketLoss(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(argv[1],"show") )
+	if( ! strcmp(param_cmd[1],"show") )
 		return AskShow();
 
-	if( ! strcmp(argv[1],"status") )
+	if( ! strcmp(param_cmd[1],"status") )
 		return AskStatus();
 
-	if( ! strcmp(argv[1],"distance") )
-		return DistanceBetweenCID(argc, argv);
+	if( ! strcmp(param_cmd[1],"distance") )
+		return DistanceBetweenCID(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(argv[1],"close") )
+	if( ! strcmp(param_cmd[1],"close") )
 		return CloseAllClient();
 
-	cerr<<argv[0]<<" : Error : unknown order : "<<argv[1]<<endl;
+	cerr<<param_cmd[0]<<" : Error : unknown order : "<<param_cmd[1]<<endl;
 
 	return 1;
 }
