@@ -12,45 +12,33 @@
 
 using namespace std;
 
-CWifiServer::CWifiServer(CListInfo<CInfoSocket>* infoSockets /*= NULL*/, CListInfo<CInfoWifi>* infoWifis /*=NULL*/ , CListInfo<CInfoWifi>* infoWifisDeconnected /*=NULL*/) : CSocketServer (infoSockets)
+CWifiServer::CWifiServer() : CSocketServer ()
 {
-    if( infoWifis == NULL )
-    {
         InfoWifis = new CListInfo<CInfoWifi>;
         InfoWifisDeconnected = new CListInfo<CInfoWifi>;
-
-        ListInfoWifiSelfManaged=true;
-    }
-    else
-    {
-        InfoWifis = infoWifis;
-        InfoWifisDeconnected = infoWifisDeconnected;
-
-        ListInfoWifiSelfManaged=false;
-    }
 }
 
-CWifiServer::CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets /*= NULL*/, CListInfo<CInfoWifi>* infoWifis /*=NULL*/ , CListInfo<CInfoWifi>* infoWifisDeconnected /*=NULL*/) : CSocketServer (type, infoSockets)
+CWifiServer::CWifiServer(CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected) : CSocketServer (infoSockets)
 {
-    if( infoWifis == NULL )
-    {
-        InfoWifis = new CListInfo<CInfoWifi>;
-        InfoWifisDeconnected = new CListInfo<CInfoWifi>;
-
-        ListInfoWifiSelfManaged=true;
-    }
-    else
-    {
         InfoWifis = infoWifis;
         InfoWifisDeconnected = infoWifisDeconnected;
+}
 
-        ListInfoWifiSelfManaged=false;
-    }
+CWifiServer::CWifiServer(TSocket type) : CSocketServer (type)
+{
+        InfoWifis = new CListInfo<CInfoWifi>;
+        InfoWifisDeconnected = new CListInfo<CInfoWifi>;
+}
+
+CWifiServer::CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected) : CSocketServer (type, infoSockets)
+{
+        InfoWifis = infoWifis;
+        InfoWifisDeconnected = infoWifisDeconnected;
 }
 
 CWifiServer::~CWifiServer()
 {
-    if( ListInfoWifiSelfManaged )
+    if( ListInfoSelfManaged )
     {
         delete InfoWifis;
         delete InfoWifisDeconnected;
