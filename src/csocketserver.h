@@ -12,7 +12,7 @@ class CSocketServer : public CSocket
 
 		TPort Port;
 
-		bool ListInfoSocketSelfManaged;
+		bool ListInfoSelfManaged;
 		CListInfo<CInfoSocket>* InfoSockets;
 
 		TDescriptor Accept(struct sockaddr_in& address);

@@ -17,13 +17,13 @@ CSocketServer::CSocketServer(CListInfo<CInfoSocket>* infoSockets) : CSocket()
     {
         InfoSockets = new CListInfo<CInfoSocket>;
 
-        ListInfoSocketSelfManaged=true;
+        ListInfoSelfManaged=true;
     }
     else
     {
         InfoSockets = infoSockets;
 
-        ListInfoSocketSelfManaged=false;
+        ListInfoSelfManaged=false;
     }
 }
 
@@ -33,13 +33,13 @@ CSocketServer::CSocketServer(TSocket type, CListInfo<CInfoSocket>* infoSockets) 
     {
         InfoSockets = new CListInfo<CInfoSocket>;
 
-        ListInfoSocketSelfManaged=true;
+        ListInfoSelfManaged=true;
     }
     else
     {
         InfoSockets = infoSockets;
 
-        ListInfoSocketSelfManaged=false;
+        ListInfoSelfManaged=false;
     }
 }
 
