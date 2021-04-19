@@ -150,21 +150,21 @@ sudo vwifi-spy
 
 ## Capture
 
-### With tcpdump
-
-* Capture from wlan0 :
-```bash
-sudo tcpdump -n -I -i wlan0
-```
-
-### With wireshark
-
 * Configure wlan0 to monitor mode :
 ```bash
 sudo ip link set wlan0 down
 sudo iw wlan0 set monitor control
 sudo ip link set wlan0 up
 ```
+
+### With tcpdump
+
+* Capture from wlan0 :
+```bash
+sudo tcpdump -n -i wlan0
+```
+
+### With wireshark
 
 * Start Wireshark and capture from wlan0 :
 ```bash
