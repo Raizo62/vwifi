@@ -36,6 +36,8 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 * To use TCP protocol, ***vwifi-server*** and ***vwifi-client***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
 * ***vwifi-ctrl*** is used to interact with ***vwifi-server***
 
+* You can change the defaults IP and ports with parameters (see the parameter "-h" to help)
+
 # Build
 
 ## On Debian-based Linux distributions
