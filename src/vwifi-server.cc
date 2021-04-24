@@ -94,11 +94,11 @@ int vwifi_server()
 {
 	TDescriptor socket;
 
-	CListInfo<CInfoSocket> InfoSockets;
-	CListInfo<CInfoWifi> InfoWifis;
-	CListInfo<CInfoWifi> InfoWifisDeconnected;
+	CListInfo<CInfoSocket> infoSockets;
+	CListInfo<CInfoWifi> infoWifis;
+	CListInfo<CInfoWifi> infoWifisDeconnected;
 
-	CWifiServer wifiGuestVHostServer(AF_VSOCK,&InfoSockets,&InfoWifis,&InfoWifisDeconnected);
+	CWifiServer wifiGuestVHostServer(AF_VSOCK,&infoSockets,&infoWifis,&infoWifisDeconnected);
 	cout<<"CLIENT VHOST : ";
 	wifiGuestVHostServer.Init(Port_VHOST);
 	if( ! wifiGuestVHostServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
@@ -109,7 +109,7 @@ int vwifi_server()
 
 	CWifiServer* wifiServer=&wifiGuestVHostServer; // or wifiGuestINETServer, it doesn't change anything
 
-	CWifiServer wifiGuestINETServer(AF_INET,&InfoSockets,&InfoWifis,&InfoWifisDeconnected);
+	CWifiServer wifiGuestINETServer(AF_INET,&infoSockets,&infoWifis,&infoWifisDeconnected);
 	cout<<"CLIENT TCP : ";
 	wifiGuestINETServer.Init(Port_TCP);
 	if( ! wifiGuestINETServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
