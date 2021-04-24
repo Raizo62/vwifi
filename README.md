@@ -27,7 +27,7 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 # Explanations
 
 * ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host
-* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol, or with the TCP protocol
+* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol (by default), or with the TCP protocol
 * The ***vwifi-spy*** is the same as ***vwifi-client*** but :
     * it receives always all communications, even if the loss of packets is enable.
     * it works only with TCP.
