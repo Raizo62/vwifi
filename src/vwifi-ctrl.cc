@@ -90,14 +90,14 @@ int AskList()
 
 int ChangeCoordinate(int argc, char *argv[])
 {
-	if( argc != 6 )
+	if( argc != 5 )
 	{
 			cerr<<"Error : set : the number of parameter is uncorrect"<<endl;
 			Help();
 			return 1;
 	}
 
-	TCID cid=atoi(argv[2]);
+	TCID cid=atoi(argv[1]);
 
 	if( cid < TCID_GUEST_MIN )
 	{
@@ -105,9 +105,9 @@ int ChangeCoordinate(int argc, char *argv[])
 			return 1;
 	}
 
-	TValue x=atoi(argv[3]);
-	TValue y=atoi(argv[4]);
-	TValue z=atoi(argv[5]);
+	TValue x=atoi(argv[2]);
+	TValue y=atoi(argv[3]);
+	TValue z=atoi(argv[4]);
 	CCoordinate coo(x,y,z);
 
 	cout<<cid<<" "<<coo<<" "<<endl;
@@ -151,7 +151,7 @@ int ChangeCoordinate(int argc, char *argv[])
 
 int ChangePacketLoss(int argc, char *argv[])
 {
-	if( argc != 3 )
+	if( argc != 2 )
 	{
 			cerr<<"Error : loss : the number of parameter is uncorrect"<<endl;
 			Help();
@@ -159,9 +159,9 @@ int ChangePacketLoss(int argc, char *argv[])
 	}
 
 	int value;
-	if ( ! strcmp(argv[2],"yes") )
+	if ( ! strcmp(argv[1],"yes") )
 		value=1;
-	else if ( ! strcmp(argv[2],"no") )
+	else if ( ! strcmp(argv[1],"no") )
 		value=0;
 	else
 	{
@@ -352,14 +352,14 @@ int AskShow()
 
 int DistanceBetweenCID(int argc, char *argv[])
 {
-	if( argc != 4 )
+	if( argc != 3 )
 	{
 			cerr<<"Error : distance : the number of parameter is uncorrect"<<endl;
 			Help();
 			return 1;
 	}
 
-	TCID cid1=atoi(argv[2]);
+	TCID cid1=atoi(argv[1]);
 
 	if( cid1 < TCID_GUEST_MIN )
 	{
@@ -367,7 +367,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 			return 1;
 	}
 
-	TCID cid2=atoi(argv[3]);
+	TCID cid2=atoi(argv[2]);
 
 	if( cid2 < TCID_GUEST_MIN )
 	{
@@ -475,7 +475,7 @@ int main(int argc , char *argv[])
 
 	NameOfProg=argv[0];
 
-	int arg_idx = 0;
+	int arg_idx = 1;
 	while (arg_idx < argc)
 	{
 		if( ! strcmp("-v", argv[arg_idx]) || ! strcmp("--version", argv[arg_idx]) )
@@ -506,31 +506,31 @@ int main(int argc , char *argv[])
 		arg_idx++;
 	}
 
-	if( nbr_param_cmd == 1 )
+	if( nbr_param_cmd == 0 )
 	{
 		Help();
 		return 0;
 	}
 
-	if( ! strcmp(param_cmd[1],"ls") )
+	if( ! strcmp(param_cmd[0],"ls") )
 		return AskList();
 
-	if( ! strcmp(param_cmd[1],"set") )
+	if( ! strcmp(param_cmd[0],"set") )
 		return ChangeCoordinate(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(param_cmd[1],"loss") )
+	if( ! strcmp(param_cmd[0],"loss") )
 		return ChangePacketLoss(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(param_cmd[1],"show") )
+	if( ! strcmp(param_cmd[0],"show") )
 		return AskShow();
 
-	if( ! strcmp(param_cmd[1],"status") )
+	if( ! strcmp(param_cmd[0],"status") )
 		return AskStatus();
 
-	if( ! strcmp(param_cmd[1],"distance") )
+	if( ! strcmp(param_cmd[0],"distance") )
 		return DistanceBetweenCID(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(param_cmd[1],"close") )
+	if( ! strcmp(param_cmd[0],"close") )
 		return CloseAllClient();
 
 	cerr<<NameOfProg<<" : Error : unknown order : "<<param_cmd[1]<<endl;
