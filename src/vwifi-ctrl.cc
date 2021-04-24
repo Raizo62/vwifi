@@ -13,9 +13,11 @@ using namespace std;
 std::string IP_Ctrl = std::string(ADDRESS_IP);
 TPort Port_Ctrl = CTRL_PORT;
 
-void Help(char* nameOfProg)
+char* NameOfProg;
+
+void Help()
 {
-	cout<<nameOfProg<<" [order]"<<endl;
+	cout<<NameOfProg<<" [order]"<<endl;
 	cout<<" with [order] :"<<endl;
 	cout<<"	ls"<<endl;
 	cout<<"		- List the Clients"<<endl;
@@ -35,7 +37,7 @@ void Help(char* nameOfProg)
 	cout<<endl;
 	cout<<" [-p PORT] or [--port PORT] : Set the port of the vwifi-server"<<endl;
 	cout<<" [-i IP] or [--ip IP] : Set the IP of the vwifi-server"<<endl;
-	cout<<" [-v] or [--version] : Display the version of "<<nameOfProg<<endl;
+	cout<<" [-v] or [--version] : Display the version of "<<NameOfProg<<endl;
 	cout<<" [-h] or [--help] : this help"<<endl;
 }
 
@@ -91,7 +93,7 @@ int ChangeCoordinate(int argc, char *argv[])
 	if( argc != 6 )
 	{
 			cerr<<"Error : set : the number of parameter is uncorrect"<<endl;
-			Help(argv[0]);
+			Help();
 			return 1;
 	}
 
@@ -152,7 +154,7 @@ int ChangePacketLoss(int argc, char *argv[])
 	if( argc != 3 )
 	{
 			cerr<<"Error : loss : the number of parameter is uncorrect"<<endl;
-			Help(argv[0]);
+			Help();
 			return 1;
 	}
 
@@ -353,7 +355,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 	if( argc != 4 )
 	{
 			cerr<<"Error : distance : the number of parameter is uncorrect"<<endl;
-			Help(argv[0]);
+			Help();
 			return 1;
 	}
 
@@ -471,6 +473,8 @@ int main(int argc , char *argv[])
 	char** param_cmd = new char*[argc];
 	int nbr_param_cmd=0;
 
+	NameOfProg=argv[0];
+
 	int arg_idx = 0;
 	while (arg_idx < argc)
 	{
@@ -481,7 +485,7 @@ int main(int argc , char *argv[])
 		}
 		if( ! strcmp("-h", argv[arg_idx]) || ! strcmp("--help", argv[arg_idx]) )
 		{
-			Help(argv[0]);
+			Help();
 			return 1;
 		}
 		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc)
@@ -504,7 +508,7 @@ int main(int argc , char *argv[])
 
 	if( nbr_param_cmd == 1 )
 	{
-		Help(param_cmd[0]);
+		Help();
 		return 0;
 	}
 
@@ -529,7 +533,7 @@ int main(int argc , char *argv[])
 	if( ! strcmp(param_cmd[1],"close") )
 		return CloseAllClient();
 
-	cerr<<param_cmd[0]<<" : Error : unknown order : "<<param_cmd[1]<<endl;
+	cerr<<NameOfProg<<" : Error : unknown order : "<<param_cmd[1]<<endl;
 
 	return 1;
 }
