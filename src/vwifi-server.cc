@@ -17,7 +17,9 @@ TPort Port_TCP = WIFI_CLIENT_PORT_INET;
 TPort Port_Spy = WIFI_SPY_PORT;
 TPort Port_Ctrl = CTRL_PORT;
 
-void RemoveClient(CWifiServer* srv, bool srvIsSpy, TIndex i, TDescriptor socket, CSelect* scheduler)
+CSelect Scheduler;
+
+void RemoveClient(CWifiServer* srv, bool srvIsSpy, TIndex i, TDescriptor socket)
 {
 	if( ! srvIsSpy )
 	{
@@ -29,10 +31,10 @@ void RemoveClient(CWifiServer* srv, bool srvIsSpy, TIndex i, TDescriptor socket,
 	srv->CloseClient(i);
 
 	//del master socket to set
-	scheduler->DelNode(socket);
+	Scheduler.DelNode(socket);
 }
 
-void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst, CSelect* scheduler)
+void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst)
 {
 	TDescriptor socket;
 
@@ -45,12 +47,12 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst, CSelect
 
 		if( ! src->IsEnable(i) )
 		{
-			RemoveClient(src, srcIsSpy , i, socket, scheduler);
+			RemoveClient(src, srcIsSpy , i, socket);
 
 			continue;
 		}
 
-		if( scheduler->DescriptorHasAction(socket) )
+		if( Scheduler.DescriptorHasAction(socket) )
 		{
 			//Check if it was for closing , and also read the
 			//incoming message
@@ -59,7 +61,7 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst, CSelect
 			valread = src->Read( socket , (char*)&power, sizeof(power));
 			if ( valread <= 0 )
 			{
-				RemoveClient(src, srcIsSpy , i, socket, scheduler);
+				RemoveClient(src, srcIsSpy , i, socket);
 
 				continue;
 			}
@@ -68,7 +70,7 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst, CSelect
 			valread = src->ReadBigData( socket , &Buffer);
 			if ( valread <= 0 )
 			{
-				RemoveClient(src, srcIsSpy , i, socket, scheduler);
+				RemoveClient(src, srcIsSpy , i, socket);
 
 				continue;
 			}
@@ -91,8 +93,6 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst, CSelect
 int vwifi_server()
 {
 	TDescriptor socket;
-
-	CSelect scheduler;
 
 	CListInfo<CInfoSocket> InfoSockets;
 	CListInfo<CInfoWifi> InfoWifis;
@@ -129,7 +129,7 @@ int vwifi_server()
 	}
 
 	cout<<"CTRL : ";
-	CCTRLServer ctrlServer(&wifiGuestVHostServer, &wifiGuestINETServer, &wifiSpyServer,&scheduler);
+	CCTRLServer ctrlServer(&wifiGuestVHostServer, &wifiGuestINETServer, &wifiSpyServer,&Scheduler);
 	ctrlServer.Init(Port_Ctrl);
 	if( ! ctrlServer.Listen() )
 	{
@@ -145,16 +145,16 @@ int vwifi_server()
 		cout<<"Packet loss : disable"<<endl;
 
 	//add master socket to set
-	scheduler.AddNode(wifiGuestVHostServer);
-	scheduler.AddNode(wifiGuestINETServer);
-	scheduler.AddNode(wifiSpyServer);
-	scheduler.AddNode(ctrlServer);
+	Scheduler.AddNode(wifiGuestVHostServer);
+	Scheduler.AddNode(wifiGuestINETServer);
+	Scheduler.AddNode(wifiSpyServer);
+	Scheduler.AddNode(ctrlServer);
 
 	while( true )
 	{
 		//wait for an activity on one of the sockets , timeout is NULL ,
 		//so wait indefinitely
-		if( scheduler.Wait() == SCHEDULER_ERROR )
+		if( Scheduler.Wait() == SCHEDULER_ERROR )
 		{
 			cerr<<"Error : scheduler.Wait"<<endl;
 			return 1;
@@ -163,7 +163,7 @@ int vwifi_server()
 
 			//If something happened on the master socket ,
 			//then its an incoming connection
-			if( scheduler.DescriptorHasAction(wifiGuestVHostServer) )
+			if( Scheduler.DescriptorHasAction(wifiGuestVHostServer) )
 			{
 				socket = wifiGuestVHostServer.Accept();
 				if ( socket == SOCKET_ERROR )
@@ -173,13 +173,13 @@ int vwifi_server()
 				}
 
 				//add child sockets to set
-				scheduler.AddNode(socket);
+				Scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
 				cout<<"New connection from Client VHost : "; wifiServer->ShowInfoWifi(wifiServer->GetNumberClient()-1) ; cout<<endl;
 			}
 
-			if( scheduler.DescriptorHasAction(wifiGuestINETServer) )
+			if( Scheduler.DescriptorHasAction(wifiGuestINETServer) )
 			{
 				socket = wifiGuestINETServer.Accept();
 				if ( socket == SOCKET_ERROR )
@@ -189,13 +189,13 @@ int vwifi_server()
 				}
 
 				//add child sockets to set
-				scheduler.AddNode(socket);
+				Scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
 				cout<<"New connection from Client TCP : "; wifiServer->ShowInfoWifi(wifiServer->GetNumberClient()-1) ; cout<<endl;
 			}
 
-			if( scheduler.DescriptorHasAction(wifiSpyServer) )
+			if( Scheduler.DescriptorHasAction(wifiSpyServer) )
 			{
 				socket = wifiSpyServer.Accept();
 				if ( socket == SOCKET_ERROR )
@@ -205,21 +205,21 @@ int vwifi_server()
 				}
 
 				//add child sockets to set
-				scheduler.AddNode(socket);
+				Scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
 				cout<<"New connection from Spy"<<endl;
 			}
 
-			if( scheduler.DescriptorHasAction(ctrlServer) )
+			if( Scheduler.DescriptorHasAction(ctrlServer) )
 			{
 				ctrlServer.ReceiveOrder();
 			}
 
 			//else its some IO operation on some other socket
 
-			ForwardData(false, wifiServer, &wifiSpyServer, &scheduler);
-			ForwardData(true, &wifiSpyServer, wifiServer, &scheduler);
+			ForwardData(false, wifiServer, &wifiSpyServer);
+			ForwardData(true, &wifiSpyServer, wifiServer);
 		}
 	}
 
