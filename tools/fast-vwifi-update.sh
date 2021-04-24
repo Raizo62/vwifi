@@ -14,7 +14,7 @@ SansCouleur='\e[0;m'
 
 OptionVWifiQEmu=vwifi0
 
-if [ -z "$(pgrep -xf '/bin/python3 /usr/bin/gns3.*')" ]
+if [ -z "$(pgrep -xf '/usr/bin/python3 /usr/bin/gns3.*')" ]
 then
 	>&2 echo -e "${CERROR}Error: Your GNS3 project must be open !!!${SansCouleur}"
 	exit 2
