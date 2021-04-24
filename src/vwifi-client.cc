@@ -102,7 +102,7 @@ int main (int argc , char ** argv){
 	if( ip_addr.empty() )
 	{ // IP not set -> mode VHOST
 		if( ! port_number )
-			port_number = WIFI_CLIENT_PORT_VHOST;
+			port_number = DEFAULT_WIFI_CLIENT_PORT_VHOST;
 
 		wifiClient=new CWifiClient<CSocketClientVHOST>;
 		((CWifiClient<CSocketClientVHOST>*)wifiClient)->Init(port_number);
@@ -110,7 +110,7 @@ int main (int argc , char ** argv){
 	else
 	{ // mode TCP
 		if( ! port_number )
-			port_number = WIFI_CLIENT_PORT_INET;
+			port_number = DEFAULT_WIFI_CLIENT_PORT_INET;
 
 		wifiClient=new CWifiClient<CSocketClientINET>;
 		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(ip_addr.c_str(), port_number);

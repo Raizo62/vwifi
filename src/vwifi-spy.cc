@@ -64,7 +64,7 @@ int main (int argc , char ** argv){
 	//signal(SIGCONT, signal_handler);
 
 	std::string ip_addr;
-	TPort port_number = WIFI_SPY_PORT;
+	TPort port_number = DEFAULT_WIFI_SPY_PORT;
 
 	int arg_idx = 1;
 	while (arg_idx < argc)

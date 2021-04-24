@@ -12,10 +12,10 @@ using namespace std;
 
 CDynBuffer Buffer; // Buffer to stock received values
 
-TPort Port_VHOST = WIFI_CLIENT_PORT_VHOST;
-TPort Port_TCP = WIFI_CLIENT_PORT_INET;
-TPort Port_Spy = WIFI_SPY_PORT;
-TPort Port_Ctrl = CTRL_PORT;
+TPort Port_VHOST = DEFAULT_WIFI_CLIENT_PORT_VHOST;
+TPort Port_TCP = DEFAULT_WIFI_CLIENT_PORT_INET;
+TPort Port_Spy = DEFAULT_WIFI_SPY_PORT;
+TPort Port_Ctrl = DEFAULT_CTRL_PORT;
 
 CSelect Scheduler;
 
