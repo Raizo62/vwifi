@@ -154,6 +154,16 @@ void CWifiServer::CloseAllClient()
 		CloseClient(0); // we can Close the 0 because we use the shift
 }
 
+ssize_t CWifiServer::SendSignal(TDescriptor descriptor, TPower* power, const char* buffer, int sizeOfBuffer)
+{
+	return SendSignalWithSocket(this, descriptor, power, buffer, sizeOfBuffer);
+}
+
+ssize_t CWifiServer::RecvSignal(TDescriptor descriptor, TPower* power, CDynBuffer* buffer)
+{
+	return RecvSignalWithSocket(this, descriptor, power, buffer);
+}
+
 void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData)
 {
 	CCoordinate coo=(*InfoWifis)[index];
