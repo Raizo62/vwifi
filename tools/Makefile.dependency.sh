@@ -4,6 +4,7 @@ SRC="src"
 
 EXT_H='h'
 EXT_C='cc'
+EXT_O='o'
 
 findAllH()
 {
@@ -50,7 +51,7 @@ transform_h_to_o()
 		fileWithoutDotH=${fileH%*.${EXT_H}}
 		if [ -e "${SRC}/${fileWithoutDotH}.${EXT_C}" ]
 		then
-			echo '$(OBJ)/'"${fileWithoutDotH}.o"
+			echo '$(OBJ)/'"${fileWithoutDotH}.${EXT_O}"
 		fi
 	done
 }
@@ -64,7 +65,7 @@ do_Bin_in_Makefile()
 {
 	for target in $@
 	do
-		echo "${target%*.${EXT_C}} : \$(OBJ)/${target%*.${EXT_C}}.o  $( findAllDependancies ${target} | transform_h_to_o | formatDisplay )"
+		echo "${target%*.${EXT_C}} : \$(OBJ)/${target%*.${EXT_C}}.${EXT_O}  $( findAllDependancies ${target} | transform_h_to_o | formatDisplay )"
 		echo
 	done
 }
@@ -73,7 +74,7 @@ do_Obj_in_Makefile()
 {
 	for target in $@
 	do
-		echo '$(OBJ)/'"${target%*.${EXT_C}}.o : ${target} $( findAllH ${target} | formatDisplay ) Makefile Makefile.in"
+		echo '$(OBJ)/'"${target%*.${EXT_C}}.${EXT_O} : ${target} $( findAllH ${target} | formatDisplay ) Makefile Makefile.in"
 		echo
 	done
 }
