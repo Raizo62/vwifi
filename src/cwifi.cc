@@ -1,6 +1,10 @@
 #include <math.h>    // log10
 #include <stdlib.h>  // rand
 
+#include <iostream>
+
+#include <netlink/netlink.h> // (struct nlmsghdr *)
+
 #include "cwifi.h"
 
 //#include "config.h"
@@ -44,8 +48,8 @@ ssize_t CWifi::SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPo
 	if( val <= 0 )
 		return val;
 
-//	cout<<"send big data of size : "<<power<<endl;
-	return socket->SendBigData(descriptor, buffer, sizeOfBuffer);
+//	std::cout<<"send big data of size : "<<sizeOfBuffer<<std::endl;
+	return socket->Send(descriptor, buffer, sizeOfBuffer);
 }
 
 ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, CDynBuffer* buffer)
@@ -57,6 +61,12 @@ ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPo
 	if ( valread <= 0 )
 		return valread;
 
-	// read the data
-	return socket->ReadBigData(descriptor, buffer);
+	// read the signal
+	// "nlmsg_len" (type "uint32_t") is the first attribut of the "struct nlmsghdr" in "libnl3/netlink/netlink-kernel.h"
+	ssize_t sizeRead = socket->ReadEqualSize(descriptor, buffer, 0, sizeof(struct nlmsghdr));
+	if( sizeRead == SOCKET_ERROR  )
+		return SOCKET_ERROR;
+
+	int sizeTotal=((struct nlmsghdr *)(buffer->GetBuffer()))->nlmsg_len;
+	return socket->ReadEqualSize(descriptor, buffer, sizeRead, sizeTotal);
 }
