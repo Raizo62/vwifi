@@ -1,6 +1,4 @@
 #include <errno.h> // errno
-#include <iostream> // cout & NULL
-
 #include <assert.h> // assert
 
 #include "cselect.h"
@@ -51,12 +49,14 @@ void CSelect::DelNode(TDescriptor descriptor)
 	{
 		if( *node == descriptor )
 		{
+			auto node_to_delete = node;
+
 			FD_CLR(descriptor , &Master);
 
-			ListNodes.erase(node);
-
-			for (; node != ListNodes.end(); ++node)
+			for (++node ; node != ListNodes.end(); ++node)
 				UpdateMaxDescriptor(*node);
+
+			ListNodes.erase(node_to_delete);
 
 			return;
 		}
