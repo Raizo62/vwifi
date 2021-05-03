@@ -57,18 +57,8 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst)
 			//Check if it was for closing , and also read the
 			//incoming message
 
-			// read the power
-			valread = src->Read( socket , (char*)&power, sizeof(power));
-			if ( valread <= 0 )
-			{
-				RemoveClient(src, srcIsSpy , i, socket);
-
-				continue;
-			}
-
-			// read the data
-			valread = src->ReadBigData( socket , &Buffer);
-			if ( valread <= 0 )
+			valread=src->RecvSignal(socket,&power,&Buffer);
+			if( valread <=0 )
 			{
 				RemoveClient(src, srcIsSpy , i, socket);
 
