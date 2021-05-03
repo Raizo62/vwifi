@@ -8,7 +8,7 @@ class CDynBuffer
 		char* Buffer;
 		int Size;
 
-		void Allocate(int size);
+		void Allocate(int size, bool keepValues);
 
 	public :
 
@@ -16,7 +16,7 @@ class CDynBuffer
 
 		~CDynBuffer();
 
-		void NeededSize(int size);
+		void NeededSize(int size, bool keepValues);
 
 		char* GetBuffer();
 
