@@ -82,13 +82,15 @@ ssize_t CSocket::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 	return ret;
 }
 
-ssize_t CSocket::ReadEqualSize(TDescriptor descriptor, CDynBuffer* data, ssize_t sizeToRead)
+ssize_t CSocket::ReadEqualSize(TDescriptor descriptor, CDynBuffer* data, ssize_t byteAlreadyRead, ssize_t sizeToRead)
 {
 	ssize_t sizeToRead_backup = sizeToRead;
+	sizeToRead-=byteAlreadyRead;
 
-	data->NeededSize(sizeToRead);
+	data->NeededSize(sizeToRead_backup,(byteAlreadyRead!=0));
 
 	char* buffer = data->GetBuffer();
+	buffer+=byteAlreadyRead;
 
 	ssize_t sizeRead;
 
@@ -115,7 +117,7 @@ ssize_t CSocket::ReadBigData(TDescriptor descriptor, CDynBuffer* data)
 	if( ret == SOCKET_ERROR )
 		return SOCKET_ERROR;
 
-	return ReadEqualSize(descriptor, data, size);
+	return ReadEqualSize(descriptor, data, 0, size);
 }
 
 CSocket::operator int()
