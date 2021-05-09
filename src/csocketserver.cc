@@ -13,6 +13,8 @@ using namespace std;
 
 CSocketServer::CSocketServer(CListInfo<CInfoSocket>* infoSockets) : CSocket()
 {
+	Init(0);
+
     if( infoSockets == NULL )
     {
         InfoSockets = new CListInfo<CInfoSocket>;
@@ -29,6 +31,8 @@ CSocketServer::CSocketServer(CListInfo<CInfoSocket>* infoSockets) : CSocket()
 
 CSocketServer::CSocketServer(TSocket type, CListInfo<CInfoSocket>* infoSockets) : CSocket(type)
 {
+	Init(0);
+
     if( infoSockets == NULL )
     {
         InfoSockets = new CListInfo<CInfoSocket>;

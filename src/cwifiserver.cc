@@ -14,24 +14,32 @@ using namespace std;
 
 CWifiServer::CWifiServer() : CSocketServer ()
 {
+		DefaultValues();
+
         InfoWifis = new CListInfo<CInfoWifi>;
         InfoWifisDeconnected = new CListInfo<CInfoWifi>;
 }
 
 CWifiServer::CWifiServer(CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected) : CSocketServer (infoSockets)
 {
+		DefaultValues();
+
         InfoWifis = infoWifis;
         InfoWifisDeconnected = infoWifisDeconnected;
 }
 
 CWifiServer::CWifiServer(TSocket type) : CSocketServer (type)
 {
+		DefaultValues();
+
         InfoWifis = new CListInfo<CInfoWifi>;
         InfoWifisDeconnected = new CListInfo<CInfoWifi>;
 }
 
 CWifiServer::CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected) : CSocketServer (type, infoSockets)
 {
+		DefaultValues();
+
         InfoWifis = infoWifis;
         InfoWifisDeconnected = infoWifisDeconnected;
 }
@@ -43,6 +51,12 @@ CWifiServer::~CWifiServer()
         delete InfoWifis;
         delete InfoWifisDeconnected;
     }
+}
+
+void CWifiServer::DefaultValues()
+{
+	MaxClientDeconnected=0;
+	SetPacketLoss(LOST_PACKET_BY_DEFAULT);
 }
 
 bool CWifiServer::Listen(TIndex maxClientDeconnected)

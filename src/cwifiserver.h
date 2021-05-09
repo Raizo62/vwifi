@@ -19,6 +19,8 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		bool RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo);
 
+		void DefaultValues();
+
 	public :
 
 		CWifiServer();
