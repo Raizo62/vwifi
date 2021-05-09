@@ -36,14 +36,12 @@ void RemoveClient(CWifiServer* srv, bool srvIsSpy, TIndex i, TDescriptor socket)
 
 void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst)
 {
-	TDescriptor socket;
-
 	int valread;
 	TPower power;
 
 	for ( TIndex i = 0 ; i < src->GetNumberClient() ; )
 	{
-		socket = (*src)[i];
+		TDescriptor socket = (*src)[i];
 
 		if( ! src->IsEnable(i) )
 		{

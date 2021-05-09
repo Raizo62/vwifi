@@ -548,7 +548,6 @@ void CKernelWifi::recv_from_server(){
 void  CKernelWifi::monitor_hwsim_loop()
 {
 	struct nl_sock *sock;
-	int family_id ;
 
 	sock = nl_socket_alloc();
 	genl_connect(sock);
@@ -571,7 +570,7 @@ void  CKernelWifi::monitor_hwsim_loop()
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(1s);
 
-		family_id = genl_ctrl_resolve(sock, "MAC80211_HWSIM");
+		int family_id = genl_ctrl_resolve(sock, "MAC80211_HWSIM");
 
 		if (family_id < 0) {
 

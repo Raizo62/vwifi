@@ -92,11 +92,9 @@ ssize_t CSocket::ReadEqualSize(TDescriptor descriptor, CDynBuffer* data, ssize_t
 	char* buffer = data->GetBuffer();
 	buffer+=byteAlreadyRead;
 
-	ssize_t sizeRead;
-
 	while( sizeToRead > 0 )
 	{
-		sizeRead=Read(descriptor, buffer, sizeToRead);
+		ssize_t sizeRead=Read(descriptor, buffer, sizeToRead);
 
 		if( sizeRead == SOCKET_ERROR )
 			return SOCKET_ERROR;

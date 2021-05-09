@@ -106,7 +106,6 @@ int MonitorWirelessDevice::main_loop() {
 
 	fd_set rfds;
 	struct timeval tv;
-	int retval ;
 
 
 	_outsideloopmutex.lock() ;
@@ -123,7 +122,7 @@ int MonitorWirelessDevice::main_loop() {
 		tv.tv_sec = 1;
 		tv.tv_usec = 0;
 
-		retval = select(FD_SETSIZE, &rfds, NULL, NULL, &tv);
+		int retval = select(FD_SETSIZE, &rfds, NULL, NULL, &tv);
 		if (retval == -1){
 			perror("select in MonitorWirelessDevice main_loop function");
 			stop();
@@ -646,7 +645,6 @@ int MonitorWirelessDevice::recv_winterface_extra_infos(struct nl_msg *msg){
 
 	struct nlattr *sinfo[NL80211_STA_INFO_MAX + 1];
 	//	struct nlattr *rinfo[NL80211_RATE_INFO_MAX + 1];
-	int signal = -1 ;
 
 	struct nla_policy stats[NL80211_STA_INFO_MAX + 1];
 	stats[NL80211_STA_INFO_INACTIVE_TIME].type = NLA_U32 ;
@@ -682,7 +680,7 @@ int MonitorWirelessDevice::recv_winterface_extra_infos(struct nl_msg *msg){
 
 	if (sinfo[NL80211_STA_INFO_SIGNAL]) {
 
-		signal = 100+(int8_t)nla_get_u8(sinfo[NL80211_STA_INFO_SIGNAL]);
+		int signal = 100+(int8_t)nla_get_u8(sinfo[NL80211_STA_INFO_SIGNAL]);
 		std::cout << __func__ <<  " Signal : " << signal << std::endl ;
 	}
 
