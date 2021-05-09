@@ -22,7 +22,10 @@ class InterruptFlag
 	private:
 		bool _set ;
 		std::mutex  _mutex ;
+
 	public:
+		InterruptFlag();
+
 		void set();
 		bool is_set()  ;
 

@@ -21,10 +21,14 @@ void interruption_point(){
 
 }
 
-
 /*********************************************************/
 	/* 	InterruptFlag class definitions */
 /********************************************************/
+
+InterruptFlag::InterruptFlag()
+{
+	_set = false ;
+}
 
 void InterruptFlag::set(){
 
