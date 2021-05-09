@@ -18,10 +18,8 @@ WirelessDevice::~WirelessDevice(){
 
 }
 
-WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr,int txpower):_name(name),_index(index),_iftype(iftype), _txpower(txpower){
+WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr,int txpower):_name(name),_index(index),_iftype(iftype), _txpower(txpower), _macaddr(macaddr), _machwsim(macaddr)  {
 
-	_macaddr = macaddr ;
-	_machwsim = macaddr ;
 	_machwsim.ether_addr_octet[0] |= 0x40 ;
 
 
@@ -31,11 +29,7 @@ WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const str
 
 
 
-WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr,const struct ether_addr & machwsim,int txpower):_name(name),_index(index),_iftype(iftype), _txpower(txpower){
-
-
-	_macaddr = macaddr ;
-	_machwsim = machwsim ;
+WirelessDevice::WirelessDevice(std::string name,int index ,int iftype ,const struct ether_addr & macaddr,const struct ether_addr & machwsim,int txpower):_name(name),_index(index),_iftype(iftype), _txpower(txpower), _macaddr(macaddr), _machwsim(machwsim) {
 
 }
 
