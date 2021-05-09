@@ -37,17 +37,26 @@ char* CDynBuffer::GetBuffer()
 
 void CDynBuffer::Allocate(int size, bool keepValues)
 {
-	if( ! keepValues && Buffer != nullptr )
-		delete Buffer;
-
-	char* newBuffer = new char [size];
-
-	if( keepValues && Buffer != nullptr )
+	if( ! keepValues )
 	{
-		memcpy(newBuffer,Buffer,Size);
-		delete Buffer;
+		if( Buffer != nullptr )
+			delete[] Buffer;
+
+		Buffer = new char [size];
+
+	}
+	else
+	{
+		char* newBuffer = new char [size];
+
+		if( Buffer != nullptr )
+		{
+			memcpy(newBuffer,Buffer,Size);
+			delete[] Buffer;
+		}
+
+		Buffer = newBuffer;
 	}
 
-	Buffer = newBuffer;
 	Size=size;
 }
