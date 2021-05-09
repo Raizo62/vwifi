@@ -23,7 +23,7 @@ class CSocket
 
 		CSocket();
 
-		CSocket(TSocket type);
+		explicit CSocket(TSocket type);
 
 		TDescriptor GetDescriptor();
 

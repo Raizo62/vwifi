@@ -25,7 +25,7 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		CWifiServer(CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected);
 
-		CWifiServer(TSocket type);
+		explicit CWifiServer(TSocket type);
 
 		CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected);
 

@@ -21,7 +21,7 @@ class CSocketServer : public CSocket
 
 	public :
 
-		CSocketServer(CListInfo<CInfoSocket>* infoSockets = NULL);
+		explicit CSocketServer(CListInfo<CInfoSocket>* infoSockets = NULL);
 
 		CSocketServer(TSocket type, CListInfo<CInfoSocket>* infoSockets = NULL);
 

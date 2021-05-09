@@ -267,7 +267,7 @@ namespace ckernelwifi {
 
 	public:
 
-		CallFromStaticFunc(CKernelWifi *   obj){
+		explicit CallFromStaticFunc(CKernelWifi *   obj){
 
 			m_obj = obj ;
 		};

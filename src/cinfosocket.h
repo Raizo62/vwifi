@@ -18,7 +18,7 @@ class CInfoSocket
 
 		CInfoSocket();
 
-		CInfoSocket(TDescriptor descriptor);
+		explicit CInfoSocket(TDescriptor descriptor);
 
 		void SetDescriptor(TDescriptor descriptor);
 

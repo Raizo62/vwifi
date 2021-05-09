@@ -167,7 +167,7 @@ namespace monitorinet {
 
 	public:
 
-		CallFromStaticFunc(MonitorWirelessDevice *   obj){
+		explicit CallFromStaticFunc(MonitorWirelessDevice *   obj){
 
 			m_obj = obj ;
 		};
