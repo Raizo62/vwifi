@@ -31,6 +31,8 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected);
 
+		CWifiServer( const CWifiServer & wifiServer );
+
 		~CWifiServer();
 
 		bool Listen(TIndex maxClientDeconnected);
@@ -63,7 +65,7 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		void SetPacketLoss(bool enable);
 
-		bool CanLostPackets();
+		bool CanLostPackets() const;
 
 };
 

@@ -25,6 +25,8 @@ class CSocketServer : public CSocket
 
 		CSocketServer(TSocket type, CListInfo<CInfoSocket>* infoSockets = NULL);
 
+		CSocketServer( const CSocketServer & socketServer );
+
 		~CSocketServer();
 
 		void Init(TPort port);

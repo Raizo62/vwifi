@@ -44,6 +44,23 @@ CWifiServer::CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets, CLis
         InfoWifisDeconnected = infoWifisDeconnected;
 }
 
+CWifiServer::CWifiServer( const CWifiServer & wifiServer ) : CSocketServer(wifiServer), CWifi(wifiServer)
+{
+	MaxClientDeconnected=wifiServer.MaxClientDeconnected;
+	SetPacketLoss(wifiServer.CanLostPackets());
+
+	if( ListInfoSelfManaged )
+	{
+		InfoWifis = new CListInfo<CInfoWifi>(*(wifiServer.InfoWifis));
+		InfoWifisDeconnected = new CListInfo<CInfoWifi>(*(wifiServer.InfoWifisDeconnected));
+	}
+	else
+	{
+		InfoWifis = wifiServer.InfoWifis;
+		InfoWifisDeconnected = wifiServer.InfoWifisDeconnected;
+	}
+}
+
 CWifiServer::~CWifiServer()
 {
     if( ListInfoSelfManaged )
@@ -262,7 +279,7 @@ void CWifiServer::SetPacketLoss(bool enable)
 	PacketLoss=enable;
 }
 
-bool CWifiServer::CanLostPackets()
+bool CWifiServer::CanLostPackets() const
 {
 	return PacketLoss;
 }

@@ -25,6 +25,8 @@ class CSocket
 
 		explicit CSocket(TSocket type);
 
+		CSocket( const CSocket & socket );
+
 		TDescriptor GetDescriptor() const;
 
 		bool Configure();

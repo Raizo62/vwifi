@@ -35,6 +35,12 @@ CSocket::~CSocket()
 	Close();
 }
 
+CSocket::CSocket( const CSocket & socket )
+{
+	Master=socket.Master;
+	Type=socket.Type;
+}
+
 TDescriptor CSocket::GetDescriptor() const
 {
 	return Master;
