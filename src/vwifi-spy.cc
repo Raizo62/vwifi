@@ -103,7 +103,7 @@ int main (int argc , char ** argv){
 		ip_addr = std::string(ADDRESS_IP);
 
 	wifiClient=new CWifiClient<CSocketClientINET>;
-	((CWifiClient<CSocketClientINET>*)wifiClient)->Init(ip_addr.c_str(), port_number);
+	static_cast<CWifiClient<CSocketClientINET>*>(wifiClient)->Init(ip_addr.c_str(), port_number);
 
 	if(!wifiClient->start())
 		std::cout << "Starting process aborted" << std::endl ;

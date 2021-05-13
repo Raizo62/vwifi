@@ -105,7 +105,7 @@ int main (int argc , char ** argv){
 			port_number = DEFAULT_WIFI_CLIENT_PORT_VHOST;
 
 		wifiClient=new CWifiClient<CSocketClientVHOST>;
-		((CWifiClient<CSocketClientVHOST>*)wifiClient)->Init(port_number);
+		static_cast<CWifiClient<CSocketClientVHOST>*>(wifiClient)->Init(port_number);
 	}
 	else
 	{ // mode TCP
@@ -113,7 +113,7 @@ int main (int argc , char ** argv){
 			port_number = DEFAULT_WIFI_CLIENT_PORT_INET;
 
 		wifiClient=new CWifiClient<CSocketClientINET>;
-		((CWifiClient<CSocketClientINET>*)wifiClient)->Init(ip_addr.c_str(), port_number);
+		static_cast<CWifiClient<CSocketClientINET>*>(wifiClient)->Init(ip_addr.c_str(), port_number);
 	}
 
 	if(!wifiClient->start())
