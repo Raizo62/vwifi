@@ -30,7 +30,7 @@ void CDynBuffer::NeededSize(int size, bool keepValues)
 	Allocate(size,keepValues);
 }
 
-char* CDynBuffer::GetBuffer()
+char* CDynBuffer::GetBuffer() const
 {
 	return Buffer;
 }

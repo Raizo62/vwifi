@@ -18,7 +18,7 @@ class CDynBuffer
 
 		void NeededSize(int size, bool keepValues);
 
-		char* GetBuffer();
+		char* GetBuffer() const;
 
 };
 

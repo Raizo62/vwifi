@@ -22,7 +22,7 @@ class CInfoSocket
 
 		void SetDescriptor(TDescriptor descriptor);
 
-		TDescriptor GetDescriptor();
+		TDescriptor GetDescriptor() const;
 
 		void DisableIt();
 

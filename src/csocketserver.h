@@ -17,7 +17,7 @@ class CSocketServer : public CSocket
 
 		TDescriptor Accept(struct sockaddr_in& address);
 
-		TDescriptor GetSocketClient(TIndex index);
+		TDescriptor GetSocketClient(TIndex index) const;
 
 	public :
 
@@ -29,13 +29,13 @@ class CSocketServer : public CSocket
 
 		void Init(TPort port);
 
-		TPort GetPort();
+		TPort GetPort() const;
 
 		virtual bool Listen();
 
 		virtual TDescriptor Accept();
 
-		TIndex GetNumberClient();
+		TIndex GetNumberClient() const;
 
 		bool IsEnable(TIndex index);
 

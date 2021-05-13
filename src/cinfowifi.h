@@ -21,7 +21,7 @@ class CInfoWifi : public CCoordinate
 
 		void SetCid(TCID cid);
 
-		TCID GetCid();
+		TCID GetCid() const;
 
 		void Display(ostream& os) const;
 

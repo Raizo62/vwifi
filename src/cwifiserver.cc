@@ -220,7 +220,7 @@ void CWifiServer::SendAllClientsWithoutLoss(TPower power, const char* data, ssiz
 				(*InfoSockets)[i].DisableIt();
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
+CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid) const
 {
 	for (auto& infoWifi : *InfoWifis)
 	{
@@ -231,7 +231,7 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByCID(TCID cid)
 	return NULL;
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoWifiDeconnectedByCID(TCID cid)
+CInfoWifi* CWifiServer::GetReferenceOnInfoWifiDeconnectedByCID(TCID cid) const
 {
 	for (auto& infoWifiDeconnected : *InfoWifisDeconnected)
 	{
@@ -242,7 +242,7 @@ CInfoWifi* CWifiServer::GetReferenceOnInfoWifiDeconnectedByCID(TCID cid)
 	return NULL;
 }
 
-CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByIndex(TIndex index)
+CInfoWifi* CWifiServer::GetReferenceOnInfoWifiByIndex(TIndex index) const
 {
 	assert( index < GetNumberClient() );
 

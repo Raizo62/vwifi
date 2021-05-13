@@ -21,7 +21,7 @@ void CInfoSocket::SetDescriptor(TDescriptor descriptor)
 	EnableIt();
 }
 
-TDescriptor CInfoSocket::GetDescriptor()
+TDescriptor CInfoSocket::GetDescriptor() const
 {
 	return Descriptor;
 }

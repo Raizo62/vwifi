@@ -25,7 +25,7 @@ class CSocket
 
 		explicit CSocket(TSocket type);
 
-		TDescriptor GetDescriptor();
+		TDescriptor GetDescriptor() const;
 
 		bool Configure();
 
@@ -46,7 +46,7 @@ class CSocket
 
 		operator int();
 
-		TSocket GetType();
+		TSocket GetType() const;
 };
 
 #endif

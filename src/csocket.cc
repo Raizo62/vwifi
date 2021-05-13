@@ -35,7 +35,7 @@ CSocket::~CSocket()
 	Close();
 }
 
-TDescriptor CSocket::GetDescriptor()
+TDescriptor CSocket::GetDescriptor() const
 {
 	return Master;
 }
@@ -123,7 +123,7 @@ CSocket::operator int()
 	return Master;
 }
 
-TSocket CSocket::GetType()
+TSocket CSocket::GetType() const
 {
 	return Type;
 }

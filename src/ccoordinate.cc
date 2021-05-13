@@ -34,17 +34,17 @@ void CCoordinate::SetZ(TValue z)
 	Z=z;
 }
 
-TValue CCoordinate::GetX()
+TValue CCoordinate::GetX() const
 {
 	return X;
 }
 
-TValue CCoordinate::GetY()
+TValue CCoordinate::GetY() const
 {
 	return Y;
 }
 
-TValue CCoordinate::GetZ()
+TValue CCoordinate::GetZ() const
 {
 	return Z;
 }

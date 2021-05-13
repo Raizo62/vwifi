@@ -53,11 +53,11 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		void SendAllClientsWithoutLoss(TPower power, const char* data, ssize_t sizeOfData);
 
-		CInfoWifi* GetReferenceOnInfoWifiByCID(TCID cid);
+		CInfoWifi* GetReferenceOnInfoWifiByCID(TCID cid) const;
 
-		CInfoWifi* GetReferenceOnInfoWifiDeconnectedByCID(TCID cid);
+		CInfoWifi* GetReferenceOnInfoWifiDeconnectedByCID(TCID cid) const;
 
-		CInfoWifi* GetReferenceOnInfoWifiByIndex(TIndex index);
+		CInfoWifi* GetReferenceOnInfoWifiByIndex(TIndex index) const;
 
 		void AddInfoWifiDeconnected(CInfoWifi infoWifi);
 

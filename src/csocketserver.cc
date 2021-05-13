@@ -52,7 +52,7 @@ void CSocketServer::Init(TPort port)
 	Port=port;
 }
 
-TPort CSocketServer::GetPort()
+TPort CSocketServer::GetPort() const
 {
 	return Port;
 }
@@ -170,7 +170,7 @@ TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
 	return new_socket;
 }
 
-TDescriptor CSocketServer::GetSocketClient(TIndex index)
+TDescriptor CSocketServer::GetSocketClient(TIndex index) const
 {
 	assert( index < InfoSockets->size() );
 
@@ -182,7 +182,7 @@ TDescriptor CSocketServer::operator[] (TIndex index)
 	return GetSocketClient(index);
 }
 
-TIndex CSocketServer::GetNumberClient()
+TIndex CSocketServer::GetNumberClient() const
 {
 	return InfoSockets->size();
 }

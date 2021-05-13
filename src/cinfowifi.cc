@@ -19,7 +19,7 @@ void CInfoWifi::SetCid(TCID cid)
 	Cid=cid;
 }
 
-TCID CInfoWifi::GetCid()
+TCID CInfoWifi::GetCid() const
 {
 	return Cid;
 }
