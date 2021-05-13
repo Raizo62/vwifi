@@ -45,11 +45,11 @@ class CSocketServer : public CSocket
 
 		void CloseClient(TIndex index);
 
-		ssize_t Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData);
-		ssize_t SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData);
+		ssize_t Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData) override;
+		ssize_t SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData) override;
 
-		ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData);
-		ssize_t ReadBigData(TDescriptor descriptor, CDynBuffer* data);
+		ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData) override;
+		ssize_t ReadBigData(TDescriptor descriptor, CDynBuffer* data) override;
 
 		TDescriptor operator[] (TIndex index);
 };

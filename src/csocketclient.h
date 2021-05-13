@@ -54,9 +54,9 @@ class CSocketClientINET : public CSocketClient
 
 		void Init(const char* IP, TPort port);
 
-		bool Connect();
+		bool Connect() override;
 
-		int GetID();
+		int GetID() override;
 };
 
 class CSocketClientVHOST : public CSocketClient
@@ -71,9 +71,9 @@ class CSocketClientVHOST : public CSocketClient
 
 		void Init(TPort port);
 
-		bool Connect();
+		bool Connect() override;
 
-		int GetID();
+		int GetID() override;
 };
 
 #endif
