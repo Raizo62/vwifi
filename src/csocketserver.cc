@@ -49,18 +49,7 @@ CSocketServer::CSocketServer(TSocket type, CListInfo<CInfoSocket>* infoSockets) 
 
 CSocketServer::CSocketServer( const CSocketServer & socketServer ) : CSocket(socketServer)
 {
-	Init(socketServer.GetPort());
-
-	ListInfoSelfManaged=socketServer.ListInfoSelfManaged;
-
-	if( ListInfoSelfManaged )
-	{
-		InfoSockets = new CListInfo<CInfoSocket>(*(socketServer.InfoSockets));
-	}
-	else
-	{
-		InfoSockets = socketServer.InfoSockets;
-	}
+	*this=socketServer;
 }
 
 CSocketServer& CSocketServer::operator=(const CSocketServer& socketServer)
