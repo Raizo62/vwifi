@@ -32,7 +32,7 @@ class WirelessDevice {
 	 * 	  m -  wireless net device mac address
 	 * 	  h -  wireless net device mac address in hwsim driver
 	 */
-	WirelessDevice(std::string,int,int,const struct ether_addr &,const struct ether_addr &,int);
+	WirelessDevice(const std::string &,int,int,const struct ether_addr &,const struct ether_addr &,int);
 
 	/**
 	 * \fn WirelessDevice(std::string n,int i,int t,const struct ether_addr & m);
@@ -42,7 +42,7 @@ class WirelessDevice {
 	 * 	  t -  type
 	 * 	  m -  wireless net device mac address
 	 */
-	WirelessDevice(std::string,int,int,const struct ether_addr &,int);
+	WirelessDevice(const std::string &,int,int,const struct ether_addr &,int);
 
 	friend std::ostream &   operator<< ( std::ostream & , WirelessDevice &);
 
