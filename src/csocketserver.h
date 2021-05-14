@@ -29,6 +29,8 @@ class CSocketServer : public CSocket
 
 		~CSocketServer();
 
+		CSocketServer& operator=(const CSocketServer& socketServer);
+
 		void Init(TPort port);
 
 		TPort GetPort() const;

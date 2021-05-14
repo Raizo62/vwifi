@@ -35,6 +35,8 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		~CWifiServer();
 
+		CWifiServer& operator=(const CWifiServer& wifiServer);
+
 		bool Listen(TIndex maxClientDeconnected);
 
 		TDescriptor Accept() override;

@@ -70,6 +70,34 @@ CWifiServer::~CWifiServer()
     }
 }
 
+CWifiServer& CWifiServer::operator=(const CWifiServer& wifiServer)
+{
+	if( this != &wifiServer )
+	{ // protect against invalid self-assignment
+		MaxClientDeconnected=wifiServer.MaxClientDeconnected;
+		SetPacketLoss(wifiServer.CanLostPackets());
+
+		if( ListInfoSelfManaged )
+		{
+			if( InfoWifis != NULL )
+			{
+				delete InfoWifis;
+				delete InfoWifisDeconnected;
+			}
+			InfoWifis = new CListInfo<CInfoWifi>(*(wifiServer.InfoWifis));
+			InfoWifisDeconnected = new CListInfo<CInfoWifi>(*(wifiServer.InfoWifisDeconnected));
+		}
+		else
+		{
+			InfoWifis = wifiServer.InfoWifis;
+			InfoWifisDeconnected = wifiServer.InfoWifisDeconnected;
+		}
+	}
+
+	// by convention, always return *this
+	return *this;
+}
+
 void CWifiServer::DefaultValues()
 {
 	MaxClientDeconnected=0;

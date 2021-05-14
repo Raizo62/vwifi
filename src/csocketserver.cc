@@ -63,6 +63,30 @@ CSocketServer::CSocketServer( const CSocketServer & socketServer ) : CSocket(soc
 	}
 }
 
+CSocketServer& CSocketServer::operator=(const CSocketServer& socketServer)
+{
+	if( this != &socketServer )
+	{ // protect against invalid self-assignment
+		Init(socketServer.GetPort());
+
+		ListInfoSelfManaged=socketServer.ListInfoSelfManaged;
+
+		if( ListInfoSelfManaged )
+		{
+			if( InfoSockets != NULL )
+				delete InfoSockets;
+			InfoSockets = new CListInfo<CInfoSocket>(*(socketServer.InfoSockets));
+		}
+		else
+		{
+			InfoSockets = socketServer.InfoSockets;
+		}
+	}
+
+	// by convention, always return *this
+	return *this;
+}
+
 void CSocketServer::Init(TPort port)
 {
 	Port=port;
