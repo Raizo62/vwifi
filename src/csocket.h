@@ -47,8 +47,6 @@ class CSocket
 		~CSocket();
 
 		operator int();
-
-		TSocket GetType() const;
 };
 
 #endif

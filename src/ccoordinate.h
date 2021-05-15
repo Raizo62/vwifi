@@ -27,10 +27,6 @@ class CCoordinate
 
 		void Set(CCoordinate coo);
 
-		TValue GetX() const;
-		TValue GetY() const;
-		TValue GetZ() const;
-
 		TDistance DistanceWith(TValue x, TValue y, TValue z);
 		TDistance DistanceWith(CCoordinate coo);
 

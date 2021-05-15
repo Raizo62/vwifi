@@ -106,11 +106,6 @@ ssize_t CSocketClient::ReadBigData(CDynBuffer* data)
 	return SOCKET_ERROR;
 }
 
-void CSocketClient::StopReconnect(){
-
-	StopTheReconnect = true ;
-}
-
 // ----------------- CSocketClientINET
 
 CSocketClientINET::CSocketClientINET() : CSocketClient(AF_INET) {}

@@ -34,21 +34,6 @@ void CCoordinate::SetZ(TValue z)
 	Z=z;
 }
 
-TValue CCoordinate::GetX() const
-{
-	return X;
-}
-
-TValue CCoordinate::GetY() const
-{
-	return Y;
-}
-
-TValue CCoordinate::GetZ() const
-{
-	return Z;
-}
-
 void CCoordinate::Set(TValue x, TValue y)
 {
 	SetX(x);

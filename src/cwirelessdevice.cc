@@ -34,13 +34,6 @@ WirelessDevice::WirelessDevice(const std::string & name,int index ,int iftype ,c
 }
 
 
-void WirelessDevice::setName(const std::string & name){
-
-	_name = name ;
-
-}
-
-
 std::string WirelessDevice::getName() const {
 
 	return _name ;
@@ -54,13 +47,6 @@ struct ether_addr WirelessDevice::getMacaddr() const  {
 
 }
 
-
-void  WirelessDevice::setMacaddr(const struct ether_addr & macaddr)  {
-
-	_macaddr = macaddr ;
-//	std::memcpy(&_macaddr,&macaddr,ETH_ALEN);
-
-}
 
 void  WirelessDevice::setMachwsim(const struct ether_addr & machwsim)  {
 

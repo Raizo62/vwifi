@@ -587,47 +587,6 @@ int MonitorWirelessDevice::recv_winterface_infos(struct nl_msg *msg){
 	return NL_SKIP;
 }
 
-int MonitorWirelessDevice::get_winterface_extra_infos(int ifindex)
-{
-
-	wifi.err1 = 1 ;
-
-	/* allocate a msg to send to a module */
-	struct nl_msg *msg1 = nlmsg_alloc();
-
-	if (!msg1) {
-
-		std::cerr << "Failed to allocate netlink message." << std::endl ;
-		return -ENOMEM;
-	}
-
-	/* send get inerface  command to deriver */
-	//genlmsg_put(msg1, 0, 0, wifi.nl80211_id, 0,flags, NL80211_CMD_GET_STATION, 0);
-	genlmsg_put(msg1, NL_AUTO_PORT, NL_AUTO_SEQ, wifi.nl80211_id, 0,NLM_F_DUMP, NL80211_CMD_GET_STATION, 0);
-
-	nla_put_u32(msg1, NL80211_ATTR_IFINDEX, ifindex);
-
-	if (nl_send_auto(wifi.nls, msg1) < 0)
-	{
-		nlmsg_free(msg1);
-		return -1 ;
-	}
-
-
-	while(wifi.err1 > 0)
-		nl_recvmsgs(wifi.nls, wifi.cb1);
-
-
-	nlmsg_free(msg1);
-
-
-	return 0 ;
-
-
-}
-
-
-
 int MonitorWirelessDevice::recv_winterface_extra_infos_cb(struct nl_msg *msg, [[maybe_unused]] void *arg){
 
 	forward->recv_winterface_extra_infos(msg);

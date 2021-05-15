@@ -229,22 +229,6 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 	}
 }
 
-void CWifiServer::SendAllClients(CCoordinate cooSource, TPower power, const char* data, ssize_t sizeOfData)
-{
-//	cout<<"Forward "<<sizeOfData<<" bytes with "<<power<<" powers"<<endl;
-
-	for (TIndex i = 0; i < GetNumberClient(); i++)
-	{
-		if( IsEnable(i) )
-		{
-			TPower signalLevel=BoundedPower(power-Attenuation(cooSource.DistanceWith((*InfoWifis)[i])));
-			if( ! CanLostPackets() || ! PacketIsLost(signalLevel) )
-				if( SendSignal((*InfoSockets)[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
-					(*InfoSockets)[i].DisableIt();
-		}
-	}
-}
-
 void CWifiServer::SendAllClientsWithoutLoss(TPower power, const char* data, ssize_t sizeOfData)
 {
 	for (TIndex i = 0; i < GetNumberClient(); i++)

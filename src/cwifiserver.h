@@ -53,8 +53,6 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		void SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData);
 
-		void SendAllClients(CCoordinate cooSource,TPower power, const char* data, ssize_t sizeOfData);
-
 		void SendAllClientsWithoutLoss(TPower power, const char* data, ssize_t sizeOfData);
 
 		CInfoWifi* GetReferenceOnInfoWifiByCID(TCID cid) const;

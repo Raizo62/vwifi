@@ -31,8 +31,6 @@ class CSocketClient : public CSocket
 		ssize_t Read(char* data, ssize_t sizeOfData);
 		ssize_t ReadBigData(CDynBuffer* data);
 
-		void StopReconnect();
-
 		bool ConnectLoop();
 
 	// virtual :

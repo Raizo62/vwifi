@@ -136,7 +136,6 @@ public:
 	 *\return error codes
  	*/
 	int get_winterface_infos(int);
-	int get_winterface_extra_infos(int ifindex);
 
 	int recv_winterface_infos(struct nl_msg *msg);
 	int recv_winterface_extra_infos(struct nl_msg *msg);
