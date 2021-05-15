@@ -12,6 +12,8 @@
 const float ConstanteC=92.45;
 const TFrequency Frequency=2.4; // GHz
 
+const int MTU=1640; // Maximum Transmission Unit : 1640 is an experimental value
+
 // distance : meter
 int CWifi::Attenuation(TDistance distance)
 {
@@ -68,5 +70,9 @@ ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPo
 		return SOCKET_ERROR;
 
 	int sizeTotal=((struct nlmsghdr *)(buffer->GetBuffer()))->nlmsg_len;
+
+	if( sizeTotal > MTU ) // to avoid that a error packet overfulls the memory
+		return SOCKET_ERROR;
+
 	return socket->ReadEqualSize(descriptor, buffer, sizeRead, sizeTotal);
 }
