@@ -11,10 +11,10 @@ unsigned long hash_ipaddr(struct sockaddr_in* addr)
 
 	assert( addr != NULL );
 
-	res = (((addr->sin_addr.s_addr >> 24) & 0xff) * 256) +
-		(((addr->sin_addr.s_addr >> 16) & 0xff) * 256)   +
-		(((addr->sin_addr.s_addr >>  8) & 0xff)* 256)    +
-		(addr->sin_addr.s_addr & 0xff);
+	res = (((addr->sin_addr.s_addr >> 24) & 0xff) * 256)	+
+			(((addr->sin_addr.s_addr >> 16) & 0xff) * 256)	+
+			(((addr->sin_addr.s_addr >>  8) & 0xff)* 256)	+
+			(addr->sin_addr.s_addr & 0xff);
 
 	return res;
 }

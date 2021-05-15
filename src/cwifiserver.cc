@@ -14,34 +14,34 @@ using namespace std;
 
 CWifiServer::CWifiServer() : CSocketServer ()
 {
-		DefaultValues();
+	DefaultValues();
 
-        InfoWifis = new CListInfo<CInfoWifi>;
-        InfoWifisDeconnected = new CListInfo<CInfoWifi>;
+	InfoWifis = new CListInfo<CInfoWifi>;
+	InfoWifisDeconnected = new CListInfo<CInfoWifi>;
 }
 
 CWifiServer::CWifiServer(CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected) : CSocketServer (infoSockets)
 {
-		DefaultValues();
+	DefaultValues();
 
-        InfoWifis = infoWifis;
-        InfoWifisDeconnected = infoWifisDeconnected;
+	InfoWifis = infoWifis;
+	InfoWifisDeconnected = infoWifisDeconnected;
 }
 
 CWifiServer::CWifiServer(TSocket type) : CSocketServer (type)
 {
-		DefaultValues();
+	DefaultValues();
 
-        InfoWifis = new CListInfo<CInfoWifi>;
-        InfoWifisDeconnected = new CListInfo<CInfoWifi>;
+	InfoWifis = new CListInfo<CInfoWifi>;
+	InfoWifisDeconnected = new CListInfo<CInfoWifi>;
 }
 
 CWifiServer::CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected) : CSocketServer (type, infoSockets)
 {
-		DefaultValues();
+	DefaultValues();
 
-        InfoWifis = infoWifis;
-        InfoWifisDeconnected = infoWifisDeconnected;
+	InfoWifis = infoWifis;
+	InfoWifisDeconnected = infoWifisDeconnected;
 }
 
 CWifiServer::CWifiServer( const CWifiServer & wifiServer ) : CSocketServer(wifiServer), CWifi(wifiServer)
@@ -51,17 +51,18 @@ CWifiServer::CWifiServer( const CWifiServer & wifiServer ) : CSocketServer(wifiS
 
 CWifiServer::~CWifiServer()
 {
-    if( ListInfoSelfManaged )
-    {
-        delete InfoWifis;
-        delete InfoWifisDeconnected;
-    }
+	if( ListInfoSelfManaged )
+	{
+		delete InfoWifis;
+		delete InfoWifisDeconnected;
+	}
 }
 
 CWifiServer& CWifiServer::operator=(const CWifiServer& wifiServer)
 {
 	if( this != &wifiServer )
-	{ // protect against invalid self-assignment
+	{
+		// protect against invalid self-assignment
 		MaxClientDeconnected=wifiServer.MaxClientDeconnected;
 		SetPacketLoss(wifiServer.CanLostPackets());
 

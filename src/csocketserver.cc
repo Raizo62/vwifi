@@ -15,36 +15,36 @@ CSocketServer::CSocketServer(CListInfo<CInfoSocket>* infoSockets) : CSocket()
 {
 	Init(0);
 
-    if( infoSockets == NULL )
-    {
-        InfoSockets = new CListInfo<CInfoSocket>;
+	if( infoSockets == NULL )
+	{
+		InfoSockets = new CListInfo<CInfoSocket>;
 
-        ListInfoSelfManaged=true;
-    }
-    else
-    {
-        InfoSockets = infoSockets;
+		ListInfoSelfManaged=true;
+	}
+	else
+	{
+		InfoSockets = infoSockets;
 
-        ListInfoSelfManaged=false;
-    }
+		ListInfoSelfManaged=false;
+	}
 }
 
 CSocketServer::CSocketServer(TSocket type, CListInfo<CInfoSocket>* infoSockets) : CSocket(type)
 {
 	Init(0);
 
-    if( infoSockets == NULL )
-    {
-        InfoSockets = new CListInfo<CInfoSocket>;
+	if( infoSockets == NULL )
+	{
+		InfoSockets = new CListInfo<CInfoSocket>;
 
-        ListInfoSelfManaged=true;
-    }
-    else
-    {
-        InfoSockets = infoSockets;
+		ListInfoSelfManaged=true;
+	}
+	else
+	{
+		InfoSockets = infoSockets;
 
-        ListInfoSelfManaged=false;
-    }
+		ListInfoSelfManaged=false;
+	}
 }
 
 CSocketServer::CSocketServer( const CSocketServer & socketServer ) : CSocket(socketServer)
@@ -55,7 +55,8 @@ CSocketServer::CSocketServer( const CSocketServer & socketServer ) : CSocket(soc
 CSocketServer& CSocketServer::operator=(const CSocketServer& socketServer)
 {
 	if( this != &socketServer )
-	{ // protect against invalid self-assignment
+	{
+		// protect against invalid self-assignment
 		Init(socketServer.GetPort());
 
 		ListInfoSelfManaged=socketServer.ListInfoSelfManaged;
@@ -91,7 +92,7 @@ CSocketServer::~CSocketServer()
 	for (auto& infoSocket : *InfoSockets)
 		infoSocket.Close();
 
-    delete InfoSockets;
+	delete InfoSockets;
 
 	CSocket::Close();
 }
@@ -124,43 +125,43 @@ bool CSocketServer::Listen()
 
 	switch ( Type )
 	{
-		case AF_VSOCK :
-			{
-				//type of socket created
-				struct sockaddr_vm address;
-				address.svm_family = AF_VSOCK;
-				address.svm_reserved1 = 0;
-				address.svm_port = Port;
-				address.svm_cid = VMADDR_CID_ANY;
-				memset(address.svm_zero, 0, sizeof(address.svm_zero));
+	case AF_VSOCK :
+	{
+		//type of socket created
+		struct sockaddr_vm address;
+		address.svm_family = AF_VSOCK;
+		address.svm_reserved1 = 0;
+		address.svm_port = Port;
+		address.svm_cid = VMADDR_CID_ANY;
+		memset(address.svm_zero, 0, sizeof(address.svm_zero));
 
-				//bind the socket
-				if (bind(Master, (struct sockaddr*)&address, sizeof(address)) != 0)
-				{
-					perror("CSocketServer::Listen : bind");
-					return false;
-				}
+		//bind the socket
+		if (bind(Master, (struct sockaddr*)&address, sizeof(address)) != 0)
+		{
+			perror("CSocketServer::Listen : bind");
+			return false;
+		}
 
-				break ;
-			}
+		break ;
+	}
 
-		case AF_INET :
-			{
-				//type of socket created
-				struct sockaddr_in address;
-				address.sin_family = AF_INET;
-				address.sin_addr.s_addr = INADDR_ANY;
-				address.sin_port = htons( Port );
+	case AF_INET :
+	{
+		//type of socket created
+		struct sockaddr_in address;
+		address.sin_family = AF_INET;
+		address.sin_addr.s_addr = INADDR_ANY;
+		address.sin_port = htons( Port );
 
-				//bind the socket
-				if (bind(Master, (struct sockaddr *)&address, sizeof(address))<0)
-				{
-					perror("CSocketServer::Listen : bind");
-					return false;
-				}
+		//bind the socket
+		if (bind(Master, (struct sockaddr *)&address, sizeof(address))<0)
+		{
+			perror("CSocketServer::Listen : bind");
+			return false;
+		}
 
-				break;
-			}
+		break;
+	}
 	}
 
 	cout<<"Listener on port : "<<Port<<endl;
@@ -251,10 +252,10 @@ ssize_t CSocketServer::SendBigData(TDescriptor descriptor, const char* data, TMi
 
 ssize_t CSocketServer::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 {
-	return CSocket::Read(descriptor , data, sizeOfData);
+	return CSocket::Read(descriptor, data, sizeOfData);
 }
 
 ssize_t CSocketServer::ReadBigData(TDescriptor descriptor, CDynBuffer* data)
 {
-	return CSocket::ReadBigData(descriptor , data);
+	return CSocket::ReadBigData(descriptor, data);
 }
