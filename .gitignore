@@ -3,6 +3,8 @@ vwifi-client
 vwifi-spy
 vwifi-ctrl
 obj/
+# For cppcheck
+vwifi-cppcheck.xml
 # For eclipse :
 .project
 .cproject

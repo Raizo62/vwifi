@@ -36,7 +36,7 @@ EUID	:= $(shell id -u -r)
 vpath %.cc $(SRC)
 vpath %.h $(SRC)
 
-.PHONY: all clean build install man tools directories update gitversion
+.PHONY: all clean build install man tools directories update cppcheck gitversion
 
 build : directories $(EXEC) # man
 
@@ -70,7 +70,10 @@ update :
 
 clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
-	-rm -f $(EXEC) $(OBJ)/* $(MAN)/$(NAME).1.gz
+	-rm -f $(EXEC) $(OBJ)/* $(NAME)-cppcheck.xml $(MAN)/$(NAME).1.gz
+
+cppcheck:
+	cppcheck --verbose --enable=all --enable=style --xml $(CFLAGS) $(DEFS) -D_DEBUG $(SRC)/*.cc 2> $(NAME)-cppcheck.xml
 
 gitversion: .git
 	@sed -n "s/^\(VERSION.[^\-]*\)\(-.*\)\?/\1-$(shell git log --pretty=format:"%h" -n 1)/gp" Makefile
