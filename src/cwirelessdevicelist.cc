@@ -8,6 +8,7 @@
 
 #include "cwirelessdevicelist.h"
 #include <cstring>
+#include <algorithm> // std::transform
 
 
 WirelessDeviceList::WirelessDeviceList(){
@@ -68,12 +69,19 @@ void WirelessDeviceList::delete_device(int index){
 std::vector<WirelessDevice> & WirelessDeviceList::list_devices()  {
 
 	std::vector<WirelessDevice> * list_wd = new std::vector<WirelessDevice>();
+	list_wd->reserve(_wdevices_list.size());
 
 	_listaccess.lock();
-	for (auto & wd : _wdevices_list){
 
-		list_wd->push_back(wd.second);
-	}
+	std::transform (_wdevices_list.begin(),
+					_wdevices_list.end(),
+					back_inserter(*list_wd),
+					[] (std::pair<int, WirelessDevice> const & pair)
+						{
+							return pair.second;
+						}
+	);
+
 	_listaccess.unlock();
 
 	return *(list_wd) ;
