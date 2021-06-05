@@ -40,38 +40,4 @@ class CSocketClient : public CSocket
 		virtual int GetID()=0;
 };
 
-class CSocketClientINET : public CSocketClient
-{
-	private :
-
-		struct sockaddr_in Server;
-
-	public :
-
-		CSocketClientINET();
-
-		void Init(const char* IP, TPort port);
-
-		bool Connect() override;
-
-		int GetID() override;
-};
-
-class CSocketClientVHOST : public CSocketClient
-{
-	private :
-
-		struct sockaddr_vm Server;
-
-	public :
-
-		CSocketClientVHOST();
-
-		void Init(TPort port);
-
-		bool Connect() override;
-
-		int GetID() override;
-};
-
 #endif

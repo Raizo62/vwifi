@@ -3,7 +3,7 @@
 #include <string.h> //strlen
 
 #include "config.h"
-#include "csocketclient.h"
+#include "csocketclientinet.h"
 #include "types.h"
 #include "ccoordinate.h" // CCoordinate
 #include "cinfowifi.h"

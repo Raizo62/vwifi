@@ -1,4 +1,5 @@
 #include "cwificlient.h"
+#include "csocketclientinet.h"
 
 #include <signal.h>
 #include <unistd.h>
