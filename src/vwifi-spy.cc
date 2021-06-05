@@ -1,5 +1,5 @@
 #include "cwificlient.h"
-#include "csocketclientinet.h"
+#include "csocketclientitcp.h"
 
 #include <signal.h>
 #include <unistd.h>
@@ -103,8 +103,8 @@ int main (int argc , char ** argv){
 	if( ip_addr.empty() )
 		ip_addr = std::string(ADDRESS_IP);
 
-	wifiClient=new CWifiClient<CSocketClientINET>;
-	static_cast<CWifiClient<CSocketClientINET>*>(wifiClient)->Init(ip_addr.c_str(), port_number);
+	wifiClient=new CWifiClient<CSocketClientITCP>;
+	static_cast<CWifiClient<CSocketClientITCP>*>(wifiClient)->Init(ip_addr.c_str(), port_number);
 
 	if(!wifiClient->start())
 		std::cout << "Starting process aborted" << std::endl ;

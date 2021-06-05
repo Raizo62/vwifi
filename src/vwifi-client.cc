@@ -1,6 +1,6 @@
 #include "cwificlient.h"
-#include "csocketclientvhost.h"
-#include "csocketclientinet.h"
+#include "csocketclientvtcp.h"
+#include "csocketclientitcp.h"
 
 #include <signal.h>
 #include <unistd.h>
@@ -106,16 +106,16 @@ int main (int argc , char ** argv){
 		if( ! port_number )
 			port_number = DEFAULT_WIFI_CLIENT_PORT_VHOST;
 
-		wifiClient=new CWifiClient<CSocketClientVHOST>;
-		static_cast<CWifiClient<CSocketClientVHOST>*>(wifiClient)->Init(port_number);
+		wifiClient=new CWifiClient<CSocketClientVTCP>;
+		static_cast<CWifiClient<CSocketClientVTCP>*>(wifiClient)->Init(port_number);
 	}
 	else
 	{ // mode TCP
 		if( ! port_number )
 			port_number = DEFAULT_WIFI_CLIENT_PORT_INET;
 
-		wifiClient=new CWifiClient<CSocketClientINET>;
-		static_cast<CWifiClient<CSocketClientINET>*>(wifiClient)->Init(ip_addr.c_str(), port_number);
+		wifiClient=new CWifiClient<CSocketClientITCP>;
+		static_cast<CWifiClient<CSocketClientITCP>*>(wifiClient)->Init(ip_addr.c_str(), port_number);
 	}
 
 	if(!wifiClient->start())

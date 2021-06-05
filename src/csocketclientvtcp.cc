@@ -8,14 +8,14 @@
 #include <unistd.h> // close
 #include <assert.h> // assert
 
-#include "csocketclientvhost.h"
+#include "csocketclientvtcp.h"
 #include "tools.h"
 
 using namespace std;
 
-CSocketClientVHOST::CSocketClientVHOST() : CSocketClient(AF_VSOCK) {}
+CSocketClientVTCP::CSocketClientVTCP() : CSocketClient(AF_VSOCK) {}
 
-void CSocketClientVHOST::Init(TPort port)
+void CSocketClientVTCP::Init(TPort port)
 {
 	Server.svm_family = AF_VSOCK;
 	Server.svm_reserved1 = 0;
@@ -23,12 +23,12 @@ void CSocketClientVHOST::Init(TPort port)
 	Server.svm_cid = 2;
 }
 
-bool CSocketClientVHOST::Connect()
+bool CSocketClientVTCP::Connect()
 {
 	return ConnectCore((struct sockaddr*) &Server, sizeof(Server));
 }
 
-int CSocketClientVHOST::GetID()
+int CSocketClientVTCP::GetID()
 {
 	int cid;
 

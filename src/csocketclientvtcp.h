@@ -1,12 +1,12 @@
-#ifndef _CSOCKETCLIENTVHOST_H_
-#define _CSOCKETCLIENTVHOST_H_
+#ifndef _CSOCKETCLIENTVTCP_H_
+#define _CSOCKETCLIENTVTCP_H_
 
 #include <netinet/ip.h> // struct sockaddr_in
 #include <linux/vm_sockets.h> // struct sockaddr_vm
 
 #include "csocketclient.h"
 
-class CSocketClientVHOST : public CSocketClient
+class CSocketClientVTCP : public CSocketClient
 {
 	private :
 
@@ -14,7 +14,7 @@ class CSocketClientVHOST : public CSocketClient
 
 	public :
 
-		CSocketClientVHOST();
+		CSocketClientVTCP();
 
 		void Init(TPort port);
 

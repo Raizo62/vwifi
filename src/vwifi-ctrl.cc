@@ -3,7 +3,7 @@
 #include <string.h> //strlen
 
 #include "config.h"
-#include "csocketclientinet.h"
+#include "csocketclientitcp.h"
 #include "types.h"
 #include "ccoordinate.h" // CCoordinate
 #include "cinfowifi.h"
@@ -43,7 +43,7 @@ void Help()
 
 int AskList()
 {
-	CSocketClientINET socket;
+	CSocketClientITCP socket;
 
 	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
@@ -112,7 +112,7 @@ int ChangeCoordinate(int argc, char *argv[])
 
 	cout<<cid<<" "<<coo<<" "<<endl;
 
-	CSocketClientINET socket;
+	CSocketClientITCP socket;
 
 	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
@@ -169,7 +169,7 @@ int ChangePacketLoss(int argc, char *argv[])
 			return 1;
 	}
 
-	CSocketClientINET socket;
+	CSocketClientITCP socket;
 
 	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
@@ -206,7 +206,7 @@ int ChangePacketLoss(int argc, char *argv[])
 
 int AskStatus()
 {
-	CSocketClientINET socket;
+	CSocketClientITCP socket;
 
 	cout<<"CTRL : IP : "<<ADDRESS_IP<<endl;
 	cout<<"CTRL : Port : "<<DEFAULT_CTRL_PORT<<endl;
@@ -297,7 +297,7 @@ int AskStatus()
 
 int AskShow()
 {
-	CSocketClientINET socket;
+	CSocketClientITCP socket;
 
 	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
@@ -375,7 +375,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 			return 1;
 	}
 
-	CSocketClientINET socket;
+	CSocketClientITCP socket;
 
 	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
@@ -443,7 +443,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 
 int CloseAllClient()
 {
-	CSocketClientINET socket;
+	CSocketClientITCP socket;
 
 	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 

@@ -1,11 +1,11 @@
-#ifndef _CSOCKETCLIENTINET_H_
-#define _CSOCKETCLIENTINET_H_
+#ifndef _CSOCKETCLIENTITCP_H_
+#define _CSOCKETCLIENTITCP_H_
 
 #include "csocketclient.h"
 
 #include <netinet/ip.h> // struct sockaddr_in
 
-class CSocketClientINET : public CSocketClient
+class CSocketClientITCP : public CSocketClient
 {
 	private :
 
@@ -13,7 +13,7 @@ class CSocketClientINET : public CSocketClient
 
 	public :
 
-		CSocketClientINET();
+		CSocketClientITCP();
 
 		void Init(const char* IP, TPort port);
 
