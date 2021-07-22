@@ -25,11 +25,6 @@ CSocketClient::CSocketClient() : CSocket()
 	Init();
 }
 
-CSocketClient::CSocketClient(TSocket type) : CSocket(type)
-{
-	Init();
-}
-
 void CSocketClient::Init()
 {
 	IsConnected=false;

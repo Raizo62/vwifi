@@ -29,7 +29,7 @@ class CSocket
 
 		TDescriptor GetDescriptor() const;
 
-		bool Configure();
+		virtual bool Configure();
 
 		virtual ssize_t Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData);
 		virtual ssize_t SendBigData(TDescriptor descriptor, const char* data, TMinimalSize sizeOfData);

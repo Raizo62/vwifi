@@ -17,6 +17,8 @@ class CSocketClientITCP : public CSocketClient
 
 		void Init(const char* IP, TPort port);
 
+		bool Configure();
+
 		bool Connect() override;
 
 		int GetID() override;

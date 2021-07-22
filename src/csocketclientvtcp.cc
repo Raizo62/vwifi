@@ -13,7 +13,10 @@
 
 using namespace std;
 
-CSocketClientVTCP::CSocketClientVTCP() : CSocketClient(AF_VSOCK) {}
+CSocketClientVTCP::CSocketClientVTCP() : CSocketClient()
+{
+	cout<<"Type : AF_VSOCK"<<endl;
+}
 
 void CSocketClientVTCP::Init(TPort port)
 {
@@ -21,6 +24,19 @@ void CSocketClientVTCP::Init(TPort port)
 	Server.svm_reserved1 = 0;
 	Server.svm_port = port;
 	Server.svm_cid = 2;
+}
+
+bool CSocketClientVTCP::Configure()
+{
+	Master = socket(AF_VSOCK , SOCK_STREAM , 0);
+
+	if( Master == SOCKET_ERROR )
+	{
+		perror("CSocketClientVTCP::Configure : socket");
+		return false;
+	}
+
+	return true;
 }
 
 bool CSocketClientVTCP::Connect()

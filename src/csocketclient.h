@@ -23,8 +23,6 @@ class CSocketClient : public CSocket
 		CSocketClient();
 		~CSocketClient();
 
-		CSocketClient(TSocket type);
-
 		ssize_t Send(const char* data, ssize_t sizeOfData);
 		ssize_t SendBigData(const char* data, TMinimalSize sizeOfData);
 
