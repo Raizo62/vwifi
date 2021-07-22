@@ -36,7 +36,7 @@ EUID	:= $(shell id -u -r)
 vpath %.cc $(SRC)
 vpath %.h $(SRC)
 
-.PHONY: all clean build install man tools directories update cppcheck gitversion
+.PHONY: all clean build install man dep tools directories update cppcheck gitversion
 
 build : directories $(EXEC) # man
 
@@ -72,6 +72,9 @@ update :
 clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
 	-rm -f $(EXEC) $(OBJ)/* $(NAME)-cppcheck.xml $(MAN)/$(NAME).1.gz
+
+dep:
+	-bash tools/Makefile.dependency.sh
 
 cppcheck:
 	cppcheck --verbose --enable=all --enable=style --xml $(CFLAGS) $(DEFS) -D_DEBUG $(SRC)/*.cc 2> $(NAME)-cppcheck.xml
