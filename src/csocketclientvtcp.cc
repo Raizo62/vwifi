@@ -41,7 +41,7 @@ bool CSocketClientVTCP::Configure()
 
 bool CSocketClientVTCP::Connect()
 {
-	return ConnectCore((struct sockaddr*) &Server, sizeof(Server));
+	return Connect((struct sockaddr*) &Server, sizeof(Server));
 }
 
 int CSocketClientVTCP::GetID()

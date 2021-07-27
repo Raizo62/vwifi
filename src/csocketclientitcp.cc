@@ -40,7 +40,7 @@ bool CSocketClientITCP::Configure()
 
 bool CSocketClientITCP::Connect()
 {
-	return ConnectCore((struct sockaddr*) &Server, sizeof(Server));
+	return Connect((struct sockaddr*) &Server, sizeof(Server));
 }
 
 int CSocketClientITCP::GetID()

@@ -16,7 +16,7 @@ class CSocketClient : public CSocket
 
 	protected :
 
-		bool ConnectCore(struct sockaddr* server, size_t size_of_server);
+		bool Connect(struct sockaddr* server, size_t size_of_server);
 
 	public :
 

@@ -43,7 +43,7 @@ bool CSocketClient::ConnectLoop()
 	return false;
 }
 
-bool CSocketClient::ConnectCore(struct sockaddr* server, size_t size_of_server)
+bool CSocketClient::Connect(struct sockaddr* server, size_t size_of_server)
 {
 	if( ! Configure() )
 	{
