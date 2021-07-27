@@ -15,7 +15,6 @@ using namespace std;
 
 CSocketClientVTCP::CSocketClientVTCP() : CSocketClient()
 {
-	cout<<"Type : AF_VSOCK"<<endl;
 }
 
 void CSocketClientVTCP::Init(TPort port)

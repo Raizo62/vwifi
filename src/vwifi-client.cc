@@ -108,6 +108,7 @@ int main (int argc , char ** argv){
 		if( ! port_number )
 			port_number = DEFAULT_WIFI_CLIENT_PORT_VHOST;
 
+		std::cout<<"Type : AF_VSOCK"<<std::endl;
 		wifiClient=new CWifiClient<CSocketClientVTCP>;
 		static_cast<CWifiClient<CSocketClientVTCP>*>(wifiClient)->Init(port_number);
 	}
@@ -116,6 +117,7 @@ int main (int argc , char ** argv){
 		if( ! port_number )
 			port_number = DEFAULT_WIFI_CLIENT_PORT_INET;
 
+		std::cout<<"Type : AF_INET"<<std::endl;
 		wifiClient=new CWifiClient<CSocketClientITCP>;
 		static_cast<CWifiClient<CSocketClientITCP>*>(wifiClient)->Init(ip_addr.c_str(), port_number);
 	}

@@ -15,7 +15,6 @@ using namespace std;
 
 CSocketClientITCP::CSocketClientITCP() : CSocketClient()
 {
-	cout<<"Type : AF_INET"<<endl;
 }
 
 void CSocketClientITCP::Init(const char* IP, TPort port)
