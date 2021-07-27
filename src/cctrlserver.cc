@@ -100,12 +100,7 @@ void CCTRLServer::ChangeCoordinate()
 	}
 
 	CInfoWifi infoNewWifi(cid,coo);
-#ifdef _USE_VSOCK_BY_DEFAULT_
 	WifiGuestVHostServer->AddInfoWifiDeconnected(infoNewWifi);
-#else
-	WifiGuestInetServer->AddInfoWifiDeconnected(infoNewWifi);
-#endif
-
 }
 
 void CCTRLServer::ChangePacketLoss()
