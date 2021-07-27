@@ -3,7 +3,8 @@
 #include <string.h> // strcmp
 
 #include "config.h"
-#include "cwifiserver.h"
+#include "cwifiserveritcp.h"
+#include "cwifiservervtcp.h"
 #include "cctrlserver.h"
 #include "cselect.h"
 #include "cdynbuffer.h"
@@ -86,7 +87,7 @@ int vwifi_server()
 	CListInfo<CInfoWifi> infoWifis;
 	CListInfo<CInfoWifi> infoWifisDeconnected;
 
-	CWifiServer wifiGuestVHostServer(AF_VSOCK,&infoSockets,&infoWifis,&infoWifisDeconnected);
+	CWifiServerVTCP wifiGuestVHostServer(&infoSockets,&infoWifis,&infoWifisDeconnected);
 	cout<<"CLIENT VHOST : ";
 	wifiGuestVHostServer.Init(Port_VHOST);
 	if( ! wifiGuestVHostServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
@@ -97,7 +98,7 @@ int vwifi_server()
 
 	CWifiServer* wifiServer=&wifiGuestVHostServer; // or wifiGuestINETServer, it doesn't change anything
 
-	CWifiServer wifiGuestINETServer(AF_INET,&infoSockets,&infoWifis,&infoWifisDeconnected);
+	CWifiServerITCP wifiGuestINETServer(&infoSockets,&infoWifis,&infoWifisDeconnected);
 	cout<<"CLIENT TCP : ";
 	wifiGuestINETServer.Init(Port_TCP);
 	if( ! wifiGuestINETServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
@@ -107,7 +108,7 @@ int vwifi_server()
 	}
 
 	cout<<"SPY : ";
-	CWifiServer wifiSpyServer(AF_INET);
+	CWifiServerITCP wifiSpyServer;
 	wifiSpyServer.SetPacketLoss(false);
 	wifiSpyServer.Init(Port_Spy);
 	if( ! wifiSpyServer.Listen(1) )

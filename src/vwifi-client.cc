@@ -9,6 +9,8 @@
 
 #include <memory>
 
+#include "config.h" // DEFAULT_WIFI_CLIENT_PORT_VHOST / DEFAULT_WIFI_CLIENT_PORT_INET
+
 enum STATE {
 
 	STARTED=1,

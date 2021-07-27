@@ -15,19 +15,6 @@ using namespace std;
 CSocket::CSocket()
 {
 	Master=0;
-#ifdef _USE_VSOCK_BY_DEFAULT_
-	cout<<"Type : AF_VSOCK"<<endl;
-	Type=AF_VSOCK;
-#else
-	cout<<"Type : AF_INET"<<endl;
-	Type=AF_INET;
-#endif
-}
-
-CSocket::CSocket(TSocket type)
-{
-	Master=0;
-	Type=type;
 }
 
 CSocket::~CSocket()
@@ -38,27 +25,11 @@ CSocket::~CSocket()
 CSocket::CSocket( const CSocket & socket )
 {
 	Master=socket.Master;
-	Type=socket.Type;
 }
 
 TDescriptor CSocket::GetDescriptor() const
 {
 	return Master;
-}
-
-bool CSocket::Configure()
-{
-	//create a master socket
-
-	Master = socket(Type , SOCK_STREAM , 0);
-
-	if( Master == SOCKET_ERROR )
-	{
-		perror("CSocket::Configure : socket");
-		return false;
-	}
-
-	return true;
 }
 
 ssize_t CSocket::Send(TDescriptor descriptor, const char* data, ssize_t sizeOfData)

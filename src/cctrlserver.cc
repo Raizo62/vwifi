@@ -1,11 +1,21 @@
 #include "cctrlserver.h"
 
-CCTRLServer::CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiSpyServer, CSelect* scheduler) : CSocketServer(AF_INET)
+CCTRLServer::CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiSpyServer, CSelect* scheduler) : CSocketServer()
 {
 	WifiGuestVHostServer=wifiGuestVHostServer;
 	WifiGuestInetServer=wifiGuestInetServer;
 	WifiSpyServer=wifiSpyServer;
 	Scheduler=scheduler;
+}
+
+bool CCTRLServer::_Listen(TDescriptor& master, TPort port)
+{
+	return CSocketServerFunctionITCP::_Listen(master, port);
+}
+
+TDescriptor CCTRLServer::_Accept(TDescriptor master, TCID& cid)
+{
+	return CSocketServerFunctionITCP::_Accept(master, cid);
 }
 
 ssize_t CCTRLServer::Read(char* data, ssize_t sizeOfData)

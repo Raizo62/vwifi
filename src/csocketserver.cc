@@ -29,24 +29,6 @@ CSocketServer::CSocketServer(CListInfo<CInfoSocket>* infoSockets) : CSocket()
 	}
 }
 
-CSocketServer::CSocketServer(TSocket type, CListInfo<CInfoSocket>* infoSockets) : CSocket(type)
-{
-	Init(0);
-
-	if( infoSockets == NULL )
-	{
-		InfoSockets = new CListInfo<CInfoSocket>;
-
-		ListInfoSelfManaged=true;
-	}
-	else
-	{
-		InfoSockets = infoSockets;
-
-		ListInfoSelfManaged=false;
-	}
-}
-
 CSocketServer::CSocketServer( const CSocketServer & socketServer ) : CSocket(socketServer)
 {
 	*this=socketServer;
@@ -99,105 +81,28 @@ CSocketServer::~CSocketServer()
 
 bool CSocketServer::Listen()
 {
-	//create a master socket
-	if( ! Configure() )
-	{
-		cerr<<"Error : CSocketServer::Listen : Configure"<<endl;
-		return false;
-	}
-
-	//set master socket to allow multiple connections ,
-	//this is just a good habit, it will work without this
-	int opt = 1 ; // TRUE
-	if( setsockopt(Master, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
-	{
-		perror("CSocketServer::Listen : setsockopt : SO_REUSEADDR");
-		return false;
-	}
-
-	struct timeval timeout;
-	timeout.tv_sec = 3;
-	timeout.tv_usec = 0;
-	if (setsockopt (Master, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
-		perror("CSocketServer::Listen : setsockopt : SO_RCVTIMEO\n");
-	if (setsockopt (Master, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
-		perror("CSocketServer::Listen : setsockopt : SO_SNDTIMEO\n");
-
-	switch ( Type )
-	{
-	case AF_VSOCK :
-	{
-		//type of socket created
-		struct sockaddr_vm address;
-		address.svm_family = AF_VSOCK;
-		address.svm_reserved1 = 0;
-		address.svm_port = Port;
-		address.svm_cid = VMADDR_CID_ANY;
-		memset(address.svm_zero, 0, sizeof(address.svm_zero));
-
-		//bind the socket
-		if (bind(Master, (struct sockaddr*)&address, sizeof(address)) != 0)
-		{
-			perror("CSocketServer::Listen : bind");
-			return false;
-		}
-
-		break ;
-	}
-
-	case AF_INET :
-	{
-		//type of socket created
-		struct sockaddr_in address;
-		address.sin_family = AF_INET;
-		address.sin_addr.s_addr = INADDR_ANY;
-		address.sin_port = htons( Port );
-
-		//bind the socket
-		if (bind(Master, (struct sockaddr *)&address, sizeof(address))<0)
-		{
-			perror("CSocketServer::Listen : bind");
-			return false;
-		}
-
-		break;
-	}
-	}
-
-	cout<<"Listener on port : "<<Port<<endl;
-	//try to specify maximum of 3 pending connections for the master socket
-	if( listen(Master, 3) < 0 )
-	{
-		perror("CSocketServer::Listen : listen");
-		return false;
-	}
-
-	return true;
+	return _Listen(Master, Port);
 }
 
-TDescriptor CSocketServer::Accept()
-{
-	struct sockaddr_in address;
-
-	return Accept(address);
-}
-
-TDescriptor CSocketServer::Accept(struct sockaddr_in& address)
+TDescriptor CSocketServer::Accept(TCID& cid)
 {
 	TDescriptor new_socket;
 
-	int addrlen = sizeof(address);
-
-	if ((new_socket = accept(Master, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
-	{
-		perror("CSocketServer::Accept : accept");
+	new_socket = _Accept(Master, cid);
+	if( new_socket == SOCKET_ERROR )
 		return SOCKET_ERROR;
-	}
 
 	//add new socket to array of sockets
 	InfoSockets->push_back(CInfoSocket(new_socket));
 
 	return new_socket;
+}
+
+TDescriptor CSocketServer::Accept()
+{
+	TCID cid;
+
+	return Accept(cid);
 }
 
 TDescriptor CSocketServer::GetSocketClient(TIndex index) const

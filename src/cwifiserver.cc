@@ -9,6 +9,7 @@
 
 #include "cwifiserver.h"
 #include "tools.h"
+#include "config.h" // LOST_PACKET_BY_DEFAULT
 
 using namespace std;
 
@@ -21,22 +22,6 @@ CWifiServer::CWifiServer() : CSocketServer ()
 }
 
 CWifiServer::CWifiServer(CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected) : CSocketServer (infoSockets)
-{
-	DefaultValues();
-
-	InfoWifis = infoWifis;
-	InfoWifisDeconnected = infoWifisDeconnected;
-}
-
-CWifiServer::CWifiServer(TSocket type) : CSocketServer (type)
-{
-	DefaultValues();
-
-	InfoWifis = new CListInfo<CInfoWifi>;
-	InfoWifisDeconnected = new CListInfo<CInfoWifi>;
-}
-
-CWifiServer::CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected) : CSocketServer (type, infoSockets)
 {
 	DefaultValues();
 
@@ -98,7 +83,7 @@ bool CWifiServer::Listen(TIndex maxClientDeconnected)
 	MaxClientDeconnected=maxClientDeconnected;
 	SetPacketLoss(LOST_PACKET_BY_DEFAULT);
 
-	if( ! CSocketServer::Listen() )
+	if( ! _Listen(Master, Port) )
 		return false;
 
 	return true;
@@ -143,23 +128,11 @@ bool CWifiServer::RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo)
 
 TDescriptor CWifiServer::Accept()
 {
-	TDescriptor new_socket;
+	TCID cid;
 
-	struct sockaddr_in address;
-
-	new_socket = CSocketServer::Accept(address);
-
+	TDescriptor new_socket = CSocketServer::Accept(cid);
 	if( new_socket ==  SOCKET_ERROR )
 		return SOCKET_ERROR;
-
-	TCID cid;
-	//add new socket to array of sockets
-	// be careful : NumberClient is already increase
-	if( Type == AF_VSOCK )
-		// AF_VSOCK
-		cid=((struct sockaddr_vm*)&address)->svm_cid;
-	else // AF_INET
-		cid=hash_ipaddr(&address);
 
 	CInfoWifi infoWifi;
 

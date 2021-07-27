@@ -15,11 +15,10 @@ class CSocketServer : public CSocket
 		bool ListInfoSelfManaged;
 		CListInfo<CInfoSocket>* InfoSockets;
 
-		TDescriptor Accept(struct sockaddr_in& address);
-
 		TDescriptor GetSocketClient(TIndex index) const;
 
-	public :
+		TDescriptor Accept(TCID& cid);
+		TDescriptor Accept();
 
 		explicit CSocketServer(CListInfo<CInfoSocket>* infoSockets = NULL);
 
@@ -31,17 +30,7 @@ class CSocketServer : public CSocket
 
 		CSocketServer& operator=(const CSocketServer& socketServer);
 
-		void Init(TPort port);
-
 		TPort GetPort() const;
-
-		virtual bool Listen();
-
-		virtual TDescriptor Accept();
-
-		TIndex GetNumberClient() const;
-
-		bool IsEnable(TIndex index);
 
 		void DisableClient(TIndex index);
 
@@ -53,7 +42,22 @@ class CSocketServer : public CSocket
 		ssize_t Read(TDescriptor descriptor, char* data, ssize_t sizeOfData) override;
 		ssize_t ReadBigData(TDescriptor descriptor, CDynBuffer* data) override;
 
+	// virtual :
+
+		virtual bool _Listen(TDescriptor& master, TPort port) = 0;
+		virtual TDescriptor _Accept(TDescriptor master, TCID& cid) = 0;
+
+	public :
+
+		TIndex GetNumberClient() const;
+
 		TDescriptor operator[] (TIndex index);
+
+		bool IsEnable(TIndex index);
+
+		void Init(TPort port);
+
+		bool Listen();
 };
 
 #endif

@@ -27,10 +27,6 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		CWifiServer(CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected);
 
-		explicit CWifiServer(TSocket type);
-
-		CWifiServer(TSocket type, CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWifi>* infoWifis, CListInfo<CInfoWifi>* infoWifisDeconnected);
-
 		CWifiServer( const CWifiServer & wifiServer );
 
 		~CWifiServer();
@@ -39,7 +35,7 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		bool Listen(TIndex maxClientDeconnected);
 
-		TDescriptor Accept() override;
+		TDescriptor Accept();
 
 		void ShowInfoWifi(TIndex index);
 
