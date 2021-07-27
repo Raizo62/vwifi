@@ -18,11 +18,11 @@ class CSocketClientVTCP : public CSocketClient
 
 		void Init(TPort port);
 
-		bool Configure();
+		bool _Configure();
 
-		bool Connect() override;
+		bool _Connect();
 
-		int GetID() override;
+		int _GetID();
 };
 
 #endif

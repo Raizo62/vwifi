@@ -8,26 +8,26 @@
 template <typename TypeCSocketClient>
 class CWifiClient : public CKernelWifi, public CWifi, public TypeCSocketClient
 {
-		bool Connect(int* id) override
+		bool _Connect(int* id) override
 		{
-			if( ! TypeCSocketClient::Connect() )
+			if( ! TypeCSocketClient::_Connect() )
 				return false;
 
 			if( ! Scheduler.AddNode(*this) )
 				return false;
 
-			*id=TypeCSocketClient::GetID();
+			*id=TypeCSocketClient::_GetID();
 
 			return true;
 		}
 
-		ssize_t SendSignal(TPower* power, const char* buffer, int sizeOfBuffer) override
+		ssize_t _SendSignal(TPower* power, const char* buffer, int sizeOfBuffer) override
 			{	return SendSignalWithSocket(this, this->GetDescriptor(), power, buffer, sizeOfBuffer); }
 
-		ssize_t RecvSignal(TPower* power, CDynBuffer* buffer) override
+		ssize_t _RecvSignal(TPower* power, CDynBuffer* buffer) override
 			{	return RecvSignalWithSocket(this, this->GetDescriptor(), power, buffer); }
 
-		void Close() override { TypeCSocketClient::Close(); };
+		void _Close() override { TypeCSocketClient::Close(); };
 };
 
 #endif /* _CWIFICLIENT_H_ */

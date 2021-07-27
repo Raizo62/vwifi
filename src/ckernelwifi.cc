@@ -199,7 +199,7 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	}
 
 
-	int value=SendSignal(&power, (char*)nlh, msg_len);
+	int value=_SendSignal(&power, (char*)nlh, msg_len);
 	if( value == SOCKET_ERROR )
 		manage_server_crash();
 
@@ -465,7 +465,7 @@ void CKernelWifi::recv_from_server(){
 		return ;
 
 	TPower power;
-	if( RecvSignal(&power, &Buffer) == SOCKET_ERROR )
+	if( _RecvSignal(&power, &Buffer) == SOCKET_ERROR )
 		manage_server_crash();
 
 	int signal = power ;
@@ -807,7 +807,7 @@ int CKernelWifi::start(){
 
 	/*connect to vsock/tcp server */
 	int id;
-	while( ! Connect(&id) )
+	while( ! _Connect(&id) )
 	{
 		if (! is_being_started())
 			return 0 ;
@@ -879,7 +879,7 @@ int CKernelWifi::stop(){
 
 
 	if (is_connected_to_server())
-		Close();
+		_Close();
 
 	connection_to_server_loop_task.interrupt();
 	pthread_kill(serverloop_id,SIGUSR1);
@@ -984,12 +984,12 @@ void CKernelWifi::manage_server_crash_loop(){
 
 bool CKernelWifi::reconnect_to_server(){
 
-	Close();
+	_Close();
 	std::cout << "Reconnecting to vsock/tcp server..." << std::endl ;
 
 	/*connect to vsock/tcp server */
 	int id;
-	if( ! Connect(&id) )
+	if( ! _Connect(&id) )
 	{
 		std::cout<<"socket.Connect error"<<std::endl;
 		return false ;

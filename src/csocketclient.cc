@@ -35,7 +35,7 @@ bool CSocketClient::ConnectLoop()
 {
 	while ( ! StopTheReconnect )
 	{
-		if( Connect() )
+		if( _Connect() )
 			return true;
 	}
 
@@ -45,7 +45,7 @@ bool CSocketClient::ConnectLoop()
 
 bool CSocketClient::Connect(struct sockaddr* server, size_t size_of_server)
 {
-	if( ! Configure() )
+	if( ! _Configure() )
 	{
 		cerr<<"Error : CSocketClient::Connect : Configure"<<endl;
 		return false;

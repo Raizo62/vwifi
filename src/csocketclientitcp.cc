@@ -25,7 +25,7 @@ void CSocketClientITCP::Init(const char* IP, TPort port)
 	Server.sin_port = htons(port);
 }
 
-bool CSocketClientITCP::Configure()
+bool CSocketClientITCP::_Configure()
 {
 	Master = socket(AF_INET , SOCK_STREAM , 0);
 
@@ -38,12 +38,12 @@ bool CSocketClientITCP::Configure()
 	return true;
 }
 
-bool CSocketClientITCP::Connect()
+bool CSocketClientITCP::_Connect()
 {
 	return Connect((struct sockaddr*) &Server, sizeof(Server));
 }
 
-int CSocketClientITCP::GetID()
+int CSocketClientITCP::_GetID()
 {
 	struct sockaddr_in my_addr;
 

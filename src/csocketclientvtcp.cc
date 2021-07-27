@@ -26,7 +26,7 @@ void CSocketClientVTCP::Init(TPort port)
 	Server.svm_cid = 2;
 }
 
-bool CSocketClientVTCP::Configure()
+bool CSocketClientVTCP::_Configure()
 {
 	Master = socket(AF_VSOCK , SOCK_STREAM , 0);
 
@@ -39,12 +39,12 @@ bool CSocketClientVTCP::Configure()
 	return true;
 }
 
-bool CSocketClientVTCP::Connect()
+bool CSocketClientVTCP::_Connect()
 {
 	return Connect((struct sockaddr*) &Server, sizeof(Server));
 }
 
-int CSocketClientVTCP::GetID()
+int CSocketClientVTCP::_GetID()
 {
 	int cid;
 

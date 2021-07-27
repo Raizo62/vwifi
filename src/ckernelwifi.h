@@ -241,12 +241,12 @@ class CKernelWifi : public intthread::AsyncTask {
 
 	// virtual :
 
-		virtual bool Connect(int* id)=0;
+		virtual bool _Connect(int* id) = 0;
 
-		virtual ssize_t SendSignal(TPower* power, const char* buffer, int sizeOfBuffer)=0;
-		virtual ssize_t RecvSignal(TPower* power, CDynBuffer* buffer)=0;
+		virtual ssize_t _SendSignal(TPower* power, const char* buffer, int sizeOfBuffer) = 0;
+		virtual ssize_t _RecvSignal(TPower* power, CDynBuffer* buffer) = 0;
 
-		virtual void Close()=0;
+		virtual void _Close() = 0;
 
 };
 

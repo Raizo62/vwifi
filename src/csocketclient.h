@@ -1,9 +1,6 @@
 #ifndef _CSOCKETCLIENT_H_
 #define _CSOCKETCLIENT_H_
 
-#include <netinet/ip.h> // struct sockaddr_in
-#include <linux/vm_sockets.h> // struct sockaddr_vm
-
 #include "csocket.h"
 
 class CSocketClient : public CSocket
@@ -32,10 +29,9 @@ class CSocketClient : public CSocket
 		bool ConnectLoop();
 
 	// virtual :
-		virtual bool Connect()=0;
-
-
-		virtual int GetID()=0;
+		virtual bool _Configure() = 0;
+		virtual bool _Connect() = 0;
+		virtual int _GetID() = 0;
 };
 
 #endif
