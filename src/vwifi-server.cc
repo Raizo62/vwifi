@@ -71,6 +71,7 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst)
 			}
 			else
 			{
+				src->SendAllOtherClientsWithoutLoss(i,power,Buffer.GetBuffer(),valread);
 				otherDst->SendAllClientsWithoutLoss(power,Buffer.GetBuffer(),valread);
 			}
 		}
@@ -197,7 +198,7 @@ int vwifi_server()
 				Scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection from Spy"<<endl;
+				cout<<"New connection from Spy : "; wifiServerSPY.ShowInfoWifi(wifiServerSPY.GetNumberClient()-1) ; cout<<endl;
 			}
 
 			if( Scheduler.DescriptorHasAction(ctrlServer) )
