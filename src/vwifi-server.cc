@@ -27,7 +27,7 @@ void RemoveClient(CWifiServer* srv, bool srvIsSpy, TIndex i, TDescriptor socket)
 		cout<<"Client disconnected : "; srv->ShowInfoWifi(i) ; cout<<endl;
 	}
 	else
-		cout<<"Spy disconnected"<<endl;
+		cout<<"Spy disconnected : "<< srv->GetReferenceOnInfoWifiByIndex(i)->GetCid() <<endl;
 
 	srv->CloseClient(i);
 
