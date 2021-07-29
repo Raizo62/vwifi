@@ -198,7 +198,7 @@ int vwifi_server()
 				Scheduler.AddNode(socket);
 
 				//inform user of socket number - used in send and receive commands
-				cout<<"New connection from Spy : "; wifiServerSPY.ShowInfoWifi(wifiServerSPY.GetNumberClient()-1) ; cout<<endl;
+				cout<<"New connection from Spy : "<<wifiServerSPY.GetReferenceOnInfoWifiByIndex(wifiServerSPY.GetNumberClient()-1)->GetCid()<<endl;
 			}
 
 			if( Scheduler.DescriptorHasAction(ctrlServer) )
