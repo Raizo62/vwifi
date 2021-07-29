@@ -5,8 +5,8 @@ VERSION	=	4.1
 BINDIR	=	$(DESTDIR)/usr/local/bin
 MANDIR	=	$(DESTDIR)/usr/local/man/man1
 
-EXEC	=	vwifi-server vwifi-client vwifi-spy vwifi-ctrl
-#EXEC	=	vwifi-server vwifi-client vwifi-spy vwifi-ctrl vwifi-inet-monitor
+EXEC	=	vwifi-server vwifi-client vwifi-ctrl
+#EXEC	=	vwifi-server vwifi-client vwifi-ctrl vwifi-inet-monitor
 
 SRC		=	src
 OBJ		=	obj

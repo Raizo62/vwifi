@@ -28,12 +28,12 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 * ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host
 * ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol (by default), or with the TCP protocol
-* The ***vwifi-spy*** is the same as ***vwifi-client*** but :
-    * it receives always all communications, even if the loss of packets is enable.
-    * it works only with TCP.
-    * by default, it connects to 127.0.0.1
-* ***vwifi-client*** and ***vwifi-spy*** use the `mac80211_hwsim` kernel module to have the wifi interfaces
-* To use TCP protocol, ***vwifi-server*** and ***vwifi-client***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
+* With the option "-s" (or "--spy"), ***vwifi-client*** :
+    * receives always all communications, even if the loss of packets is enable.
+    * works only with TCP.
+    * connects to 127.0.0.1, by default
+* ***vwifi-client*** uses the `mac80211_hwsim` kernel module to have the wifi interfaces
+* To use TCP protocol, ***vwifi-server*** and ***vwifi-client*** must be connected to a different IP network than that of the wifi
 * ***vwifi-ctrl*** is used to interact with ***vwifi-server***
 
 * You can change the defaults IP and ports with parameters (see the parameter "-h" to help)
@@ -147,7 +147,7 @@ sudo vwifi-client 172.16.0.1
 
 ```bash
 sudo modprobe mac80211_hwsim radios=1
-sudo vwifi-spy
+sudo vwifi-client -s
 ```
 
 ## Capture

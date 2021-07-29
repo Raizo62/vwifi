@@ -30,8 +30,6 @@ $(OBJ)/csocketclient.o : csocketclient.cc cdynbuffer.h csocketclient.h csocket.h
 
 $(OBJ)/cwifiserveritcp.o : cwifiserveritcp.cc ccoordinate.h cdynbuffer.h cinfosocket.h cinfowifi.h clistinfo.h csocket.h csocketserverfunctionitcp.h csocketserver.h cwifi.h cwifiserver.h cwifiserveritcp.h types.h Makefile Makefile.in
 
-$(OBJ)/vwifi-spy.o : vwifi-spy.cc cdynbuffer.h ckernelwifi.h cmonwirelessdevice.h config.h cselect.h csocketclient.h csocketclientitcp.h csocket.h cthread.h cwificlient.h cwifi.h cwirelessdevice.h cwirelessdevicelist.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
-
 $(OBJ)/csocketserverfunctionitcp.o : csocketserverfunctionitcp.cc cdynbuffer.h csocket.h csocketserverfunctionitcp.h tools.h types.h Makefile Makefile.in
 
 $(OBJ)/cwirelessdevicelist.o : cwirelessdevicelist.cc cwirelessdevice.h cwirelessdevicelist.h Makefile Makefile.in
@@ -63,6 +61,4 @@ vwifi-ctrl : $(OBJ)/vwifi-ctrl.o  $(OBJ)/ccoordinate.o $(OBJ)/cdynbuffer.o $(OBJ
 vwifi-inet-monitor : $(OBJ)/vwifi-inet-monitor.o  $(OBJ)/cmonwirelessdevice.o $(OBJ)/cwirelessdevice.o
 
 vwifi-server : $(OBJ)/vwifi-server.o  $(OBJ)/ccoordinate.o $(OBJ)/cctrlserver.o $(OBJ)/cdynbuffer.o $(OBJ)/cinfosocket.o $(OBJ)/cinfowifi.o $(OBJ)/cselect.o $(OBJ)/csocket.o $(OBJ)/csocketserverfunctionitcp.o $(OBJ)/csocketserverfunctionvtcp.o $(OBJ)/csocketserver.o $(OBJ)/cwifi.o $(OBJ)/cwifiserveritcp.o $(OBJ)/cwifiserver.o $(OBJ)/cwifiservervtcp.o $(OBJ)/tools.o
-
-vwifi-spy : $(OBJ)/vwifi-spy.o  $(OBJ)/cdynbuffer.o $(OBJ)/ckernelwifi.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/cselect.o $(OBJ)/csocketclientitcp.o $(OBJ)/csocketclient.o $(OBJ)/csocket.o $(OBJ)/cthread.o $(OBJ)/cwificlient.o $(OBJ)/cwifi.o $(OBJ)/cwirelessdevicelist.o $(OBJ)/cwirelessdevice.o $(OBJ)/tools.o
 

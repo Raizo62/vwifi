@@ -1,6 +1,5 @@
 vwifi-server
 vwifi-client
-vwifi-spy
 vwifi-ctrl
 obj/
 # For cppcheck
