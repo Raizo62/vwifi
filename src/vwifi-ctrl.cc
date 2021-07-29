@@ -264,7 +264,7 @@ int AskStatus()
 	cout<<"SRV INET : Port : "<<port<<endl;
 
 	// SizeOfDisconnected
-	// becareful : the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
+	// becareful : the same List is shared by WifiServerVTCP and WifiServerITCP
 
 	TIndex size;
 	err=socket.Read((char*)&size,sizeof(size));

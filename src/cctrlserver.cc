@@ -1,10 +1,10 @@
 #include "cctrlserver.h"
 
-CCTRLServer::CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiSpyServer, CSelect* scheduler) : CSocketServer()
+CCTRLServer::CCTRLServer(CWifiServer* wifiServerVTCP, CWifiServer* wifiServerITCP, CWifiServer* wifiServerSPY, CSelect* scheduler) : CSocketServer()
 {
-	WifiGuestVHostServer=wifiGuestVHostServer;
-	WifiGuestInetServer=wifiGuestInetServer;
-	WifiSpyServer=wifiSpyServer;
+	WifiServerVTCP=wifiServerVTCP;
+	WifiServerITCP=wifiServerITCP;
+	WifiServerSPY=wifiServerSPY;
 	Scheduler=scheduler;
 }
 
@@ -43,8 +43,8 @@ TOrder CCTRLServer::GetOrder()
 
 void CCTRLServer::SendList()
 {
-	// because the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
-	CWifiServer* wifiServer=WifiGuestVHostServer;
+	// because the same List is shared by WifiServerVTCP and WifiServerITCP
+	CWifiServer* wifiServer=WifiServerVTCP;
 
 	TIndex number=wifiServer->GetNumberClient();
 
@@ -80,8 +80,8 @@ void CCTRLServer::ChangeCoordinate()
 	if( cid < TCID_GUEST_MIN )
 		return;
 
-	// because the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
-	CWifiServer* wifiServer=WifiGuestVHostServer;
+	// because the same List is shared by WifiServerVTCP and WifiServerITCP
+	CWifiServer* wifiServer=WifiServerVTCP;
 
 	CInfoWifi* infoWifi;
 
@@ -100,7 +100,7 @@ void CCTRLServer::ChangeCoordinate()
 	}
 
 	CInfoWifi infoNewWifi(cid,coo);
-	WifiGuestVHostServer->AddInfoWifiDeconnected(infoNewWifi);
+	WifiServerVTCP->AddInfoWifiDeconnected(infoNewWifi);
 }
 
 void CCTRLServer::ChangePacketLoss()
@@ -115,22 +115,22 @@ void CCTRLServer::ChangePacketLoss()
 		#ifdef _DEBUG
 			cout<<"Packet loss : Enable"<<endl;
 		#endif
-		WifiGuestVHostServer->SetPacketLoss(true);
-		WifiGuestInetServer->SetPacketLoss(true);
+		WifiServerVTCP->SetPacketLoss(true);
+		WifiServerITCP->SetPacketLoss(true);
 	}
 	else
 	{
 		#ifdef _DEBUG
 			cout<<"Packet loss : Disable"<<endl;
 		#endif
-		WifiGuestVHostServer->SetPacketLoss(false);
-		WifiGuestInetServer->SetPacketLoss(false);
+		WifiServerVTCP->SetPacketLoss(false);
+		WifiServerITCP->SetPacketLoss(false);
 	}
 }
 
 void CCTRLServer::SendStatus()
 {
-	if( Send((char*)&(WifiGuestVHostServer->PacketLoss),sizeof(WifiGuestVHostServer->PacketLoss)) == SOCKET_ERROR )
+	if( Send((char*)&(WifiServerVTCP->PacketLoss),sizeof(WifiServerVTCP->PacketLoss)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : PacketLoss"<<endl;
 		return;
@@ -138,7 +138,7 @@ void CCTRLServer::SendStatus()
 
 	// VHOST
 
-	if( Send((char*)&(WifiGuestVHostServer->Port),sizeof(WifiGuestVHostServer->Port)) == SOCKET_ERROR )
+	if( Send((char*)&(WifiServerVTCP->Port),sizeof(WifiServerVTCP->Port)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : Port VHOST"<<endl;
 		return;
@@ -146,16 +146,16 @@ void CCTRLServer::SendStatus()
 
 	// INET
 
-	if( Send((char*)&(WifiGuestInetServer->Port),sizeof(WifiGuestInetServer->Port)) == SOCKET_ERROR )
+	if( Send((char*)&(WifiServerITCP->Port),sizeof(WifiServerITCP->Port)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : Port INET"<<endl;
 		return;
 	}
 
 	// SizeOfDisconnected
-	// becareful : the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
+	// be careful : the same List is shared by WifiServerVTCP and WifiServerITCP
 
-	if( Send((char*)&(WifiGuestInetServer->MaxClientDeconnected),sizeof(WifiGuestInetServer->MaxClientDeconnected)) == SOCKET_ERROR )
+	if( Send((char*)&(WifiServerITCP->MaxClientDeconnected),sizeof(WifiServerITCP->MaxClientDeconnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : Size MaxClientDeconnected"<<endl;
 		return;
@@ -163,7 +163,7 @@ void CCTRLServer::SendStatus()
 
 	// SPY
 
-	bool spyIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
+	bool spyIsConnected=( WifiServerSPY->GetNumberClient() > 0 );
 	if( Send((char*)&spyIsConnected,sizeof(spyIsConnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : spyIsConnected"<<endl;
@@ -174,13 +174,13 @@ void CCTRLServer::SendStatus()
 
 void CCTRLServer::SendShow()
 {
-	if( Send((char*)&(WifiGuestVHostServer->PacketLoss),sizeof(WifiGuestVHostServer->PacketLoss)) == SOCKET_ERROR )
+	if( Send((char*)&(WifiServerVTCP->PacketLoss),sizeof(WifiServerVTCP->PacketLoss)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : Send : PacketLoss"<<endl;
 		return;
 	}
 
-	bool spyIsConnected=( WifiSpyServer->GetNumberClient() > 0 );
+	bool spyIsConnected=( WifiServerSPY->GetNumberClient() > 0 );
 	if( Send((char*)&spyIsConnected,sizeof(spyIsConnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : Send : spyIsConnected"<<endl;
@@ -200,8 +200,8 @@ void CCTRLServer::SendDistance()
 
 	int codeError;
 
-	// because the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
-	CWifiServer* wifiServer=WifiGuestVHostServer;
+	// because the same List is shared by WifiServerVTCP and WifiServerITCP
+	CWifiServer* wifiServer=WifiServerVTCP;
 
 	CCoordinate* coo1;
 
@@ -251,10 +251,10 @@ void CCTRLServer::SendDistance()
 
 void CCTRLServer::CloseAllClient()
 {
-	// because the same List is shared by WifiGuestVHostServer and WifiGuestInetServer
-	CWifiServer* wifiServer=WifiGuestVHostServer;
+	// because the same List is shared by WifiServerVTCP and WifiServerITCP
+	CWifiServer* wifiServer=WifiServerVTCP;
 
-	// be careful : In the Scheduler, i must delete only the nodes of Wifi Guest, not the node of the CTRLServer
+	// be careful : In the Scheduler, i must delete only the nodes of WifiServer, not the node of the CTRLServer
 	for (TIndex i = 0; i < wifiServer->GetNumberClient(); i++)
 		Scheduler->DelNode((*wifiServer)[i]);
 

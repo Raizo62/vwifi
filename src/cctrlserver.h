@@ -8,9 +8,9 @@
 
 class CCTRLServer : public CSocketServer, public CSocketServerFunctionITCP
 {
-		CWifiServer* WifiGuestVHostServer;
-		CWifiServer* WifiGuestInetServer;
-		CWifiServer* WifiSpyServer;
+		CWifiServer* WifiServerVTCP;
+		CWifiServer* WifiServerITCP;
+		CWifiServer* WifiServerSPY;
 		CSelect* Scheduler;
 
 		bool _Listen(TDescriptor& master, TPort port);
@@ -38,7 +38,7 @@ class CCTRLServer : public CSocketServer, public CSocketServerFunctionITCP
 
 	public :
 
-		CCTRLServer(CWifiServer* wifiGuestVHostServer, CWifiServer* wifiGuestInetServer, CWifiServer* wifiSpyServer, CSelect* scheduler);
+		CCTRLServer(CWifiServer* wifiServerVTCP, CWifiServer* wifiServerITCP, CWifiServer* wifiServerSPY, CSelect* scheduler);
 
 		void ReceiveOrder();
 };

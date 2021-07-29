@@ -87,38 +87,38 @@ int vwifi_server()
 	CListInfo<CInfoWifi> infoWifis;
 	CListInfo<CInfoWifi> infoWifisDeconnected;
 
-	CWifiServerVTCP wifiGuestVHostServer(&infoSockets,&infoWifis,&infoWifisDeconnected);
+	CWifiServerVTCP wifiServerVTCP(&infoSockets,&infoWifis,&infoWifisDeconnected);
 	cout<<"CLIENT VHOST : ";
-	wifiGuestVHostServer.Init(Port_VHOST);
-	if( ! wifiGuestVHostServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
+	wifiServerVTCP.Init(Port_VHOST);
+	if( ! wifiServerVTCP.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
 	{
-		cerr<<"Error : wifiGuestVHostServer.Listen"<<endl;
+		cerr<<"Error : wifiServerVTCP.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
-	CWifiServer* wifiServer=&wifiGuestVHostServer; // or wifiGuestINETServer, it doesn't change anything
+	CWifiServer* wifiServer=&wifiServerVTCP; // or wifiServerITCP, it doesn't change anything
 
-	CWifiServerITCP wifiGuestINETServer(&infoSockets,&infoWifis,&infoWifisDeconnected);
+	CWifiServerITCP wifiServerITCP(&infoSockets,&infoWifis,&infoWifisDeconnected);
 	cout<<"CLIENT TCP : ";
-	wifiGuestINETServer.Init(Port_TCP);
-	if( ! wifiGuestINETServer.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
+	wifiServerITCP.Init(Port_TCP);
+	if( ! wifiServerITCP.Listen(WIFI_MAX_DECONNECTED_CLIENT) )
 	{
-		cerr<<"Error : wifiGuestINETServer.Listen"<<endl;
+		cerr<<"Error : wifiServerITCP.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
 	cout<<"SPY : ";
-	CWifiServerITCP wifiSpyServer;
-	wifiSpyServer.SetPacketLoss(false);
-	wifiSpyServer.Init(Port_Spy);
-	if( ! wifiSpyServer.Listen(1) )
+	CWifiServerITCP wifiServerSPY;
+	wifiServerSPY.SetPacketLoss(false);
+	wifiServerSPY.Init(Port_Spy);
+	if( ! wifiServerSPY.Listen(1) )
 	{
-		cerr<<"Error : wifiSpyServer.Listen"<<endl;
+		cerr<<"Error : wifiServerSPY.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
 	cout<<"CTRL : ";
-	CCTRLServer ctrlServer(&wifiGuestVHostServer, &wifiGuestINETServer, &wifiSpyServer,&Scheduler);
+	CCTRLServer ctrlServer(&wifiServerVTCP, &wifiServerITCP, &wifiServerSPY,&Scheduler);
 	ctrlServer.Init(Port_Ctrl);
 	if( ! ctrlServer.Listen() )
 	{
@@ -128,15 +128,15 @@ int vwifi_server()
 
 	cout<<"Size of disconnected : "<<WIFI_MAX_DECONNECTED_CLIENT<<endl;
 
-	if( wifiGuestVHostServer.CanLostPackets() )
+	if( wifiServerVTCP.CanLostPackets() )
 		cout<<"Packet loss : Enable"<<endl;
 	else
 		cout<<"Packet loss : disable"<<endl;
 
 	//add master socket to set
-	Scheduler.AddNode(wifiGuestVHostServer);
-	Scheduler.AddNode(wifiGuestINETServer);
-	Scheduler.AddNode(wifiSpyServer);
+	Scheduler.AddNode(wifiServerVTCP);
+	Scheduler.AddNode(wifiServerITCP);
+	Scheduler.AddNode(wifiServerSPY);
 	Scheduler.AddNode(ctrlServer);
 
 	while( true )
@@ -152,12 +152,12 @@ int vwifi_server()
 
 			//If something happened on the master socket ,
 			//then its an incoming connection
-			if( Scheduler.DescriptorHasAction(wifiGuestVHostServer) )
+			if( Scheduler.DescriptorHasAction(wifiServerVTCP) )
 			{
-				socket = wifiGuestVHostServer.Accept();
+				socket = wifiServerVTCP.Accept();
 				if ( socket == SOCKET_ERROR )
 				{
-					cerr<<"Error : wifiGuestVHostServer.Accept"<<endl;
+					cerr<<"Error : wifiServerVTCP.Accept"<<endl;
 					exit(EXIT_FAILURE);
 				}
 
@@ -168,12 +168,12 @@ int vwifi_server()
 				cout<<"New connection from Client VHost : "; wifiServer->ShowInfoWifi(wifiServer->GetNumberClient()-1) ; cout<<endl;
 			}
 
-			if( Scheduler.DescriptorHasAction(wifiGuestINETServer) )
+			if( Scheduler.DescriptorHasAction(wifiServerITCP) )
 			{
-				socket = wifiGuestINETServer.Accept();
+				socket = wifiServerITCP.Accept();
 				if ( socket == SOCKET_ERROR )
 				{
-					cerr<<"Error : wifiGuestINETServer.Accept"<<endl;
+					cerr<<"Error : wifiServerITCP.Accept"<<endl;
 					exit(EXIT_FAILURE);
 				}
 
@@ -184,9 +184,9 @@ int vwifi_server()
 				cout<<"New connection from Client TCP : "; wifiServer->ShowInfoWifi(wifiServer->GetNumberClient()-1) ; cout<<endl;
 			}
 
-			if( Scheduler.DescriptorHasAction(wifiSpyServer) )
+			if( Scheduler.DescriptorHasAction(wifiServerSPY) )
 			{
-				socket = wifiSpyServer.Accept();
+				socket = wifiServerSPY.Accept();
 				if ( socket == SOCKET_ERROR )
 				{
 					cerr<<"Error : wifiSpyServer.Accept"<<endl;
@@ -207,8 +207,8 @@ int vwifi_server()
 
 			//else its some IO operation on some other socket
 
-			ForwardData(false, wifiServer, &wifiSpyServer);
-			ForwardData(true, &wifiSpyServer, wifiServer);
+			ForwardData(false, wifiServer, &wifiServerSPY);
+			ForwardData(true, &wifiServerSPY, wifiServer);
 		}
 	}
 
