@@ -10,7 +10,7 @@
 
 using namespace std;
 
-std::string IP_Ctrl = std::string(ADDRESS_IP);
+std::string IP_Ctrl = std::string(DEFAULT_ADDRESS_IP);
 TPort Port_Ctrl = DEFAULT_CTRL_PORT;
 
 char* NameOfProg;
@@ -208,7 +208,7 @@ int AskStatus()
 {
 	CSocketClientITCP socket;
 
-	cout<<"CTRL : IP : "<<ADDRESS_IP<<endl;
+	cout<<"CTRL : IP : "<<DEFAULT_ADDRESS_IP<<endl;
 	cout<<"CTRL : Port : "<<DEFAULT_CTRL_PORT<<endl;
 
 	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);

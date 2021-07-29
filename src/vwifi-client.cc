@@ -113,7 +113,7 @@ int main (int argc , char ** argv){
 	{ // mode TCP
 
 		if( ip_addr.empty() )
-			ip_addr = std::string(ADDRESS_IP);
+			ip_addr = std::string(DEFAULT_ADDRESS_IP);
 
 		if( ! port_number )
 			port_number = DEFAULT_WIFI_SPY_PORT;
