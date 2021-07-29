@@ -203,6 +203,17 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 	}
 }
 
+void CWifiServer::SendAllOtherClientsWithoutLoss(TIndex index, TPower power, const char* data, ssize_t sizeOfData)
+{
+	for (TIndex i = 0; i < GetNumberClient(); i++)
+	{
+		if( i != index )
+			if( IsEnable(i) )
+				if( SendSignal((*InfoSockets)[i].GetDescriptor(), &power, data, sizeOfData) < 0 )
+					(*InfoSockets)[i].DisableIt();
+	}
+}
+
 void CWifiServer::SendAllClientsWithoutLoss(TPower power, const char* data, ssize_t sizeOfData)
 {
 	for (TIndex i = 0; i < GetNumberClient(); i++)
