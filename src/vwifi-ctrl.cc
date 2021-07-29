@@ -63,6 +63,8 @@ int AskList()
 		return 1;
 	}
 
+	// Spies :
+
 	TIndex number;
 	err=socket.Read((char*)&number,sizeof(number));
 	if( err == SOCKET_ERROR )
@@ -72,6 +74,26 @@ int AskList()
 	}
 
 	CInfoWifi info;
+	for(TIndex i=0; i<number;i++)
+	{
+		err=socket.Read((char*)&info,sizeof(info));
+		if( err == SOCKET_ERROR )
+		{
+			cerr<<"Error : ls : socket.Read : CInfoWifi"<<endl;
+			return 1;
+		}
+		cout<<"S:"<<info.GetCid()<<endl;
+	}
+
+	// Clients :
+
+	err=socket.Read((char*)&number,sizeof(number));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : ls : socket.Read : number"<<endl;
+		return 1;
+	}
+
 	for(TIndex i=0; i<number;i++)
 	{
 		err=socket.Read((char*)&info,sizeof(info));

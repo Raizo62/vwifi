@@ -45,7 +45,31 @@ void CCTRLServer::SendList()
 {
 	// because the same List is shared by WifiServerVTCP and WifiServerITCP
 
-	TIndex number=WifiServerVTCP->GetNumberClient();
+	CInfoWifi* infoWifi;
+
+	// Spies :
+
+	TIndex number=WifiServerSPY->GetNumberClient();
+
+	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
+		return;
+
+	for(TIndex i=0; i<number;i++)
+	{
+		if( WifiServerSPY->IsEnable(i) )
+		{
+			infoWifi=WifiServerSPY->GetReferenceOnInfoWifiByIndex(i);
+			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
+			{
+				cerr<<"Error : SendList : Send : Spies : CInfoWifi : "<<*infoWifi<<endl;
+				return;
+			}
+		}
+	}
+
+	// Clients
+
+	number=WifiServerVTCP->GetNumberClient();
 
 	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
 		return;
@@ -54,10 +78,10 @@ void CCTRLServer::SendList()
 	{
 		if( WifiServerVTCP->IsEnable(i) )
 		{
-			CInfoWifi* infoWifi=WifiServerVTCP->GetReferenceOnInfoWifiByIndex(i);
+			infoWifi=WifiServerVTCP->GetReferenceOnInfoWifiByIndex(i);
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
-				cerr<<"Error : SendList : Send : CInfoWifi : "<<*infoWifi<<endl;
+				cerr<<"Error : SendList : Send : Clients : CInfoWifi : "<<*infoWifi<<endl;
 				return;
 			}
 		}
@@ -250,11 +274,20 @@ void CCTRLServer::CloseAllClient()
 {
 	// because the same List is shared by WifiServerVTCP and WifiServerITCP
 
+	// Clients :
+
 	// be careful : In the Scheduler, i must delete only the nodes of WifiServer, not the node of the CTRLServer
 	for (TIndex i = 0; i < WifiServerVTCP->GetNumberClient(); i++)
 		Scheduler->DelNode((*WifiServerVTCP)[i]);
 
 	WifiServerVTCP->CloseAllClient();
+
+	// Spies :
+
+	for (TIndex i = 0; i < WifiServerSPY->GetNumberClient(); i++)
+		Scheduler->DelNode((*WifiServerSPY)[i]);
+
+	WifiServerSPY->CloseAllClient();
 }
 
 void CCTRLServer::ReceiveOrder()
