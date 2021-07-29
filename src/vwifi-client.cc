@@ -53,8 +53,8 @@ void  signal_handler(int signal_num)
 
 void help()
 {
-	std::cout<<"Usage: vwifi-client [-h] [-v] [IP_ADDR] [-p PORT]"<<std::endl;
-	std::cout<<"                    [--help] [--version] [IP_ADDR] [--port PORT]"<<std::endl;
+	std::cout<<"Usage: vwifi-client [-h] [-v] [-s] [IP_ADDR] [-p PORT]"<<std::endl;
+	std::cout<<"                    [--help] [--version] [--spy] [IP_ADDR] [--port PORT]"<<std::endl;
 }
 
 int main (int argc , char ** argv){
@@ -66,6 +66,8 @@ int main (int argc , char ** argv){
 	signal(SIGHUP, SIG_IGN);
 	signal(SIGTSTP, signal_handler);
 	//signal(SIGCONT, signal_handler);
+
+	bool spy = false;
 
 	std::string ip_addr;
 	TPort port_number = 0;
@@ -88,6 +90,10 @@ int main (int argc , char ** argv){
 			port_number = std::stoi(argv[arg_idx+1]);
 			arg_idx++;
 		}
+		else if( ! strcmp("-s", argv[arg_idx]) || ! strcmp("--spy", argv[arg_idx]) )
+		{
+			spy=true;
+		}
 		else
 		{
 			if( ip_addr.empty() )
@@ -103,23 +109,39 @@ int main (int argc , char ** argv){
 		arg_idx++;
 	}
 
-	if( ip_addr.empty() )
-	{ // IP not set -> mode VHOST
-		if( ! port_number )
-			port_number = DEFAULT_WIFI_CLIENT_PORT_VHOST;
-
-		std::cout<<"Type : AF_VSOCK"<<std::endl;
-		wifiClient=new CWifiClient<CSocketClientVTCP>;
-		static_cast<CWifiClient<CSocketClientVTCP>*>(wifiClient)->Init(port_number);
-	}
-	else
+	if( spy )
 	{ // mode TCP
+
+		if( ip_addr.empty() )
+			ip_addr = std::string(ADDRESS_IP);
+
 		if( ! port_number )
-			port_number = DEFAULT_WIFI_CLIENT_PORT_INET;
+			port_number = DEFAULT_WIFI_SPY_PORT;
 
 		std::cout<<"Type : AF_INET"<<std::endl;
 		wifiClient=new CWifiClient<CSocketClientITCP>;
 		static_cast<CWifiClient<CSocketClientITCP>*>(wifiClient)->Init(ip_addr.c_str(), port_number);
+	}
+	else
+	{
+		if( ip_addr.empty() )
+		{ // IP not set -> mode VHOST
+			if( ! port_number )
+				port_number = DEFAULT_WIFI_CLIENT_PORT_VHOST;
+
+			std::cout<<"Type : AF_VSOCK"<<std::endl;
+			wifiClient=new CWifiClient<CSocketClientVTCP>;
+			static_cast<CWifiClient<CSocketClientVTCP>*>(wifiClient)->Init(port_number);
+		}
+		else
+		{ // mode TCP
+			if( ! port_number )
+				port_number = DEFAULT_WIFI_CLIENT_PORT_INET;
+
+			std::cout<<"Type : AF_INET"<<std::endl;
+			wifiClient=new CWifiClient<CSocketClientITCP>;
+			static_cast<CWifiClient<CSocketClientITCP>*>(wifiClient)->Init(ip_addr.c_str(), port_number);
+		}
 	}
 
 	if(!wifiClient->start())
