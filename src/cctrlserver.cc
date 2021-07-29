@@ -44,18 +44,17 @@ TOrder CCTRLServer::GetOrder()
 void CCTRLServer::SendList()
 {
 	// because the same List is shared by WifiServerVTCP and WifiServerITCP
-	CWifiServer* wifiServer=WifiServerVTCP;
 
-	TIndex number=wifiServer->GetNumberClient();
+	TIndex number=WifiServerVTCP->GetNumberClient();
 
 	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
 		return;
 
 	for(TIndex i=0; i<number;i++)
 	{
-		if( wifiServer->IsEnable(i) )
+		if( WifiServerVTCP->IsEnable(i) )
 		{
-			CInfoWifi* infoWifi=wifiServer->GetReferenceOnInfoWifiByIndex(i);
+			CInfoWifi* infoWifi=WifiServerVTCP->GetReferenceOnInfoWifiByIndex(i);
 			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
 			{
 				cerr<<"Error : SendList : Send : CInfoWifi : "<<*infoWifi<<endl;
@@ -81,18 +80,17 @@ void CCTRLServer::ChangeCoordinate()
 		return;
 
 	// because the same List is shared by WifiServerVTCP and WifiServerITCP
-	CWifiServer* wifiServer=WifiServerVTCP;
 
 	CInfoWifi* infoWifi;
 
-	infoWifi=wifiServer->GetReferenceOnInfoWifiByCID(cid);
+	infoWifi=WifiServerVTCP->GetReferenceOnInfoWifiByCID(cid);
 	if( infoWifi != NULL )
 	{
 		infoWifi->Set(coo);
 		return;
 	}
 
-	infoWifi=wifiServer->GetReferenceOnInfoWifiDeconnectedByCID(cid);
+	infoWifi=WifiServerVTCP->GetReferenceOnInfoWifiDeconnectedByCID(cid);
 	if( infoWifi != NULL )
 	{
 		infoWifi->Set(coo);
@@ -155,7 +153,7 @@ void CCTRLServer::SendStatus()
 	// SizeOfDisconnected
 	// be careful : the same List is shared by WifiServerVTCP and WifiServerITCP
 
-	if( Send((char*)&(WifiServerITCP->MaxClientDeconnected),sizeof(WifiServerITCP->MaxClientDeconnected)) == SOCKET_ERROR )
+	if( Send((char*)&(WifiServerVTCP->MaxClientDeconnected),sizeof(WifiServerVTCP->MaxClientDeconnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : Size MaxClientDeconnected"<<endl;
 		return;
@@ -201,14 +199,13 @@ void CCTRLServer::SendDistance()
 	int codeError;
 
 	// because the same List is shared by WifiServerVTCP and WifiServerITCP
-	CWifiServer* wifiServer=WifiServerVTCP;
 
 	CCoordinate* coo1;
 
-	coo1=wifiServer->GetReferenceOnInfoWifiByCID(cid1);
+	coo1=WifiServerVTCP->GetReferenceOnInfoWifiByCID(cid1);
 	if( coo1 == NULL )
 	{
-		coo1=wifiServer->GetReferenceOnInfoWifiDeconnectedByCID(cid1);
+		coo1=WifiServerVTCP->GetReferenceOnInfoWifiDeconnectedByCID(cid1);
 		if( coo1 == NULL )
 		{
 			codeError=-1;
@@ -220,10 +217,10 @@ void CCTRLServer::SendDistance()
 
 	CCoordinate* coo2;
 
-	coo2=wifiServer->GetReferenceOnInfoWifiByCID(cid2);
+	coo2=WifiServerVTCP->GetReferenceOnInfoWifiByCID(cid2);
 	if( coo2 == NULL )
 	{
-		coo2=wifiServer->GetReferenceOnInfoWifiDeconnectedByCID(cid2);
+		coo2=WifiServerVTCP->GetReferenceOnInfoWifiDeconnectedByCID(cid2);
 		if( coo2 == NULL )
 		{
 			codeError=-2;
@@ -252,13 +249,12 @@ void CCTRLServer::SendDistance()
 void CCTRLServer::CloseAllClient()
 {
 	// because the same List is shared by WifiServerVTCP and WifiServerITCP
-	CWifiServer* wifiServer=WifiServerVTCP;
 
 	// be careful : In the Scheduler, i must delete only the nodes of WifiServer, not the node of the CTRLServer
-	for (TIndex i = 0; i < wifiServer->GetNumberClient(); i++)
-		Scheduler->DelNode((*wifiServer)[i]);
+	for (TIndex i = 0; i < WifiServerVTCP->GetNumberClient(); i++)
+		Scheduler->DelNode((*WifiServerVTCP)[i]);
 
-	wifiServer->CloseAllClient();
+	WifiServerVTCP->CloseAllClient();
 }
 
 void CCTRLServer::ReceiveOrder()
