@@ -109,6 +109,12 @@ int main (int argc , char ** argv){
 		arg_idx++;
 	}
 
+	if( getuid() )
+	{
+		std::cerr<<"Error : This program must be run as root!!"<<std::endl;
+		return 2;
+	}
+
 	if( spy )
 	{ // mode TCP
 
