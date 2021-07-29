@@ -63,7 +63,7 @@ TDistance CCoordinate::DistanceWith(CCoordinate coo)
 
 void CCoordinate::Display(ostream& os) const
 {
-	os << "(" << X << "," << Y << "," << Z << ")";
+	os << X << " " << Y << " " << Z;
 }
 
 ostream& operator<<(ostream& os, const CCoordinate& coo)

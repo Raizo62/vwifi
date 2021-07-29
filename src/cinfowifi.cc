@@ -26,7 +26,7 @@ TCID CInfoWifi::GetCid() const
 
 void CInfoWifi::Display(ostream& os) const
 {
-	os << "[" << Cid << "]";
+	os << Cid << " ";
 	CCoordinate::Display(os);
 }
 

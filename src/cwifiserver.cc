@@ -151,7 +151,7 @@ void CWifiServer::ShowInfoWifi(TIndex index)
 {
 	assert( index < GetNumberClient() );
 
-	cout<<"{"<<(*InfoWifis)[index]<<"}";
+	cout<<(*InfoWifis)[index];
 }
 
 void CWifiServer::CloseClient(TIndex index)
