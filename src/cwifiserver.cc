@@ -11,6 +11,8 @@
 #include "tools.h"
 #include "config.h" // LOST_PACKET_BY_DEFAULT
 
+bool PacketLoss=LOST_PACKET_BY_DEFAULT;
+
 using namespace std;
 
 CWifiServer::CWifiServer() : CSocketServer ()
@@ -49,7 +51,6 @@ CWifiServer& CWifiServer::operator=(const CWifiServer& wifiServer)
 	{
 		// protect against invalid self-assignment
 		MaxClientDeconnected=wifiServer.MaxClientDeconnected;
-		SetPacketLoss(wifiServer.CanLostPackets());
 
 		if( ListInfoSelfManaged )
 		{
@@ -75,13 +76,11 @@ CWifiServer& CWifiServer::operator=(const CWifiServer& wifiServer)
 void CWifiServer::DefaultValues()
 {
 	MaxClientDeconnected=0;
-	SetPacketLoss(LOST_PACKET_BY_DEFAULT);
 }
 
 bool CWifiServer::Listen(TIndex maxClientDeconnected)
 {
 	MaxClientDeconnected=maxClientDeconnected;
-	SetPacketLoss(LOST_PACKET_BY_DEFAULT);
 
 	if( ! _Listen(Master, Port) )
 		return false;
@@ -196,7 +195,7 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 			if( IsEnable(i) )
 			{
 				TPower signalLevel=BoundedPower(power-Attenuation(coo.DistanceWith((*InfoWifis)[i])));
-				if( ! CanLostPackets() || ! PacketIsLost(signalLevel) )
+				if( ! PacketLoss || ! PacketIsLost(signalLevel) )
 					if( SendSignal((*InfoSockets)[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
 						(*InfoSockets)[i].DisableIt();
 			}
@@ -257,14 +256,4 @@ void CWifiServer::AddInfoWifiDeconnected(CInfoWifi infoWifi)
 		InfoWifisDeconnected->erase(InfoWifisDeconnected->begin());
 
 	InfoWifisDeconnected->push_back(infoWifi);
-}
-
-void CWifiServer::SetPacketLoss(bool enable)
-{
-	PacketLoss=enable;
-}
-
-bool CWifiServer::CanLostPackets() const
-{
-	return PacketLoss;
 }

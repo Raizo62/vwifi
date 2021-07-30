@@ -110,7 +110,6 @@ int vwifi_server()
 
 	cout<<"SPY : ";
 	CWifiServerITCP wifiServerSPY;
-	wifiServerSPY.SetPacketLoss(false);
 	wifiServerSPY.Init(Port_Spy);
 	if( ! wifiServerSPY.Listen(1) )
 	{
@@ -129,7 +128,7 @@ int vwifi_server()
 
 	cout<<"Size of disconnected : "<<WIFI_MAX_DECONNECTED_CLIENT<<endl;
 
-	if( wifiServerVTCP.CanLostPackets() )
+	if( PacketLoss )
 		cout<<"Packet loss : Enable"<<endl;
 	else
 		cout<<"Packet loss : disable"<<endl;

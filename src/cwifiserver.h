@@ -5,12 +5,13 @@
 #include "cinfowifi.h"
 #include "cwifi.h"
 
+extern bool PacketLoss;
+
 class CWifiServer : public CSocketServer, public CWifi
 {
 		friend class CCTRLServer;
 
 		TIndex MaxClientDeconnected;
-		bool PacketLoss;
 
 		CListInfo<CInfoWifi>* InfoWifis;
 		CListInfo<CInfoWifi>* InfoWifisDeconnected;
@@ -60,10 +61,6 @@ class CWifiServer : public CSocketServer, public CWifi
 		CInfoWifi* GetReferenceOnInfoWifiByIndex(TIndex index) const;
 
 		void AddInfoWifiDeconnected(CInfoWifi infoWifi);
-
-		void SetPacketLoss(bool enable);
-
-		bool CanLostPackets() const;
 
 };
 
