@@ -11,7 +11,7 @@
 #include "tools.h"
 #include "config.h" // LOST_PACKET_BY_DEFAULT
 
-bool PacketLoss=LOST_PACKET_BY_DEFAULT;
+bool CanLostPackets=LOST_PACKET_BY_DEFAULT;
 
 using namespace std;
 
@@ -195,7 +195,7 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 			if( IsEnable(i) )
 			{
 				TPower signalLevel=BoundedPower(power-Attenuation(coo.DistanceWith((*InfoWifis)[i])));
-				if( ! PacketLoss || ! PacketIsLost(signalLevel) )
+				if( ! CanLostPackets || ! PacketIsLost(signalLevel) )
 					if( SendSignal((*InfoSockets)[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
 						(*InfoSockets)[i].DisableIt();
 			}

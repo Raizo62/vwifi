@@ -137,20 +137,20 @@ void CCTRLServer::ChangePacketLoss()
 		#ifdef _DEBUG
 			cout<<"Packet loss : Enable"<<endl;
 		#endif
-		PacketLoss=true;
+		CanLostPackets=true;
 	}
 	else
 	{
 		#ifdef _DEBUG
 			cout<<"Packet loss : Disable"<<endl;
 		#endif
-		PacketLoss=false;
+		CanLostPackets=false;
 	}
 }
 
 void CCTRLServer::SendStatus()
 {
-	if( Send((char*)&PacketLoss,sizeof(PacketLoss)) == SOCKET_ERROR )
+	if( Send((char*)&CanLostPackets,sizeof(CanLostPackets)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : PacketLoss"<<endl;
 		return;
@@ -194,7 +194,7 @@ void CCTRLServer::SendStatus()
 
 void CCTRLServer::SendShow()
 {
-	if( Send((char*)&PacketLoss,sizeof(PacketLoss)) == SOCKET_ERROR )
+	if( Send((char*)&CanLostPackets,sizeof(CanLostPackets)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : Send : PacketLoss"<<endl;
 		return;

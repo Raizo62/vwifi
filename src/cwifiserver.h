@@ -5,7 +5,7 @@
 #include "cinfowifi.h"
 #include "cwifi.h"
 
-extern bool PacketLoss;
+extern bool CanLostPackets;
 
 class CWifiServer : public CSocketServer, public CWifi
 {

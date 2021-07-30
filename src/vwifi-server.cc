@@ -128,7 +128,7 @@ int vwifi_server()
 
 	cout<<"Size of disconnected : "<<WIFI_MAX_DECONNECTED_CLIENT<<endl;
 
-	if( PacketLoss )
+	if( CanLostPackets )
 		cout<<"Packet loss : Enable"<<endl;
 	else
 		cout<<"Packet loss : disable"<<endl;
