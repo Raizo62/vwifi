@@ -59,14 +59,6 @@ void help()
 
 int main (int argc , char ** argv){
 
-	/* Handle signals */
-	signal(SIGINT, signal_handler);
-	signal(SIGTERM, signal_handler);
-	signal(SIGQUIT, signal_handler);
-	signal(SIGHUP, SIG_IGN);
-	signal(SIGTSTP, signal_handler);
-	//signal(SIGCONT, signal_handler);
-
 	bool spy = false;
 
 	std::string ip_addr;
@@ -114,6 +106,14 @@ int main (int argc , char ** argv){
 		std::cerr<<"Error : This program must be run as root!!"<<std::endl;
 		return 2;
 	}
+
+	/* Handle signals */
+	signal(SIGINT, signal_handler);
+	signal(SIGTERM, signal_handler);
+	signal(SIGQUIT, signal_handler);
+	signal(SIGHUP, SIG_IGN);
+	signal(SIGTSTP, signal_handler);
+	//signal(SIGCONT, signal_handler);
 
 	if( spy )
 	{ // mode TCP
