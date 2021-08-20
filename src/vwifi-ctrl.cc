@@ -32,6 +32,9 @@ void Help()
 	cout<<"		- Display the status of the configuration of vwifi-server"<<endl;
 	cout<<"	distance cid1 cid2"<<endl;
 	cout<<"		- Distance in meters between the Client with cid1 and the Client with cid2"<<endl;
+	cout<<"	scale value"<<endl;
+	cout<<"		- Set the scale of the distances between the clients to value"<<endl;
+	cout<<"		- value can be a decimal number"<<endl;
 	cout<<"	close"<<endl;
 	cout<<"		- Close all the connections with Wifi Clients"<<endl;
 	cout<<endl;
@@ -264,6 +267,15 @@ int AskStatus()
 	else
 		cout<<"Disable"<<endl;
 
+	TScale scale;
+	err=socket.Read((char*)&scale,sizeof(scale));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : status : socket.Read : scale"<<endl;
+		return 1;
+	}
+	cout<<"SRV : Scale : "<<scale<<endl;
+
 	// VHOST
 
 	TPort port;
@@ -351,6 +363,15 @@ int AskShow()
 		cout<<"Enable"<<endl;
 	else
 		cout<<"Disable"<<endl;
+
+	TScale scale;
+	err=socket.Read((char*)&scale,sizeof(scale));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : show : socket.Read : scale"<<endl;
+		return 1;
+	}
+	cout<<"Scale : "<<scale<<endl;
 
 	bool spyIsConnected;
 	err=socket.Read((char*)&spyIsConnected,sizeof(spyIsConnected));
@@ -463,6 +484,48 @@ int DistanceBetweenCID(int argc, char *argv[])
 	return 0;
 }
 
+int SetScale(int argc, char *argv[])
+{
+	if( argc != 2)
+	{
+			cerr<<"Error : scale : the number of parameter is uncorrect"<<endl;
+			Help();
+			return 1;
+	}
+
+	TScale scale=atof(argv[1]);
+
+	CSocketClientITCP socket;
+
+	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
+
+	if( ! socket.ConnectLoop() )
+	{
+		cerr<<"Error : scale : socket.Connect error"<<endl;
+		return 1;
+	}
+
+	int err;
+
+	TOrder order=TORDER_SET_SCALE;
+	err=socket.Send((char*)&order,sizeof(order));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : scale : socket.Send : order"<<endl;
+		return 1;
+	}
+	err=socket.Send((char*)&scale,sizeof(scale));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : scale : socket.Send : scale"<<endl;
+		return 1;
+	}
+
+	socket.Close();
+
+	return 0;
+}
+
 int CloseAllClient()
 {
 	CSocketClientITCP socket;
@@ -551,6 +614,9 @@ int main(int argc , char *argv[])
 
 	if( ! strcmp(param_cmd[0],"distance") )
 		return DistanceBetweenCID(nbr_param_cmd, param_cmd);
+
+	if( ! strcmp(param_cmd[0],"scale") )
+		return SetScale(nbr_param_cmd, param_cmd);
 
 	if( ! strcmp(param_cmd[0],"close") )
 		return CloseAllClient();

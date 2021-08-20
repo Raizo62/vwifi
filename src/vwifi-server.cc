@@ -133,6 +133,8 @@ int vwifi_server()
 	else
 		cout<<"Packet loss : disable"<<endl;
 
+	cout<<"Scale : "<<Scale<<endl;
+
 	//add master socket to set
 	Scheduler.AddNode(wifiServerVTCP);
 	Scheduler.AddNode(wifiServerITCP);

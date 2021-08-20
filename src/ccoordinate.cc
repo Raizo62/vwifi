@@ -2,6 +2,8 @@
 
 #include <math.h> // sqrt
 
+TScale Scale=1;
+
 CCoordinate::CCoordinate(TValue x, TValue y, TValue z)
 {
 	Set(x, y);
@@ -53,7 +55,7 @@ void CCoordinate::Set(CCoordinate coo)
 
 TDistance CCoordinate::DistanceWith(TValue x, TValue y, TValue z)
 {
-	return sqrt( (X-x)*(X-x)+(Y-y)*(Y-y)+(Z-z)*(Z-z) );
+	return Scale*sqrt( (X-x)*(X-x)+(Y-y)*(Y-y)+(Z-z)*(Z-z) );
 }
 
 TDistance CCoordinate::DistanceWith(CCoordinate coo)

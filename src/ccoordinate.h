@@ -7,6 +7,8 @@
 
 using namespace std;
 
+extern TScale Scale;
+
 class CCoordinate
 {
 		TValue X;

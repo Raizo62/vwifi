@@ -156,6 +156,12 @@ void CCTRLServer::SendStatus()
 		return;
 	}
 
+	if( Send((char*)&Scale,sizeof(Scale)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendStatus : Send : Scale"<<endl;
+		return;
+	}
+
 	// VHOST
 
 	if( Send((char*)&(WifiServerVTCP->Port),sizeof(WifiServerVTCP->Port)) == SOCKET_ERROR )
@@ -189,7 +195,6 @@ void CCTRLServer::SendStatus()
 		cerr<<"Error : SendStatus : Send : spyIsConnected"<<endl;
 		return;
 	}
-
 }
 
 void CCTRLServer::SendShow()
@@ -197,6 +202,12 @@ void CCTRLServer::SendShow()
 	if( Send((char*)&CanLostPackets,sizeof(CanLostPackets)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : Send : PacketLoss"<<endl;
+		return;
+	}
+
+	if( Send((char*)&Scale,sizeof(Scale)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendShow : Send : Scale"<<endl;
 		return;
 	}
 
@@ -268,6 +279,16 @@ void CCTRLServer::SendDistance()
 	}
 }
 
+void CCTRLServer::SetScale()
+{
+	TScale new_scale;
+
+	if( Read((char*)&new_scale, sizeof(new_scale)) == SOCKET_ERROR )
+		return;
+
+	Scale=new_scale;
+}
+
 void CCTRLServer::CloseAllClient()
 {
 	// because the same List is shared by WifiServerVTCP and WifiServerITCP
@@ -321,6 +342,10 @@ void CCTRLServer::ReceiveOrder()
 
 			case TORDER_DISTANCE_BETWEEN_CID :
 				SendDistance();
+				break;
+
+			case TORDER_SET_SCALE :
+				SetScale();
 				break;
 
 			case TORDER_CLOSE_ALL_CLIENT :

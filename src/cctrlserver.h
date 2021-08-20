@@ -34,6 +34,8 @@ class CCTRLServer : public CSocketServer, public CSocketServerFunctionITCP
 
 		void SendDistance();
 
+		void SetScale();
+
 		void CloseAllClient();
 
 	public :
