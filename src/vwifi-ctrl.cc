@@ -233,9 +233,6 @@ int AskStatus()
 {
 	CSocketClientITCP socket;
 
-	cout<<"CTRL : IP : "<<DEFAULT_ADDRESS_IP<<endl;
-	cout<<"CTRL : Port : "<<DEFAULT_CTRL_PORT<<endl;
-
 	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
 
 	if( ! socket.ConnectLoop() )
@@ -243,6 +240,9 @@ int AskStatus()
 		cerr<<"Error : status : socket.Connect error"<<endl;
 		return 1;
 	}
+
+	cout<<"CTRL : IP : "<<IP_Ctrl.c_str()<<endl;
+	cout<<"CTRL : Port : "<<Port_Ctrl<<endl;
 
 	int err;
 
