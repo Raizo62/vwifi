@@ -1,7 +1,3 @@
-#include "cwificlient.h"
-#include "csocketclientvtcp.h"
-#include "csocketclientitcp.h"
-
 #include <signal.h>
 #include <unistd.h>
 #include <iostream>
@@ -10,6 +6,12 @@
 #include <memory>
 
 #include "config.h" // DEFAULT_WIFI_CLIENT_PORT_VHOST / DEFAULT_WIFI_CLIENT_PORT_INET
+
+#include "cwificlient.h"
+#ifdef ENABLE_VHOST
+#include "csocketclientvtcp.h"
+#endif
+#include "csocketclientitcp.h"
 
 enum STATE {
 
@@ -132,12 +134,17 @@ int main (int argc , char ** argv){
 	{
 		if( ip_addr.empty() )
 		{ // IP not set -> mode VHOST
+#ifdef ENABLE_VHOST
 			if( ! port_number )
 				port_number = DEFAULT_WIFI_CLIENT_PORT_VHOST;
 
 			std::cout<<"Type : AF_VSOCK"<<std::endl;
 			wifiClient=new CWifiClient<CSocketClientVTCP>;
 			static_cast<CWifiClient<CSocketClientVTCP>*>(wifiClient)->Init(port_number);
+#else
+			std::cerr<<"Error : This program is not build with VHOST!!"<<std::endl;
+			return 3;
+#endif
 		}
 		else
 		{ // mode TCP
