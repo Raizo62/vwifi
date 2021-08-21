@@ -231,6 +231,9 @@ int ChangePacketLoss(int argc, char *argv[])
 
 int AskStatus()
 {
+	cout<<"CTRL : IP : "<<IP_Ctrl.c_str()<<endl;
+	cout<<"CTRL : Port : "<<Port_Ctrl<<endl;
+
 	CSocketClientITCP socket;
 
 	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
@@ -240,9 +243,6 @@ int AskStatus()
 		cerr<<"Error : status : socket.Connect error"<<endl;
 		return 1;
 	}
-
-	cout<<"CTRL : IP : "<<IP_Ctrl.c_str()<<endl;
-	cout<<"CTRL : Port : "<<Port_Ctrl<<endl;
 
 	int err;
 
