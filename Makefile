@@ -19,6 +19,8 @@ MODE= -O3 -s -Wall -Wextra -pedantic # //////////      RELEASE
 #MODE= -g -Wall -Wextra -pedantic -D_DEBUG # //////////      DEBUG
 #MODE= -pg # //////////      PROFILER --> view with : gprof $(NAME)
 
+EDITOR	=	geany
+
 NETLINK_FLAGS = -I/usr/include/libnl3
 NETLINK_LIBS = -lnl-genl-3 -lnl-3
 
@@ -36,7 +38,7 @@ EUID	:= $(shell id -u -r)
 vpath %.cc $(SRC)
 vpath %.h $(SRC)
 
-.PHONY: all clean build install man dep tools directories update cppcheck gitversion
+.PHONY: all clean build install man dep tools directories update edit cppcheck gitversion
 
 build : directories $(EXEC) # man
 
@@ -75,6 +77,9 @@ clean:
 
 dep:
 	-bash tools/Makefile.dependency.sh
+
+edit:
+	$(EDITOR) $(SRC)/* Makefile README.md &
 
 cppcheck:
 	cppcheck --verbose --enable=all --enable=style --xml $(CFLAGS) $(DEFS) -D_DEBUG $(SRC)/*.cc 2> $(NAME)-cppcheck.xml
