@@ -1,35 +1,37 @@
 #/usr/bin/make -f
 #
-NAME	=	vwifi
-VERSION	=	4.1
-BINDIR	=	$(DESTDIR)/usr/local/bin
-MANDIR	=	$(DESTDIR)/usr/local/man/man1
+NAME	:=	vwifi
+VERSION	:=	4.1
+BINDIR	:=	$(DESTDIR)/usr/local/bin
+MANDIR	:=	$(DESTDIR)/usr/local/man/man1
 
-EXEC	=	vwifi-server vwifi-client vwifi-ctrl
-#EXEC	=	vwifi-server vwifi-client vwifi-ctrl vwifi-inet-monitor
+EXEC	:=	vwifi-server vwifi-client vwifi-ctrl
+#EXEC	:=	vwifi-server vwifi-client vwifi-ctrl vwifi-inet-monitor
 
-SRC		=	src
-OBJ		=	obj
-MAN		=	man
+SRC		:=	src
+OBJ		:=	obj
+MAN		:=	man
 
-CC		=	g++
+CXX		?=	g++
 
-#MODE= -O3 -s -Wall -Wextra -pedantic -DNDEBUG # //////////      RELEASE WITHOUT ASSERT
-MODE= -O3 -s -Wall -Wextra -pedantic # //////////      RELEASE
-#MODE= -g -Wall -Wextra -pedantic -D_DEBUG # //////////      DEBUG
-#MODE= -pg # //////////      PROFILER --> view with : gprof $(NAME)
+#MODE+= -O3 -s -Wall -Wextra -pedantic -DNDEBUG # //////////      RELEASE WITHOUT ASSERT
+MODE+= -O3 -s -Wall -Wextra -pedantic # //////////      RELEASE
+#MODE+= -g -Wall -Wextra -pedantic -D_DEBUG # //////////      DEBUG
+#MODE+= -pg # //////////      PROFILER --> view with : gprof $(NAME)
 
-EDITOR	=	geany
+EDITOR	?=	geany
 
-NETLINK_FLAGS = -I/usr/include/libnl3
-NETLINK_LIBS = -lnl-genl-3 -lnl-3
+NETLINK_FLAGS := -I/usr/include/libnl3
+NETLINK_LIBS := -lnl-genl-3 -lnl-3
 
-THREAD_LIBS = -lpthread
+THREAD_LIBS := -lpthread
 
-CFLAGS  +=  $(NETLINK_FLAGS)
-LDFLAGS = $(NETLINK_LIBS) $(THREAD_LIBS)
+CPP_LIBS := -lstdc++ -lm
 
-DEFS = -DVERSION=\"$(VERSION)\"
+CFLAGS  += $(NETLINK_FLAGS)
+LDFLAGS += $(NETLINK_LIBS) $(THREAD_LIBS) $(CPP_LIBS)
+
+DEFS	+= -DVERSION=\"$(VERSION)\"
 
 EUID	:= $(shell id -u -r)
 
@@ -46,12 +48,12 @@ include Makefile.in
 
 # To build obj :
 $(OBJ)/%.o:
-	$(CC) -o $@ $(MODE) $(CFLAGS) $(DEFS) -c $<
+	$(CXX) -o $@ $(MODE) $(CFLAGS) $(DEFS) -c $<
 
 # To build bin :
 # On OpenWRT, $(LDFLAGS) must be after $^
 $(EXEC):
-	$(CC) -o $@ $(MODE) $^ $(LDFLAGS)
+	$(CXX) -o $@ $(MODE) $^ $(LDFLAGS)
 
 $(MAN)/$(NAME).1.gz : $(MAN)/$(NAME).1
 	gzip -c $(MAN)/$(NAME).1 > $(MAN)/$(NAME).1.gz
