@@ -207,6 +207,11 @@ vwifi-ctrl status
 vwifi-ctrl distance 10 20
 ```
 
+* Set the scale of the distances between the clients to 0.005
+```bash
+vwifi-ctrl scale 0.005
+```
+
 # Test Wifi
 
 ## Test 1 : WPA
