@@ -26,10 +26,10 @@ NETLINK_LIBS := -lnl-genl-3 -lnl-3
 
 THREAD_LIBS := -lpthread
 
-CPP_LIBS := -lstdc++ -lm
+GCC_LIBS := -lstdc++ -lm
 
 CFLAGS  += $(NETLINK_FLAGS)
-LDFLAGS += $(NETLINK_LIBS) $(THREAD_LIBS) $(CPP_LIBS)
+LDFLAGS += $(NETLINK_LIBS) $(THREAD_LIBS) $(GCC_LIBS)
 
 DEFS	+= -DVERSION=\"$(VERSION)\"
 
