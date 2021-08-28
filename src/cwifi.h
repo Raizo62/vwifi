@@ -8,8 +8,10 @@ class CWifi
 {
 	protected :
 
+		TFrequency GetFrequency(struct nlmsghdr* nlh);
+
 		// distance : meter
-		int Attenuation(TDistance distance);
+		int Attenuation(TDistance distance, TFrequency frequency);
 
 		// return power value between [TPower_MIN,TPower_MAX]
 		TPower BoundedPower(int power);

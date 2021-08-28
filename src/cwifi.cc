@@ -5,22 +5,38 @@
 
 #include <netlink/netlink.h> // (struct nlmsghdr *)
 
+#include "hwsim.h" // HWSIM_ATTR_FREQ
+#include <netlink/genl/genl.h> // genlmsg_parse
+
 #include "cwifi.h"
 
 //#include "config.h"
 
 const float ConstanteC=92.45;
-const TFrequency Frequency=2.4; // GHz
 
 const int MTU=1640; // Maximum Transmission Unit : 1640 is an experimental value
 
+TFrequency CWifi::GetFrequency(struct nlmsghdr* nlh)
+{
+	/* we get the attributes*/
+	struct nlattr *attrs[HWSIM_ATTR_FREQ + 1];
+	genlmsg_parse(nlh, 0, attrs, HWSIM_ATTR_FREQ, NULL);
+
+	/* we get frequence */
+	if (attrs[HWSIM_ATTR_FREQ])
+		return (TFrequency)nla_get_u32(attrs[HWSIM_ATTR_FREQ])/1000.0;
+	else
+		return 0;
+}
+
 // distance : meter
-int CWifi::Attenuation(TDistance distance)
+// frequency : GHz
+int CWifi::Attenuation(TDistance distance, TFrequency frequency)
 {
 	if( distance == 0 )
 		return 0;
 
-	return ConstanteC+20*log10(Frequency)+20*log10(distance/1000);
+	return ConstanteC+20*log10(frequency)+20*log10(distance/1000);
 }
 
 TPower CWifi::BoundedPower(int power)
