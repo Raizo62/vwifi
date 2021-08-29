@@ -13,6 +13,7 @@
 //#include "config.h"
 
 const float ConstanteC=92.45;
+const TFrequency DEFAULT_FREQUENCY=2412; // Hz
 
 const int MTU=1640; // Maximum Transmission Unit : 1640 is an experimental value
 
@@ -26,7 +27,7 @@ TFrequency CWifi::GetFrequency(struct nlmsghdr* nlh)
 	if (attrs[HWSIM_ATTR_FREQ])
 		return nla_get_u32(attrs[HWSIM_ATTR_FREQ]);
 	else
-		return 0;
+		return DEFAULT_FREQUENCY;
 }
 
 // distance : meter
