@@ -24,19 +24,21 @@ TFrequency CWifi::GetFrequency(struct nlmsghdr* nlh)
 
 	/* we get frequence */
 	if (attrs[HWSIM_ATTR_FREQ])
-		return (TFrequency)nla_get_u32(attrs[HWSIM_ATTR_FREQ])/1000.0;
+		return nla_get_u32(attrs[HWSIM_ATTR_FREQ]);
 	else
 		return 0;
 }
 
 // distance : meter
-// frequency : GHz
+// frequency : Hz
 int CWifi::Attenuation(TDistance distance, TFrequency frequency)
 {
 	if( distance == 0 )
 		return 0;
 
-	return ConstanteC+20*log10(frequency)+20*log10(distance/1000);
+	//     ConstanteC+20*log10(frequency/1000)+20*log10(distance/1000);
+	//     ConstanteC+20*(log10(frequency)-log10(1000))+20*(log10(distance)-log10(1000))
+	return ConstanteC+20*(log10(frequency)-3)+20*(log10(distance)-3);
 }
 
 TPower CWifi::BoundedPower(int power)

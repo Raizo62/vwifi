@@ -43,8 +43,8 @@ const TPower TPower_MIN=INT8_MIN;
 typedef float TDistance; // in meters
 typedef float TScale;
 
-// float
-typedef float TFrequency;
+// u32
+typedef u32 TFrequency; // Hz
 
 // unsigned short
 typedef u16 TMinimalSize;
