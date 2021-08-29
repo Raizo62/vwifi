@@ -398,7 +398,7 @@ int CKernelWifi::init_netlink(void)
 }
 
 
-int CKernelWifi::send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, uint32_t freq)
+int CKernelWifi::send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, TFrequency freq)
 {
 	struct nl_msg *msg;
 
@@ -489,7 +489,7 @@ void CKernelWifi::recv_from_server(){
 	genlmsg_parse(nlh, 0, attrs, HWSIM_ATTR_MAX, NULL);
 
 	/* we get frequence */
-	u32 freq;
+	TFrequency freq;
 	if (attrs[HWSIM_ATTR_FREQ])
 		freq = nla_get_u32(attrs[HWSIM_ATTR_FREQ]);
 	else
