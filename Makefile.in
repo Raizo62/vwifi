@@ -48,7 +48,7 @@ $(OBJ)/ccoordinate.o : ccoordinate.cc ccoordinate.h types.h Makefile Makefile.in
 
 $(OBJ)/csocket.o : csocket.cc cdynbuffer.h csocket.h types.h Makefile Makefile.in
 
-$(OBJ)/cwifi.o : cwifi.cc cdynbuffer.h csocket.h cwifi.h types.h Makefile Makefile.in
+$(OBJ)/cwifi.o : cwifi.cc cdynbuffer.h csocket.h cwifi.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
 
 $(OBJ)/cwifiserver.o : cwifiserver.cc ccoordinate.h cdynbuffer.h cinfosocket.h cinfowifi.h clistinfo.h config.h csocket.h csocketserver.h cwifi.h cwifiserver.h tools.h types.h Makefile Makefile.in
 
