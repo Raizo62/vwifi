@@ -44,15 +44,6 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 		perror("CSocketServerFunctionVTCP::_Listen : setsockopt : SO_REUSEADDR");
 		return false;
 	}
-
-	struct timeval timeout;
-	timeout.tv_sec = 3;
-	timeout.tv_usec = 0;
-	if (setsockopt (master, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
-		perror("CSocketServerFunctionVTCP::_Listen : setsockopt : SO_RCVTIMEO\n");
-	if (setsockopt (master, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
-		perror("CSocketServerFunctionVTCP::_Listen : setsockopt : SO_SNDTIMEO\n");
-
 	//type of socket created
 	struct sockaddr_vm address;
 	address.svm_family = AF_VSOCK;
@@ -67,6 +58,16 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 		perror("CSocketServerFunctionVTCP::_Listen : bind");
 		return false;
 	}
+
+	/* Seems useless with VSOCK : the server detects immediately that a client is disconnected
+	struct timeval timeout;
+	timeout.tv_sec = 3;
+	timeout.tv_usec = 0;
+	if (setsockopt (master, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+		perror("CSocketServerFunctionVTCP::_Listen : setsockopt : SO_RCVTIMEO\n");
+	if (setsockopt (master, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+		perror("CSocketServerFunctionVTCP::_Listen : setsockopt : SO_SNDTIMEO\n");
+	*/
 
 	cout<<"Listener on port : "<<port<<endl;
 	//try to specify maximum of 3 pending connections for the master socket
