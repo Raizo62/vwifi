@@ -21,7 +21,7 @@ bool CSocketServerFunctionVTCP::Configure(TDescriptor& master)
 
 	if( master == SOCKET_ERROR )
 	{
-		perror("CSocketServerCoreVTCP::_Configure : socket");
+		perror("CSocketServerFunctionVTCP::_Configure : socket");
 		return false;
 	}
 
@@ -32,7 +32,7 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 {
 	if( ! Configure(master) )
 	{
-		cerr<<"Error : CSocketServerCoreVTCP::_Listen : Configure"<<endl;
+		cerr<<"Error : CSocketServerFunctionVTCP::_Listen : Configure"<<endl;
 		return false;
 	}
 
@@ -41,7 +41,7 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 	int opt = 1 ; // TRUE
 	if( setsockopt(master, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
 	{
-		perror("CSocketServerCoreVTCP::_Listen : setsockopt : SO_REUSEADDR");
+		perror("CSocketServerFunctionVTCP::_Listen : setsockopt : SO_REUSEADDR");
 		return false;
 	}
 
@@ -49,9 +49,9 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 	timeout.tv_sec = 3;
 	timeout.tv_usec = 0;
 	if (setsockopt (master, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
-		perror("CSocketServerCoreVTCP::_Listen : setsockopt : SO_RCVTIMEO\n");
+		perror("CSocketServerFunctionVTCP::_Listen : setsockopt : SO_RCVTIMEO\n");
 	if (setsockopt (master, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
-		perror("CSocketServerCoreVTCP::_Listen : setsockopt : SO_SNDTIMEO\n");
+		perror("CSocketServerFunctionVTCP::_Listen : setsockopt : SO_SNDTIMEO\n");
 
 	//type of socket created
 	struct sockaddr_vm address;
@@ -64,7 +64,7 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 	//bind the socket
 	if (bind(master, (struct sockaddr*)&address, sizeof(address)) != 0)
 	{
-		perror("CSocketServerCoreVTCP::_Listen : bind");
+		perror("CSocketServerFunctionVTCP::_Listen : bind");
 		return false;
 	}
 
@@ -72,7 +72,7 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 	//try to specify maximum of 3 pending connections for the master socket
 	if( listen(master, 3) < 0 )
 	{
-		perror("CSocketServerCoreVTCP::_Listen : listen");
+		perror("CSocketServerFunctionVTCP::_Listen : listen");
 		return false;
 	}
 
@@ -88,7 +88,7 @@ TDescriptor CSocketServerFunctionVTCP::_Accept(TDescriptor master, TCID& cid)
 
 	if( (new_socket = accept(master, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0 )
 	{
-		perror("CSocketServerCoreVTCP::_Accept : accept");
+		perror("CSocketServerFunctionVTCP::_Accept : accept");
 		return SOCKET_ERROR;
 	}
 
