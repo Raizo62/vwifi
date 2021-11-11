@@ -36,14 +36,6 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 		return false;
 	}
 
-	//set master socket to allow multiple connections ,
-	//this is just a good habit, it will work without this
-	int opt = 1 ; // TRUE
-	if( setsockopt(master, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
-	{
-		perror("CSocketServerFunctionVTCP::_Listen : setsockopt : SO_REUSEADDR");
-		return false;
-	}
 	//type of socket created
 	struct sockaddr_vm address;
 	address.svm_family = AF_VSOCK;
