@@ -6,8 +6,7 @@ TScale Scale=1;
 
 CCoordinate::CCoordinate(TValue x, TValue y, TValue z)
 {
-	Set(x, y);
-	SetZ(z);
+	Set(x, y, z);
 }
 
 CCoordinate::CCoordinate()
