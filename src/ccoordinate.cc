@@ -73,3 +73,9 @@ ostream& operator<<(ostream& os, const CCoordinate& coo)
 	coo.Display(os) ;
 	return os;
 }
+
+CCoordinate& CCoordinate::operator=(const CCoordinate& coo)
+{
+	Set(coo.X,coo.Y,coo.Z);
+	return *this;
+}

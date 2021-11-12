@@ -35,6 +35,7 @@ class CCoordinate
 		void Display(ostream& os) const;
 		friend ostream& operator<<(ostream& os, const CCoordinate& coo);
 
+		CCoordinate& operator=(const CCoordinate& coo);
 };
 
 #endif
