@@ -49,7 +49,7 @@ void CCoordinate::Set(TValue x, TValue y, TValue z)
 
 void CCoordinate::Set(CCoordinate coo)
 {
-	*this=coo;
+	Set(coo.X,coo.Y,coo.Z);
 }
 
 TDistance CCoordinate::DistanceWith(TValue x, TValue y, TValue z)
