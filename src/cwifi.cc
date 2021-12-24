@@ -12,7 +12,7 @@
 
 //#include "config.h"
 
-const float ConstanteC=92.45;
+const double ConstanteC=92.45;
 const TFrequency DEFAULT_FREQUENCY=2412; // Hz
 
 const int MTU=1640; // Maximum Transmission Unit : 1640 is an experimental value

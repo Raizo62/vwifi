@@ -39,9 +39,9 @@ typedef s8 TPower; // empirical observed values with int : [-123,20]
 const TPower TPower_MAX=INT8_MAX;
 const TPower TPower_MIN=INT8_MIN;
 
-// float
-typedef float TDistance; // in meters
-typedef float TScale;
+// double
+typedef double TDistance; // in meters
+typedef double TScale;
 
 // u32
 typedef u32 TFrequency; // Hz
