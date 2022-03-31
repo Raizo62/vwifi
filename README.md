@@ -38,7 +38,7 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 * You can change the defaults IP and ports with parameters (see the parameter "-h" to help)
 
-# Build
+# Install
 
 ## On Debian-based Linux distributions
 
@@ -212,7 +212,7 @@ vwifi-ctrl distance 10 20
 vwifi-ctrl scale 0.005
 ```
 
-# Test Wifi
+# Examples of commands to test Wifi
 
 ## Test 1 : WPA
 
