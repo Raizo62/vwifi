@@ -621,7 +621,7 @@ int main(int argc , char *argv[])
 	if( ! strcmp(param_cmd[0],"close") )
 		return CloseAllClient();
 
-	cerr<<NameOfProg<<" : Error : unknown order : "<<param_cmd[1]<<endl;
+	cerr<<NameOfProg<<" : Error : unknown order : "<<param_cmd[0]<<endl;
 
 	return 1;
 }
