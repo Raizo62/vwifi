@@ -38,8 +38,8 @@ void Help()
 	cout<<"	close"<<endl;
 	cout<<"		- Close all the connections with Wifi Clients"<<endl;
 	cout<<endl;
-	cout<<" [-p PORT] or [--port PORT] : Set the port used by the vwifi-server"<<endl;
-	cout<<" [-i IP] or [--ip IP] : Set the IP used by the vwifi-server"<<endl;
+	cout<<" [-p PORT] or [--port PORT] : Set the port used by the vwifi-server (by default PORT="<< Port_Ctrl <<")"<<endl;
+	cout<<" [-i IP] or [--ip IP] : Set the IP used by the vwifi-server (by default IP="<< IP_Ctrl <<")"<<endl;
 	cout<<" [-v] or [--version] : Display the version of "<<NameOfProg<<endl;
 	cout<<" [-h] or [--help] : this help"<<endl;
 }

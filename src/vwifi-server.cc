@@ -221,7 +221,12 @@ void help()
 {
 	cout<<"Usage: vwifi-server [-h] [-v] [-p PORT_VHOST] [-t PORT_TCP] [-s PORT_SPY] [-c PORT_CTRL]"<<endl;
 	cout<<"                    [--help] [--version] [--port-vhost PORT_VHOST] [--port-tcp PORT_TCP] [--port-spy PORT_SPY] [--port-ctrl PORT_CTRL]"<<endl;
+	cout<<"         By default : PORT_VHOST="<< DEFAULT_WIFI_CLIENT_PORT_VHOST <<
+								" PORT_TCP="  << DEFAULT_WIFI_CLIENT_PORT_INET <<
+								" PORT_SPY="  << DEFAULT_WIFI_SPY_PORT <<
+								" PORT_CTRL=" << DEFAULT_CTRL_PORT <<endl;
 }
+
 
 int main(int argc, char** argv)
 {
