@@ -1,7 +1,7 @@
 #/usr/bin/make -f
 #
 NAME	:=	vwifi
-VERSION	:=	5.3
+VERSION	:=	5.4
 BINDIR	:=	$(DESTDIR)/usr/local/bin
 MANDIR	:=	$(DESTDIR)/usr/local/man/man1
 
