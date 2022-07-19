@@ -138,6 +138,8 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 
 	/* we get hwsim mac (id)*/
 	struct ether_addr *src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
+	struct ether_addr macsrchwsim;
+	memcpy(&macsrchwsim,src,sizeof(macsrchwsim)); // backup the original mac src
 
 	/* Let's flag this frame as ACK'ed */
 	/* whatever that means... */
@@ -166,6 +168,7 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 
 	/* we get the attributes*/
 	char* data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
+	unsigned int data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
 
 	/* copy source address from frame */
 	/* if we rebuild the nl msg, this can change */
@@ -202,6 +205,27 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	int value=_SendSignal(&power, (char*)nlh, msg_len);
 	if( value == SOCKET_ERROR )
 		manage_server_crash();
+
+	// Send also on the others interfaces on the same VM :
+	// ------------------->
+	/* we get frequence */
+	TFrequency freq;
+	if (attrs[HWSIM_ATTR_FREQ])
+		freq = nla_get_u32(attrs[HWSIM_ATTR_FREQ]);
+	else
+		freq = 0;
+
+	int rate_idx = 7; // number of attempts
+
+	std::vector<WirelessDevice> &inets = _list_winterfaces.list_devices();
+	for (auto & inet : inets)
+	{
+		struct ether_addr macdsthwsim = inet.getMachwsim();
+		if( memcmp(&macsrchwsim,&macdsthwsim,sizeof(struct ether_addr)) ) // if( macsrchwsim != macdsthwsim )
+			send_cloned_frame_msg(&macdsthwsim, data, data_len, rate_idx, power, freq);
+	}
+	delete &inets;
+	// <------------------------
 
 	return 0 ;
 }
