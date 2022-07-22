@@ -1164,12 +1164,14 @@ bool CKernelWifi::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
 	if (ioctl(sock, SIOCETHTOOL, &ifr) == -1)
 	{
 		perror("ioctl");
+		free(epmaddr);
 		return 0;
 	}
 	else
 	{
 		if (epmaddr->size != ETH_ALEN)
 		{
+			free(epmaddr);
 			return 0;
 		}
 		else
