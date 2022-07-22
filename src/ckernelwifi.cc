@@ -810,9 +810,9 @@ int CKernelWifi::start(){
 		/** make it attribute member if you would use it elsewhere */
 		monwireless = new MonitorWirelessDevice() ;
 
-		monwireless->setNewInetCallback([this](WirelessDevice wd) { return handle_new_winet_notification(wd);});
-		monwireless->setDelInetCallback([this](WirelessDevice wd) { return handle_del_winet_notification(wd);});
-		monwireless->setInitInetCallback([this](WirelessDevice wd) { return handle_init_winet_notification(wd);});
+		monwireless->setNewInetCallback([this](const WirelessDevice& wd) { return handle_new_winet_notification(wd);});
+		monwireless->setDelInetCallback([this](const WirelessDevice& wd) { return handle_del_winet_notification(wd);});
+		monwireless->setInitInetCallback([this](const WirelessDevice& wd) { return handle_init_winet_notification(wd);});
 
 		monwireless->start();
 
