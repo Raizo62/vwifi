@@ -44,7 +44,7 @@ class WirelessDevice {
 	 */
 	WirelessDevice(const std::string &,int,int,const struct ether_addr &,int);
 
-	friend std::ostream &   operator<< ( std::ostream & , WirelessDevice &);
+	friend std::ostream &   operator<< ( std::ostream & , const WirelessDevice &);
 
 	struct ether_addr getMacaddr() const  ;
 	struct ether_addr getMachwsim() const  ;

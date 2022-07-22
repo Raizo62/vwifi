@@ -85,7 +85,7 @@ int WirelessDevice::getTxPower() const {
 
 // friend functions
 
-std::ostream &   operator<< ( std::ostream & os , WirelessDevice & wdevice ){
+std::ostream &   operator<< ( std::ostream & os , const WirelessDevice & wdevice ){
 
 
 	char macstring[18];
