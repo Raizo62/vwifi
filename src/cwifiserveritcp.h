@@ -14,9 +14,9 @@ class CWifiServerITCP : public CWifiServer, public CSocketServerFunctionITCP
 
 	private:
 
-		bool _Listen(TDescriptor& master, TPort port);
+		bool _Listen(TDescriptor& master, TPort port) override;
 
-		TDescriptor _Accept(TDescriptor master, TCID& cid);
+		TDescriptor _Accept(TDescriptor master, TCID& cid) override;
 };
 
 #endif

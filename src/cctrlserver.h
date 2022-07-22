@@ -13,8 +13,8 @@ class CCTRLServer : public CSocketServer, public CSocketServerFunctionITCP
 		CWifiServer* WifiServerSPY;
 		CSelect* Scheduler;
 
-		bool _Listen(TDescriptor& master, TPort port);
-		TDescriptor _Accept(TDescriptor master, TCID& cid);
+		bool _Listen(TDescriptor& master, TPort port) override;
+		TDescriptor _Accept(TDescriptor master, TCID& cid) override;
 
 		ssize_t Read(char* data, ssize_t sizeOfData);
 
