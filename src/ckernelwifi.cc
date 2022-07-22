@@ -1151,8 +1151,8 @@ bool CKernelWifi::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
 
 	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
-		free(epmaddr);
 		perror("socket");
+		free(epmaddr);
 		return 0;
 	}
 
