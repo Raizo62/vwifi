@@ -7,6 +7,7 @@
 #include <arpa/inet.h> // INADDR_ANY
 #include <unistd.h> // close
 #include <assert.h> // assert
+#include <cstring> // memset
 
 #include "csocketclientvtcp.h"
 #include "tools.h"
@@ -19,8 +20,8 @@ CSocketClientVTCP::CSocketClientVTCP() : CSocketClient()
 
 void CSocketClientVTCP::Init(TPort port)
 {
+	memset(&Server, 0, sizeof(Server));
 	Server.svm_family = AF_VSOCK;
-	Server.svm_reserved1 = 0;
 	Server.svm_port = port;
 	Server.svm_cid = 2;
 }

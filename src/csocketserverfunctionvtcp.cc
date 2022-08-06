@@ -1,6 +1,6 @@
 #include <iostream> // cout
 #include <cstdio> //perror
-#include <cstring> // memcpy
+#include <cstring> // memset
 #include <assert.h> // assert
 
 #include <arpa/inet.h> // INADDR_ANY
@@ -38,8 +38,8 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 
 	//type of socket created
 	struct sockaddr_vm address;
+	memset(&address, 0, sizeof(address));
 	address.svm_family = AF_VSOCK;
-	address.svm_reserved1 = 0;
 	address.svm_port = port;
 	address.svm_cid = VMADDR_CID_ANY;
 	memset(address.svm_zero, 0, sizeof(address.svm_zero));
