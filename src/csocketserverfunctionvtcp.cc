@@ -42,7 +42,6 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 	address.svm_family = AF_VSOCK;
 	address.svm_port = port;
 	address.svm_cid = VMADDR_CID_ANY;
-	memset(address.svm_zero, 0, sizeof(address.svm_zero));
 
 	//bind the socket
 	if (bind(master, (struct sockaddr*)&address, sizeof(address)) != 0)
