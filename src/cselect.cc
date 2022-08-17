@@ -1,5 +1,6 @@
 #include <errno.h> // errno
 #include <assert.h> // assert
+#include <stdio.h> //NULL
 
 #include "cselect.h"
 
