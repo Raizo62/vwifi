@@ -1,6 +1,5 @@
 #include "cwirelessdevice.h"
 #include "cmonwirelessdevice.h"
-#include <stdio.h>
 #include <iostream>
 
 #include <unistd.h>
