@@ -1,4 +1,4 @@
-#include <stdio.h> //NULL
+#include <cstddef> // NULL
 #include <arpa/inet.h> // struct sockaddr_in & inet_ntoa & ntohs
 
 #include "tools.h"
