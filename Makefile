@@ -14,6 +14,8 @@ MAN		:=	man
 
 CXX		?=	g++
 
+#STATIC	:= -static
+
 #MODE+= -O3 -s -Wall -Wextra -pedantic -DNDEBUG # //////////      RELEASE WITHOUT ASSERT
 MODE+= -O3 -s -Wall -Wextra -pedantic # //////////      RELEASE
 #MODE+= -g -Wall -Wextra -pedantic -D_DEBUG # //////////      DEBUG
@@ -40,7 +42,7 @@ EUID	:= $(shell id -u -r)
 vpath %.cc $(SRC)
 vpath %.h $(SRC)
 
-.PHONY: all clean build install man dep tools directories update edit cppcheck gitversion
+.PHONY: all clean build install man dep tools directories update edit cppcheck gitversion static dyn
 
 build : directories $(EXEC) # man
 
@@ -53,7 +55,7 @@ $(OBJ)/%.o:
 # To build bin :
 # On OpenWRT, $(LDFLAGS) must be after $^
 $(EXEC):
-	$(CXX) -o $@ $(MODE) $^ $(LDFLAGS)
+	$(CXX) -o $@ $(MODE) $(STATIC) $^ $(LDFLAGS)
 
 $(MAN)/$(NAME).1.gz : $(MAN)/$(NAME).1
 	gzip -c $(MAN)/$(NAME).1 > $(MAN)/$(NAME).1.gz
@@ -85,6 +87,12 @@ edit:
 
 cppcheck:
 	cppcheck --verbose --enable=all --enable=style --xml $(CFLAGS) $(DEFS) -D_DEBUG $(SRC)/*.cc 2> $(NAME)-cppcheck.xml
+
+dyn:
+	@sed -i 's/^\s*STATIC\s*:=\(.*\)/#STATIC      := \1/g' Makefile
+
+static:
+	@sed -i 's/^\s*#\s*STATIC\s*:=\(.*\)/STATIC      := \1/g' Makefile
 
 gitversion: .git
 	@sed -n "s/^\(VERSION.[^\-]*\)\(-.*\)\?/\1-$(shell git log --pretty=format:"%h" -n 1)/gp" Makefile
