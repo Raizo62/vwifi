@@ -83,7 +83,7 @@ sudo make install
 * Shell :
     * Load the module VHOST :
    ```bash
-   # sudo rmmod vhost_vsock vmw_vsock_virtio_transport_common vsock # if necessary
+   # sudo modprobe -r vhost_vsock vmw_vsock_virtio_transport_common vsock # if necessary
 
    sudo modprobe vhost_vsock
    sudo chmod a+rw /dev/vhost-vsock
