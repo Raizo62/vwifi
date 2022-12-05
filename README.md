@@ -27,16 +27,18 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 # Explanations
 
 * ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host
-* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol, or with the TCP protocol
-* The ***vwifi-spy*** is the same as ***vwifi-client*** but :
-    * it receives always all communications, even if the loss of packets is enable.
-    * it works only with TCP.
-    * by default, it connects to 127.0.0.1
-* ***vwifi-client*** and ***vwifi-spy*** use the `mac80211_hwsim` kernel module to have the wifi interfaces
-* To use TCP protocol, ***vwifi-server*** and ***vwifi-client***/***vwifi-spy*** must be connected to a different IP network than that of the wifi
+* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol (by default), or with the TCP protocol
+* With the option "-s" (or "--spy"), ***vwifi-client*** :
+    * receives always all communications, even if the loss of packets is enable.
+    * works only with TCP.
+    * connects to 127.0.0.1, by default
+* ***vwifi-client*** uses the `mac80211_hwsim` kernel module to have the wifi interfaces
+* To use TCP protocol, ***vwifi-server*** and ***vwifi-client*** must be connected to a different IP network than that of the wifi
 * ***vwifi-ctrl*** is used to interact with ***vwifi-server***
 
-# Build
+* You can change the defaults IP and ports with parameters (see the parameter "-h" to help)
+
+# Install
 
 ## On Debian-based Linux distributions
 
@@ -56,6 +58,8 @@ make gitversion # To add the last commit id to the VERSION
 
 make update # To download and update the file mac80211_hwsim.h
 ```
+
+* To change the default ports and IP, edit : src/config.h
 
 * To building :
 
@@ -79,7 +83,7 @@ sudo make install
 * Shell :
     * Load the module VHOST :
    ```bash
-   # sudo rmmod vhost_vsock vmw_vsock_virtio_transport_common vsock # if necessary
+   # sudo modprobe -r vhost_vsock vmw_vsock_virtio_transport_common vsock # if necessary
 
    sudo modprobe vhost_vsock
    sudo chmod a+rw /dev/vhost-vsock
@@ -101,12 +105,21 @@ sudo modprobe mac80211_hwsim radios=2
 # sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
+* Change the MAC address of each wlan interface
+```bash
+sudo macchanger -a wlan0
+# or : sudo ip link set wlan0 addr 0a:0b:0c:03:02:01
+# or : sudo ifconfig wlan0 hw ether 0a:0b:0c:03:02:01
+
+sudo macchanger -a wlan1
+```
+
 * Connect all these wlan interfaces to the ***vwifi-server*** :
 ```bash
 sudo vwifi-client
 ```
 
-* ***vwifi-client*** displays "ID=-1". ***vwifi-server*** uses the cid to identify this guest.
+* ***vwifi-client*** displays the CID of the VM in the Hypervisor. It is used by ***vwifi-server*** to identify this guest.
 
 ## With TCP
 
@@ -127,7 +140,15 @@ vwifi-server
 * Create the wlan interfaces (on this example, 2 interfaces) :
 ```bash
 sudo modprobe mac80211_hwsim radios=2
-# sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
+```
+
+* Change the MAC address of each wlan interface
+```bash
+sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
+# or : sudo ip link set wlan0 addr 0a:0b:0c:03:02:01
+# or : sudo ifconfig wlan0 hw ether 0a:0b:0c:03:02:01
+
+sudo macchanger -a wlan1
 ```
 
 * Connect all these wlan interfaces to the ***vwifi-server*** :
@@ -143,19 +164,10 @@ sudo vwifi-client 172.16.0.1
 
 ```bash
 sudo modprobe mac80211_hwsim radios=1
-sudo vwifi-spy
+sudo vwifi-client -s
 ```
 
 ## Capture
-
-### With tcpdump
-
-* Capture from wlan0 :
-```bash
-sudo tcpdump -n -I -i wlan0
-```
-
-### With wireshark
 
 * Configure wlan0 to monitor mode :
 ```bash
@@ -163,6 +175,15 @@ sudo ip link set wlan0 down
 sudo iw wlan0 set monitor control
 sudo ip link set wlan0 up
 ```
+
+### With tcpdump
+
+* Capture from wlan0 :
+```bash
+sudo tcpdump -n -i wlan0
+```
+
+### With wireshark
 
 * Start Wireshark and capture from wlan0 :
 ```bash
@@ -203,7 +224,12 @@ vwifi-ctrl status
 vwifi-ctrl distance 10 20
 ```
 
-# Test Wifi
+* Set the scale of the distances between the clients to 0.005
+```bash
+vwifi-ctrl scale 0.005
+```
+
+# Examples of commands to test Wifi
 
 ## Test 1 : WPA
 
@@ -312,3 +338,4 @@ ping 10.0.0.1
 * start-vwifi-client.sh : do all the commands necessary to start ***vwifi-client*** on a Guest
 * fast-vwifi-update.sh : set with ***vwifi-ctrl*** the coordinates of each VMs which has the option `guest-cid=`, found in the open project of GNS3
 * client.sh : configure the client wifi with Open or WPA
+* Makefile.dependency.sh : generate automatically the file "Makefile.in", include in "Makefile", which contains dependencies for "make"
