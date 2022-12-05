@@ -106,11 +106,15 @@ sudo modprobe mac80211_hwsim radios=2
 
 * Change the MAC address of each wlan interface
 ```bash
-sudo macchanger -a wlan0
+sudo ip link set down wlan0
+sudo macchanger -r wlan0
 # or : sudo ip link set wlan0 addr 0a:0b:0c:03:02:01
 # or : sudo ifconfig wlan0 hw ether 0a:0b:0c:03:02:01
+sudo ip link set up wlan0
 
-sudo macchanger -a wlan1
+sudo ip link set down wlan1
+sudo macchanger -r wlan1
+sudo ip link set up wlan1
 ```
 
 * Connect all these wlan interfaces to the ***vwifi-server*** :
@@ -143,11 +147,15 @@ sudo modprobe mac80211_hwsim radios=2
 
 * Change the MAC address of each wlan interface
 ```bash
-sudo macchanger -a wlan0
+sudo ip link set down wlan0
+sudo macchanger -r wlan0
 # or : sudo ip link set wlan0 addr 0a:0b:0c:03:02:01
 # or : sudo ifconfig wlan0 hw ether 0a:0b:0c:03:02:01
+sudo ip link set up wlan0
 
-sudo macchanger -a wlan1
+sudo ip link set down wlan1
+sudo macchanger -r wlan1
+sudo ip link set up wlan1
 ```
 
 * Connect all these wlan interfaces to the ***vwifi-server*** :
