@@ -102,7 +102,6 @@ sudo make install
 * Create the wlan interfaces (on this example, 2 interfaces) :
 ```bash
 sudo modprobe mac80211_hwsim radios=2
-# sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
 ```
 
 * Change the MAC address of each wlan interface
@@ -144,7 +143,7 @@ sudo modprobe mac80211_hwsim radios=2
 
 * Change the MAC address of each wlan interface
 ```bash
-sudo macchanger -a wlan0 # we advice to change the MAC address of the wlan (with macchanger, ip, ifconfig, ...)
+sudo macchanger -a wlan0
 # or : sudo ip link set wlan0 addr 0a:0b:0c:03:02:01
 # or : sudo ifconfig wlan0 hw ether 0a:0b:0c:03:02:01
 
