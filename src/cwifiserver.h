@@ -16,9 +16,9 @@ class CWifiServer : public CSocketServer, public CWifi
 		CListInfo<CInfoWifi>* InfoWifis;
 		CListInfo<CInfoWifi>* InfoWifisDeconnected;
 
-		bool RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& coo);
+		bool RecoverInfosOfInfoWifiDeconnected(TCID cid, CCoordinate& coo, string& name);
 
-		bool RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo);
+		bool RecoverInfosOfInfoWifi(TCID cid, CCoordinate& coo, string& name);
 
 		void DefaultValues();
 

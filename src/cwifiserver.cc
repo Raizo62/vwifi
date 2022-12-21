@@ -88,13 +88,14 @@ bool CWifiServer::Listen(TIndex maxClientDeconnected)
 	return true;
 }
 
-bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& coo)
+bool CWifiServer::RecoverInfosOfInfoWifiDeconnected(TCID cid, CCoordinate& coo, string& name)
 {
 	for (auto infoWifiDeconnected = InfoWifisDeconnected->begin(); infoWifiDeconnected != InfoWifisDeconnected->end(); ++infoWifiDeconnected)
 	{
 		if ( infoWifiDeconnected->GetCid() == cid )
 		{
 			coo=*infoWifiDeconnected;
+			name=infoWifiDeconnected->GetName();
 
 			InfoWifisDeconnected->erase(infoWifiDeconnected);
 
@@ -105,7 +106,7 @@ bool CWifiServer::RecoverCoordinateOfInfoWifiDeconnected(TCID cid, CCoordinate& 
 	return false;
 }
 
-bool CWifiServer::RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo)
+bool CWifiServer::RecoverInfosOfInfoWifi(TCID cid, CCoordinate& coo, string& name)
 {
 	int index=0;
 	for (auto& infoWifi : *InfoWifis)
@@ -114,6 +115,7 @@ bool CWifiServer::RecoverCoordinateOfInfoWifi(TCID cid, CCoordinate& coo)
 			if( infoWifi.GetCid() == cid )
 			{
 				coo=infoWifi;
+				name=infoWifi.GetName();
 
 				DisableClient(index);
 
@@ -136,8 +138,12 @@ TDescriptor CWifiServer::Accept()
 	CInfoWifi infoWifi;
 
 	CCoordinate coo;
-	if( RecoverCoordinateOfInfoWifiDeconnected(cid,coo) || RecoverCoordinateOfInfoWifi(cid, coo) )
+	string name;
+	if( RecoverInfosOfInfoWifiDeconnected(cid,coo,name) || RecoverInfosOfInfoWifi(cid, coo,name) )
+	{
 		infoWifi.Set(coo);
+		infoWifi.SetName(name);
+	}
 
 	infoWifi.SetCid(cid);
 
