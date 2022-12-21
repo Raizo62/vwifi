@@ -211,6 +211,11 @@ vwifi-ctrl ls
 vwifi-ctrl set 10 11 12 13
 ```
 
+* Set the name "AP" of the guest with the cid 10 :
+```bash
+vwifi-ctrl setname 10 AP
+```
+
 * Enable the lost of packets :
 ```bash
 vwifi-ctrl loss yes
