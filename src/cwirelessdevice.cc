@@ -7,6 +7,8 @@
 
 #include <regex>
 
+const std::regex wlan("wlan[0-9]*");
+
 
 WirelessDevice::WirelessDevice(){
 
@@ -63,7 +65,6 @@ struct ether_addr WirelessDevice::getMachwsim() const  {
 bool WirelessDevice::checkif_wireless_device(){
 
 
-	std::regex wlan("wlan[0-9]*");
 	if (std::regex_match(_name,wlan))
 		return true ;
 	else
