@@ -727,31 +727,31 @@ int main(int argc , char *argv[])
 		return 0;
 	}
 
-	if( ! strcmp(param_cmd[0],"ls") )
+	if( ! strcasecmp(param_cmd[0],"ls") )
 		return AskList();
 
-	if( ! strcmp(param_cmd[0],"set") )
+	if( ! strcasecmp(param_cmd[0],"set") )
 		return ChangeCoordinate(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(param_cmd[0],"setname") )
+	if( ! strcasecmp(param_cmd[0],"setname") )
 		return SetName(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(param_cmd[0],"loss") )
+	if( ! strcasecmp(param_cmd[0],"loss") )
 		return ChangePacketLoss(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(param_cmd[0],"show") )
+	if( ! strcasecmp(param_cmd[0],"show") )
 		return AskShow();
 
-	if( ! strcmp(param_cmd[0],"status") )
+	if( ! strcasecmp(param_cmd[0],"status") )
 		return AskStatus();
 
-	if( ! strcmp(param_cmd[0],"distance") )
+	if( ! strcasecmp(param_cmd[0],"distance") )
 		return DistanceBetweenCID(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(param_cmd[0],"scale") )
+	if( ! strcasecmp(param_cmd[0],"scale") )
 		return SetScale(nbr_param_cmd, param_cmd);
 
-	if( ! strcmp(param_cmd[0],"close") )
+	if( ! strcasecmp(param_cmd[0],"close") )
 		return CloseAllClient();
 
 	cerr<<NameOfProg<<" : Error : unknown order : "<<param_cmd[0]<<endl;
