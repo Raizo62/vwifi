@@ -1108,7 +1108,7 @@ void CKernelWifi::handle_new_winet_notification(WirelessDevice wirelessdevice){
 void CKernelWifi::handle_del_winet_notification(WirelessDevice wirelessdevice){
 
 
-	std::cout << "Delete wireless interface : " << wirelessdevice << std::endl ;
+	//std::cout << "Delete wireless interface : " << wirelessdevice << std::endl ;
 	_list_winterfaces.delete_device(wirelessdevice);
 
 }
