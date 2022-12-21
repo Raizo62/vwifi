@@ -18,6 +18,9 @@ const TPort DEFAULT_CTRL_PORT = DEFAULT_WIFI_CLIENT_PORT_VHOST+3;
 
 #define DEFAULT_ADDRESS_IP "127.0.0.1"
 
+const int MAX_SIZE_NAME=12;
+
+
 #ifdef _DEBUG
 	// #define _VERBOSE1
 	// #define _VERBOSE2

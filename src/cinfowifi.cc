@@ -1,5 +1,6 @@
 #include <assert.h> // assert
 
+#include "config.h" // MAX_SIZE_NAME
 #include "cinfowifi.h"
 
 CInfoWifi::CInfoWifi(): CCoordinate()
@@ -24,9 +25,34 @@ TCID CInfoWifi::GetCid() const
 	return Cid;
 }
 
+void CInfoWifi::SetName(string name)
+{
+	if( name.size() > MAX_SIZE_NAME )
+		name.resize(MAX_SIZE_NAME);
+
+	Name=name;
+}
+
+string CInfoWifi::GetName() const
+{
+	return Name;
+}
+
+int CInfoWifi::GetSizeName() const
+{
+	return Name.size();
+}
+
+bool CInfoWifi::HasName() const
+{
+	return ! Name.empty();
+}
+
 void CInfoWifi::Display(ostream& os) const
 {
 	os << Cid << " ";
+	if( HasName() )
+		os << "("<<Name<<") ";
 	CCoordinate::Display(os);
 }
 

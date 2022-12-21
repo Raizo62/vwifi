@@ -2,6 +2,7 @@
 #define _CINFOWIFI_H_
 
 #include <iostream> // ostream
+#include <string>
 
 #include "ccoordinate.h"
 #include "types.h" // TCID
@@ -13,6 +14,7 @@ using namespace std;
 class CInfoWifi : public CCoordinate
 {
 		TCID Cid;
+		string Name;
 
 	public :
 
@@ -23,9 +25,15 @@ class CInfoWifi : public CCoordinate
 
 		TCID GetCid() const;
 
+		void SetName(string name);
+		string GetName() const;
+		int GetSizeName() const;
+		bool HasName() const;
+
 		void Display(ostream& os) const;
 
 		friend ostream& operator<<(ostream& os, const CInfoWifi& infowifi);
+
 };
 
 #endif
