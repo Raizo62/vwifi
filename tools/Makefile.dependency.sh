@@ -79,6 +79,6 @@ do_Obj_in_Makefile()
 	done
 }
 
-do_Obj_in_Makefile $( find ${SRC} -type f -name "*.${EXT_C}" -printf "%f\n" )  > Makefile.in
+do_Obj_in_Makefile $( find ${SRC} -type f -name "*.${EXT_C}" -printf "%f\n" | sort -u )  > Makefile.in
 
-do_Bin_in_Makefile $( grep -E -l '^[[:space:]]*int[[:space:]]+main[[:space:]]*\(' ${SRC}/*.${EXT_C} | xargs -L 1 basename ) >> Makefile.in
+do_Bin_in_Makefile $( grep -E -l '^[[:space:]]*int[[:space:]]+main[[:space:]]*\(' ${SRC}/*.${EXT_C}  | sort -u | xargs -L 1 basename ) >> Makefile.in
