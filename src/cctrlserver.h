@@ -22,6 +22,8 @@ class CCTRLServer : public CSocketServer, public CSocketServerFunctionITCP
 
 		TOrder GetOrder();
 
+		bool SendCInfoWifi(CInfoWifi* infoWifi);
+
 		void SendList();
 
 		void ChangeCoordinate();

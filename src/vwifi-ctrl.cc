@@ -44,6 +44,61 @@ void Help()
 	cout<<" [-h] or [--help] : this help"<<endl;
 }
 
+int GetCInfoWifi(CSocketClientITCP & socket, CInfoWifi* infoWifi)
+{
+	int err;
+
+	TCID cid;
+	err=socket.Read((char*)&cid,sizeof(cid));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : GetCInfoWifi : socket.Read : cid"<<endl;
+		return 1;
+	}
+
+	CCoordinate coo;
+	err=socket.Read((char*)&coo,sizeof(coo));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : GetCInfoWifi : socket.Read : CCoordinate (cid:"<<cid<<")"<<endl;
+		return 1;
+	}
+
+	int sizeName;
+	err=socket.Read((char*)&sizeName,sizeof(sizeName));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : GetCInfoWifi : socket.Read : size of name (cid:"<<cid<<")"<<endl;
+		return 1;
+	}
+	if( sizeName > MAX_SIZE_NAME )
+	{
+		cerr<<"Error : GetCInfoWifi : size of name > "<<MAX_SIZE_NAME<<" (cid:"<<cid<<")"<<endl;
+		return 1;
+	}
+
+	char strName[MAX_SIZE_NAME+1]; // +1 : \0
+	if( sizeName > 0 )
+	{
+		err=socket.Read((char*)strName,sizeName+1); // +1 : \0
+		if( err == SOCKET_ERROR )
+		{
+			cerr<<"Error : GetCInfoWifi : socket.Read : size of name (cid:"<<cid<<")"<<endl;
+			return 1;
+		}
+	}
+	else
+		strName[0]='\0';
+
+	infoWifi->SetCid(cid);
+	infoWifi->Set(coo);
+
+	string name(strName);
+	infoWifi->SetName(name);
+
+	return 0;
+}
+
 int AskList()
 {
 	CSocketClientITCP socket;
@@ -79,13 +134,16 @@ int AskList()
 	CInfoWifi info;
 	for(TIndex i=0; i<number;i++)
 	{
-		err=socket.Read((char*)&info,sizeof(info));
+		err=GetCInfoWifi(socket,&info);
 		if( err == SOCKET_ERROR )
 		{
 			cerr<<"Error : ls : socket.Read : CInfoWifi"<<endl;
 			return 1;
 		}
-		cout<<"S:"<<info.GetCid()<<endl;
+		cout<<"S:"<<info.GetCid();
+		if( info.HasName() )
+			cout<<" ("<<info.GetName()<<")";
+		cout<<endl;
 	}
 
 	// Clients :
@@ -99,7 +157,7 @@ int AskList()
 
 	for(TIndex i=0; i<number;i++)
 	{
-		err=socket.Read((char*)&info,sizeof(info));
+		err=GetCInfoWifi(socket,&info);
 		if( err == SOCKET_ERROR )
 		{
 			cerr<<"Error : ls : socket.Read : CInfoWifi"<<endl;

@@ -41,6 +41,42 @@ TOrder CCTRLServer::GetOrder()
 	return order;
 }
 
+bool CCTRLServer::SendCInfoWifi(CInfoWifi* infoWifi)
+{
+	TCID cid=infoWifi->GetCid();
+	if( Send((char*)&cid,sizeof(cid)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendCInfoWifi : cid : "<<infoWifi->GetCid()<<endl;
+		return false;
+	}
+
+	CCoordinate coo=(*infoWifi);
+	if( Send((char*)&coo,sizeof(coo)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendCInfoWifi : CCoordinate : "<<infoWifi->GetCid()<<endl;
+		return false;
+	}
+
+	int sizeName=infoWifi->GetSizeName();
+	if( Send((char*)&sizeName,sizeof(sizeName)) == SOCKET_ERROR )
+	{
+		cerr<<"Error : SendCInfoWifi : size of name : "<<infoWifi->GetCid()<<endl;
+		return false;
+	}
+	if( sizeName > 0 )
+	{
+		char name[MAX_SIZE_NAME+1]; // +1 : \0
+		strcpy(name,(infoWifi->GetName()).c_str());
+		if( Send(name,sizeName+1) == SOCKET_ERROR ) // +1 : \0
+		{
+			cerr<<"Error : SendCInfoWifi : name : "<<infoWifi->GetCid()<<endl;
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void CCTRLServer::SendList()
 {
 	// because the same List is shared by WifiServerVTCP and WifiServerITCP
@@ -59,7 +95,7 @@ void CCTRLServer::SendList()
 		if( WifiServerSPY->IsEnable(i) )
 		{
 			infoWifi=WifiServerSPY->GetReferenceOnInfoWifiByIndex(i);
-			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
+			if( ! SendCInfoWifi(infoWifi) )
 			{
 				cerr<<"Error : SendList : Send : Spies : CInfoWifi : "<<*infoWifi<<endl;
 				return;
@@ -79,7 +115,7 @@ void CCTRLServer::SendList()
 		if( WifiServerVTCP->IsEnable(i) )
 		{
 			infoWifi=WifiServerVTCP->GetReferenceOnInfoWifiByIndex(i);
-			if( Send((char*)infoWifi,sizeof(CInfoWifi)) == SOCKET_ERROR )
+			if( ! SendCInfoWifi(infoWifi) )
 			{
 				cerr<<"Error : SendList : Send : Clients : CInfoWifi : "<<*infoWifi<<endl;
 				return;
