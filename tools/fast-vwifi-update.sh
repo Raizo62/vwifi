@@ -42,9 +42,14 @@ NbValue=0
 VMWithWifi=false
 
 IFS=$'\n'
-for line in $(jq -M '.[] | select (.node_type=="qemu") | {x: .x, y: .y, z: .z , option: .command_line} ' "${ConfigProjectGNS3}")
+for line in $(jq -M '.[] | select (.node_type=="qemu") | {name: .name, x: .x, y: .y, z: .z , option: .command_line} ' "${ConfigProjectGNS3}")
 do
-	if [[ "${line}" =~ ^[[:space:]]+\"x\":.* ]]
+	if [[ "${line}" =~ ^[[:space:]]+\"name\":.* ]]
+	then
+		((NbValue++))
+		# attention au decallage du print (?)
+		Name=$(echo "${line}" | awk -F '[:, ]' '{print $5}' | tr -d '"' )
+	elif [[ "${line}" =~ ^[[:space:]]+\"x\":.* ]]
 	then
 		((NbValue++))
 		# attention au decallage du print (?)
@@ -69,12 +74,14 @@ do
 		fi
 	fi
 
-	if (( NbValue == 4 ))
+	if (( NbValue == 5 ))
 	then
 		NbValue=0
 		if ${VMWithWifi}
 		then
-			vwifi-ctrl set "${CID}" "${X}" "${Y}" "${Z}"
+			echo "${CID}" "(${Name})" "${X}" "${Y}" "${Z}"
+			vwifi-ctrl setname "${CID}" "${Name}" > /dev/null
+			vwifi-ctrl set "${CID}" "${X}" "${Y}" "${Z}" > /dev/null
 			VMWithWifi=false
 		fi
 	fi
