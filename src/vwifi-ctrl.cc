@@ -23,6 +23,8 @@ void Help()
 	cout<<"		- List the Clients"<<endl;
 	cout<<"	set cid x y z"<<endl;
 	cout<<"		- Change the coordinate of the Client with cid"<<endl;
+	cout<<"	setname cid name"<<endl;
+	cout<<"		- Set the name of the Client with cid"<<endl;
 	cout<<"	loss yes/no"<<endl;
 	cout<<"		- loss yes : packets can be lost"<<endl;
 	cout<<"		- loss no : no packets can be lost"<<endl;
@@ -224,6 +226,76 @@ int ChangeCoordinate(int argc, char *argv[])
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : set : socket.Send : "<<coo<<endl;
+		return 1;
+	}
+
+	socket.Close();
+
+	return 0;
+}
+
+int SetName(int argc, char *argv[])
+{
+	if( argc != 3 )
+	{
+			cerr<<"Error : setname : the number of parameter is uncorrect"<<endl;
+			Help();
+			return 1;
+	}
+
+	TCID cid=atoi(argv[1]);
+
+	if( cid < TCID_GUEST_MIN )
+	{
+			cerr<<"Error : setname : the CID must be greater than or equal to "<<TCID_GUEST_MIN<<endl;
+			return 1;
+	}
+
+	string name(argv[2]);
+	int sizeName=name.size();
+	if( name.length() > MAX_SIZE_NAME )
+	{
+		name.resize(MAX_SIZE_NAME);
+		sizeName=MAX_SIZE_NAME;
+	}
+
+	cout<<cid<<" "<<name<<" "<<endl;
+
+	CSocketClientITCP socket;
+
+	socket.Init(IP_Ctrl.c_str(),Port_Ctrl);
+
+	if( ! socket.ConnectLoop() )
+	{
+		cerr<<"Error : setname : socket.Connect error"<<endl;
+		return 1;
+	}
+
+	int err;
+
+	TOrder order=TORDER_SETNAME;
+	err=socket.Send((char*)&order,sizeof(order));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : setname : socket.Send : order"<<endl;
+		return 1;
+	}
+	err=socket.Send((char*)&cid,sizeof(cid));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : setname : socket.Send : cid"<<endl;
+		return 1;
+	}
+	err=socket.Send((char*)&sizeName,sizeof(sizeName));
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : setname : socket.Send : size of name"<<endl;
+		return 1;
+	}
+	err=socket.Send((char*)name.c_str(),sizeName+1); // +1 : \0
+	if( err == SOCKET_ERROR )
+	{
+		cerr<<"Error : setname : socket.Send : name"<<name<<endl;
 		return 1;
 	}
 
@@ -660,6 +732,9 @@ int main(int argc , char *argv[])
 
 	if( ! strcmp(param_cmd[0],"set") )
 		return ChangeCoordinate(nbr_param_cmd, param_cmd);
+
+	if( ! strcmp(param_cmd[0],"setname") )
+		return SetName(nbr_param_cmd, param_cmd);
 
 	if( ! strcmp(param_cmd[0],"loss") )
 		return ChangePacketLoss(nbr_param_cmd, param_cmd);

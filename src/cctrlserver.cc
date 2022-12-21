@@ -1,4 +1,8 @@
+#include <cstring> // strcpy
+
 #include "cctrlserver.h"
+#include "config.h" // MAX_SIZE_NAME
+
 
 CCTRLServer::CCTRLServer(CWifiServer* wifiServerVTCP, CWifiServer* wifiServerITCP, CWifiServer* wifiServerSPY, CSelect* scheduler) : CSocketServer()
 {
@@ -159,6 +163,53 @@ void CCTRLServer::ChangeCoordinate()
 
 	CInfoWifi infoNewWifi(cid,coo);
 	WifiServerVTCP->AddInfoWifiDeconnected(infoNewWifi);
+}
+
+void CCTRLServer::SetName()
+{
+	TCID cid;
+
+	if( Read((char*)&cid, sizeof(TCID)) == SOCKET_ERROR )
+		return;
+
+	int sizeName;
+	char strName[MAX_SIZE_NAME+1]; // +1 : \0
+
+	if( Read((char*)&sizeName, sizeof(sizeName)) == SOCKET_ERROR )
+		return;
+
+	if( Read((char*)strName, sizeof(strName)) == SOCKET_ERROR )
+		return;
+
+	if( cid < TCID_GUEST_MIN )
+		return;
+
+	// because the same List is shared by WifiServerVTCP and WifiServerITCP
+
+	string name(strName);
+
+	CInfoWifi* infoWifi;
+
+	infoWifi=WifiServerVTCP->GetReferenceOnInfoWifiByCID(cid);
+	if( infoWifi != NULL )
+	{
+		infoWifi->SetName(name);
+		return;
+	}
+
+	infoWifi=WifiServerVTCP->GetReferenceOnInfoWifiDeconnectedByCID(cid);
+	if( infoWifi != NULL )
+	{
+		infoWifi->SetName(name);
+		return;
+	}
+
+	infoWifi=WifiServerSPY->GetReferenceOnInfoWifiByCID(cid);
+	if( infoWifi != NULL )
+	{
+		infoWifi->SetName(name);
+		return;
+	}
 }
 
 void CCTRLServer::ChangePacketLoss()
@@ -362,6 +413,10 @@ void CCTRLServer::ReceiveOrder()
 
 			case TORDER_CHANGE_COORDINATE :
 				ChangeCoordinate();
+				break;
+
+			case TORDER_SETNAME :
+				SetName();
 				break;
 
 			case TORDER_PACKET_LOSS :

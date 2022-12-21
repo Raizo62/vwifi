@@ -28,6 +28,8 @@ class CCTRLServer : public CSocketServer, public CSocketServerFunctionITCP
 
 		void ChangeCoordinate();
 
+		void SetName();
+
 		void ChangePacketLoss();
 
 		void SendStatus();
