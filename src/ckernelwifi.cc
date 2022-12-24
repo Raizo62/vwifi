@@ -291,7 +291,7 @@ int CKernelWifi::init_netlink_first(void)
 	}
 
 
-	m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
+	m_family_id = genl_ctrl_resolve(_netlink_socket, KERNEL_HWSIM_FAMILY_NAME);
 
 
 	while (m_family_id  < 0 ) {
@@ -306,13 +306,13 @@ int CKernelWifi::init_netlink_first(void)
 	//	}
 
 #ifdef _DEBUG
-		std::cout << "Family MAC80211_HWSIM not registered" << std::endl ;
+		std::cout << "Family "<<KERNEL_HWSIM_FAMILY_NAME<<" not registered" << std::endl ;
 #endif
 
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(1s);
 
-		m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
+		m_family_id = genl_ctrl_resolve(_netlink_socket, KERNEL_HWSIM_FAMILY_NAME);
 	}
 
 
@@ -370,7 +370,7 @@ int CKernelWifi::init_netlink(void)
 	}
 
 
-	m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
+	m_family_id = genl_ctrl_resolve(_netlink_socket, KERNEL_HWSIM_FAMILY_NAME);
 
 
 	while (m_family_id  < 0 ) {
@@ -394,13 +394,13 @@ int CKernelWifi::init_netlink(void)
 	//	}
 
 #ifdef _DEBUG
-		std::cout << "Family MAC80211_HWSIM not registered" << std::endl ;
+		std::cout << "Family "<<KERNEL_HWSIM_FAMILY_NAME<<" not registered" << std::endl ;
 #endif
 
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(1s);
 
-		m_family_id = genl_ctrl_resolve(_netlink_socket, "MAC80211_HWSIM");
+		m_family_id = genl_ctrl_resolve(_netlink_socket, KERNEL_HWSIM_FAMILY_NAME);
 	}
 
 
@@ -594,7 +594,7 @@ void  CKernelWifi::monitor_hwsim_loop()
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(1s);
 
-		int family_id = genl_ctrl_resolve(sock, "MAC80211_HWSIM");
+		int family_id = genl_ctrl_resolve(sock, KERNEL_HWSIM_FAMILY_NAME);
 
 		if (family_id < 0) {
 
@@ -753,7 +753,7 @@ int CKernelWifi::init(){
 	_initialized = true ;
 	_mutex_initialized.unlock();
 
-	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
+	std::cout << "Registered with family "<<KERNEL_HWSIM_FAMILY_NAME<<std::endl;
 
 	return 1 ;
 }
@@ -780,7 +780,7 @@ int CKernelWifi::init_first(){
 	_initialized = true ;
 	_mutex_initialized.unlock();
 
-	std::cout << "Registered with family MAC80211_HWSIM" << std::endl;
+	std::cout << "Registered with family "<<KERNEL_HWSIM_FAMILY_NAME<< std::endl;
 
 	return 1 ;
 }
