@@ -18,7 +18,7 @@
 
 #include <net/if.h> // struct ifreq
 
-#include "ieee80211.h"
+#include "ieee80211.h" // IEEE80211_TX_MAX_RATES
 
 #include <iostream>
 #include <thread>
