@@ -1,10 +1,10 @@
 #ifndef _CKERNELWIFI_H_
 #define _CKERNELWIFI_H_
 
-#include "hwsim.h"
-
 #include <string>
 #include <mutex>
+
+#include "config_hwsim.h"
 
 #include "cwirelessdevice.h"
 #include "cwirelessdevicelist.h"
