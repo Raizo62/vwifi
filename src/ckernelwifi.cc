@@ -238,7 +238,7 @@ int CKernelWifi::send_register_msg()
 	msg = nlmsg_alloc();
 
 	if (!msg) {
-		std::cout << "Error allocating new message MSG!" << std::endl ;
+		std::cerr << "Error allocating new message MSG!" << std::endl ;
 		return 0;
 	}
 
@@ -429,7 +429,7 @@ int CKernelWifi::send_cloned_frame_msg(struct ether_addr *dst, char *data, int d
 	msg = nlmsg_alloc();
 
 	if (!msg) {
-		std::cout << "Error allocating new message MSG!" << std::endl ;
+		std::cerr << "Error allocating new message MSG!" << std::endl ;
 		nlmsg_free(msg);
 		return 0 ;
 	}
@@ -598,7 +598,7 @@ void  CKernelWifi::monitor_hwsim_loop()
 
 		if (family_id < 0) {
 
-			std::cout << "Hwsim Driver unloaded" << std::endl ;
+			std::cerr << "Hwsim Driver unloaded" << std::endl ;
 			_mutex_initialized.lock();
 			_initialized = false ;
 			_mutex_initialized.unlock();
@@ -640,7 +640,7 @@ void CKernelWifi::recv_msg_from_hwsim_loop_start(){
 		/* added for monitor_hwsim_loop */
 		if(!initialized()){
 
-			std::cout << __func__ << "driver still unloaded" << std::endl ;
+			std::cerr << __func__ << "driver still unloaded" << std::endl ;
 			using namespace  std::chrono_literals;
 			std::this_thread::sleep_for(1s);
 			continue ;
@@ -680,7 +680,7 @@ void CKernelWifi::recv_msg_from_server_loop_start(){
 		/* added for monitor_hwsim_loop */
 		if(!initialized()){
 
-			std::cout <<  __func__ << "driver still unloaded" << std::endl ;
+			std::cerr <<  __func__ << "driver still unloaded" << std::endl ;
 			using namespace  std::chrono_literals;
 			std::this_thread::sleep_for(1s);
 			continue ;
@@ -710,7 +710,7 @@ void CKernelWifi::winet_update_loop(){
 		/* added for monitor_hwsim_loop */
 		if(!initialized()){
 
-			std::cout << __func__ << "driver still unloaded" << std::endl ;
+			std::cerr << __func__ << "driver still unloaded" << std::endl ;
 			using namespace  std::chrono_literals;
 			std::this_thread::sleep_for(1s);
 			continue ;
@@ -736,7 +736,7 @@ int CKernelWifi::init(){
 	/* init netlink will loop until driver is loaded */
 	if ( ! init_netlink()){
 
-		std::cout << "ERROR: could not initialize netlink" << std::endl;
+		std::cerr << "ERROR: could not initialize netlink" << std::endl;
 		return 0 ;
 	}
 
@@ -763,7 +763,7 @@ int CKernelWifi::init_first(){
 	/* init netlink will loop until driver is loaded */
 	if ( ! init_netlink_first()){
 
-		std::cout << "ERROR: could not initialize netlink" << std::endl;
+		std::cerr << "ERROR: could not initialize netlink" << std::endl;
 		return 0 ;
 	}
 
@@ -835,7 +835,7 @@ int CKernelWifi::start(){
 	{
 		if (! is_being_started())
 			return 0 ;
-		std::cout<<"socket.Connect error"<<std::endl;
+		std::cerr<<"socket.Connect error"<<std::endl;
 		using namespace  std::chrono_literals;
 		std::this_thread::sleep_for(2s);
 
@@ -1015,7 +1015,7 @@ bool CKernelWifi::reconnect_to_server(){
 	int id;
 	if( ! _Connect(&id) )
 	{
-		std::cout<<"socket.Connect error"<<std::endl;
+		std::cerr<<"socket.Connect error"<<std::endl;
 		return false ;
 	}
 
