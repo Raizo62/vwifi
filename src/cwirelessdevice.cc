@@ -22,7 +22,7 @@ WirelessDevice::~WirelessDevice(){
 
 WirelessDevice::WirelessDevice(const std::string & name,int index ,int iftype ,const struct ether_addr & macaddr,int txpower):_name(name),_index(index),_iftype(iftype), _txpower(txpower), _macaddr(macaddr), _machwsim(macaddr)  {
 
-	_machwsim.ether_addr_octet[0] |= 0x40 ;
+//	_machwsim.ether_addr_octet[0] |= 0x40 ;
 
 
 //	std::memcpy(&_macaddr,&macaddr,ETH_ALEN);

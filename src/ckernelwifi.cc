@@ -1094,7 +1094,7 @@ void CKernelWifi::handle_new_winet_notification(WirelessDevice wirelessdevice){
 
 	if(get_pmaddr(paddr,wirelessdevice.getName().c_str())){
 
-		paddr.ether_addr_octet[0] |= 0x40 ;
+		//paddr.ether_addr_octet[0] |= 0x40 ;
 		wirelessdevice.setMachwsim(paddr);
 		_list_winterfaces.add_device(wirelessdevice);
 	}
@@ -1122,7 +1122,7 @@ void CKernelWifi::handle_init_winet_notification(WirelessDevice wirelessdevice){
 
 	if(get_pmaddr(paddr,wirelessdevice.getName().c_str())){
 
-		paddr.ether_addr_octet[0] |= 0x40 ;
+		//paddr.ether_addr_octet[0] |= 0x40 ;
 		wirelessdevice.setMachwsim(paddr);
 		_list_winterfaces.add_device(wirelessdevice);
 	}
