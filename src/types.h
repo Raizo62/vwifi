@@ -49,4 +49,6 @@ typedef u32 TFrequency; // Hz
 // unsigned short
 typedef u16 TMinimalSize;
 
+typedef u8 TByte;
+
 #endif
