@@ -1,3 +1,5 @@
+$(OBJ)/addinterfaces.o : addinterfaces.cc addinterfaces.h config_hwsim.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
+
 $(OBJ)/ccoordinate.o : ccoordinate.cc ccoordinate.h types.h Makefile Makefile.in
 
 $(OBJ)/cctrlserver.o : cctrlserver.cc ccoordinate.h cctrlserver.h cdynbuffer.h cinfosocket.h cinfowifi.h clistinfo.h config.h cselect.h csocket.h csocketserverfunctionitcp.h csocketserver.h cwifi.h cwifiserver.h types.h Makefile Makefile.in
@@ -8,7 +10,7 @@ $(OBJ)/cinfosocket.o : cinfosocket.cc cinfosocket.h types.h Makefile Makefile.in
 
 $(OBJ)/cinfowifi.o : cinfowifi.cc ccoordinate.h cinfowifi.h config.h types.h Makefile Makefile.in
 
-$(OBJ)/ckernelwifi.o : ckernelwifi.cc cdynbuffer.h ckernelwifi.h cmonwirelessdevice.h config.h cselect.h csocket.h cthread.h cwirelessdevice.h cwirelessdevicelist.h hwsim.h ieee80211.h mac80211_hwsim.h types.h Makefile Makefile.in
+$(OBJ)/ckernelwifi.o : ckernelwifi.cc cdynbuffer.h ckernelwifi.h cmonwirelessdevice.h config.h config_hwsim.h cselect.h csocket.h cthread.h cwirelessdevice.h cwirelessdevicelist.h hwsim.h ieee80211.h mac80211_hwsim.h types.h Makefile Makefile.in
 
 $(OBJ)/cmonwirelessdevice.o : cmonwirelessdevice.cc cmonwirelessdevice.h cwirelessdevice.h Makefile Makefile.in
 
@@ -32,7 +34,7 @@ $(OBJ)/cthread.o : cthread.cc cthread.h Makefile Makefile.in
 
 $(OBJ)/cwifi.o : cwifi.cc cdynbuffer.h csocket.h cwifi.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
 
-$(OBJ)/cwificlient.o : cwificlient.cc cdynbuffer.h ckernelwifi.h cmonwirelessdevice.h cselect.h csocketclient.h csocket.h cthread.h cwificlient.h cwifi.h cwirelessdevice.h cwirelessdevicelist.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
+$(OBJ)/cwificlient.o : cwificlient.cc cdynbuffer.h ckernelwifi.h cmonwirelessdevice.h config_hwsim.h cselect.h csocketclient.h csocket.h cthread.h cwificlient.h cwifi.h cwirelessdevice.h cwirelessdevicelist.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
 
 $(OBJ)/cwifiserver.o : cwifiserver.cc ccoordinate.h cdynbuffer.h cinfosocket.h cinfowifi.h clistinfo.h config.h csocket.h csocketserver.h cwifi.h cwifiserver.h tools.h types.h Makefile Makefile.in
 
@@ -46,7 +48,9 @@ $(OBJ)/cwirelessdevicelist.o : cwirelessdevicelist.cc cwirelessdevice.h cwireles
 
 $(OBJ)/tools.o : tools.cc tools.h Makefile Makefile.in
 
-$(OBJ)/vwifi-client.o : vwifi-client.cc cdynbuffer.h ckernelwifi.h cmonwirelessdevice.h config.h cselect.h csocketclient.h csocketclientitcp.h csocketclientvtcp.h csocket.h cthread.h cwificlient.h cwifi.h cwirelessdevice.h cwirelessdevicelist.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
+$(OBJ)/vwifi-add-interfaces.o : vwifi-add-interfaces.cc addinterfaces.h config_hwsim.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
+
+$(OBJ)/vwifi-client.o : vwifi-client.cc addinterfaces.h cdynbuffer.h ckernelwifi.h cmonwirelessdevice.h config.h config_hwsim.h cselect.h csocketclient.h csocketclientitcp.h csocketclientvtcp.h csocket.h cthread.h cwificlient.h cwifi.h cwirelessdevice.h cwirelessdevicelist.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
 
 $(OBJ)/vwifi-ctrl.o : vwifi-ctrl.cc ccoordinate.h cdynbuffer.h cinfowifi.h config.h csocketclient.h csocketclientitcp.h csocket.h types.h Makefile Makefile.in
 
@@ -54,7 +58,9 @@ $(OBJ)/vwifi-inet-monitor.o : vwifi-inet-monitor.cc cmonwirelessdevice.h cwirele
 
 $(OBJ)/vwifi-server.o : vwifi-server.cc ccoordinate.h cctrlserver.h cdynbuffer.h cinfosocket.h cinfowifi.h clistinfo.h config.h cselect.h csocket.h csocketserverfunctionitcp.h csocketserverfunctionvtcp.h csocketserver.h cwifi.h cwifiserver.h cwifiserveritcp.h cwifiservervtcp.h types.h Makefile Makefile.in
 
-vwifi-client : $(OBJ)/vwifi-client.o  $(OBJ)/cdynbuffer.o $(OBJ)/ckernelwifi.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/cselect.o $(OBJ)/csocketclientitcp.o $(OBJ)/csocketclient.o $(OBJ)/csocketclientvtcp.o $(OBJ)/csocket.o $(OBJ)/cthread.o $(OBJ)/cwificlient.o $(OBJ)/cwifi.o $(OBJ)/cwirelessdevicelist.o $(OBJ)/cwirelessdevice.o $(OBJ)/tools.o
+vwifi-add-interfaces : $(OBJ)/vwifi-add-interfaces.o  $(OBJ)/addinterfaces.o
+
+vwifi-client : $(OBJ)/vwifi-client.o  $(OBJ)/addinterfaces.o $(OBJ)/cdynbuffer.o $(OBJ)/ckernelwifi.o $(OBJ)/cmonwirelessdevice.o $(OBJ)/cselect.o $(OBJ)/csocketclientitcp.o $(OBJ)/csocketclient.o $(OBJ)/csocketclientvtcp.o $(OBJ)/csocket.o $(OBJ)/cthread.o $(OBJ)/cwificlient.o $(OBJ)/cwifi.o $(OBJ)/cwirelessdevicelist.o $(OBJ)/cwirelessdevice.o $(OBJ)/tools.o
 
 vwifi-ctrl : $(OBJ)/vwifi-ctrl.o  $(OBJ)/ccoordinate.o $(OBJ)/cdynbuffer.o $(OBJ)/cinfowifi.o $(OBJ)/csocketclientitcp.o $(OBJ)/csocketclient.o $(OBJ)/csocket.o $(OBJ)/tools.o
 
