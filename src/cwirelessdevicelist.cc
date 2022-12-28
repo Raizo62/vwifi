@@ -5,11 +5,9 @@
  * \version
  */
 
-
 #include "cwirelessdevicelist.h"
 #include <cstring>
 #include <algorithm> // std::transform
-
 
 WirelessDeviceList::WirelessDeviceList(){
 
@@ -18,7 +16,6 @@ WirelessDeviceList::WirelessDeviceList(){
 WirelessDeviceList::~WirelessDeviceList(){
 
 }
-
 
 bool WirelessDeviceList::get_device_by_mac(WirelessDevice & wdev , struct ether_addr macaddr) {
 
@@ -37,7 +34,6 @@ bool WirelessDeviceList::get_device_by_mac(WirelessDevice & wdev , struct ether_
 	return false ;
 }
 
-
 void WirelessDeviceList::add_device(const WirelessDevice & wdevice){
 
 	_listaccess.lock();
@@ -55,7 +51,6 @@ void WirelessDeviceList::delete_device(const WirelessDevice & wdevice){
 
 	_listaccess.unlock();
 }
-
 
 void WirelessDeviceList::delete_device(int index){
 
@@ -92,8 +87,6 @@ std::vector<WirelessDevice> & WirelessDeviceList::list_devices()  {
 
 std::ostream &   operator<< ( std::ostream & os , WirelessDeviceList & wdlist ){
 
-
-
 	wdlist._listaccess.lock();
 
 	for (auto & wd : wdlist._wdevices_list){
@@ -104,9 +97,6 @@ std::ostream &   operator<< ( std::ostream & os , WirelessDeviceList & wdlist ){
 
 	wdlist._listaccess.unlock();
 
-
 	return os ;
 }
-
-
 

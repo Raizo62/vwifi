@@ -25,7 +25,6 @@ class CKernelWifi : public intthread::AsyncTask {
 
 	protected :
 
-
 		pthread_t serverloop_id ;
 
 		CSelect	Scheduler;
@@ -63,11 +62,9 @@ class CKernelWifi : public intthread::AsyncTask {
 		int init();
 		int init_first();
 
-
 		void mac_address_to_string(char *address, struct ether_addr *mac);
 
 	public :
-
 
 		static ckernelwifi::CallFromStaticFunc * forward ;
 
@@ -75,7 +72,6 @@ class CKernelWifi : public intthread::AsyncTask {
 		* 	\brief Default Constructor
 		*/
 		CKernelWifi();
-
 
 		/**
 		* \brief Default Destructor
@@ -113,7 +109,6 @@ class CKernelWifi : public intthread::AsyncTask {
 
 		bool is_being_started();
 
-
 	protected :
 
 		void cout_mac_address(struct ether_addr *src);
@@ -136,7 +131,6 @@ class CKernelWifi : public intthread::AsyncTask {
 		*/
 		int send_register_msg();
 
-
 		/**
 		*	\brief Initialize netlink communications
 		*	Taken from wmediumd
@@ -144,7 +138,6 @@ class CKernelWifi : public intthread::AsyncTask {
 		*/
 		int init_netlink();
 		int init_netlink_first();
-
 
 		/**
 		 * \brief start receiving hwsim netlink frame from hwsim driver
@@ -176,14 +169,12 @@ class CKernelWifi : public intthread::AsyncTask {
 
 		static void recv_msg_from_server_signal_handle(int sig_num);
 
-
 		/**
 		 *	@brief this is meant to be a thread which detects removal of driver
 		*	Used to suspend normal actions until driver is loaded
 		*	@return void
 		 */
 		void  monitor_hwsim_loop();
-
 
 		void winet_update_loop();
 
@@ -209,7 +200,6 @@ class CKernelWifi : public intthread::AsyncTask {
 
 		void recv_from_server();
 
-
 		/**
 		 * \brief callback from cmonitorwirelessdevice that is called to
 		 * handle addding wireless inet
@@ -221,7 +211,6 @@ class CKernelWifi : public intthread::AsyncTask {
 		 * handle deleting  wireless  inet
 		 */
 		void handle_del_winet_notification(WirelessDevice);
-
 
 		/**
 		 * \brief callback from cmonitorwirelessdevice that is called to
@@ -281,7 +270,5 @@ namespace ckernelwifi {
 	};
 }
 
-
 #endif /* _CKERNELWIFI_H_ */
-
 

@@ -8,7 +8,6 @@
 #ifndef _CWIRELESSDEVICELIST_H_
 #define _CWIRELESSDEVICELIST_H_
 
-
 #include <map>
 #include <mutex>
 #include <vector>
@@ -52,7 +51,6 @@ class WirelessDeviceList {
 	 */
 	void delete_device(int index);
 
-
 	/**
 	 * \fn delete_device(const WirelessDevice & wdevice)
 	 * \brief Remove from _wdevice_list a wireless network device by index
@@ -81,8 +79,6 @@ class WirelessDeviceList {
 	 * \brief << operator overidden
 	 */
 	friend std::ostream &   operator<< ( std::ostream & , WirelessDeviceList &);
-
-
 
 };
 

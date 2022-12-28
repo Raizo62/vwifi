@@ -6,9 +6,7 @@
 #include <string>
 #include <iostream>
 
-
 class WirelessDevice {
-
 
 	std::string _name;
 	int _index;
@@ -58,6 +56,5 @@ class WirelessDevice {
 	int getTxPower() const ;
 
 };
-
 
 #endif
