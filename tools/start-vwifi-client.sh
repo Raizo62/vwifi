@@ -24,17 +24,13 @@ then
 	fi
 fi
 
-modprobe mac80211_hwsim radios=$NbrWifi
+modprobe mac80211_hwsim radios=0
 
 hexchars="0123456789ABCDEF"
-for((i=0;i<NbrWifi;i++))
-do
-	middle=$( for i in {1..4} ; do echo -n ${hexchars:$(( $RANDOM % 16 )):1} ; done | sed -e 's/\(..\)/:\1/g' )
-	MAC_ADDRESS="${DEFAULT_PREFIX_MAC_ADDRESS}${middle}:$(printf "%02d" $i)"
-	echo "wlan$i : ${MAC_ADDRESS}"
-	ip link set wlan$i addr ${MAC_ADDRESS}
-done
+middle=$( for i in {1..4} ; do echo -n ${hexchars:$(( $RANDOM % 16 )):1} ; done | sed -e 's/\(..\)/:\1/g' )
+MAC_ADDRESS="${DEFAULT_PREFIX_MAC_ADDRESS}${middle}"
 
+./vwifi-add-interfaces "${NbrWifi}" "${MAC_ADDRESS}"
 
 if [ "$(tty)" = '/dev/ttyS0' ]
 then
