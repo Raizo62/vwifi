@@ -34,6 +34,7 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
     * connects to 127.0.0.1, by default
 * ***vwifi-client*** uses the `mac80211_hwsim` kernel module to have the wifi interfaces
 * To use TCP protocol, ***vwifi-server*** and ***vwifi-client*** must be connected to a different IP network than that of the wifi
+* ***vwifi-add-interfaces*** is used to create the wlan interfaces to the module `mac80211_hwsim`. ***vwifi-client*** controls only these interfaces
 * ***vwifi-ctrl*** is used to interact with ***vwifi-server***
 
 * You can change the defaults IP and ports with parameters (see the parameter "-h" to help)
@@ -99,22 +100,15 @@ sudo make install
 
 ### Each Guest
 
-* Create the wlan interfaces (on this example, 2 interfaces) :
+* Load the necessary module mac80211_hwsim with 0 radios :
 ```bash
-sudo modprobe mac80211_hwsim radios=2
+sudo modprobe mac80211_hwsim radios=0
 ```
 
-* Change the MAC address of each wlan interface
+* Create the wlan interfaces (on this example, 2 interfaces) :
+    * (***vwifi-client*** can do the same with the parameters "--number" and "--mac")
 ```bash
-sudo ip link set down wlan0
-sudo macchanger -r wlan0  # from the package macchanger
-# or : sudo ip link set wlan0 addr 0a:0b:0c:03:02:01
-# or : sudo ifconfig wlan0 hw ether 0a:0b:0c:03:02:01
-sudo ip link set up wlan0
-
-sudo ip link set down wlan1
-sudo macchanger -r wlan1
-sudo ip link set up wlan1
+sudo ./vwifi-add-interfaces 2 0a:0b:0c:03:02
 ```
 
 * Connect all these wlan interfaces to the ***vwifi-server*** :
@@ -140,22 +134,15 @@ vwifi-server
 
 ### Each Guest
 
-* Create the wlan interfaces (on this example, 2 interfaces) :
+* Load the necessary module mac80211_hwsim with 0 radios :
 ```bash
-sudo modprobe mac80211_hwsim radios=2
+sudo modprobe mac80211_hwsim radios=0
 ```
 
-* Change the MAC address of each wlan interface
+* Create the wlan interfaces (on this example, 2 interfaces) :
+    * (***vwifi-client*** can do the same with the parameters "--number" and "--mac")
 ```bash
-sudo ip link set down wlan0
-sudo macchanger -r wlan0  # from the package macchanger
-# or : sudo ip link set wlan0 addr 0a:0b:0c:03:02:01
-# or : sudo ifconfig wlan0 hw ether 0a:0b:0c:03:02:01
-sudo ip link set up wlan0
-
-sudo ip link set down wlan1
-sudo macchanger -r wlan1
-sudo ip link set up wlan1
+sudo ./vwifi-add-interfaces 2 0a:0b:0c:03:02
 ```
 
 * Connect all these wlan interfaces to the ***vwifi-server*** :
