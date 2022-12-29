@@ -23,8 +23,10 @@ MODE+= -O3 -s -Wall -Wextra -pedantic # //////////      RELEASE
 
 EDITOR	?=	geany
 
-NETLINK_FLAGS := -I/usr/include/libnl3
-NETLINK_LIBS := -lnl-genl-3 -lnl-3
+NETLINK_FLAGS_PATH := /usr/include/libnl3
+NETLINK_FLAGS := -I $(NETLINK_FLAGS_PATH)
+NETLINK_LIBS_PATH := .
+NETLINK_LIBS := -L $(NETLINK_LIBS_PATH) -lnl-genl-3 -lnl-3
 
 THREAD_LIBS := -lpthread
 
