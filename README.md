@@ -157,8 +157,8 @@ sudo vwifi-client 172.16.0.1
 ## Configure the Spy
 
 ```bash
-sudo modprobe mac80211_hwsim radios=1
-sudo vwifi-client -s
+sudo modprobe mac80211_hwsim radios=0
+sudo vwifi-client -s -n 1
 ```
 
 ## Capture
