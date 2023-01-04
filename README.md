@@ -108,7 +108,7 @@ sudo modprobe mac80211_hwsim radios=0
 * Create the wlan interfaces (on this example, 2 interfaces) :
     * (***vwifi-client*** can do the same with the parameters "--number" and "--mac")
 ```bash
-sudo ./vwifi-add-interfaces 2 0a:0b:0c:03:02
+sudo vwifi-add-interfaces 2 0a:0b:0c:03:02
 ```
 
 * Connect all these wlan interfaces to the ***vwifi-server*** :
@@ -142,7 +142,7 @@ sudo modprobe mac80211_hwsim radios=0
 * Create the wlan interfaces (on this example, 2 interfaces) :
     * (***vwifi-client*** can do the same with the parameters "--number" and "--mac")
 ```bash
-sudo ./vwifi-add-interfaces 2 0a:0b:0c:03:02
+sudo vwifi-add-interfaces 2 0a:0b:0c:03:02
 ```
 
 * Connect all these wlan interfaces to the ***vwifi-server*** :
