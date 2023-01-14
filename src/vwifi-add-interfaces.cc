@@ -15,6 +15,7 @@
 
 #include "config_hwsim.h"
 #include "addinterfaces.h"
+#include "config.h" // DEFAULT_MAC_PREFIX
 
 int ParseInt(const char* str, int* result)
 {
@@ -43,6 +44,14 @@ int main(int argc, char* argv[])
 
 	if( argc == 1 )
 		return help(stdout,0);
+
+	if( ! ParseAddress(DEFAULT_MAC_PREFIX,macPrefix) )
+		return help(stderr, 6);
+	if( strlen(DEFAULT_MAC_PREFIX) <= 8 )
+	{ // if possible, randomize the 4th byte
+		srand(time(NULL));
+		macPrefix[3]=rand()%100;
+	}
 
 	int arg_idx = 1;
 	int arg_used = 1;
