@@ -75,7 +75,7 @@ $(OBJ)/.:
 all : clean build tools install
 
 update :
-	wget -q -N https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/wireless/mac80211_hwsim.h -P $(SRC)
+	wget -q -N https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/wireless/virtual/mac80211_hwsim.h -P $(SRC)
 
 clean:
 	-rm -f *~ $(SRC)/*~ $(MAN)/*~
