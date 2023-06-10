@@ -103,7 +103,8 @@ int CreateRadios(struct nl_sock* socket, const int netlinkFamily,
 {
 	for (int idx = 0; idx < nRadios; ++idx)
 	{
-		mac[5] = idx;
+		if( nRadios != 1 ) // if i set only 1 interface, the mac address is not modified : the user can choose all the mac address
+			mac[5] = idx;
 		std::unique_ptr<struct nl_msg, nl_msg_deleter> msg =
 			BuildCreateRadioMessage(netlinkFamily, mac);
 		if (msg)

@@ -30,10 +30,11 @@ int help(FILE* dst, const int ret)
 			"   vwifi-add-interfaces [--help] [--version] [-v] n_radios mac_prefix\n"
 			"   where\n"
 			"       n_radios - int, [1,100], e.g. 2\n"
-			"       mac_prefix - xx:xx:xx:xx:xx (only the first 5 bytes are used)\n\n"
+			"       mac_prefix - xx:xx:xx:xx:xx (if n_radios > 1 then only the first 5 bytes are used\n"
+			"                                    then all bytes are used)\n\n"
 			"   vwifi-add-interfaces will create n_radios with MAC addresses xx:xx:xx:xx:xx:nn\n"
 			"       where xx:xx:xx:xx:xx is the mac_prefix specified\n"
-			"       and   nn is incremented (from zero)\n");
+			"       and   nn is incremented (from zero, and only if n_radios > 1)\n");
 	return ret;
 }
 
