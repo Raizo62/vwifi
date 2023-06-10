@@ -106,7 +106,7 @@ sudo modprobe mac80211_hwsim radios=0
 ```
 
 * Create the wlan interfaces (on this example, 2 interfaces) :
-    * The MAC address is preset with the default value "74:F8:F6", and the 4th byte is randomized
+    * Without parameters, the MAC address is preset with the default value "74:F8:F6", and the 4th byte is randomized
     * ***vwifi-client*** can do the same with the parameters "--number" and "--mac"
 ```bash
 sudo vwifi-add-interfaces 2 0a:0b:0c:03:02
@@ -141,7 +141,7 @@ sudo modprobe mac80211_hwsim radios=0
 ```
 
 * Create the wlan interfaces (on this example, 2 interfaces) :
-    * The MAC address is preset with the default value "74:F8:F6", and the 4th byte is randomized
+    * Without parameters, the MAC address is preset with the default value "74:F8:F6", and the 4th byte is randomized
     * ***vwifi-client*** can do the same with the parameters "--number" and "--mac"
 ```bash
 sudo vwifi-add-interfaces 2 0a:0b:0c:03:02
