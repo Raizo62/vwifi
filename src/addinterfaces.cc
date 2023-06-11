@@ -139,7 +139,9 @@ int ManageRadios(const int nRadios, TByte* macPrefix)
 	const int netlinkFamily = genl_ctrl_resolve(socket.get(), KERNEL_HWSIM_FAMILY_NAME);
 	if (netlinkFamily < 0)
 	{
-		RETURN_NL_ERROR("genl_ctrl_resolve", ret, 1);
+		fprintf(stderr,"The kernel module 'mac80211_hwsim' is not loaded\n");
+		return 2;
+		//RETURN_NL_ERROR("genl_ctrl_resolve", ret, 1);
 	}
 	ret = CreateRadios(socket.get(), netlinkFamily, nRadios, macPrefix);
 	if (ret)
