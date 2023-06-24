@@ -77,7 +77,7 @@ sudo make install
 
 # Configuration
 
-## With VHOST
+## Method 1 : With VHOST
 
 ### Host
 
@@ -119,7 +119,7 @@ sudo vwifi-client
 
 * ***vwifi-client*** displays the CID of the VM in the Hypervisor. It is used by ***vwifi-server*** to identify this guest.
 
-## With TCP
+## Method 2 : With TCP
 
 * ***vwifi-server*** and ***vwifi-client*** must be connected to a different IP network than that of the wifi (for example : 172.16.0.0/16)
 
