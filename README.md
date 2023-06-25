@@ -26,16 +26,16 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 # Explanations
 
-* ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host
-* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol (by default), or with the TCP protocol
+* ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host.
+* ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol (by default), or with the TCP protocol.
 * With the option "-s" (or "--spy"), ***vwifi-client*** :
-    * receives always all communications, even if the loss of packets is enable.
-    * works only with TCP.
-    * connects to 127.0.0.1, by default
-* ***vwifi-client*** uses the `mac80211_hwsim` kernel module to have the wifi interfaces
-* To use TCP protocol, ***vwifi-server*** and ***vwifi-client*** must be connected to a different IP network than that of the wifi
-* ***vwifi-add-interfaces*** is used to create the wlan interfaces to the module `mac80211_hwsim`. ***vwifi-client*** controls only these interfaces
-* ***vwifi-ctrl*** is used to interact with ***vwifi-server***
+    * receives always all communications, even if the loss of packets is enable ;
+    * works only with TCP ;
+    * connects to 127.0.0.1, by default ;
+* ***vwifi-client*** uses the `mac80211_hwsim` kernel module to have the wifi interfaces.
+* To use TCP protocol, ***vwifi-server*** and ***vwifi-client*** must be connected to a different IP network than that of the wifi.
+* ***vwifi-add-interfaces*** is used to create the wlan interfaces to the module `mac80211_hwsim`. ***vwifi-client*** controls only these interfaces. ***vwifi-add-interfaces*** can be run several times.
+* ***vwifi-ctrl*** is used to interact with ***vwifi-server***.
 
 * You can change the defaults IP and ports with parameters (see the parameter "-h" to help)
 
