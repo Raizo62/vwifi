@@ -56,7 +56,7 @@ $(OBJ)/vwifi-ctrl.o : vwifi-ctrl.cc ccoordinate.h cdynbuffer.h cinfowifi.h confi
 
 $(OBJ)/vwifi-inet-monitor.o : vwifi-inet-monitor.cc cmonwirelessdevice.h cwirelessdevice.h Makefile Makefile.in
 
-$(OBJ)/vwifi-server.o : vwifi-server.cc ccoordinate.h cctrlserver.h cdynbuffer.h cinfosocket.h cinfowifi.h clistinfo.h config.h cselect.h csocket.h csocketserverfunctionitcp.h csocketserverfunctionvtcp.h csocketserver.h cwifi.h cwifiserver.h cwifiserveritcp.h cwifiservervtcp.h types.h Makefile Makefile.in
+$(OBJ)/vwifi-server.o : vwifi-server.cc ccoordinate.h cctrlserver.h cdynbuffer.h cinfosocket.h cinfowifi.h clistinfo.h config.h cselect.h csocket.h csocketserverfunctionitcp.h csocketserverfunctionvtcp.h csocketserver.h cwifi.h cwifiserver.h cwifiserveritcp.h cwifiservervtcp.h tools.h types.h Makefile Makefile.in
 
 vwifi-add-interfaces : $(OBJ)/vwifi-add-interfaces.o  $(OBJ)/addinterfaces.o
 
