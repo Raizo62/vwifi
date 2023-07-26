@@ -219,8 +219,8 @@ int vwifi_server()
 
 void help()
 {
-	cout<<"Usage: vwifi-server [-h] [-v] [-p PORT_VHOST] [-t PORT_TCP] [-s PORT_SPY] [-c PORT_CTRL]"<<endl;
-	cout<<"                    [--help] [--version] [--port-vhost PORT_VHOST] [--port-tcp PORT_TCP] [--port-spy PORT_SPY] [--port-ctrl PORT_CTRL]"<<endl;
+	cout<<"Usage: vwifi-server [-h] [-v] [-l] [-p PORT_VHOST] [-t PORT_TCP] [-s PORT_SPY] [-c PORT_CTRL]"<<endl;
+	cout<<"                    [--help] [--version] [--lost-packets] [--port-vhost PORT_VHOST] [--port-tcp PORT_TCP] [--port-spy PORT_SPY] [--port-ctrl PORT_CTRL]"<<endl;
 	cout<<"         By default : PORT_VHOST="<< DEFAULT_WIFI_CLIENT_PORT_VHOST <<
 								" PORT_TCP="  << DEFAULT_WIFI_CLIENT_PORT_INET <<
 								" PORT_SPY="  << DEFAULT_WIFI_SPY_PORT <<
@@ -243,7 +243,11 @@ int main(int argc, char** argv)
 			help();
 			return 0;
 		}
-		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port-vhost", argv[arg_idx]) ) && (arg_idx + 1) < argc)
+		if( ! strcmp("-l", argv[arg_idx]) || ! strcmp("--lost-packets", argv[arg_idx]) )
+		{
+			CanLostPackets=true;
+		}
+		else if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port-vhost", argv[arg_idx]) ) && (arg_idx + 1) < argc)
 		{
 			Port_VHOST = stoi(argv[arg_idx+1]);
 			arg_idx++;

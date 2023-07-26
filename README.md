@@ -38,6 +38,7 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 * To use TCP protocol, ***vwifi-server*** and ***vwifi-client*** must be connected to a different IP network than that of the wifi.
 * ***vwifi-add-interfaces*** is used to create the wlan interfaces to the module `mac80211_hwsim`. ***vwifi-client*** controls only these interfaces. ***vwifi-add-interfaces*** can be run several times.
 * ***vwifi-ctrl*** is used to interact with ***vwifi-server***.
+* ***vwifi-server*** can directly enable packet loss with the parameter "-l" (or "--lost-packets")
 
 * You can change the defaults IP and ports with parameters (see the parameter "-h" to help)
 
