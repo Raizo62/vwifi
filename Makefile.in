@@ -48,7 +48,7 @@ $(OBJ)/cwirelessdevicelist.o : cwirelessdevicelist.cc cwirelessdevice.h cwireles
 
 $(OBJ)/tools.o : tools.cc tools.h Makefile Makefile.in
 
-$(OBJ)/vwifi-add-interfaces.o : vwifi-add-interfaces.cc addinterfaces.h config_hwsim.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
+$(OBJ)/vwifi-add-interfaces.o : vwifi-add-interfaces.cc addinterfaces.h config.h config_hwsim.h hwsim.h mac80211_hwsim.h types.h Makefile Makefile.in
 
 $(OBJ)/vwifi-client.o : vwifi-client.cc addinterfaces.h cdynbuffer.h ckernelwifi.h cmonwirelessdevice.h config.h config_hwsim.h cselect.h csocketclient.h csocketclientitcp.h csocketclientvtcp.h csocket.h cthread.h cwificlient.h cwifi.h cwirelessdevice.h cwirelessdevicelist.h hwsim.h mac80211_hwsim.h tools.h types.h Makefile Makefile.in
 
