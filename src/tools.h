@@ -3,4 +3,6 @@
 
 unsigned long hash_ipaddr(struct sockaddr_in* addr);
 
+bool is_digits(const char *str);
+
 #endif

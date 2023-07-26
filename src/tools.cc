@@ -18,3 +18,12 @@ unsigned long hash_ipaddr(struct sockaddr_in* addr)
 
 	return res;
 }
+
+bool is_digits(const char *str) {
+	while (*str) {
+		if( *str < '0' || *str > '9' )
+			return false;
+		str++;
+	}
+	return true;
+}
