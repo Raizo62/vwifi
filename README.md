@@ -26,6 +26,8 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 # Explanations
 
+* With the parameter "-h" (or "--help"), all programs display help and their parameters
+
 * ***vwifi-client*** should be started on the VMs, and ***vwifi-server*** on the Host.
 * ***vwifi-client*** and ***vwifi-server*** can communicate either with the VHOST protocol (by default), or with the TCP protocol.
 * With the option "-s" (or "--spy"), ***vwifi-client*** :
