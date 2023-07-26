@@ -52,7 +52,7 @@ $(OBJ)/vwifi-add-interfaces.o : vwifi-add-interfaces.cc addinterfaces.h config_h
 
 $(OBJ)/vwifi-client.o : vwifi-client.cc addinterfaces.h cdynbuffer.h ckernelwifi.h cmonwirelessdevice.h config.h config_hwsim.h cselect.h csocketclient.h csocketclientitcp.h csocketclientvtcp.h csocket.h cthread.h cwificlient.h cwifi.h cwirelessdevice.h cwirelessdevicelist.h hwsim.h mac80211_hwsim.h tools.h types.h Makefile Makefile.in
 
-$(OBJ)/vwifi-ctrl.o : vwifi-ctrl.cc ccoordinate.h cdynbuffer.h cinfowifi.h config.h csocketclient.h csocketclientitcp.h csocket.h types.h Makefile Makefile.in
+$(OBJ)/vwifi-ctrl.o : vwifi-ctrl.cc ccoordinate.h cdynbuffer.h cinfowifi.h config.h csocketclient.h csocketclientitcp.h csocket.h tools.h types.h Makefile Makefile.in
 
 $(OBJ)/vwifi-inet-monitor.o : vwifi-inet-monitor.cc cmonwirelessdevice.h cwirelessdevice.h Makefile Makefile.in
 

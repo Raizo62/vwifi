@@ -3,6 +3,7 @@
 #include <string.h> //strlen
 
 #include "config.h"
+#include "tools.h" // is_digits
 #include "csocketclientitcp.h"
 #include "types.h"
 #include "ccoordinate.h" // CCoordinate
@@ -703,7 +704,7 @@ int main(int argc , char *argv[])
 			Help();
 			return 1;
 		}
-		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc)
+		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc && is_digits(argv[arg_idx+1]) )
 		{
 			Port_Ctrl = std::stoi(argv[arg_idx+1]);
 			arg_idx++;
