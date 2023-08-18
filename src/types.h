@@ -36,7 +36,7 @@ typedef u16 TPort;
 
 // char
 typedef s8 TPower; // empirical observed values with int : [-123,20]
-const TPower TPower_MAX=INT8_MAX;
+const TPower TPower_MAX=-10; // dBm is always negative. -10 is an empirical value
 const TPower TPower_MIN=INT8_MIN;
 
 // double

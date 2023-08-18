@@ -203,9 +203,6 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 				TFrequency frequency=GetFrequency((struct nlmsghdr*)data);
 				TPower signalLevel=BoundedPower(power-Attenuation(coo.DistanceWith((*InfoWifis)[i]),frequency));
 
-				if (signalLevel > 0)
-					signalLevel = -10;
-
 				if( ! CanLostPackets || ! PacketIsLost(signalLevel) )
 					if( SendSignal((*InfoSockets)[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
 						(*InfoSockets)[i].DisableIt();
