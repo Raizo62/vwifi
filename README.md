@@ -39,6 +39,7 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 * ***vwifi-add-interfaces*** is used to create the wlan interfaces to the module `mac80211_hwsim`. ***vwifi-client*** controls only these interfaces. ***vwifi-add-interfaces*** can be run several times.
 * ***vwifi-ctrl*** is used to interact with ***vwifi-server***.
 * ***vwifi-server*** can directly enable packet loss with the parameter "-l" (or "--lost-packets")
+* If ***vwifi-server*** detects the same IP for several ***vwifi-client*** (due to PAT/NPAT/...), use the option "-u" ("-- use-port-in-hash") on ***vwifi-server*** to add the network port to create the ID for each client, instead of just using the IP. Attention, the display of ID by ***vwifi-server*** and ***vwifi-client*** will no longer be the same.
 
 * You can change the defaults IP and ports with parameters (see the parameter "-h" to help)
 

@@ -5,6 +5,8 @@
 
 #include <assert.h> // assert
 
+bool HashUsesPort=false;
+
 unsigned long hash_ipaddr(struct sockaddr_in* addr)
 {
 	unsigned long res;
@@ -15,6 +17,9 @@ unsigned long hash_ipaddr(struct sockaddr_in* addr)
 			(((addr->sin_addr.s_addr >> 16) & 0xff) * 256)	+
 			(((addr->sin_addr.s_addr >>  8) & 0xff)* 256)	+
 			(addr->sin_addr.s_addr & 0xff);
+
+	if( HashUsesPort )
+		res += addr->sin_port;
 
 	return res;
 }

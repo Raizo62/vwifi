@@ -28,7 +28,7 @@ CKernelWifi* wifiClient;
 enum STATE  _state = STOPPED ;
 
 
-void  signal_handler(int signal_num)
+void signal_handler(int signal_num)
 {
 
 	switch(signal_num)
@@ -58,8 +58,8 @@ void  signal_handler(int signal_num)
 
 void help()
 {
-	std::cout<<"Usage: vwifi-client [-h] [-v] [-s] [IP_ADDR] [-p PORT] [-n NUMBER] [-m MAC_PREFIX]"<<std::endl;
-	std::cout<<"                    [--help] [--version] [--spy] [IP_ADDR] [--port PORT] [--number NUMBER] [--mac MAC_PREFIX]"<<std::endl;
+	std::cout<<"Usage: vwifi-client [-h] [-v] [-s] [IP_ADDR] [-p PORT] [-u] [-n NUMBER] [-m MAC_PREFIX]"<<std::endl;
+	std::cout<<"                    [--help] [--version] [--spy] [IP_ADDR] [--port PORT] [--use-port-in-hash] [--number NUMBER] [--mac MAC_PREFIX]"<<std::endl;
 	std::cout<<"         By default : client mode : TCP : IP_ADDR="<<DEFAULT_ADDRESS_IP <<" PORT="<< DEFAULT_WIFI_CLIENT_PORT_INET << std::endl;
 	std::cout<<"                      client mode : VHOST : PORT="<< DEFAULT_WIFI_CLIENT_PORT_VHOST << std::endl;
 	std::cout<<"                      spy mode (--spy) : IP_ADDR="<< DEFAULT_ADDRESS_IP <<" PORT="<< DEFAULT_WIFI_SPY_PORT << std::endl;
@@ -99,6 +99,10 @@ int main (int argc , char ** argv){
 		{
 			port_number = std::stoi(argv[arg_idx+1]);
 			arg_idx++;
+		}
+		else if( ! strcmp("-u", argv[arg_idx]) || ! strcmp("--use-port-in-hash", argv[arg_idx]) )
+		{
+			HashUsesPort=true;
 		}
 		else if( ! strcmp("-s", argv[arg_idx]) || ! strcmp("--spy", argv[arg_idx]) )
 		{
