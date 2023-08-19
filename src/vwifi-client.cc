@@ -141,7 +141,7 @@ int main (int argc , char ** argv){
 				ip_addr = std::string(argv[arg_idx]);
 			else
 			{
-				std::cerr<<"Error : unknown parameter : "<< argv[arg_idx] <<std::endl;
+				std::cerr<<"Error : problem with this parameter : "<< argv[arg_idx] <<std::endl;
 				help();
 				return 1;
 			}

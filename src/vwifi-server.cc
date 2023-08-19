@@ -274,7 +274,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			cerr<<"Error : unknown parameter : "<< argv[arg_idx] <<endl;
+			cerr<<"Error : problem with this parameter : "<< argv[arg_idx] <<endl;
 			help();
 			return 1;
 		}
