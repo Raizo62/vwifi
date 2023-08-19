@@ -183,6 +183,11 @@ int ChangeCoordinate(int argc, char *argv[])
 			return 1;
 	}
 
+	if( ! is_digits(argv[1]) )
+	{
+		cerr<<"Error : set : the CID is not an integer"<<endl;
+		return 1;
+	}
 	TCID cid=atoi(argv[1]);
 
 	if( cid < TCID_GUEST_MIN )
@@ -191,6 +196,21 @@ int ChangeCoordinate(int argc, char *argv[])
 			return 1;
 	}
 
+	if( ! is_digits(argv[2]) )
+	{
+		cerr<<"Error : set : the x coordinate is not an integer"<<endl;
+		return 1;
+	}
+	if( ! is_digits(argv[3]) )
+	{
+		cerr<<"Error : set : the y coordinate is not an integer"<<endl;
+		return 1;
+	}
+	if( ! is_digits(argv[4]) )
+	{
+		cerr<<"Error : set : the z coordinate is not an integer"<<endl;
+		return 1;
+	}
 	TValue x=atoi(argv[2]);
 	TValue y=atoi(argv[3]);
 	TValue z=atoi(argv[4]);
@@ -244,6 +264,11 @@ int SetName(int argc, char *argv[])
 			return 1;
 	}
 
+	if( ! is_digits(argv[1]) )
+	{
+		cerr<<"Error : setname : the CID is not an integer"<<endl;
+		return 1;
+	}
 	TCID cid=atoi(argv[1]);
 
 	if( cid < TCID_GUEST_MIN )
@@ -533,6 +558,11 @@ int DistanceBetweenCID(int argc, char *argv[])
 			return 1;
 	}
 
+	if( ! is_digits(argv[1]) )
+	{
+		cerr<<"Error : distance : the CID 1 is not an integer"<<endl;
+		return 1;
+	}
 	TCID cid1=atoi(argv[1]);
 
 	if( cid1 < TCID_GUEST_MIN )
@@ -541,6 +571,11 @@ int DistanceBetweenCID(int argc, char *argv[])
 			return 1;
 	}
 
+	if( ! is_digits(argv[2]) )
+	{
+		cerr<<"Error : distance : the CID 2 is not an integer"<<endl;
+		return 1;
+	}
 	TCID cid2=atoi(argv[2]);
 
 	if( cid2 < TCID_GUEST_MIN )
