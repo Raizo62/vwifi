@@ -659,6 +659,11 @@ int SetScale(int argc, char *argv[])
 			return 1;
 	}
 
+	if( ! isIntOrFloat(argv[1]) )
+	{
+		cerr<<"Error : scale : the format of the value is uncorrect"<<endl;
+		return 1;
+	}
 	TScale scale=atof(argv[1]);
 
 	CSocketClientITCP socket;
