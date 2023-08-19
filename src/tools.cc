@@ -32,3 +32,25 @@ bool is_digits(const char *str) {
 	}
 	return true;
 }
+
+bool isIntOrFloat(const char *str) {
+	bool seeDot=false;
+	bool seeDigit=false;
+
+	while (*str) {
+		if( *str == '.' )
+		{
+			if( seeDot )
+				return false;
+			seeDot=true;
+		}
+		else
+		{
+			if( *str < '0' || *str > '9' )
+				return false;
+			seeDigit=true;
+		}
+		str++;
+	}
+	return seeDigit;
+}
