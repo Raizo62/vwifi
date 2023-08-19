@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "config.h" // DEFAULT_WIFI_CLIENT_PORT_VHOST / DEFAULT_WIFI_CLIENT_PORT_INET
-#include "tools.h" // is_digits
+#include "tools.h" // isInt
 
 #include "cwificlient.h"
 #ifdef ENABLE_VHOST
@@ -95,7 +95,7 @@ int main (int argc , char ** argv){
 			help();
 			return 0;
 		}
-		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc && is_digits(argv[arg_idx+1]) )
+		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc && isInt(argv[arg_idx+1]) )
 		{
 			port_number = std::stoi(argv[arg_idx+1]);
 			arg_idx++;
@@ -108,7 +108,7 @@ int main (int argc , char ** argv){
 		{
 			spy=true;
 		}
-		else if( ( ! strcmp("-n", argv[arg_idx]) || ! strcmp("--number", argv[arg_idx]) ) && (arg_idx + 1) < argc && is_digits(argv[arg_idx+1]) )
+		else if( ( ! strcmp("-n", argv[arg_idx]) || ! strcmp("--number", argv[arg_idx]) ) && (arg_idx + 1) < argc && isInt(argv[arg_idx+1]) )
 		{
 			number_interface = std::stoi(argv[arg_idx+1]);
 			if (number_interface < 0)
