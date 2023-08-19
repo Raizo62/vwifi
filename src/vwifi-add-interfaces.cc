@@ -27,7 +27,7 @@ int help(FILE* dst, const int ret)
 	fprintf(dst, "%s",
 			"Usage:\n"
 			"   vwifi-add-interfaces [-h] [-v] n_radios mac_prefix\n"
-			"   vwifi-add-interfaces [--help] [--version] [-v] n_radios mac_prefix\n"
+			"   vwifi-add-interfaces [--help] [--version] n_radios mac_prefix\n"
 			"   where\n"
 			"       n_radios - int, [1,100], e.g. 2\n"
 			"       mac_prefix - xx:xx:xx:xx:xx (if n_radios > 1 then only the first 5 bytes are used\n"
