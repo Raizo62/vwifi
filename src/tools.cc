@@ -37,6 +37,9 @@ bool isIntOrFloat(const char *str) {
 	bool seeDot=false;
 	bool seeDigit=false;
 
+	if (*str == '-' || *str == '+')
+		str++;
+
 	while (*str) {
 		if( *str == '.' )
 		{
