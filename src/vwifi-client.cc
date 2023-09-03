@@ -95,7 +95,7 @@ int main (int argc , char ** argv){
 			help();
 			return 0;
 		}
-		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc && isInt(argv[arg_idx+1]) )
+		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc && isPositiveInt(argv[arg_idx+1]) )
 		{
 			port_number = std::stoi(argv[arg_idx+1]);
 			arg_idx++;
@@ -108,14 +108,9 @@ int main (int argc , char ** argv){
 		{
 			spy=true;
 		}
-		else if( ( ! strcmp("-n", argv[arg_idx]) || ! strcmp("--number", argv[arg_idx]) ) && (arg_idx + 1) < argc && isInt(argv[arg_idx+1]) )
+		else if( ( ! strcmp("-n", argv[arg_idx]) || ! strcmp("--number", argv[arg_idx]) ) && (arg_idx + 1) < argc && isPositiveInt(argv[arg_idx+1]) )
 		{
 			number_interface = std::stoi(argv[arg_idx+1]);
-			if (number_interface < 0)
-			{
-				std::cerr<<"Error : NUMBER < 0"<<std::endl;
-				return 3;
-			}
 			if (number_interface > 100)
 			{
 				std::cerr<<"Error : NUMBER > 100"<<std::endl;
