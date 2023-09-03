@@ -665,6 +665,11 @@ int SetScale(int argc, char *argv[])
 		return 1;
 	}
 	TScale scale=atof(argv[1]);
+	if( scale <= 0 )
+	{
+		cerr<<"Error : scale : the value must be greater than 0"<<endl;
+		return 1;
+	}
 
 	CSocketClientITCP socket;
 
