@@ -37,6 +37,14 @@ bool isInt(const char *str) {
 	return true;
 }
 
+bool isPositiveInt(const char *str)
+{
+	if( *str == '-' )
+		return false;
+
+	return isInt(str);
+}
+
 bool isIntOrFloat(const char *str) {
 	bool seeDot=false;
 	bool seeDigit=false;
