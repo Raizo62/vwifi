@@ -3,7 +3,7 @@
 #include <string.h> //strlen
 
 #include "config.h"
-#include "tools.h" // isInt
+#include "tools.h" // isInt isPositiveInt isIntOrFloat
 #include "csocketclientitcp.h"
 #include "types.h"
 #include "ccoordinate.h" // CCoordinate
@@ -183,7 +183,7 @@ int ChangeCoordinate(int argc, char *argv[])
 			return 1;
 	}
 
-	if( ! isInt(argv[1]) )
+	if( ! isPositiveInt(argv[1]) )
 	{
 		cerr<<"Error : set : the CID is not an integer"<<endl;
 		return 1;
@@ -264,7 +264,7 @@ int SetName(int argc, char *argv[])
 			return 1;
 	}
 
-	if( ! isInt(argv[1]) )
+	if( ! isPositiveInt(argv[1]) )
 	{
 		cerr<<"Error : setname : the CID is not an integer"<<endl;
 		return 1;
@@ -558,7 +558,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 			return 1;
 	}
 
-	if( ! isInt(argv[1]) )
+	if( ! isPositiveInt(argv[1]) )
 	{
 		cerr<<"Error : distance : the CID 1 is not an integer"<<endl;
 		return 1;
@@ -571,7 +571,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 			return 1;
 	}
 
-	if( ! isInt(argv[2]) )
+	if( ! isPositiveInt(argv[2]) )
 	{
 		cerr<<"Error : distance : the CID 2 is not an integer"<<endl;
 		return 1;
@@ -744,7 +744,7 @@ int main(int argc , char *argv[])
 			Help();
 			return 1;
 		}
-		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc && isInt(argv[arg_idx+1]) )
+		if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port", argv[arg_idx]) ) && (arg_idx + 1) < argc && isPositiveInt(argv[arg_idx+1]) )
 		{
 			Port_Ctrl = std::stoi(argv[arg_idx+1]);
 			arg_idx++;
