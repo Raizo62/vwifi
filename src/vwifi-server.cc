@@ -3,7 +3,7 @@
 #include <string.h> // strcmp
 
 #include "config.h"
-#include "tools.h" // isInt
+#include "tools.h" // isPositiveInt
 #include "cwifiserveritcp.h"
 #include "cwifiservervtcp.h"
 #include "cctrlserver.h"
@@ -252,22 +252,22 @@ int main(int argc, char** argv)
 		{
 			HashUsesPort=true;
 		}
-		else if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port-vhost", argv[arg_idx]) ) && (arg_idx + 1) < argc && isInt(argv[arg_idx+1]) )
+		else if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port-vhost", argv[arg_idx]) ) && (arg_idx + 1) < argc && isPositiveInt(argv[arg_idx+1]) )
 		{
 			Port_VHOST = stoi(argv[arg_idx+1]);
 			arg_idx++;
 		}
-		else if( ( ! strcmp("-t", argv[arg_idx]) || ! strcmp("--port-tcp", argv[arg_idx]) ) && (arg_idx + 1) < argc && isInt(argv[arg_idx+1]) )
+		else if( ( ! strcmp("-t", argv[arg_idx]) || ! strcmp("--port-tcp", argv[arg_idx]) ) && (arg_idx + 1) < argc && isPositiveInt(argv[arg_idx+1]) )
 		{
 			Port_TCP = stoi(argv[arg_idx+1]);
 			arg_idx++;
 		}
-		else if( ( ! strcmp("-s", argv[arg_idx]) || ! strcmp("--port-spy", argv[arg_idx]) ) && (arg_idx + 1) < argc && isInt(argv[arg_idx+1]) )
+		else if( ( ! strcmp("-s", argv[arg_idx]) || ! strcmp("--port-spy", argv[arg_idx]) ) && (arg_idx + 1) < argc && isPositiveInt(argv[arg_idx+1]) )
 		{
 			Port_Spy = stoi(argv[arg_idx+1]);
 			arg_idx++;
 		}
-		else if( ( ! strcmp("-c", argv[arg_idx]) || ! strcmp("--port-ctrl", argv[arg_idx]) ) && (arg_idx + 1) < argc && isInt(argv[arg_idx+1]) )
+		else if( ( ! strcmp("-c", argv[arg_idx]) || ! strcmp("--port-ctrl", argv[arg_idx]) ) && (arg_idx + 1) < argc && isPositiveInt(argv[arg_idx+1]) )
 		{
 			Port_Ctrl = stoi(argv[arg_idx+1]);
 			arg_idx++;
