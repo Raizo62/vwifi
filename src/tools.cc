@@ -25,6 +25,10 @@ unsigned long hash_ipaddr(struct sockaddr_in* addr)
 }
 
 bool isInt(const char *str) {
+
+	if( *str == '-' || *str == '+' )
+		str++;
+
 	while (*str) {
 		if( *str < '0' || *str > '9' )
 			return false;
