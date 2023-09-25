@@ -40,6 +40,7 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst)
 {
 	int valread;
 	TPower power;
+	uint8_t dropped;
 
 	for ( TIndex i = 0 ; i < src->GetNumberClient() ; )
 	{
@@ -57,7 +58,7 @@ void ForwardData(bool srcIsSpy, CWifiServer* src, CWifiServer* otherDst)
 			//Check if it was for closing , and also read the
 			//incoming message
 
-			valread=src->RecvSignal(socket,&power,&Buffer);
+			valread=src->RecvSignal(socket,&power,&dropped,&Buffer);
 			if( valread <=0 )
 			{
 				RemoveClient(src, srcIsSpy , i, socket);

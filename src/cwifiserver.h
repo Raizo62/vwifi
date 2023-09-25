@@ -44,9 +44,9 @@ class CWifiServer : public CSocketServer, public CWifi
 
 		void CloseAllClient();
 
-		ssize_t SendSignal(TDescriptor descriptor, TPower* power, const char* buffer, int sizeOfBuffer);
+		ssize_t SendSignal(TDescriptor descriptor, TPower* power, uint8_t *dropped, const char* buffer, int sizeOfBuffer);
 
-		ssize_t RecvSignal(TDescriptor descriptor, TPower* power, CDynBuffer* buffer);
+		ssize_t RecvSignal(TDescriptor descriptor, TPower* power, uint8_t *dropped, CDynBuffer* buffer);
 
 		void SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData);
 

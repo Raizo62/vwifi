@@ -62,10 +62,14 @@ bool CWifi::PacketIsLost(TPower signalLevel)
 	return true;
 }
 
-ssize_t CWifi::SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, const char* buffer, int sizeOfBuffer)
+ssize_t CWifi::SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, uint8_t *dropped, const char* buffer, int sizeOfBuffer)
 {
 //	cout<<"send power : "<<power<<endl;
 	int val=socket->Send(descriptor, (char*)power, sizeof(TPower));
+	if( val <= 0 )
+		return val;
+
+	val=socket->Send(descriptor, (char*)dropped, sizeof(uint8_t));
 	if( val <= 0 )
 		return val;
 
@@ -73,12 +77,17 @@ ssize_t CWifi::SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPo
 	return socket->Send(descriptor, buffer, sizeOfBuffer);
 }
 
-ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, CDynBuffer* buffer)
+ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, uint8_t *dropped, CDynBuffer* buffer)
 {
 	int valread;
 
 	// read the power
 	valread = socket->Read(descriptor, (char*)power, sizeof(TPower));
+	if ( valread <= 0 )
+		return valread;
+
+	// read dropped
+	valread = socket->Read(descriptor, (char*)dropped, sizeof(uint8_t));
 	if ( valread <= 0 )
 		return valread;
 

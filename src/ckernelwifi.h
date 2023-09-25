@@ -228,12 +228,15 @@ class CKernelWifi : public intthread::AsyncTask {
 		 */
 		void manage_server_crash();
 
+		struct nl_msg *build_tx_info(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie);
+
+
 	// virtual :
 
 		virtual bool _Connect(int* id) = 0;
 
 		virtual ssize_t _SendSignal(TPower* power, const char* buffer, int sizeOfBuffer) = 0;
-		virtual ssize_t _RecvSignal(TPower* power, CDynBuffer* buffer) = 0;
+		virtual ssize_t _RecvSignal(TPower* power, uint8_t *dropped, CDynBuffer* buffer) = 0;
 
 		virtual void _Close() = 0;
 
