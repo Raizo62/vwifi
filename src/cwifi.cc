@@ -15,7 +15,7 @@
 const double ConstanteC=92.45;
 const TFrequency DEFAULT_FREQUENCY=2412; // Hz
 
-const int MTU=1640; // Maximum Transmission Unit : 1640 is an experimental value
+const int MTU=4096; // Maximum Transmission Unit : 1640 is an experimental value
 
 TFrequency CWifi::GetFrequency(struct nlmsghdr* nlh)
 {
@@ -62,10 +62,14 @@ bool CWifi::PacketIsLost(TPower signalLevel)
 	return true;
 }
 
-ssize_t CWifi::SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, const char* buffer, int sizeOfBuffer)
+ssize_t CWifi::SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, uint8_t *dropped, const char* buffer, int sizeOfBuffer)
 {
 //	cout<<"send power : "<<power<<endl;
 	int val=socket->Send(descriptor, (char*)power, sizeof(TPower));
+	if( val <= 0 )
+		return val;
+
+	val=socket->Send(descriptor, (char*)dropped, sizeof(uint8_t));
 	if( val <= 0 )
 		return val;
 
@@ -73,25 +77,38 @@ ssize_t CWifi::SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPo
 	return socket->Send(descriptor, buffer, sizeOfBuffer);
 }
 
-ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, CDynBuffer* buffer)
+ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, uint8_t *dropped, CDynBuffer* buffer)
 {
 	int valread;
 
 	// read the power
 	valread = socket->Read(descriptor, (char*)power, sizeof(TPower));
-	if ( valread <= 0 )
+	if ( valread <= 0 ) {
+		printf("cannot read power %d\n", valread);
 		return valread;
+	}
+
+	// read dropped
+	valread = socket->Read(descriptor, (char*)dropped, sizeof(uint8_t));
+	if ( valread <= 0 ) {
+		printf("cannot read dropped %d\n", valread);
+		return valread;
+	}
 
 	// read the signal
 	// "nlmsg_len" (type "uint32_t") is the first attribut of the "struct nlmsghdr" in "libnl3/netlink/netlink-kernel.h"
 	ssize_t sizeRead = socket->ReadEqualSize(descriptor, buffer, 0, sizeof(struct nlmsghdr));
-	if( sizeRead == SOCKET_ERROR  )
+	if( sizeRead == SOCKET_ERROR  ) {
+		printf("Cannot read nlmsg_len\n");
 		return SOCKET_ERROR;
+	}
 
 	int sizeTotal=((struct nlmsghdr *)(buffer->GetBuffer()))->nlmsg_len;
 
-	if( sizeTotal > MTU ) // to avoid that a error packet overfulls the memory
+	if( sizeTotal > MTU ) { // to avoid that a error packet overfulls the memory
+		printf("Size greater than MTU %d\n", sizeTotal);
 		return SOCKET_ERROR;
+	}
 
 	return socket->ReadEqualSize(descriptor, buffer, sizeRead, sizeTotal);
 }

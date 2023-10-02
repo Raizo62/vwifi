@@ -44,24 +44,19 @@ void CKernelWifi::cout_mac_address(struct ether_addr *src)
 	std::cout << addr;
 }
 
-int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
+struct nl_msg *CKernelWifi::build_tx_info(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
 {
 	struct nl_msg *msg = nullptr;
 
 	msg = nlmsg_alloc();
 
-	if (!msg) {
-
-		std::cerr << "Error allocating new message MSG !" << std::endl ;
-		nlmsg_free(msg);
-		return 0;
-	}
+	if (!msg)
+		return nullptr;
 
 	if (m_family_id < 0){
-
 		std::cerr << __func__ <<  "m_family_id < 0" << std::endl ;
 		nlmsg_free(msg);
-		return 0;
+		return nullptr;
 	}
 
 	genlmsg_put(msg, NL_AUTO_PID, NL_AUTO_SEQ, m_family_id,	0, NLM_F_REQUEST, HWSIM_CMD_TX_INFO_FRAME, VERSION_NR);
@@ -77,10 +72,21 @@ int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flag
 	{
 		std::cerr << "Error filling payload" << std::endl;
 		nlmsg_free(msg);
-		return 0;
+		return NULL;
 	}
 
-	//nl_send_auto_complete(_netlink_socket, msg); //deprecated
+	return msg;
+}
+
+int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
+{
+	struct nl_msg *msg = build_tx_info(src, flags, signal, tx_attempts, cookie);
+
+	if (!msg) {
+		std::cerr << "Error allocating new message MSG !" << std::endl ;
+		nlmsg_free(msg);
+		return 0;
+	}
 
 	if (nl_send_auto(_netlink_socket, msg) < 0)
 	{
@@ -137,31 +143,6 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	struct ether_addr macsrchwsim;
 	memcpy(&macsrchwsim,src,sizeof(macsrchwsim)); // backup the original mac src
 
-	/* Let's flag this frame as ACK'ed */
-	/* whatever that means... */
-	unsigned int flags = nla_get_u32(attrs[HWSIM_ATTR_FLAGS]);
-	flags |= HWSIM_TX_STAT_ACK;
-
-	/* this is the signal sent to the sender, not the receiver */
-	int signal = -10;
-
-	/* We get the tx_rates struct */
-	struct hwsim_tx_rate* tx_rates = (struct hwsim_tx_rate *)nla_data(attrs[HWSIM_ATTR_TX_INFO]);
-
-	u64 cookie = nla_get_u64(attrs[HWSIM_ATTR_COOKIE]);
-
-	/* this has to be an ack the driver expects */
-	/* what does the driver do with these values? can i remove them? */
-	send_tx_info_frame_nl(src, flags, signal, tx_rates, cookie);
-
-	/*
-	 * no need to send a tx info frame indicating failure with a
-	 * signal of 0 - that was done in the tx code i took this from
-	 * if i check for ack messages than i could add a failure message
-	 */
-
-	/* we are now done with our code addition which sends the ack */
-
 	/* we get the attributes*/
 	char* data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
 	unsigned int data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
@@ -198,8 +179,10 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	}
 
 	int value=_SendSignal(&power, (char*)nlh, msg_len);
-	if( value == SOCKET_ERROR )
+	if( value == SOCKET_ERROR ) {
+		printf("Error sending to server\n");
 		manage_server_crash();
+	}
 
 	// Send also on the others interfaces on the same VM :
 	// ------------------->
@@ -454,6 +437,7 @@ int CKernelWifi::send_cloned_frame_msg(struct ether_addr *dst, char *data, int d
 }
 
 void CKernelWifi::recv_from_server(){
+	uint8_t dropped;
 
 	if ( ! is_connected_to_server())
 		return  ;
@@ -467,8 +451,10 @@ void CKernelWifi::recv_from_server(){
 		return ;
 
 	TPower power;
-	if( _RecvSignal(&power, &Buffer) == SOCKET_ERROR )
+	if( _RecvSignal(&power, &dropped, &Buffer) == SOCKET_ERROR ) {
+		printf("Error receiving from server\n");
 		manage_server_crash();
+	}
 
 	int signal = power ;
 
@@ -478,6 +464,33 @@ void CKernelWifi::recv_from_server(){
 	/* generic netlink header */
 	struct genlmsghdr* gnlh = (struct genlmsghdr*)nlmsg_data(nlh);
 
+	/* we get the attributes*/
+	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
+	genlmsg_parse(nlh, 0, attrs, HWSIM_ATTR_MAX, NULL);
+
+	struct hwsim_tx_rate* tx_rates = (struct hwsim_tx_rate *)nla_data(attrs[HWSIM_ATTR_TX_INFO]);
+	u64 cookie = nla_get_u64(attrs[HWSIM_ATTR_COOKIE]);
+	unsigned int flags = nla_get_u32(attrs[HWSIM_ATTR_FLAGS]);
+	if (gnlh->cmd == HWSIM_CMD_TX_INFO_FRAME) {
+		// TX_INFO receved from server, send to kernel
+		std::vector<WirelessDevice> &inets = _list_winterfaces.list_devices();
+
+		for (auto & inet : inets)
+		{
+			struct ether_addr macdsthwsim = inet.getMachwsim();
+
+			send_tx_info_frame_nl(&macdsthwsim,
+					flags,
+					(int)signal,
+					tx_rates,
+					cookie);
+		}
+
+		delete &inets;
+
+		return;
+	}
+
 	/* exit if the message does not contain frame data */
 	if (gnlh->cmd != HWSIM_CMD_FRAME) {
 
@@ -485,9 +498,7 @@ void CKernelWifi::recv_from_server(){
 		return ;
 	}
 
-	/* we get the attributes*/
-	struct nlattr *attrs[HWSIM_ATTR_MAX + 1];
-	genlmsg_parse(nlh, 0, attrs, HWSIM_ATTR_MAX, NULL);
+
 
 	/* we get frequence */
 	TFrequency freq;
@@ -526,8 +537,31 @@ void CKernelWifi::recv_from_server(){
 #endif
 
 	/* copy mac dst address from frame */
-	struct ether_addr framedst;
-	memcpy(&framedst, data + 4, ETH_ALEN);
+	struct ether_addr framesrc;
+	memcpy(&framesrc, data + 10, ETH_ALEN);
+
+	if (!dropped)
+		flags |= HWSIM_TX_STAT_ACK;
+
+#if 0
+	struct nl_msg *tx_info = build_tx_info(&framesrc, flags,
+						(int)signal,
+						tx_rates,
+						cookie);
+	struct nlmsghdr *hdr = nlmsg_hdr(tx_info);
+
+	// Send TX_Info back to server
+	int value=_SendSignal(&power, (char*)hdr, hdr->nlmsg_len);
+
+	nlmsg_free(tx_info);
+	if( value == SOCKET_ERROR ) {
+		printf("Error sending tx info to server\n");
+		manage_server_crash();
+	}
+#endif
+
+	if (dropped)
+		return;
 
 #ifdef _DEBUG
 	std::cout << "frame dst: ";  cout_mac_address(&framedst);std::cout<<std::endl ;
@@ -900,6 +934,7 @@ bool CKernelWifi::is_connected_to_server(){
 
 void CKernelWifi::manage_server_crash(){
 
+	printf("MANAGE SERVER CRASH");
 	connected_to_server(false) ;
 
 }

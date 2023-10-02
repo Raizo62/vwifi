@@ -22,10 +22,13 @@ class CWifiClient : public CKernelWifi, public CWifi, public TypeCSocketClient
 		}
 
 		ssize_t _SendSignal(TPower* power, const char* buffer, int sizeOfBuffer) override
-			{	return SendSignalWithSocket(this, this->GetDescriptor(), power, buffer, sizeOfBuffer); }
+			{
+				uint8_t dropped = 0;
+				return SendSignalWithSocket(this, this->GetDescriptor(), power, &dropped, buffer, sizeOfBuffer);
+			}
 
-		ssize_t _RecvSignal(TPower* power, CDynBuffer* buffer) override
-			{	return RecvSignalWithSocket(this, this->GetDescriptor(), power, buffer); }
+		ssize_t _RecvSignal(TPower* power, uint8_t *dropped, CDynBuffer* buffer) override
+			{	return RecvSignalWithSocket(this, this->GetDescriptor(), power, dropped, buffer); }
 
 		void _Close() override { TypeCSocketClient::Close(); };
 };

@@ -180,14 +180,14 @@ void CWifiServer::CloseAllClient()
 		CloseClient(0); // we can Close the 0 because we use the shift
 }
 
-ssize_t CWifiServer::SendSignal(TDescriptor descriptor, TPower* power, const char* buffer, int sizeOfBuffer)
+ssize_t CWifiServer::SendSignal(TDescriptor descriptor, TPower* power, uint8_t *dropped, const char* buffer, int sizeOfBuffer)
 {
-	return SendSignalWithSocket(this, descriptor, power, buffer, sizeOfBuffer);
+	return SendSignalWithSocket(this, descriptor, power, dropped, buffer, sizeOfBuffer);
 }
 
-ssize_t CWifiServer::RecvSignal(TDescriptor descriptor, TPower* power, CDynBuffer* buffer)
+ssize_t CWifiServer::RecvSignal(TDescriptor descriptor, TPower* power, uint8_t *dropped, CDynBuffer* buffer)
 {
-	return RecvSignalWithSocket(this, descriptor, power, buffer);
+	return RecvSignalWithSocket(this, descriptor, power, dropped, buffer);
 }
 
 void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* data, ssize_t sizeOfData)
@@ -202,30 +202,34 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 			{
 				TFrequency frequency=GetFrequency((struct nlmsghdr*)data);
 				TPower signalLevel=BoundedPower(power-Attenuation(coo.DistanceWith((*InfoWifis)[i]),frequency));
+				uint8_t dropped = CanLostPackets && PacketIsLost(signalLevel);
 
-				if( ! CanLostPackets || ! PacketIsLost(signalLevel) )
-					if( SendSignal((*InfoSockets)[i].GetDescriptor(), &signalLevel, data, sizeOfData) < 0 )
-						(*InfoSockets)[i].DisableIt();
+				if( SendSignal((*InfoSockets)[i].GetDescriptor(), &signalLevel, &dropped, data, sizeOfData) < 0 )
+					(*InfoSockets)[i].DisableIt();
 			}
 	}
 }
 
 void CWifiServer::SendAllOtherClientsWithoutLoss(TIndex index, TPower power, const char* data, ssize_t sizeOfData)
 {
+	uint8_t dropped = 0;
+
 	for (TIndex i = 0; i < GetNumberClient(); i++)
 	{
 		if( i != index )
 			if( IsEnable(i) )
-				if( SendSignal((*InfoSockets)[i].GetDescriptor(), &power, data, sizeOfData) < 0 )
+				if( SendSignal((*InfoSockets)[i].GetDescriptor(), &power, &dropped, data, sizeOfData) < 0 )
 					(*InfoSockets)[i].DisableIt();
 	}
 }
 
 void CWifiServer::SendAllClientsWithoutLoss(TPower power, const char* data, ssize_t sizeOfData)
 {
+	uint8_t dropped = 0;
+
 	for (TIndex i = 0; i < GetNumberClient(); i++)
 		if( IsEnable(i) )
-			if( SendSignal((*InfoSockets)[i].GetDescriptor(), &power, data, sizeOfData) < 0 )
+			if( SendSignal((*InfoSockets)[i].GetDescriptor(), &power, &dropped, data, sizeOfData) < 0 )
 				(*InfoSockets)[i].DisableIt();
 }
 

@@ -18,8 +18,8 @@ class CWifi
 
 		bool PacketIsLost(TPower signalLevel);
 
-		ssize_t SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, const char* buffer, int sizeOfBuffer);
-		ssize_t RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, CDynBuffer* buffer);
+		ssize_t SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, uint8_t *dropped, const char* buffer, int sizeOfBuffer);
+		ssize_t RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, uint8_t *dropped, CDynBuffer* buffer);
 };
 
 #endif
