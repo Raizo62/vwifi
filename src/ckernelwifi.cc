@@ -179,8 +179,10 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	}
 
 	int value=_SendSignal(&power, (char*)nlh, msg_len);
-	if( value == SOCKET_ERROR )
+	if( value == SOCKET_ERROR ) {
+		printf("Error sending to server\n");
 		manage_server_crash();
+	}
 
 	// Send also on the others interfaces on the same VM :
 	// ------------------->
@@ -449,8 +451,10 @@ void CKernelWifi::recv_from_server(){
 		return ;
 
 	TPower power;
-	if( _RecvSignal(&power, &dropped, &Buffer) == SOCKET_ERROR )
+	if( _RecvSignal(&power, &dropped, &Buffer) == SOCKET_ERROR ) {
+		printf("Error receiving from server\n");
 		manage_server_crash();
+	}
 
 	int signal = power ;
 
@@ -539,6 +543,7 @@ void CKernelWifi::recv_from_server(){
 	if (!dropped)
 		flags |= HWSIM_TX_STAT_ACK;
 
+#if 0
 	struct nl_msg *tx_info = build_tx_info(&framesrc, flags,
 						(int)signal,
 						tx_rates,
@@ -549,8 +554,11 @@ void CKernelWifi::recv_from_server(){
 	int value=_SendSignal(&power, (char*)hdr, hdr->nlmsg_len);
 
 	nlmsg_free(tx_info);
-	if( value == SOCKET_ERROR )
+	if( value == SOCKET_ERROR ) {
+		printf("Error sending tx info to server\n");
 		manage_server_crash();
+	}
+#endif
 
 	if (dropped)
 		return;
@@ -926,6 +934,7 @@ bool CKernelWifi::is_connected_to_server(){
 
 void CKernelWifi::manage_server_crash(){
 
+	printf("MANAGE SERVER CRASH");
 	connected_to_server(false) ;
 
 }

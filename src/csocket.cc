@@ -53,8 +53,10 @@ ssize_t CSocket::SendBigData(TDescriptor descriptor, const char* data, TMinimalS
 ssize_t CSocket::Read(TDescriptor descriptor, char* data, ssize_t sizeOfData)
 {
 	ssize_t ret = recv(descriptor , data, sizeOfData, 0);
-	if ( ret <= 0 )
+	if ( ret <= 0 ) {
+		printf("Recv failed with %ld\n", errno);
 		return SOCKET_ERROR ;
+	}
 
 	return ret;
 }
