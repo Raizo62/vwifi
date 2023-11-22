@@ -44,7 +44,7 @@ void CKernelWifi::cout_mac_address(struct ether_addr *src)
 	std::cout << addr;
 }
 
-int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, unsigned long cookie)
+int CKernelWifi::send_tx_info_frame_nl(struct ether_addr *src, unsigned int flags, int signal, struct hwsim_tx_rate *tx_attempts, u64 cookie)
 {
 	struct nl_msg *msg = nullptr;
 

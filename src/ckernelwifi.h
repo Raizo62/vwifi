@@ -160,7 +160,7 @@ class CKernelWifi : public intthread::AsyncTask {
 		int send_tx_info_frame_nl(struct ether_addr *src,
 				unsigned int flags, int signal,
 				struct hwsim_tx_rate *tx_attempts,
-				unsigned long cookie);
+				u64 cookie);
 
 		/**
 		 * 	\brief  start receiving hwsim frame from vwifi-server loop
