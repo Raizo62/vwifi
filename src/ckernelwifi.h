@@ -195,7 +195,7 @@ class CKernelWifi : public intthread::AsyncTask {
 		int send_cloned_frame_msg(struct ether_addr *dst, char *data, int data_len,int rate_idx, int signal, uint32_t freq);
 
 		/**
-		 * \brief hadle messages received from server
+		 * \brief handle messages received from server
 		 */
 
 		void recv_from_server();
