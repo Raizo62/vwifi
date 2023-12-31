@@ -338,6 +338,40 @@ sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
+## Test 4 : WEP
+
+### Packages needed on the guests for this test
+
+```bash
+sudo apt install hostapd
+```
+
+### Guests
+
+* Guest Wifi 1 :
+
+```bash
+sudo ip a a 10.0.0.1/8 dev wlan0
+
+sudo hostapd tests/hostapd_wep.conf
+```
+
+* Guest Wifi 2 :
+```bash
+cat << EOF | sudo tee -a /etc/network/interfaces > /dev/null
+
+iface wlan0 inet static
+    wireless-essid AP_WEP
+    wireless-key 123456789a
+    address 10.0.0.2
+    netmask 255.255.255.0
+
+EOF
+sudo ifup wlan0
+
+ping 10.0.0.1
+```
+
 # Others Tools
 
 * start-vwifi-client.sh : do all the commands necessary to start ***vwifi-client*** on a Guest
