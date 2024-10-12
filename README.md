@@ -362,7 +362,7 @@ cat << EOF | sudo tee -a /etc/network/interfaces > /dev/null
 
 iface wlan0 inet static
     wireless-essid AP_WEP
-    wireless-key 123456789a
+    wireless-key s:12345
     address 10.0.0.2
     netmask 255.255.255.0
 
