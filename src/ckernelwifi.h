@@ -210,7 +210,8 @@ class CKernelWifi : public intthread::AsyncTask {
 		 * \brief callback from cmonitorwirelessdevice that is called to
 		 * handle deleting  wireless  inet
 		 */
-		void handle_del_winet_notification(WirelessDevice);
+		void handle_del_winet_notification(const WirelessDevice&);
+
 
 		/**
 		 * \brief callback from cmonitorwirelessdevice that is called to
