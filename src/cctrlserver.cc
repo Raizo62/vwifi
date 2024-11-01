@@ -39,7 +39,7 @@ TOrder CCTRLServer::GetOrder()
 	if( GetNumberClient() != 1 )
 		return TORDER_NO;
 
-	if( Read((char*)&order, sizeof(TOrder)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(&order), sizeof(TOrder)) == SOCKET_ERROR )
 		return TORDER_NO;
 
 	return order;
@@ -48,21 +48,21 @@ TOrder CCTRLServer::GetOrder()
 bool CCTRLServer::SendCInfoWifi(CInfoWifi* infoWifi)
 {
 	TCID cid=infoWifi->GetCid();
-	if( Send((char*)&cid,sizeof(cid)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&cid),sizeof(cid)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendCInfoWifi : cid : "<<infoWifi->GetCid()<<endl;
 		return false;
 	}
 
 	CCoordinate coo=(*infoWifi);
-	if( Send((char*)&coo,sizeof(coo)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&coo),sizeof(coo)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendCInfoWifi : CCoordinate : "<<infoWifi->GetCid()<<endl;
 		return false;
 	}
 
 	int sizeName=infoWifi->GetSizeName();
-	if( Send((char*)&sizeName,sizeof(sizeName)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&sizeName),sizeof(sizeName)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendCInfoWifi : size of name : "<<infoWifi->GetCid()<<endl;
 		return false;
@@ -91,7 +91,7 @@ void CCTRLServer::SendList()
 
 	TIndex number=WifiServerSPY->GetNumberClient();
 
-	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&number), sizeof(number)) == SOCKET_ERROR )
 		return;
 
 	for(TIndex i=0; i<number;i++)
@@ -111,7 +111,7 @@ void CCTRLServer::SendList()
 
 	number=WifiServerVTCP->GetNumberClient();
 
-	if( Send((char*)&number, sizeof(number)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&number), sizeof(number)) == SOCKET_ERROR )
 		return;
 
 	for(TIndex i=0; i<number;i++)
@@ -132,12 +132,12 @@ void CCTRLServer::ChangeCoordinate()
 {
 	TCID cid;
 
-	if( Read((char*)&cid, sizeof(TCID)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(&cid), sizeof(TCID)) == SOCKET_ERROR )
 		return;
 
 	CCoordinate coo;
 
-	if( Read((char*)&coo, sizeof(coo)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(&coo), sizeof(coo)) == SOCKET_ERROR )
 		return;
 
 	if( cid < TCID_GUEST_MIN )
@@ -169,16 +169,16 @@ void CCTRLServer::SetName()
 {
 	TCID cid;
 
-	if( Read((char*)&cid, sizeof(TCID)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(&cid), sizeof(TCID)) == SOCKET_ERROR )
 		return;
 
 	int sizeName;
 	char strName[MAX_SIZE_NAME+1]; // +1 : \0
 
-	if( Read((char*)&sizeName, sizeof(sizeName)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(&sizeName), sizeof(sizeName)) == SOCKET_ERROR )
 		return;
 
-	if( Read((char*)strName, sizeof(strName)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(strName), sizeof(strName)) == SOCKET_ERROR )
 		return;
 
 	if( cid < TCID_GUEST_MIN )
@@ -216,7 +216,7 @@ void CCTRLServer::ChangePacketLoss()
 {
 	int value;
 
-	if( Read((char*)&value, sizeof(value)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(&value), sizeof(value)) == SOCKET_ERROR )
 		return;
 
 	if ( value )
@@ -237,13 +237,13 @@ void CCTRLServer::ChangePacketLoss()
 
 void CCTRLServer::SendStatus()
 {
-	if( Send((char*)&CanLostPackets,sizeof(CanLostPackets)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&CanLostPackets),sizeof(CanLostPackets)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : PacketLoss"<<endl;
 		return;
 	}
 
-	if( Send((char*)&Scale,sizeof(Scale)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&Scale),sizeof(Scale)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : Scale"<<endl;
 		return;
@@ -251,7 +251,7 @@ void CCTRLServer::SendStatus()
 
 	// VHOST
 
-	if( Send((char*)&(WifiServerVTCP->Port),sizeof(WifiServerVTCP->Port)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&WifiServerVTCP->Port),sizeof(WifiServerVTCP->Port)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : Port VHOST"<<endl;
 		return;
@@ -259,7 +259,7 @@ void CCTRLServer::SendStatus()
 
 	// INET
 
-	if( Send((char*)&(WifiServerITCP->Port),sizeof(WifiServerITCP->Port)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&WifiServerITCP->Port),sizeof(WifiServerITCP->Port)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : Port INET"<<endl;
 		return;
@@ -268,7 +268,7 @@ void CCTRLServer::SendStatus()
 	// SizeOfDisconnected
 	// be careful : the same List is shared by WifiServerVTCP and WifiServerITCP
 
-	if( Send((char*)&(WifiServerVTCP->MaxClientDeconnected),sizeof(WifiServerVTCP->MaxClientDeconnected)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&WifiServerVTCP->MaxClientDeconnected),sizeof(WifiServerVTCP->MaxClientDeconnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : Size MaxClientDeconnected"<<endl;
 		return;
@@ -277,7 +277,7 @@ void CCTRLServer::SendStatus()
 	// SPY
 
 	bool spyIsConnected=( WifiServerSPY->GetNumberClient() > 0 );
-	if( Send((char*)&spyIsConnected,sizeof(spyIsConnected)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&spyIsConnected),sizeof(spyIsConnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendStatus : Send : spyIsConnected"<<endl;
 		return;
@@ -286,20 +286,20 @@ void CCTRLServer::SendStatus()
 
 void CCTRLServer::SendShow()
 {
-	if( Send((char*)&CanLostPackets,sizeof(CanLostPackets)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&CanLostPackets),sizeof(CanLostPackets)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : Send : PacketLoss"<<endl;
 		return;
 	}
 
-	if( Send((char*)&Scale,sizeof(Scale)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&Scale),sizeof(Scale)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : Send : Scale"<<endl;
 		return;
 	}
 
 	bool spyIsConnected=( WifiServerSPY->GetNumberClient() > 0 );
-	if( Send((char*)&spyIsConnected,sizeof(spyIsConnected)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&spyIsConnected),sizeof(spyIsConnected)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendShow : Send : spyIsConnected"<<endl;
 		return;
@@ -310,10 +310,10 @@ void CCTRLServer::SendDistance()
 {
 	TCID cid1, cid2;
 
-	if( Read((char*)&cid1, sizeof(TCID)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(&cid1), sizeof(TCID)) == SOCKET_ERROR )
 		return;
 
-	if( Read((char*)&cid2, sizeof(TCID)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(&cid2), sizeof(TCID)) == SOCKET_ERROR )
 		return;
 
 	int codeError;
@@ -329,7 +329,7 @@ void CCTRLServer::SendDistance()
 		if( coo1 == NULL )
 		{
 			codeError=-1;
-			if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
+			if( Send(reinterpret_cast<char*>(&codeError),sizeof(codeError)) == SOCKET_ERROR )
 				cerr<<"Error : SendDistance : Send : unknown cid1"<<endl;
 			return ;
 		}
@@ -344,14 +344,14 @@ void CCTRLServer::SendDistance()
 		if( coo2 == NULL )
 		{
 			codeError=-2;
-			if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
+			if( Send(reinterpret_cast<char*>(&codeError),sizeof(codeError)) == SOCKET_ERROR )
 				cerr<<"Error : SendDistance : Send : unknown cid2"<<endl;
 			return ;
 		}
 	}
 
 	codeError=0;
-	if( Send((char*)&codeError,sizeof(codeError)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&codeError),sizeof(codeError)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendDistance : Send : no error"<<endl;
 		return ;
@@ -359,7 +359,7 @@ void CCTRLServer::SendDistance()
 
 	TDistance distance=coo1->DistanceWith(*coo2);
 
-	if( Send((char*)&distance,sizeof(distance)) == SOCKET_ERROR )
+	if( Send(reinterpret_cast<char*>(&distance),sizeof(distance)) == SOCKET_ERROR )
 	{
 		cerr<<"Error : SendDistance : Send : distance"<<endl;
 		return;
@@ -370,7 +370,7 @@ void CCTRLServer::SetScale()
 {
 	TScale new_scale;
 
-	if( Read((char*)&new_scale, sizeof(new_scale)) == SOCKET_ERROR )
+	if( Read(reinterpret_cast<char*>(&new_scale), sizeof(new_scale)) == SOCKET_ERROR )
 		return;
 
 	Scale=new_scale;
