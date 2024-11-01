@@ -65,7 +65,7 @@ bool CWifi::PacketIsLost(TPower signalLevel)
 ssize_t CWifi::SendSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPower* power, const char* buffer, int sizeOfBuffer)
 {
 //	cout<<"send power : "<<power<<endl;
-	int val=socket->Send(descriptor, (char*)power, sizeof(TPower));
+	int val=socket->Send(descriptor, reinterpret_cast<const char*>(power), sizeof(TPower));
 	if( val <= 0 )
 		return val;
 
@@ -78,7 +78,7 @@ ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPo
 	int valread;
 
 	// read the power
-	valread = socket->Read(descriptor, (char*)power, sizeof(TPower));
+	valread = socket->Read(descriptor, reinterpret_cast<char*>(power), sizeof(TPower));
 	if ( valread <= 0 )
 		return valread;
 
@@ -88,7 +88,7 @@ ssize_t CWifi::RecvSignalWithSocket(CSocket* socket, TDescriptor descriptor, TPo
 	if( sizeRead == SOCKET_ERROR  )
 		return SOCKET_ERROR;
 
-	int sizeTotal=((struct nlmsghdr *)(buffer->GetBuffer()))->nlmsg_len;
+	int sizeTotal=reinterpret_cast<struct nlmsghdr *>(buffer->GetBuffer())->nlmsg_len;
 
 	if( sizeTotal > MTU ) // to avoid that a error packet overfulls the memory
 		return SOCKET_ERROR;
