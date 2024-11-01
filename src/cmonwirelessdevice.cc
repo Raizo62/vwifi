@@ -207,14 +207,14 @@ void MonitorWirelessDevice::recv_inet_event()
 	char buf[IFLIST_REPLY_BUFFER];
 	struct iovec iov = { buf, sizeof(buf) };
 	struct sockaddr_nl snl;
-	struct msghdr msg = { (void *)&snl, sizeof(snl), &iov, 1, NULL, 0, 0 };
+	struct msghdr msg = { static_cast<void *>(&snl), sizeof(snl), &iov, 1, NULL, 0, 0 };
 	struct nlmsghdr *nlmsgheader;
 
 	/* read the waiting message */
 	len = recvmsg(_inetsock, &msg, 0);
 	if (len < 0)
 		perror("read_netlink");
-	for (nlmsgheader = (struct nlmsghdr *)buf; NLMSG_OK(nlmsgheader, (unsigned int)len); nlmsgheader = NLMSG_NEXT(nlmsgheader, len)) {
+	for (nlmsgheader = reinterpret_cast<struct nlmsghdr *>(buf); NLMSG_OK(nlmsgheader, (unsigned int)len); nlmsgheader = NLMSG_NEXT(nlmsgheader, len)) {
 
 		switch (nlmsgheader->nlmsg_type) {
 		case NLMSG_DONE:
@@ -261,7 +261,7 @@ void MonitorWirelessDevice::new_net_interface(struct nlmsghdr *h)
 	struct rtattr *rta;
 	struct ifinfomsg *ifi;
 	struct ether_addr macaddr ;
-	ifi = (struct ifinfomsg *) NLMSG_DATA(h);
+	ifi = static_cast<struct ifinfomsg *>(NLMSG_DATA(h));
 
 	/*if (!(ifi->ifi_flags & IFLA_ADDRESS))
 	{
@@ -295,7 +295,7 @@ void MonitorWirelessDevice::new_net_interface(struct nlmsghdr *h)
 
 	/* require name field to be set */
 	if (tb[IFLA_IFNAME]) {
-		name = (char *)RTA_DATA(tb[IFLA_IFNAME]);
+		name = static_cast<char *>(RTA_DATA(tb[IFLA_IFNAME]));
 	} else {
 		std::cerr << "do not find interface name" << std::endl ;
 		return;
@@ -313,7 +313,7 @@ void MonitorWirelessDevice::new_net_interface(struct nlmsghdr *h)
 	/* require address field to be set */
 	if (tb[IFLA_ADDRESS]) {
 
-		std::memcpy(&macaddr, RTA_DATA(tb[IFLA_ADDRESS]), ETH_ALEN);
+		std::memcpy(&macaddr, static_cast<void *>(RTA_DATA(tb[IFLA_ADDRESS])), ETH_ALEN);
 
 	}
 
@@ -338,7 +338,7 @@ void MonitorWirelessDevice::del_net_interface(struct nlmsghdr *h)
 	struct rtattr *rta;
 	struct ifinfomsg *ifi;
 	struct ether_addr macaddr ;
-	ifi = (struct ifinfomsg *) NLMSG_DATA(h);
+	ifi = static_cast<struct ifinfomsg *>(NLMSG_DATA(h));
 
 	/*if (!(ifi->ifi_flags & IFLA_ADDRESS))
 	{
@@ -359,7 +359,7 @@ void MonitorWirelessDevice::del_net_interface(struct nlmsghdr *h)
 
 	/* require name field to be set */
 	if (tb[IFLA_IFNAME]) {
-		name = (char *)RTA_DATA(tb[IFLA_IFNAME]);
+		name = static_cast<char *>(RTA_DATA(tb[IFLA_IFNAME]));
 	} else {
 		std::cerr << "do not find interface name" << std::endl ;
 		return;
@@ -377,7 +377,7 @@ void MonitorWirelessDevice::del_net_interface(struct nlmsghdr *h)
 	/* require address field to be set */
 	if (tb[IFLA_ADDRESS]) {
 
-		std::memcpy(&macaddr, RTA_DATA(tb[IFLA_ADDRESS]), ETH_ALEN);
+		std::memcpy(&macaddr, static_cast<void *>(RTA_DATA(tb[IFLA_ADDRESS])), ETH_ALEN);
 
 
 		std::string inet_name(name);
@@ -530,7 +530,7 @@ int MonitorWirelessDevice::recv_winterface_infos(struct nl_msg *msg){
 
 
 	struct nlattr *tb_msg[NL80211_ATTR_MAX + 1];
-	struct genlmsghdr *gnlh = (struct genlmsghdr *) nlmsg_data(nlmsg_hdr(msg));
+	struct genlmsghdr *gnlh = static_cast<struct genlmsghdr *>(nlmsg_data(nlmsg_hdr(msg)));
 
 	char *ifname;
 	int ifindex;
@@ -555,7 +555,7 @@ int MonitorWirelessDevice::recv_winterface_infos(struct nl_msg *msg){
 
 	if (tb_msg[NL80211_ATTR_MAC])
 
-		std::memcpy(&macaddr, nla_data(tb_msg[NL80211_ATTR_MAC]), ETH_ALEN);
+		std::memcpy(&macaddr, static_cast<void *>(nla_data(tb_msg[NL80211_ATTR_MAC])), ETH_ALEN);
 	else
 		return NL_SKIP;
 
@@ -600,7 +600,7 @@ int MonitorWirelessDevice::recv_winterface_extra_infos(struct nl_msg *msg){
 
 
 	struct nlattr *tb_msg[NL80211_ATTR_MAX + 1];
-	struct genlmsghdr *gnlh = (struct genlmsghdr *) nlmsg_data(nlmsg_hdr(msg));
+	struct genlmsghdr *gnlh = static_cast<struct genlmsghdr *>(nlmsg_data(nlmsg_hdr(msg)));
 
 	struct nlattr *sinfo[NL80211_STA_INFO_MAX + 1];
 	//	struct nlattr *rinfo[NL80211_RATE_INFO_MAX + 1];
@@ -664,7 +664,7 @@ int MonitorWirelessDevice::handle_iee80211_com_finish(void *arg){
 	std::cout << __func__ << std::endl ;
 #endif
 
-	int *ret = (int*) arg;
+	int *ret = static_cast<int *>(arg);
 	*ret = 0;
 	return NL_SKIP;
 }
