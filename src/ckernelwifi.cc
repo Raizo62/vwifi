@@ -212,8 +212,8 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 
 	int rate_idx = 7; // number of attempts
 
-	std::vector<WirelessDevice> &inets = _list_winterfaces.list_devices();
-	for (auto & inet : inets)
+	const auto& inets = _list_winterfaces.list_devices();
+	for (const auto& inet : inets)
 	{
 		struct ether_addr macdsthwsim = inet.getMachwsim();
 		if( memcmp(&macsrchwsim,&macdsthwsim,sizeof(struct ether_addr)) ) // if( macsrchwsim != macdsthwsim )
@@ -533,9 +533,9 @@ void CKernelWifi::recv_from_server(){
 	std::cout << "frame dst: ";  cout_mac_address(&framedst);std::cout<<std::endl ;
 #endif
 
-	std::vector<WirelessDevice> &inets = _list_winterfaces.list_devices();
+	const auto& inets = _list_winterfaces.list_devices();
 
-	for (auto & inet : inets)
+	for (const auto& inet : inets)
 	{
 		struct ether_addr macdsthwsim = inet.getMachwsim();
 
