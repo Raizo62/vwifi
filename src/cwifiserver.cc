@@ -200,7 +200,7 @@ void CWifiServer::SendAllOtherClients(TIndex index,TPower power, const char* dat
 		if( i != index )
 			if( IsEnable(i) )
 			{
-				TFrequency frequency=GetFrequency((struct nlmsghdr*)data);
+				TFrequency frequency = static_cast<TFrequency>(GetFrequency((struct nlmsghdr*)data));
 				TPower signalLevel=BoundedPower(power-Attenuation(coo.DistanceWith((*InfoWifis)[i]),frequency));
 
 				if( ! CanLostPackets || ! PacketIsLost(signalLevel) )
