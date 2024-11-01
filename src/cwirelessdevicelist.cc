@@ -89,7 +89,7 @@ std::ostream &   operator<< ( std::ostream & os , WirelessDeviceList & wdlist ){
 
 	wdlist._listaccess.lock();
 
-	for (auto & wd : wdlist._wdevices_list){
+	for (const auto & wd : wdlist._wdevices_list){
 
 		os << wd.second;
 		os << std::endl ;
