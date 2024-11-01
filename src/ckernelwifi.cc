@@ -108,7 +108,7 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	//struct ether_addr *dst;
 
 	struct nlmsghdr *nlh = nlmsg_hdr(msg);
-	struct genlmsghdr * gnlh = (struct genlmsghdr *) nlmsg_data(nlh);
+	struct genlmsghdr * gnlh = reinterpret_cast<struct genlmsghdr *>(nlmsg_data(nlh));
 
 	char addr[18];
 	memset(addr, 0, 18);
@@ -133,7 +133,7 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 		return 1;
 
 	/* we get hwsim mac (id)*/
-	struct ether_addr *src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
+	struct ether_addr *src = reinterpret_cast<struct ether_addr *>(nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]));
 	struct ether_addr macsrchwsim;
 	memcpy(&macsrchwsim,src,sizeof(macsrchwsim)); // backup the original mac src
 
@@ -146,7 +146,7 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	int signal = -10;
 
 	/* We get the tx_rates struct */
-	struct hwsim_tx_rate* tx_rates = (struct hwsim_tx_rate *)nla_data(attrs[HWSIM_ATTR_TX_INFO]);
+	struct hwsim_tx_rate* tx_rates = reinterpret_cast<struct hwsim_tx_rate *>(nla_data(attrs[HWSIM_ATTR_TX_INFO]));
 
 	u64 cookie = nla_get_u64(attrs[HWSIM_ATTR_COOKIE]);
 
@@ -163,7 +163,7 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 	/* we are now done with our code addition which sends the ack */
 
 	/* we get the attributes*/
-	char* data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
+	char* data = reinterpret_cast<char *>(nla_data(attrs[HWSIM_ATTR_FRAME]));
 	unsigned int data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
 
 	/* copy source address from frame */
@@ -185,7 +185,7 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 		std::cout << "updating the TX src ATTR" << std::endl ;
 #endif
 		/* copy dest address from frame to nlh */
-		memcpy((char *)nlh + 24, &framesrc, ETH_ALEN);
+		memcpy(reinterpret_cast<char *>(nlh) + 24, &framesrc, ETH_ALEN);
 	}
 
 	/* send msg to a server */
@@ -197,7 +197,7 @@ int CKernelWifi::process_messages(struct nl_msg *msg)
 		power = dev.getTxPower() / 100; // must add the remainder if not multiple of 2
 	}
 
-	int value=_SendSignal(&power, (char*)nlh, msg_len);
+	int value=_SendSignal(&power, reinterpret_cast<char*>(nlh), msg_len);
 	if( value == SOCKET_ERROR )
 		manage_server_crash();
 
@@ -473,10 +473,10 @@ void CKernelWifi::recv_from_server(){
 	int signal = power ;
 
 	/* netlink header */
-	struct nlmsghdr* nlh = (struct nlmsghdr *)(Buffer.GetBuffer());
+	struct nlmsghdr* nlh = reinterpret_cast<struct nlmsghdr *>(Buffer.GetBuffer());
 
 	/* generic netlink header */
-	struct genlmsghdr* gnlh = (struct genlmsghdr*)nlmsg_data(nlh);
+	struct genlmsghdr* gnlh = reinterpret_cast<struct genlmsghdr*>(nlmsg_data(nlh));
 
 	/* exit if the message does not contain frame data */
 	if (gnlh->cmd != HWSIM_CMD_FRAME) {
@@ -508,7 +508,7 @@ void CKernelWifi::recv_from_server(){
 	}
 
 	unsigned int data_len = nla_len(attrs[HWSIM_ATTR_FRAME]);
-	char* data = (char *)nla_data(attrs[HWSIM_ATTR_FRAME]);
+	char* data = reinterpret_cast<char *>(nla_data(attrs[HWSIM_ATTR_FRAME]));
 
 	/* we extract and handle a distance here */
 
@@ -517,7 +517,7 @@ void CKernelWifi::recv_from_server(){
 	struct ether_addr framesrc;
 
 	/* copy hwsim id src */
-	src = (struct ether_addr *)nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]);
+	src = reinterpret_cast<struct ether_addr *>(nla_data(attrs[HWSIM_ATTR_ADDR_TRANSMITTER]));
 	std::cout << "src hwsim: "; cout_mac_address(src);std::cout<<std::endl ;
 
 	/* copy mac src  address from frame */
@@ -1046,7 +1046,7 @@ bool CKernelWifi::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
 	struct ifreq ifr;
 	struct ethtool_perm_addr *epmaddr;
 
-	epmaddr = (ethtool_perm_addr *) malloc(sizeof(struct ethtool_perm_addr) + MAX_ADDR_LEN);
+	epmaddr = reinterpret_cast<ethtool_perm_addr *>(malloc(sizeof(struct ethtool_perm_addr) + MAX_ADDR_LEN));
 	if (!epmaddr)
 	{
 		perror("malloc");
@@ -1065,7 +1065,7 @@ bool CKernelWifi::get_pmaddr(struct ether_addr & paddr ,const char *ifname)
 	memcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	epmaddr->cmd = ETHTOOL_GPERMADDR;
 	epmaddr->size = MAX_ADDR_LEN;
-	ifr.ifr_data = (char *) epmaddr;
+	ifr.ifr_data = reinterpret_cast<char *>(epmaddr);
 
 	if (ioctl(sock, SIOCETHTOOL, &ifr) == -1)
 	{
