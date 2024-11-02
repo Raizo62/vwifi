@@ -1,6 +1,7 @@
 vwifi-server
 vwifi-client
 vwifi-ctrl
+vwifi-add-interfaces
 obj/
 # For cppcheck
 vwifi-cppcheck.xml
