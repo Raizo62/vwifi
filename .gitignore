@@ -9,3 +9,5 @@ vwifi-cppcheck.xml
 .project
 .cproject
 .settings
+# For Visual Studio Code :
+.vscode
