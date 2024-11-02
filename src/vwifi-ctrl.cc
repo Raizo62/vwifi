@@ -52,7 +52,7 @@ int GetCInfoWifi(CSocketClientITCP & socket, CInfoWifi* infoWifi)
 	int err;
 
 	TCID cid;
-	err=socket.Read((char*)&cid,sizeof(cid));
+	err=socket.Read(reinterpret_cast<char*>(&cid),sizeof(cid));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : GetCInfoWifi : socket.Read : cid"<<endl;
@@ -60,7 +60,7 @@ int GetCInfoWifi(CSocketClientITCP & socket, CInfoWifi* infoWifi)
 	}
 
 	CCoordinate coo;
-	err=socket.Read((char*)&coo,sizeof(coo));
+	err=socket.Read(reinterpret_cast<char*>(&coo),sizeof(coo));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : GetCInfoWifi : socket.Read : CCoordinate (cid:"<<cid<<")"<<endl;
@@ -68,7 +68,7 @@ int GetCInfoWifi(CSocketClientITCP & socket, CInfoWifi* infoWifi)
 	}
 
 	int sizeName;
-	err=socket.Read((char*)&sizeName,sizeof(sizeName));
+	err=socket.Read(reinterpret_cast<char*>(&sizeName),sizeof(sizeName));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : GetCInfoWifi : socket.Read : size of name (cid:"<<cid<<")"<<endl;
@@ -83,7 +83,7 @@ int GetCInfoWifi(CSocketClientITCP & socket, CInfoWifi* infoWifi)
 	char strName[MAX_SIZE_NAME+1]; // +1 : \0
 	if( sizeName > 0 )
 	{
-		err=socket.Read((char*)strName,sizeName+1); // +1 : \0
+		err=socket.Read(reinterpret_cast<char*>(strName),sizeName+1); // +1 : \0
 		if( err == SOCKET_ERROR )
 		{
 			cerr<<"Error : GetCInfoWifi : socket.Read : size of name (cid:"<<cid<<")"<<endl;
@@ -117,7 +117,7 @@ int AskList()
 	int err;
 
 	TOrder order=TORDER_LIST;
-	err=socket.Send((char*)&order,sizeof(order));
+	err=socket.Send(reinterpret_cast<char*>(&order),sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : ls : socket.Send : order"<<endl;
@@ -127,7 +127,7 @@ int AskList()
 	// Spies :
 
 	TIndex number;
-	err=socket.Read((char*)&number,sizeof(number));
+	err=socket.Read(reinterpret_cast<char*>(&number),sizeof(number));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : ls : socket.Read : number"<<endl;
@@ -151,7 +151,7 @@ int AskList()
 
 	// Clients :
 
-	err=socket.Read((char*)&number,sizeof(number));
+	err=socket.Read(reinterpret_cast<char*>(&number),sizeof(number));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : ls : socket.Read : number"<<endl;
@@ -231,19 +231,19 @@ int ChangeCoordinate(int argc, char *argv[])
 	int err;
 
 	TOrder order=TORDER_CHANGE_COORDINATE;
-	err=socket.Send((char*)&order,sizeof(order));
+	err=socket.Send(reinterpret_cast<char*>(&order),sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : set : socket.Send : order"<<endl;
 		return 1;
 	}
-	err=socket.Send((char*)&cid,sizeof(cid));
+	err=socket.Send(reinterpret_cast<char*>(&cid),sizeof(cid));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : set : socket.Send : cid"<<endl;
 		return 1;
 	}
-	err=socket.Send((char*)&coo,sizeof(coo));
+	err=socket.Send(reinterpret_cast<char*>(&coo),sizeof(coo));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : set : socket.Send : "<<coo<<endl;
@@ -300,25 +300,25 @@ int SetName(int argc, char *argv[])
 	int err;
 
 	TOrder order=TORDER_SETNAME;
-	err=socket.Send((char*)&order,sizeof(order));
+	err=socket.Send(reinterpret_cast<char*>(&order),sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : setname : socket.Send : order"<<endl;
 		return 1;
 	}
-	err=socket.Send((char*)&cid,sizeof(cid));
+	err=socket.Send(reinterpret_cast<char*>(&cid),sizeof(cid));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : setname : socket.Send : cid"<<endl;
 		return 1;
 	}
-	err=socket.Send((char*)&sizeName,sizeof(sizeName));
+	err=socket.Send(reinterpret_cast<char*>(&sizeName),sizeof(sizeName));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : setname : socket.Send : size of name"<<endl;
 		return 1;
 	}
-	err=socket.Send((char*)name.c_str(),sizeName+1); // +1 : \0
+	err=socket.Send(const_cast<char*>(name.c_str()),sizeName+1); // +1 : \0
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : setname : socket.Send : name"<<name<<endl;
@@ -363,13 +363,13 @@ int ChangePacketLoss(int argc, char *argv[])
 	int err;
 
 	TOrder order=TORDER_PACKET_LOSS;
-	err=socket.Send((char*)&order,sizeof(order));
+	err=socket.Send(reinterpret_cast<char*>(&order),sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : loss : socket.Send : order"<<endl;
 		return 1;
 	}
-	err=socket.Send((char*)&value,sizeof(value));
+	err=socket.Send(reinterpret_cast<char*>(&value),sizeof(value));
 	if( err == SOCKET_ERROR )
 	{
 		if ( value  )
@@ -403,7 +403,7 @@ int AskStatus()
 	int err;
 
 	TOrder order=TORDER_STATUS;
-	err=socket.Send((char*)&order,sizeof(order));
+	err=socket.Send(reinterpret_cast<char*>(&order),sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : status : socket.Send : Order"<<endl;
@@ -411,7 +411,7 @@ int AskStatus()
 	}
 
 	bool loss;
-	err=socket.Read((char*)&loss,sizeof(loss));
+	err=socket.Read(reinterpret_cast<char*>(&loss),sizeof(loss));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : status : socket.Read : Loss"<<endl;
@@ -424,7 +424,7 @@ int AskStatus()
 		cout<<"Disable"<<endl;
 
 	TScale scale;
-	err=socket.Read((char*)&scale,sizeof(scale));
+	err=socket.Read(reinterpret_cast<char*>(&scale),sizeof(scale));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : status : socket.Read : scale"<<endl;
@@ -435,7 +435,7 @@ int AskStatus()
 	// VHOST
 
 	TPort port;
-	err=socket.Read((char*)&port,sizeof(port));
+	err=socket.Read(reinterpret_cast<char*>(&port),sizeof(port));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : status : socket.Read : Port VHOST"<<endl;
@@ -445,7 +445,7 @@ int AskStatus()
 
 	// INET
 
-	err=socket.Read((char*)&port,sizeof(port));
+	err=socket.Read(reinterpret_cast<char*>(&port),sizeof(port));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : status : socket.Read : Port INET"<<endl;
@@ -457,7 +457,7 @@ int AskStatus()
 	// becareful : the same List is shared by WifiServerVTCP and WifiServerITCP
 
 	TIndex size;
-	err=socket.Read((char*)&size,sizeof(size));
+	err=socket.Read(reinterpret_cast<char*>(&size),sizeof(size));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : status : socket.Read : Size INET"<<endl;
@@ -468,7 +468,7 @@ int AskStatus()
 	// SPY
 
 	bool spyIsConnected;
-	err=socket.Read((char*)&spyIsConnected,sizeof(spyIsConnected));
+	err=socket.Read(reinterpret_cast<char*>(&spyIsConnected),sizeof(spyIsConnected));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : status : socket.Read : spyIsConnected"<<endl;
@@ -500,7 +500,7 @@ int AskShow()
 	int err;
 
 	TOrder order=TORDER_SHOW;
-	err=socket.Send((char*)&order,sizeof(order));
+	err=socket.Send(reinterpret_cast<char*>(&order),sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : show : socket.Send : Order"<<endl;
@@ -508,7 +508,7 @@ int AskShow()
 	}
 
 	bool loss;
-	err=socket.Read((char*)&loss,sizeof(loss));
+	err=socket.Read(reinterpret_cast<char*>(&loss),sizeof(loss));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : show : socket.Read : Loss"<<endl;
@@ -521,7 +521,7 @@ int AskShow()
 		cout<<"Disable"<<endl;
 
 	TScale scale;
-	err=socket.Read((char*)&scale,sizeof(scale));
+	err=socket.Read(reinterpret_cast<char*>(&scale),sizeof(scale));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : show : socket.Read : scale"<<endl;
@@ -530,7 +530,7 @@ int AskShow()
 	cout<<"Scale : "<<scale<<endl;
 
 	bool spyIsConnected;
-	err=socket.Read((char*)&spyIsConnected,sizeof(spyIsConnected));
+	err=socket.Read(reinterpret_cast<char*>(&spyIsConnected),sizeof(spyIsConnected));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : show : socket.Read : spyIsConnected"<<endl;
@@ -597,19 +597,19 @@ int DistanceBetweenCID(int argc, char *argv[])
 	int err;
 
 	TOrder order=TORDER_DISTANCE_BETWEEN_CID;
-	err=socket.Send((char*)&order,sizeof(order));
+	err=socket.Send(reinterpret_cast<char*>(&order),sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : distance : socket.Send : order"<<endl;
 		return 1;
 	}
-	err=socket.Send((char*)&cid1,sizeof(cid1));
+	err=socket.Send(reinterpret_cast<char*>(&cid1),sizeof(cid1));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : distance : socket.Send : cid 1"<<endl;
 		return 1;
 	}
-	err=socket.Send((char*)&cid2,sizeof(cid2));
+	err=socket.Send(reinterpret_cast<char*>(&cid2),sizeof(cid2));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : distance : socket.Send : cid 2"<<endl;
@@ -617,7 +617,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 	}
 
 	int codeError;
-	err=socket.Read((char*)&codeError,sizeof(codeError));
+	err=socket.Read(reinterpret_cast<char*>(&codeError),sizeof(codeError));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : distance : socket.Read : codeError"<<endl;
@@ -636,7 +636,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 	}
 
 	TDistance distance;
-	err=socket.Read((char*)&distance,sizeof(distance));
+	err=socket.Read(reinterpret_cast<char*>(&distance),sizeof(distance));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : distance : socket.Read : distance"<<endl;
@@ -684,13 +684,13 @@ int SetScale(int argc, char *argv[])
 	int err;
 
 	TOrder order=TORDER_SET_SCALE;
-	err=socket.Send((char*)&order,sizeof(order));
+	err=socket.Send(reinterpret_cast<char*>(&order),sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : scale : socket.Send : order"<<endl;
 		return 1;
 	}
-	err=socket.Send((char*)&scale,sizeof(scale));
+	err=socket.Send(reinterpret_cast<char*>(&scale),sizeof(scale));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : scale : socket.Send : scale"<<endl;
@@ -717,7 +717,7 @@ int CloseAllClient()
 	int err;
 
 	TOrder order=TORDER_CLOSE_ALL_CLIENT;
-	err=socket.Send((char*)&order,sizeof(order));
+	err=socket.Send(reinterpret_cast<char*>(&order),sizeof(order));
 	if( err == SOCKET_ERROR )
 	{
 		cerr<<"Error : close : socket.Send : order"<<endl;
