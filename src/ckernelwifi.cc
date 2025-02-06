@@ -24,7 +24,8 @@
 #include <thread>
 #include <cstring>
 
-#include "config.h"
+#include <config.h>
+#include "vwifi_config.h"
 #include <unistd.h>
 
 #include <csignal>

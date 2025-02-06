@@ -1,13 +1,32 @@
-vwifi-server
-vwifi-client
-vwifi-ctrl
-vwifi-add-interfaces
+# -------------------------------
+# Binaries and build artifacts
+# -------------------------------
 obj/
-# For cppcheck
-vwifi-cppcheck.xml
-# For eclipse :
+*.o
+**/Makefile
+src/vwifi-server
+src/vwifi-client
+src/vwifi-ctrl
+src/vwifi-add-interfaces
+
+# -------------------------------
+# Auto-generated files
+# -------------------------------
+.deps/
+config.*
+autom4te.cache/
+stamp-h1
+
+# -------------------------------
+# IDE / Tooling configuration
+# -------------------------------
+.vscode
 .project
 .cproject
 .settings
-# For Visual Studio Code :
-.vscode
+
+# -------------------------------
+# Miscellaneous
+# -------------------------------
+*~
+vwifi-cppcheck.xml

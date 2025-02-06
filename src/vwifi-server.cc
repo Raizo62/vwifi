@@ -1,8 +1,8 @@
+#include <config.h>
+#include "vwifi_config.h"
 #include <iostream> // cout
-
 #include <string.h> // strcmp
 
-#include "config.h"
 #include "tools.h" // isPositiveInt
 #include "cwifiserveritcp.h"
 #include "cwifiservervtcp.h"
@@ -236,7 +236,7 @@ int main(int argc, char** argv)
 	{
 		if( ! strcmp("-v", argv[arg_idx]) || ! strcmp("--version", argv[arg_idx]) )
 		{
-			cout<<"Version : "<<VERSION<<endl;
+			cout<<"Version : "<<PACKAGE_VERSION<<endl;
 			return 0;
 		}
 		if( ! strcmp("-h", argv[arg_idx]) || ! strcmp("--help", argv[arg_idx]) )

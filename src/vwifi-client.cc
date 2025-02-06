@@ -5,7 +5,8 @@
 
 #include <memory>
 
-#include "config.h" // DEFAULT_WIFI_CLIENT_PORT_VHOST / DEFAULT_WIFI_CLIENT_PORT_INET
+#include <config.h>
+#include "vwifi_config.h" // DEFAULT_WIFI_CLIENT_PORT_VHOST / DEFAULT_WIFI_CLIENT_PORT_INET
 #include "tools.h" // isInt
 
 #include "cwificlient.h"
@@ -87,7 +88,7 @@ int main (int argc , char ** argv){
 	{
 		if( ! strcmp("-v", argv[arg_idx]) || ! strcmp("--version", argv[arg_idx]) )
 		{
-			std::cout<<"Version : "<<VERSION<<std::endl;
+			std::cout<<"Version : "<<PACKAGE_VERSION<<std::endl;
 			return 0;
 		}
 		if( ! strcmp("-h", argv[arg_idx]) || ! strcmp("--help", argv[arg_idx]) )

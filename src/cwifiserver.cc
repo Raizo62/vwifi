@@ -9,7 +9,8 @@
 
 #include "cwifiserver.h"
 #include "tools.h"
-#include "config.h" // LOST_PACKET_BY_DEFAULT
+#include <config.h>
+#include "vwifi_config.h" // LOST_PACKET_BY_DEFAULT
 
 bool CanLostPackets=LOST_PACKET_BY_DEFAULT;
 

@@ -1,6 +1,7 @@
 #include <assert.h> // assert
 
-#include "config.h" // MAX_SIZE_NAME
+#include <config.h>
+#include "vwifi_config.h" // MAX_SIZE_NAME
 #include "cinfowifi.h"
 
 CInfoWifi::CInfoWifi(): CCoordinate()

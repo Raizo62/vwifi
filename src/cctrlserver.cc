@@ -1,7 +1,8 @@
 #include <cstring> // strcpy
 
 #include "cctrlserver.h"
-#include "config.h" // MAX_SIZE_NAME
+#include <config.h>
+#include "vwifi_config.h" // MAX_SIZE_NAME
 
 
 CCTRLServer::CCTRLServer(CWifiServer* wifiServerVTCP, CWifiServer* wifiServerITCP, CWifiServer* wifiServerSPY, CSelect* scheduler) : CSocketServer()
