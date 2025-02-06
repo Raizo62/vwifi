@@ -15,7 +15,8 @@
 
 #include "config_hwsim.h"
 #include "addinterfaces.h"
-#include "config.h" // DEFAULT_MAC_PREFIX
+#include <config.h>
+#include "vwifi_config.h" // DEFAULT_MAC_PREFIX
 
 int ParseInt(const char* str, int* result)
 {
@@ -60,7 +61,7 @@ int main(int argc, char* argv[])
 	{
 		if( ! strcmp("-v", argv[arg_idx]) || ! strcmp("--version", argv[arg_idx]) )
 		{
-			fprintf(stdout,"Version : %s\n",VERSION);
+			fprintf(stdout,"Version : %s\n",PACKAGE_VERSION);
 			return 0;
 		}
 		if( ! strcmp("-h", argv[arg_idx]) || ! strcmp("--help", argv[arg_idx]) )

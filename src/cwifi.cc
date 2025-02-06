@@ -10,7 +10,8 @@
 
 #include "cwifi.h"
 
-//#include "config.h"
+#include <config.h>
+//#include "vwifi_config.h"
 
 const double ConstanteC=92.45;
 const TFrequency DEFAULT_FREQUENCY=2412; // Hz

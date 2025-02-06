@@ -2,7 +2,8 @@
 
 #include <string.h> //strlen
 
-#include "config.h"
+#include <config.h>
+#include "vwifi_config.h"
 #include "tools.h" // isInt isPositiveInt isIntOrFloat
 #include "csocketclientitcp.h"
 #include "types.h"
@@ -741,7 +742,7 @@ int main(int argc , char *argv[])
 	{
 		if( ! strcmp("-v", argv[arg_idx]) || ! strcmp("--version", argv[arg_idx]) )
 		{
-			std::cout<<"Version : "<<VERSION<<std::endl;
+			std::cout<<"Version : "<<PACKAGE_VERSION<<std::endl;
 			return 0;
 		}
 		if( ! strcmp("-h", argv[arg_idx]) || ! strcmp("--help", argv[arg_idx]) )
