@@ -12,6 +12,12 @@ CCTRLServer::CCTRLServer(CWifiServer* wifiServerVTCP, CWifiServer* wifiServerITC
 	Scheduler=scheduler;
 }
 
+CCTRLServer::~CCTRLServer()
+{
+	// Close any open connections
+	CloseAllClient();
+}
+
 bool CCTRLServer::_Listen(TDescriptor& master, TPort port)
 {
 	return CSocketServerFunctionITCP::_Listen(master, port);

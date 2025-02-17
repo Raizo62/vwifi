@@ -11,6 +11,8 @@ class CSocketClient : public CSocket
 
 		void Init();
 
+		TDescriptor descriptor;
+
 	protected :
 
 		bool Connect(struct sockaddr* server, size_t size_of_server);
@@ -18,12 +20,18 @@ class CSocketClient : public CSocket
 	public :
 
 		CSocketClient();
-		~CSocketClient();
+		virtual ~CSocketClient();
 
+		using CSocket::Send;
 		ssize_t Send(const char* data, ssize_t sizeOfData);
+
+		using CSocket::SendBigData;
 		ssize_t SendBigData(const char* data, TMinimalSize sizeOfData);
 
+		using CSocket::Read;
 		ssize_t Read(char* data, ssize_t sizeOfData);
+		
+		using CSocket::ReadBigData;
 		ssize_t ReadBigData(CDynBuffer* data);
 
 		bool ConnectLoop();
