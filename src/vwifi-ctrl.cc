@@ -34,7 +34,7 @@ void Help()
 	cout<<"	status"<<endl;
 	cout<<"		- Display the status of the configuration of vwifi-server"<<endl;
 	cout<<"	distance cid1 cid2"<<endl;
-	cout<<"		- Distance in meters between the Client with cid1 and the Client with cid2"<<endl;
+	cout<<"		- Display the distance in meters between the Client with cid1 and the Client with cid2"<<endl;
 	cout<<"	scale value"<<endl;
 	cout<<"		- Set the scale of the distances between the clients to value"<<endl;
 	cout<<"		- value can be a decimal number"<<endl;
