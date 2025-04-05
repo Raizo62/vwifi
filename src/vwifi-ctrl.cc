@@ -643,7 +643,7 @@ int DistanceBetweenCID(int argc, char *argv[])
 		return 1;
 	}
 
-	cout<<"Distance : "<<distance<<endl;
+	cout<<distance<<endl;
 
 	socket.Close();
 
