@@ -50,30 +50,62 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 ### Dependencies
 
 ```bash
-sudo apt-get install make g++
+sudo apt-get install make cmake g++ pkg-config
 sudo apt-get install libnl-3-dev libnl-genl-3-dev
+# Optional: for static analysis
+sudo apt-get install cppcheck
 ```
 
 ### Building
 
-* Not necessary :
-
-```bash
-make gitversion # To add the last commit id to the VERSION
-
-make update # To download and update the file mac80211_hwsim.h
-```
-
 * To change the default ports and IP, edit : src/config.h
 
-* To building :
+* To build and install:
 
 ```bash
-make
-make tools # To change the file mode bits of tools
+# Create and enter build directory
+mkdir -p build && cd build
 
-sudo make install
+# Configure the project
+cmake ..
+
+# Build using all available CPU cores
+cmake --build . -j$(nproc)
+
+# Install (requires root privileges)
+sudo cmake --install .
 ```
+
+### Additional Targets
+
+* Static Analysis with cppcheck:
+
+```bash
+# From build directory
+cmake --build . --target cppcheck
+```
+This will generate:
+- XML report at `build/cppcheck-reports/report.xml`
+- HTML report at `build/cppcheck-reports/report.html` (requires xsltproc)
+```
+
+* Uninstall:
+```bash
+# From build directory
+sudo cmake --build . --target uninstall
+```
+
+### Version Information
+
+The version number is determined as follows:
+- If building from a Git tag: uses the tag version (e.g., v6.4.0)
+- If building from Git but not on a tag: uses git describe output (e.g., v6.4.0-5-g3d4f9a2)
+- If building without Git: uses fallback version (e.g., 6.4.0-dev)
+
+
+## Local development on NixOS
+
+If using NixOS, you can use the `shell.nix` file to create a development environment.
 
 ## On OpenWRT
 

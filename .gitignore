@@ -11,3 +11,11 @@ vwifi-cppcheck.xml
 .settings
 # For Visual Studio Code :
 .vscode
+
+# For CMake :
+CMakeUserPresets.json
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+build/
