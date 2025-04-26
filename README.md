@@ -50,34 +50,34 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 ### Dependencies
 
 ```bash
-sudo apt-get install make g++
+sudo apt-get update
+sudo apt-get install cmake build-essential pkg-config
 sudo apt-get install libnl-3-dev libnl-genl-3-dev
 ```
 
 ### Building
 
-* Not necessary :
+* Optional: To download and update the file `mac80211_hwsim.h` (if needed, requires wget):
 
 ```bash
-make gitversion # To add the last commit id to the VERSION
-
-make update # To download and update the file mac80211_hwsim.h
+wget -q -N https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/wireless/virtual/mac80211_hwsim.h -P src
 ```
 
-* To change the default ports and IP, edit : src/config.h
+* To change the default ports and IP, edit: `src/config.h`
 
-* To building :
+* To build and install:
 
 ```bash
+mkdir build
+cd build
+cmake ..  # Add -DCMAKE_BUILD_TYPE=Debug for a debug build
 make
-make tools # To change the file mode bits of tools
-
 sudo make install
 ```
 
 ## On OpenWRT
 
-* See the wiki : [Install-vwifi-on-OpenWRT-X86_64](https://github.com/Raizo62/vwifi/wiki/Install-on-OpenWRT-X86_64)
+* See the wiki : [Install-vwifi-on-OpenWRT-X86_64](https://github.com/Raizo62/vwifi/wiki/Install-on-OpenWRT-X86_64) (Note: Build instructions may need updating for CMake)
 
 # Configuration
 
