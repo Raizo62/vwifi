@@ -51,7 +51,7 @@ Simulate Wi-Fi (802.11) between Linux Virtual Machines on Qemu/VirtualBox/...
 
 ```bash
 sudo apt-get update
-sudo apt-get install cmake build-essential pkg-config
+sudo apt-get install cmake make g++ pkg-config
 sudo apt-get install libnl-3-dev libnl-genl-3-dev
 ```
 
