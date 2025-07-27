@@ -77,7 +77,7 @@ sudo make install
 
 ## On OpenWRT
 
-* See the wiki : [Install-vwifi-on-OpenWRT-X86_64](https://github.com/Raizo62/vwifi/wiki/Install-on-OpenWRT-X86_64) (Note: Build instructions may need updating for CMake)
+* See the wiki : [Install-vwifi-on-OpenWRT-X86_64](https://github.com/Raizo62/vwifi/wiki/Install-on-OpenWRT-X86_64)
 
 # Configuration
 
