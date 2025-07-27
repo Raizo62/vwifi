@@ -12,6 +12,11 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose build type: Debug Release RelWithDebInfo MinSizeRel" FORCE)
 endif()
 
+option(ENABLE_VHOST "Enable vhost support" ON)
+if(NOT ENABLE_VHOST)
+  add_definitions(-DDISABLE_VHOST)
+endif()
+
 # Common flags (add more as needed based on Makefile MODE)
 add_compile_options(-Wall -Wextra -pedantic)
 if(CMAKE_BUILD_TYPE STREQUAL "Release")

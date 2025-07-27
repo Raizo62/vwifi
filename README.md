@@ -57,23 +57,27 @@ sudo apt-get install libnl-3-dev libnl-genl-3-dev
 
 ### Building
 
-* Optional: To download and update the file `mac80211_hwsim.h` (if needed, requires wget):
+* Optional: To download and update the file `mac80211_hwsim.h` (if needed, requires wget) :
 
 ```bash
 wget -q -N https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/wireless/virtual/mac80211_hwsim.h -P src
 ```
-
 * To change the default ports and IP, edit: `src/config.h`
 
-* To build and install:
+* To configure :
 
 ```bash
 mkdir build
 cd build
-cmake ..  # Add -DCMAKE_BUILD_TYPE=Debug for a debug build
-make
-sudo make install
+cmake ..
 ```
+* To Customize the build :
+    * For a debug build : Add `-DCMAKE_BUILD_TYPE=Debug`
+    * To disable VHOST protocol : Add `-DENABLE_VHOST=OFF`
+
+* To build : `make`
+
+* To install : `sudo make install`
 
 ## On OpenWRT
 

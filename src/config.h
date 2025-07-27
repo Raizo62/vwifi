@@ -3,7 +3,9 @@
 
 #include "types.h" // TIndex / TPort
 
-#define ENABLE_VHOST
+#ifndef DISABLE_VHOST
+	#define ENABLE_VHOST
+#endif
 
 const TIndex WIFI_MAX_DECONNECTED_CLIENT = 15;
 
