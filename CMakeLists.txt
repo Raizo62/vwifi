@@ -120,7 +120,43 @@ install(TARGETS vwifi-server vwifi-client vwifi-ctrl vwifi-add-interfaces
 # Optional: Install man pages if needed (requires CMake code)
 # install(FILES man/vwifi.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 RENAME vwifi.1)
 
-
 # --- Optional: Add tests ---
 # enable_testing()
-# add_subdirectory(tests) # If tests have their own CMakeLists.txt 
+# add_subdirectory(tests) # If tests have their own CMakeLists.txt
+
+# --- Custom Target for Cppcheck ---
+find_program(CPPCHECK_EXECUTABLE cppcheck)
+if(CPPCHECK_EXECUTABLE)
+    file(GLOB_RECURSE ALL_CC_SOURCES "src/*.cc")
+
+    get_property(GLOBAL_DEFINITIONS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS)
+    set(CPPCHECK_DEFS "")
+    foreach(DEF ${GLOBAL_DEFINITIONS})
+        if(DEF MATCHES "^-D")
+            set(CPPCHECK_DEFS "${CPPCHECK_DEFS} ${DEF}")
+        else()
+            set(CPPCHECK_DEFS "${CPPCHECK_DEFS} -D${DEF}")
+        endif()
+    endforeach()
+    set(CPPCHECK_DEFS "${CPPCHECK_DEFS} -D_DEBUG")
+
+    get_property(COMMON_COMPILE_OPTIONS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_OPTIONS)
+    set(CPPCHECK_CFLAGS "")
+    foreach(OPT ${COMMON_COMPILE_OPTIONS})
+        set(CPPCHECK_CFLAGS "${CPPCHECK_CFLAGS} ${OPT}")
+    endforeach()
+
+    # Définition du chemin de sortie du fichier XML
+    # CMAKE_CURRENT_BINARY_DIR pointe vers le répertoire de construction
+    set(CPPCHECK_OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-cppcheck.xml")
+
+    add_custom_target(
+        cppcheck
+        COMMAND ${CPPCHECK_EXECUTABLE} --verbose --enable=all --enable=style --xml
+                ${CPPCHECK_CFLAGS} ${CPPCHECK_DEFS} ${ALL_CC_SOURCES} 2> ${CPPCHECK_OUTPUT_FILE}
+        # WORKING_DIRECTORY reste le répertoire source pour que cppcheck trouve les fichiers
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Running Cppcheck static analysis and generating XML report in build directory."
+        BYPRODUCTS ${CPPCHECK_OUTPUT_FILE}
+    )
+endif()
