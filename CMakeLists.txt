@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(vwifi VERSION 6.4 LANGUAGES CXX)
+project(vwifi VERSION 7.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
