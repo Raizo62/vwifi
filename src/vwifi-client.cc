@@ -58,12 +58,20 @@ void signal_handler(int signal_num)
 
 void help()
 {
+#ifdef ENABLE_VHOST
 	std::cout<<"Usage: vwifi-client [-h] [-v] [-s] [IP_ADDR] [-p PORT] [-u] [-n NUMBER_INTERFACE] [-m MAC_PREFIX]"<<std::endl;
 	std::cout<<"                    [--help] [--version] [--spy] [IP_ADDR] [--port PORT] [--use-port-in-hash] [--number NUMBER_INTERFACE] [--mac MAC_PREFIX]"<<std::endl;
 	std::cout<<"         By default : client mode : TCP : IP_ADDR="<<DEFAULT_ADDRESS_IP <<" PORT="<< DEFAULT_WIFI_CLIENT_PORT_INET << std::endl;
 	std::cout<<"                      client mode : VHOST : PORT="<< DEFAULT_WIFI_CLIENT_PORT_VHOST << std::endl;
 	std::cout<<"                      spy mode (--spy) : IP_ADDR="<< DEFAULT_ADDRESS_IP <<" PORT="<< DEFAULT_WIFI_SPY_PORT << std::endl;
 	std::cout<<"                      NUMBER_INTERFACE="<< DEFAULT_NUMBER_WLAN_INTERFACE <<" MAC_PREFIX="<< DEFAULT_MAC_PREFIX << std::endl;
+#else
+	std::cout<<"Usage: vwifi-client [-h] [-v] [-s] IP_ADDR [-p PORT] [-u] [-n NUMBER_INTERFACE] [-m MAC_PREFIX]"<<std::endl;
+	std::cout<<"                    [--help] [--version] [--spy] IP_ADDR [--port PORT] [--use-port-in-hash] [--number NUMBER_INTERFACE] [--mac MAC_PREFIX]"<<std::endl;
+	std::cout<<"         By default : client mode : TCP : IP_ADDR="<<DEFAULT_ADDRESS_IP <<" PORT="<< DEFAULT_WIFI_CLIENT_PORT_INET << std::endl;
+	std::cout<<"                      spy mode (--spy) : IP_ADDR="<< DEFAULT_ADDRESS_IP <<" PORT="<< DEFAULT_WIFI_SPY_PORT << std::endl;
+	std::cout<<"                      NUMBER_INTERFACE="<< DEFAULT_NUMBER_WLAN_INTERFACE <<" MAC_PREFIX="<< DEFAULT_MAC_PREFIX << std::endl;
+#endif
 }
 
 int main (int argc , char ** argv){

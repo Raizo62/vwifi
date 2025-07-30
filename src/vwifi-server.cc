@@ -5,7 +5,9 @@
 #include "config.h"
 #include "tools.h" // isPositiveInt
 #include "cwifiserveritcp.h"
-#include "cwifiservervtcp.h"
+#ifdef ENABLE_VHOST
+	#include "cwifiservervtcp.h"
+#endif
 #include "cctrlserver.h"
 #include "cselect.h"
 #include "cdynbuffer.h"
@@ -13,8 +15,9 @@
 using namespace std;
 
 CDynBuffer Buffer; // Buffer to stock received values
-
+#ifdef ENABLE_VHOST
 TPort Port_VHOST = DEFAULT_WIFI_CLIENT_PORT_VHOST;
+#endif
 TPort Port_TCP = DEFAULT_WIFI_CLIENT_PORT_INET;
 TPort Port_Spy = DEFAULT_WIFI_SPY_PORT;
 TPort Port_Ctrl = DEFAULT_CTRL_PORT;
@@ -89,6 +92,7 @@ int vwifi_server()
 	CListInfo<CInfoWifi> infoWifis;
 	CListInfo<CInfoWifi> infoWifisDeconnected;
 
+#ifdef ENABLE_VHOST
 	CWifiServerVTCP wifiServerVTCP(&infoSockets,&infoWifis,&infoWifisDeconnected);
 	cout<<"CLIENT VHOST : ";
 	wifiServerVTCP.Init(Port_VHOST);
@@ -97,8 +101,7 @@ int vwifi_server()
 		cerr<<"Error : wifiServerVTCP.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
-
-	CWifiServer* wifiServer=&wifiServerVTCP; // or wifiServerITCP, it doesn't change anything
+#endif
 
 	CWifiServerITCP wifiServerITCP(&infoSockets,&infoWifis,&infoWifisDeconnected);
 	cout<<"CLIENT TCP : ";
@@ -108,6 +111,8 @@ int vwifi_server()
 		cerr<<"Error : wifiServerITCP.Listen"<<endl;
 		exit(EXIT_FAILURE);
 	}
+
+	CWifiServer* wifiServer=&wifiServerITCP; // or wifiServerVTCP, if exist, it doesn't change anything
 
 	cout<<"SPY : ";
 	CWifiServerITCP wifiServerSPY;
@@ -119,7 +124,11 @@ int vwifi_server()
 	}
 
 	cout<<"CTRL : ";
+#ifdef ENABLE_VHOST
 	CCTRLServer ctrlServer(&wifiServerVTCP, &wifiServerITCP, &wifiServerSPY,&Scheduler);
+#else
+	CCTRLServer ctrlServer(NULL, &wifiServerITCP, &wifiServerSPY,&Scheduler);
+#endif
 	ctrlServer.Init(Port_Ctrl);
 	if( ! ctrlServer.Listen() )
 	{
@@ -137,7 +146,9 @@ int vwifi_server()
 	cout<<"Scale : "<<Scale<<endl;
 
 	//add master socket to set
+#ifdef ENABLE_VHOST
 	Scheduler.AddNode(wifiServerVTCP);
+#endif
 	Scheduler.AddNode(wifiServerITCP);
 	Scheduler.AddNode(wifiServerSPY);
 	Scheduler.AddNode(ctrlServer);
@@ -155,6 +166,7 @@ int vwifi_server()
 
 			//If something happened on the master socket ,
 			//then its an incoming connection
+#ifdef ENABLE_VHOST
 			if( Scheduler.DescriptorHasAction(wifiServerVTCP) )
 			{
 				socket = wifiServerVTCP.Accept();
@@ -170,6 +182,7 @@ int vwifi_server()
 				//inform user of socket number - used in send and receive commands
 				cout<<"New connection from Client VHost : "; wifiServer->ShowInfoWifi(wifiServer->GetNumberClient()-1) ; cout<<endl;
 			}
+#endif
 
 			if( Scheduler.DescriptorHasAction(wifiServerITCP) )
 			{
@@ -220,12 +233,20 @@ int vwifi_server()
 
 void help()
 {
+#ifdef ENABLE_VHOST
 	cout<<"Usage: vwifi-server [-h] [-v] [-l] [-u] [-p PORT_VHOST] [-t PORT_TCP] [-s PORT_SPY] [-c PORT_CTRL]"<<endl;
 	cout<<"                    [--help] [--version] [--lost-packets] [--use-port-in-hash] [--port-vhost PORT_VHOST] [--port-tcp PORT_TCP] [--port-spy PORT_SPY] [--port-ctrl PORT_CTRL]"<<endl;
 	cout<<"         By default : PORT_VHOST="<< DEFAULT_WIFI_CLIENT_PORT_VHOST <<
 								" PORT_TCP="  << DEFAULT_WIFI_CLIENT_PORT_INET <<
 								" PORT_SPY="  << DEFAULT_WIFI_SPY_PORT <<
 								" PORT_CTRL=" << DEFAULT_CTRL_PORT <<endl;
+#else
+	cout<<"Usage: vwifi-server [-h] [-v] [-l] [-u] [-t PORT_TCP] [-s PORT_SPY] [-c PORT_CTRL]"<<endl;
+	cout<<"                    [--help] [--version] [--lost-packets] [--use-port-in-hash] [--port-tcp PORT_TCP] [--port-spy PORT_SPY] [--port-ctrl PORT_CTRL]"<<endl;
+	cout<<"         By default : PORT_TCP="  << DEFAULT_WIFI_CLIENT_PORT_INET <<
+								" PORT_SPY="  << DEFAULT_WIFI_SPY_PORT <<
+								" PORT_CTRL=" << DEFAULT_CTRL_PORT <<endl;
+#endif
 }
 
 
@@ -252,11 +273,13 @@ int main(int argc, char** argv)
 		{
 			HashUsesPort=true;
 		}
+#ifdef ENABLE_VHOST
 		else if( ( ! strcmp("-p", argv[arg_idx]) || ! strcmp("--port-vhost", argv[arg_idx]) ) && (arg_idx + 1) < argc && isPositiveInt(argv[arg_idx+1]) )
 		{
 			Port_VHOST = stoi(argv[arg_idx+1]);
 			arg_idx++;
 		}
+#endif
 		else if( ( ! strcmp("-t", argv[arg_idx]) || ! strcmp("--port-tcp", argv[arg_idx]) ) && (arg_idx + 1) < argc && isPositiveInt(argv[arg_idx+1]) )
 		{
 			Port_TCP = stoi(argv[arg_idx+1]);
@@ -284,4 +307,3 @@ int main(int argc, char** argv)
 
 	return vwifi_server();
 }
-
