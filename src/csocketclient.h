@@ -11,8 +11,6 @@ class CSocketClient : public CSocket
 
 		void Init();
 
-		TDescriptor descriptor;
-
 	protected :
 
 		bool Connect(struct sockaddr* server, size_t size_of_server);
