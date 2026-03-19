@@ -5,6 +5,7 @@
 
 #include <arpa/inet.h> // INADDR_ANY
 #include <sys/socket.h>
+#include <unistd.h> // close
 
 #include "csocket.h" // SOCKET_ERROR
 #include "csocketserverfunctionitcp.h"
@@ -27,14 +28,8 @@ bool CSocketServerFunctionITCP::Configure(TDescriptor& master)
 	return true;
 }
 
-bool CSocketServerFunctionITCP::_Listen(TDescriptor& master, TPort port)
+static bool _Setup(TDescriptor master, TPort port)
 {
-	if( ! Configure(master) )
-	{
-		cerr<<"Error : CSocketServerFunctionITCP::_Listen : Configure"<<endl;
-		return false;
-	}
-
 	//set master socket to allow multiple connections ,
 	//this is just a good habit, it will work without this
 	int opt = 1 ; // TRUE
@@ -70,6 +65,23 @@ bool CSocketServerFunctionITCP::_Listen(TDescriptor& master, TPort port)
 	if( listen(master, 3) < 0 )
 	{
 		perror("CSocketServerFunctionITCP::_Listen : listen");
+		return false;
+	}
+
+	return true;
+}
+
+bool CSocketServerFunctionITCP::_Listen(TDescriptor& master, TPort port)
+{
+	if( ! Configure(master) )
+	{
+		cerr<<"Error : CSocketServerFunctionITCP::_Listen : Configure"<<endl;
+		return false;
+	}
+
+	if( ! _Setup(master, port) )
+	{
+		close(master);
 		return false;
 	}
 
