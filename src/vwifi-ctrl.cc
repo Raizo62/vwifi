@@ -1,4 +1,5 @@
 #include <iostream> // cout
+#include <memory> // unique_ptr
 
 #include <string.h> //strlen
 
@@ -731,7 +732,7 @@ int CloseAllClient()
 
 int main(int argc , char *argv[])
 {
-	char** param_cmd = new char*[argc];
+	auto param_cmd = std::make_unique<char*[]>(argc);
 	int nbr_param_cmd=0;
 
 	NameOfProg=argv[0];
@@ -773,35 +774,29 @@ int main(int argc , char *argv[])
 		return 0;
 	}
 
+	int ret = 1;
+
 	if( ! strcasecmp(param_cmd[0],"ls") )
-		return AskList();
+		ret = AskList();
+	else if( ! strcasecmp(param_cmd[0],"set") )
+		ret = ChangeCoordinate(nbr_param_cmd, param_cmd.get());
+	else if( ! strcasecmp(param_cmd[0],"setname") )
+		ret = SetName(nbr_param_cmd, param_cmd.get());
+	else if( ! strcasecmp(param_cmd[0],"loss") )
+		ret = ChangePacketLoss(nbr_param_cmd, param_cmd.get());
+	else if( ! strcasecmp(param_cmd[0],"show") )
+		ret = AskShow();
+	else if( ! strcasecmp(param_cmd[0],"status") )
+		ret = AskStatus();
+	else if( ! strcasecmp(param_cmd[0],"distance") )
+		ret = DistanceBetweenCID(nbr_param_cmd, param_cmd.get());
+	else if( ! strcasecmp(param_cmd[0],"scale") )
+		ret = SetScale(nbr_param_cmd, param_cmd.get());
+	else if( ! strcasecmp(param_cmd[0],"close") )
+		ret = CloseAllClient();
+	else
+		cerr<<NameOfProg<<" : Error : unknown order : "<<param_cmd[0]<<endl;
 
-	if( ! strcasecmp(param_cmd[0],"set") )
-		return ChangeCoordinate(nbr_param_cmd, param_cmd);
-
-	if( ! strcasecmp(param_cmd[0],"setname") )
-		return SetName(nbr_param_cmd, param_cmd);
-
-	if( ! strcasecmp(param_cmd[0],"loss") )
-		return ChangePacketLoss(nbr_param_cmd, param_cmd);
-
-	if( ! strcasecmp(param_cmd[0],"show") )
-		return AskShow();
-
-	if( ! strcasecmp(param_cmd[0],"status") )
-		return AskStatus();
-
-	if( ! strcasecmp(param_cmd[0],"distance") )
-		return DistanceBetweenCID(nbr_param_cmd, param_cmd);
-
-	if( ! strcasecmp(param_cmd[0],"scale") )
-		return SetScale(nbr_param_cmd, param_cmd);
-
-	if( ! strcasecmp(param_cmd[0],"close") )
-		return CloseAllClient();
-
-	cerr<<NameOfProg<<" : Error : unknown order : "<<param_cmd[0]<<endl;
-
-	return 1;
+	return ret;
 }
 
