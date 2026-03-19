@@ -33,6 +33,8 @@ CWifiServer::CWifiServer(CListInfo<CInfoSocket>* infoSockets, CListInfo<CInfoWif
 
 CWifiServer::CWifiServer( const CWifiServer & wifiServer ) : CSocketServer(wifiServer), CWifi(wifiServer)
 {
+	InfoWifis = nullptr;
+	InfoWifisDeconnected = nullptr;
 	*this=wifiServer;
 }
 

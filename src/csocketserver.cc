@@ -31,6 +31,8 @@ CSocketServer::CSocketServer(CListInfo<CInfoSocket>* infoSockets) : CSocket()
 
 CSocketServer::CSocketServer( const CSocketServer & socketServer ) : CSocket(socketServer)
 {
+	ListInfoSelfManaged = false;
+	InfoSockets = nullptr;
 	*this=socketServer;
 }
 
