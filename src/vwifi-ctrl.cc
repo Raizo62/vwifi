@@ -1,4 +1,5 @@
 #include <iostream> // cout
+#include <memory> // unique_ptr
 
 #include <string.h> //strlen
 
@@ -731,7 +732,7 @@ int CloseAllClient()
 
 int main(int argc , char *argv[])
 {
-	char** param_cmd = new char*[argc];
+	auto param_cmd = std::make_unique<char*[]>(argc);
 	int nbr_param_cmd=0;
 
 	NameOfProg=argv[0];
@@ -777,13 +778,13 @@ int main(int argc , char *argv[])
 		return AskList();
 
 	if( ! strcasecmp(param_cmd[0],"set") )
-		return ChangeCoordinate(nbr_param_cmd, param_cmd);
+		return ChangeCoordinate(nbr_param_cmd, param_cmd.get());
 
 	if( ! strcasecmp(param_cmd[0],"setname") )
-		return SetName(nbr_param_cmd, param_cmd);
+		return SetName(nbr_param_cmd, param_cmd.get());
 
 	if( ! strcasecmp(param_cmd[0],"loss") )
-		return ChangePacketLoss(nbr_param_cmd, param_cmd);
+		return ChangePacketLoss(nbr_param_cmd, param_cmd.get());
 
 	if( ! strcasecmp(param_cmd[0],"show") )
 		return AskShow();
@@ -792,10 +793,10 @@ int main(int argc , char *argv[])
 		return AskStatus();
 
 	if( ! strcasecmp(param_cmd[0],"distance") )
-		return DistanceBetweenCID(nbr_param_cmd, param_cmd);
+		return DistanceBetweenCID(nbr_param_cmd, param_cmd.get());
 
 	if( ! strcasecmp(param_cmd[0],"scale") )
-		return SetScale(nbr_param_cmd, param_cmd);
+		return SetScale(nbr_param_cmd, param_cmd.get());
 
 	if( ! strcasecmp(param_cmd[0],"close") )
 		return CloseAllClient();
