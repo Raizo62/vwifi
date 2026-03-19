@@ -5,6 +5,7 @@
 
 #include <arpa/inet.h> // INADDR_ANY
 #include <sys/socket.h>
+#include <unistd.h> // close
 #include <linux/vm_sockets.h> // struct sockaddr_vm
 
 #include "csocket.h" // SOCKET_ERROR
@@ -28,14 +29,8 @@ bool CSocketServerFunctionVTCP::Configure(TDescriptor& master)
 	return true;
 }
 
-bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
+static bool _Setup(TDescriptor master, TPort port)
 {
-	if( ! Configure(master) )
-	{
-		cerr<<"Error : CSocketServerFunctionVTCP::_Listen : Configure"<<endl;
-		return false;
-	}
-
 	//type of socket created
 	struct sockaddr_vm address;
 	memset(&address, 0, sizeof(address));
@@ -65,6 +60,23 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 	if( listen(master, 3) < 0 )
 	{
 		perror("CSocketServerFunctionVTCP::_Listen : listen");
+		return false;
+	}
+
+	return true;
+}
+
+bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
+{
+	if( ! Configure(master) )
+	{
+		cerr<<"Error : CSocketServerFunctionVTCP::_Listen : Configure"<<endl;
+		return false;
+	}
+
+	if( ! _Setup(master, port) )
+	{
+		close(master);
 		return false;
 	}
 
