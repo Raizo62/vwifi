@@ -102,5 +102,9 @@ CSocket::operator int()
 
 void CSocket::Close()
 {
-	close(Master);
+	if( Master != SOCKET_ERROR )
+	{
+		close(Master);
+		Master = SOCKET_ERROR;
+	}
 }
