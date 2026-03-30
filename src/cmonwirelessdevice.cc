@@ -207,7 +207,11 @@ void MonitorWirelessDevice::recv_inet_event()
 	char buf[IFLIST_REPLY_BUFFER];
 	struct iovec iov = { buf, sizeof(buf) };
 	struct sockaddr_nl snl;
-	struct msghdr msg = { static_cast<void *>(&snl), sizeof(snl), &iov, 1, NULL, 0, 0 };
+	struct msghdr msg = {};
+	msg.msg_name    = static_cast<void *>(&snl);
+	msg.msg_namelen = sizeof(snl);
+	msg.msg_iov     = &iov;
+	msg.msg_iovlen  = 1;
 	struct nlmsghdr *nlmsgheader;
 
 	/* read the waiting message */
