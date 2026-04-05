@@ -29,7 +29,7 @@ bool CSocketServerFunctionVTCP::Configure(TDescriptor& master)
 	return true;
 }
 
-static bool _Setup(TDescriptor master, TPort port)
+static bool Setup(TDescriptor master, TPort port)
 {
 	//type of socket created
 	struct sockaddr_vm address;
@@ -74,7 +74,7 @@ bool CSocketServerFunctionVTCP::_Listen(TDescriptor& master, TPort port)
 		return false;
 	}
 
-	if( ! _Setup(master, port) )
+	if( ! Setup(master, port) )
 	{
 		close(master);
 		return false;
