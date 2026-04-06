@@ -76,7 +76,7 @@ if [ ${MODE} == "s" ] ; then
 
 	ip a a ${IP} dev wlan0
 else
-	dhclient -v -i ${INET}
+	dhcpcd --rebind ${INET}
 
 fi
 
