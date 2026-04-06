@@ -6,7 +6,9 @@ DEFAULT_PREFIX_MAC_ADDRESS='74:F8:F6'
 
 # -------------------
 
-cd "${FOLDER_VWIFI}"
+FOLDER_VWIFI_BIN="${FOLDER_VWIFI}/build"
+
+cd "${FOLDER_VWIFI_BIN}"
 
 if (( $# == 0 ))
 then
