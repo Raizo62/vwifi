@@ -28,7 +28,7 @@ bool CSocketServerFunctionITCP::Configure(TDescriptor& master)
 	return true;
 }
 
-static bool _Setup(TDescriptor master, TPort port)
+static bool Setup(TDescriptor master, TPort port)
 {
 	//set master socket to allow multiple connections ,
 	//this is just a good habit, it will work without this
@@ -79,7 +79,7 @@ bool CSocketServerFunctionITCP::_Listen(TDescriptor& master, TPort port)
 		return false;
 	}
 
-	if( ! _Setup(master, port) )
+	if( ! Setup(master, port) )
 	{
 		close(master);
 		return false;
