@@ -71,12 +71,13 @@ mkdir build
 cd build
 cmake ..
 ```
-* To Customize the build :
-    * For a debug build : Add `-DCMAKE_BUILD_TYPE=Debug`
+* To customize the build :
     * To disable VHOST protocol : Add `-DENABLE_VHOST=OFF`
 
 * To write a better code :
+    * For a debug build : Add `-DCMAKE_BUILD_TYPE=Debug`
     * To enable the analyzer : Add `-DENABLE_ANALYZER=ON`
+    * To do a cppcheck : `make cppcheck`
 
 * To build : `make`
 
