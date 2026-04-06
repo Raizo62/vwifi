@@ -75,6 +75,9 @@ cmake ..
     * For a debug build : Add `-DCMAKE_BUILD_TYPE=Debug`
     * To disable VHOST protocol : Add `-DENABLE_VHOST=OFF`
 
+* To write a better code :
+    * To enable the analyzer : Add `-DENABLE_ANALYZER=ON`
+
 * To build : `make`
 
 * To install : `sudo make install`

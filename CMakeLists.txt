@@ -17,6 +17,12 @@ if(NOT ENABLE_VHOST)
   add_definitions(-DDISABLE_VHOST)
 endif()
 
+option(ENABLE_ANALYZER "Enable GCC -fanalyzer static analysis" OFF)
+if(ENABLE_ANALYZER)
+    add_compile_options(-fanalyzer)
+    message(STATUS "GCC -fanalyzer enabled")
+endif()
+
 # Common flags (add more as needed based on Makefile MODE)
 add_compile_options(-Wall -Wextra -pedantic)
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
