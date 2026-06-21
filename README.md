@@ -254,7 +254,7 @@ sudo apt install hostapd wpasupplicant
 
 ### Guests
 
-* Guest Wifi 1 :
+* Guest Wifi 1 : AP
 
 ```bash
 sudo ip a a 10.0.0.1/8 dev wlan0
@@ -262,7 +262,7 @@ sudo ip a a 10.0.0.1/8 dev wlan0
 sudo hostapd tests/hostapd_wpa.conf
 ```
 
-* Guest Wifi 2 :
+* Guest Wifi 2 : Client
 ```bash
 sudo wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
 
@@ -270,7 +270,7 @@ sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
-* Guest Wifi 3 :
+* Guest Wifi 3 : Client
 ```bash
 sudo wpa_supplicant -Dnl80211 -iwlan0 -c tests/wpa_supplicant.conf
 
@@ -288,7 +288,7 @@ sudo apt install hostapd iw tcpdump
 
 ### Guests
 
-* Guest Wifi 1 :
+* Guest Wifi 1 : AP
 
 ```bash
 sudo ip a a 10.0.0.1/8 dev wlan0
@@ -296,7 +296,7 @@ sudo ip a a 10.0.0.1/8 dev wlan0
 sudo hostapd tests/hostapd_open.conf
 ```
 
-* Guest Wifi 2 :
+* Guest Wifi 2 : Client
 ```bash
 sudo ip link set up wlan0
 sudo iw dev wlan0 connect mac80211_open
@@ -305,7 +305,7 @@ sudo ip a a 10.0.0.2/8 dev wlan0
 ping 10.0.0.1
 ```
 
-* Guest Wifi 3 :
+* Guest Wifi 3 : Client
 ```bash
 sudo ip link set up wlan0
 sudo tcpdump -n -e -I -i wlan0 -w /hosthome/projects/vwifi_capture_wlan0.pcap
@@ -356,7 +356,7 @@ sudo apt install hostapd
 
 ### Guests
 
-* Guest Wifi 1 :
+* Guest Wifi 1 : AP
 
 ```bash
 sudo ip a a 10.0.0.1/8 dev wlan0
@@ -364,7 +364,7 @@ sudo ip a a 10.0.0.1/8 dev wlan0
 sudo hostapd tests/hostapd_wep.conf
 ```
 
-* Guest Wifi 2 :
+* Guest Wifi 2 : Client
 ```bash
 cat << EOF | sudo tee -a /etc/network/interfaces > /dev/null
 
