@@ -380,6 +380,51 @@ sudo ifup wlan0
 ping 10.0.0.1
 ```
 
+## Test 5 : iwd
+
+### Packages needed on the guests for this test
+
+```bash
+sudo apt install iwd
+```
+
+### Guests
+
+* Guest Wifi 1 : AP
+
+```bash
+sudo systemctl start iwd
+
+iwctl device wlan0 set-property Mode ap
+# --> no output
+
+iwctl ap wlan0 start "Network_iwd" "Password123"
+# --> no output
+
+iwctl ap list
+
+sudo ip a a 10.0.0.1/8 dev wlan0
+```
+
+* Guest Wifi 2 : Client
+```bash
+sudo systemctl start iwd
+
+iwctl station wlan0 scan
+# --> no output
+
+iwctl station wlan0 get-networks
+
+iwctl --passphrase "Password123" station wlan0 connect "Network_iwd"
+# --> no output
+
+iwctl station wlan0 show
+
+sudo ip a a 10.0.0.2/8 dev wlan0
+
+ping 10.0.0.1
+```
+
 # Others Tools
 
 * start-vwifi-client.sh : do all the commands necessary to start ***vwifi-client*** on a Guest
