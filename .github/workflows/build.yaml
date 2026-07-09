@@ -4,7 +4,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
         uses: actions/checkout@v7
@@ -23,3 +26,4 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           path: build/vwifi-*
+          name: ${{ matrix.os }} binaries
