@@ -84,7 +84,7 @@ sudo make install
 If you are using NixOS or have the Nix package manager installed, you can enter a development environment with all the necessary dependencies by running the following command from the root of the repository:
 
 ```bash
-nix-shell nix/shell.nix
+nix-shell tools
 ```
 
 This will download and set up all required build tools and libraries specified in `nix/shell.nix`. Once inside the shell, you can follow the standard building instructions (CMake, make, etc.).
