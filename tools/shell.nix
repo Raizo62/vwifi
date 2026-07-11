@@ -1,22 +1,22 @@
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 
 pkgs.mkShell {
-  buildInputs = with pkgs; [
-    # Build tools
+  # Build tools
+  nativeBuildInputs = with pkgs; [
     cmake
-    gcc
-    gnumake
     pkg-config
+  ];
 
+  buildInputs = with pkgs; [
     # Required libraries
     libnl # For netlink functionality
-    
+
     # Development tools
     gdb
     valgrind
     cppcheck
     libxslt
   ];
-
-
-} 
+}
