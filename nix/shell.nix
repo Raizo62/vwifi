@@ -4,8 +4,6 @@ pkgs.mkShell {
   buildInputs = with pkgs; [
     # Build tools
     cmake
-    gcc
-    gnumake
     pkg-config
 
     # Required libraries
