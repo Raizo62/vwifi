@@ -1,0 +1,83 @@
+name: Build OpenWRT
+on:
+  - push
+env:
+  STAGING_DIR: /tmp
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.get-versions.outputs.versions }}
+    steps:
+      - name: Get OpenWRT versions
+        id: get-versions
+        run: |
+          VERSIONS=$(curl https://sysupgrade.openwrt.org/json/v1/overview.json | jq -c '.latest')
+          echo "versions=$VERSIONS" >> $GITHUB_OUTPUT
+  build:
+    runs-on: ubuntu-latest
+    needs: prepare
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.prepare.outputs.versions) }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zstd unzip
+          sudo apt-get install -y make bison flex
+          sudo apt-get install -y cmake pkg-config
+      - name: Setup python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Install python dependencies
+        run:  pip install bs4 requests
+      - name: Setup build directory
+        run: mkdir build
+      - name: Download needed files
+        run: |
+          SDK_URL=$(python .github/workflows/scripts/openwrt_download_finder.py sdk ${{ matrix.version }} x86 64)
+          TOOLCHAIN_URL=$(python .github/workflows/scripts/openwrt_download_finder.py toolchain ${{ matrix.version }} x86 64)
+          cd build
+          wget $SDK_URL -O SDK.tar.zst
+          wget $TOOLCHAIN_URL -O TOOLCHAIN.tar.zst
+          tar -xf SDK.tar.zst
+          tar -xf TOOLCHAIN.tar.zst
+          mv openwrt-sdk-* SDK
+          mv openwrt-toolchain-* TOOLCHAIN
+          ls TOOLCHAIN
+          echo $(find ${PWD}/TOOLCHAIN -name "toolchain-*")/bin >> $GITHUB_PATH
+          wget https://github.com/thom311/libnl/releases/download/libnl3_12_0/libnl-3.12.0.tar.gz
+          tar xf libnl-3.12.0.tar.gz
+          mv libnl-3.12.0 libnlsrc
+
+      - name: Build libnl
+        run: |
+          cd build/libnlsrc
+          ./configure --prefix=${GITHUB_WORKSPACE}/build/LIBNL --build=x86_64-unknown-linux-gnu  --host=x86_64-openwrt-linux-musl LDFLAGS="-static"
+          make
+          cd ..
+          mkdir LIBNL
+          ln -s ${GITHUB_WORKSPACE}/build/libnlsrc/lib/.libs ${GITHUB_WORKSPACE}/build/LIBNL/lib
+          ln -s ${GITHUB_WORKSPACE}/build/libnlsrc/include ${GITHUB_WORKSPACE}/build/LIBNL/include
+          ln -s ${GITHUB_WORKSPACE}/build/LIBNL/lib ${GITHUB_WORKSPACE}/build/LIBNL/include/libnl3
+      - name: Build
+        run: |
+          cd build
+          export PKG_CONFIG_PATH=${GITHUB_WORKSPACE}/build/libnlsrc
+          echo $PATH
+          ls TOOLCHAIN/*
+          cmake .. \
+            -DCMAKE_CXX_COMPILER=x86_64-openwrt-linux-musl-g++ \
+            -DCMAKE_EXE_LINKER_FLAGS="-L${GITHUB_WORKSPACE}/build/LIBNL/lib -lnl-genl-3 -lnl-3" \
+            -DCMAKE_CXX_FLAGS="-I${GITHUB_WORKSPACE}/build/LIBNL/include"
+          make
+      - name: Upload
+        uses: actions/upload-artifact@v5
+        with:
+          path: build/vwifi-*
+          name: OpenWRT ${{ matrix.version }} binaries
+
