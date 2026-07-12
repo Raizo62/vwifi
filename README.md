@@ -87,6 +87,16 @@ cmake ..
 
 * See the wiki : [Install-vwifi-on-OpenWRT-X86_64](https://github.com/Raizo62/vwifi/wiki/Install-on-OpenWRT-X86_64)
 
+## Using Nix
+
+If you have the Nix package manager installed, you can enter a development environment with all the necessary dependencies by running the following command from the root of the repository:
+
+```bash
+nix-shell tools
+```
+
+This will download and set up all required build tools and libraries specified in `tools/shell.nix`. Once inside the shell, you can follow the building instructions above (CMake, make, etc.).
+
 # Configuration
 
 ## Method 1 : With VHOST
