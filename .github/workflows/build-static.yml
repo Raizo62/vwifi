@@ -1,0 +1,87 @@
+name: Build static
+
+on:
+  - push
+  - workflow_dispatch
+
+jobs:
+  build-static:
+    runs-on: ubuntu-latest
+
+    # Alpine uses musl, designed for static linking:
+    # no dlopen of NSS modules like with glibc, so the resulting binary
+    # is truly standalone.
+    container: alpine:3.22
+
+    steps:
+      - name: Install dependencies
+        run: |
+          apk add --no-cache \
+            build-base \
+            linux-headers \
+            cmake \
+            make \
+            pkgconf \
+            git \
+            file \
+            libnl3-dev \
+            libnl3-static
+
+      # Avoids git "dubious ownership" error in the container.
+      - name: Trust workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Check out
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Forces find_library() to keep only .a archives,
+      # even when a .so is available nearby.
+      - name: Configure
+        run: |
+          echo 'set(CMAKE_FIND_LIBRARY_SUFFIXES .a)' > include.cmake
+          cmake -S . -B build \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_INSTALL_PREFIX="" \
+                -DCMAKE_EXE_LINKER_FLAGS="-static" \
+                -DCMAKE_C_FLAGS="-static" \
+                -DCMAKE_CXX_FLAGS="-static" \
+                -DCMAKE_PROJECT_INCLUDE="$GITHUB_WORKSPACE/include.cmake"
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Install
+        run: make -C build install DESTDIR=stage
+
+      # Fails if a produced executable is not truly static.
+      - name: Check that binaries are static
+        run: |
+          fail=0
+          for f in $(find build/stage -type f -perm -u+x); do
+            info=$(file -b "$f")
+            case "$info" in
+              *ELF*)
+                case "$info" in
+                  *static*) echo "OK      : $f" ;;
+                  *)        echo "DYNAMIC : $f -> $info" ; fail=1 ;;
+                esac
+                ;;
+            esac
+          done
+          exit "$fail"
+
+      - name: Strip
+        run: find build/stage -type f -perm -u+x -exec strip --strip-unneeded {} + || true
+
+      # The zip archive produced by upload-artifact loses the executable bit:
+      # we pack it into a tar.gz to preserve it.
+      - name: Package
+        run: tar -czf vwifi-static-linux-x86_64.tar.gz -C build/stage .
+
+      - name: Upload
+        uses: actions/upload-artifact@v5
+        with:
+          name: alpine-static binaries
+          path: vwifi-static-linux-x86_64.tar.gz
