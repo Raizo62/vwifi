@@ -1,0 +1,47 @@
+name: Release binaries
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-static:
+    uses: ./.github/workflows/build-static.yml
+
+  build:
+    uses: ./.github/workflows/build.yaml
+
+  build-openwrt:
+    uses: ./.github/workflows/build-openwrt.yaml
+
+  upload:
+    needs: [build-static, build, build-openwrt]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # Without "name", all artifacts are downloaded, one directory each.
+      - name: Download artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: artifacts
+
+      # Each artifact becomes one archive (the executable bit is preserved).
+      # Artifacts which already contain a tar.gz are used as is.
+      - name: Package
+        run: |
+          mkdir release
+          for d in artifacts/*/; do
+            name=$(basename "$d" | tr ' ' '-')
+            if ls "$d"*.tar.gz >/dev/null 2>&1; then
+              cp "$d"*.tar.gz release/
+            else
+              tar -czf "release/vwifi-$name.tar.gz" -C "$d" .
+            fi
+          done
+          ls -l release
+
+      - name: Add to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" release/* --clobber --repo "${{ github.repository }}"
