@@ -176,6 +176,10 @@ sudo vwifi-client 172.16.0.1
 
 * ***vwifi-client*** displays an ID which is an hashsum of the IP. It is used by ***vwifi-server*** to identify this guest.
 
+# Running vwifi as systemd Services
+
+* See the wiki : [Running-VirtualWifi-as-systemd-Services](https://github.com/Raizo62/vwifi/wiki/Running-VirtualWifi-as-systemd-Services)
+
 # Capture packets from Host
 
 ## Configure the Spy
